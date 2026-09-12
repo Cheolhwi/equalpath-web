@@ -1,16 +1,42 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Component,
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
-  Crosshair,
+  HeartHandshake,
   Minus,
   Plus,
   X,
 } from "lucide-react";
 import App from "./App.jsx";
-import { INTRO_AREAS, startEntrance } from "./entrance.js";
+import { startEntrance } from "./entrance.js";
 import "./landing.css";
+
+const CareScene = lazy(() => import("./CareScene.jsx"));
+
+class SceneBoundary extends Component {
+  state = { unavailable: false };
+  static getDerivedStateFromError() {
+    return { unavailable: true };
+  }
+  render() {
+    return this.state.unavailable ? (
+      <div className="care-scene-placeholder">
+        The scene couldn’t load. You can still find childcare.
+      </div>
+    ) : (
+      this.props.children
+    );
+  }
+}
 
 const steps = [
   {
@@ -33,7 +59,6 @@ export default function Experience() {
       ? "ready"
       : "welcome",
   );
-  const [area, setArea] = useState(0);
   const [step, setStep] = useState(0);
   const [showProcess, setShowProcess] = useState(false);
   const [reduced, setReduced] = useState(
@@ -112,12 +137,7 @@ export default function Experience() {
       data-intro-phase={phase}
       data-intro-reduced={reduced}
     >
-      <App
-        introPhase={phase}
-        introArea={area}
-        introReduced={reduced}
-        onHome={home}
-      />
+      <App introPhase={phase} introReduced={reduced} onHome={home} />
       {phase !== "ready" && (
         <section
           className="landing"
@@ -150,47 +170,43 @@ export default function Experience() {
                   IT WORKS
                 </button>
                 <button onClick={enter}>
-                  EXPLORE MAP <ArrowUpRight size={18} />
+                  FIND CHILDCARE <ArrowUpRight size={18} />
                 </button>
               </nav>
             </header>
 
-            <div
-              className="landing-location"
-              aria-label={`Previewing ${INTRO_AREAS[area].name}`}
-            >
-              <span className="landing-overline">
-                A PLACE TO START / 0{area + 1}
-              </span>
-              <Crosshair
-                size={42}
-                strokeWidth={0.8}
-                className="location-crosshair"
-                aria-hidden="true"
-              />
-              <div key={area} className="location-caption">
-                <span>{INTRO_AREAS[area].short}</span>
-                <small>{INTRO_AREAS[area].coordinates}</small>
-              </div>
+            <div className="care-art">
+              <SceneBoundary>
+                <Suspense
+                  fallback={
+                    <div className="care-scene-placeholder">
+                      A little play. A little possibility.
+                    </div>
+                  }
+                >
+                  <CareScene reduced={reduced} />
+                </Suspense>
+              </SceneBoundary>
             </div>
 
             <div className="landing-hero">
               <div className="hero-kicker">
-                <span>YOUR DAY. YOUR NEXT STEP.</span>
+                <span>CHILDCARE FOR THE DAY THAT CHANGED.</span>
                 <span>01 — 03</span>
               </div>
               <h2>
-                CARE,
+                Care for them.
                 <br />
-                <span>WITHIN REACH.</span>
+                <span>
+                  A little breathing
+                  <br />
+                  room for you.
+                </span>
               </h2>
               <div className="hero-description">
                 <p>
-                  For the hours that don’t go to plan.
-                  <br />
-                  Find childcare. Check the details.
-                  <br />
-                  Know what to ask.
+                  When pickup plans change, find childcare nearby. Compare your
+                  options and know what to ask next.
                 </p>
                 <ArrowDown size={22} strokeWidth={1} aria-hidden="true" />
               </div>
@@ -201,8 +217,8 @@ export default function Experience() {
               >
                 <span>
                   {hasEntered.current
-                    ? "RETURN TO YOUR MAP"
-                    : "FIND YOUR NEXT STEP"}
+                    ? "BACK TO YOUR OPTIONS"
+                    : "FIND CHILDCARE"}
                 </span>
                 <ArrowRight size={28} strokeWidth={1.25} />
               </button>
@@ -213,20 +229,22 @@ export default function Experience() {
             </div>
 
             <div className="landing-bottom">
-              <section className="landing-areas" aria-label="Map preview area">
-                <span className="landing-overline">OUR NEIGHBOURHOOD</span>
+              <section
+                className="care-note"
+                aria-label="Care when plans change"
+              >
+                <HeartHandshake
+                  size={28}
+                  strokeWidth={1.15}
+                  aria-hidden="true"
+                />
                 <div>
-                  {INTRO_AREAS.map((item, index) => (
-                    <button
-                      key={item.name}
-                      onClick={() => setArea(index)}
-                      aria-pressed={area === index}
-                    >
-                      <small>0{index + 1}</small>
-                      {item.name}
-                      <ArrowUpRight size={16} />
-                    </button>
-                  ))}
+                  <h3>
+                    For late meetings.
+                    <br />
+                    And life’s little surprises.
+                  </h3>
+                  <p>A place to start when your usual plans change.</p>
                 </div>
               </section>
               <section
@@ -253,32 +271,10 @@ export default function Experience() {
             </div>
             <footer className="landing-footer">
               <span className="landing-region">
-                <i /> KUALA LUMPUR + SELANGOR
+                <i /> FOR FAMILIES IN KL + SELANGOR
               </span>
-              <span className="landing-attribution">
-                <a
-                  href="https://openfreemap.org/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  OpenFreeMap
-                </a>{" "}
-                ·{" "}
-                <a
-                  href="https://openmaptiles.org/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  OpenMapTiles
-                </a>{" "}
-                ·{" "}
-                <a
-                  href="https://www.openstreetmap.org/copyright"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  © OpenStreetMap
-                </a>
+              <span className="landing-footnote">
+                ONE OCCASION. A LITTLE MORE POSSIBILITY.
               </span>
               <button
                 className="motion-toggle"

@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import assert from "node:assert/strict";
 import { sourceDigest } from "./source-digest.mjs";
@@ -39,6 +39,26 @@ assert(
 assert(
   !existsSync(resolve(root, "dist/server")),
   "Server source must not be published as static content",
+);
+const sceneChunks = readdirSync(resolve(root, "dist/assets")).filter((name) =>
+  /^CareScene-.*\.js$/.test(name),
+);
+assert.equal(sceneChunks.length, 1, "Missing separately loaded 3D scene");
+assert(
+  client.includes(sceneChunks[0]),
+  "The landing must reference its scene chunk",
+);
+for (const model of ["archive-cassette.glb", "archive-assembly.glb"]) {
+  const bytes = readFileSync(resolve(root, `dist/assets/${model}`));
+  assert.equal(
+    bytes.subarray(0, 4).toString(),
+    "glTF",
+    `Invalid model: ${model}`,
+  );
+}
+assert(
+  existsSync(resolve(root, "dist/images/childcare-book-cover.png")),
+  "Missing childcare picture-book texture",
 );
 const source = sourceDigest(root);
 writeFileSync(

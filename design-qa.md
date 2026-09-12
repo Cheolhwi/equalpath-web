@@ -2,7 +2,23 @@
 
 Date: 2026-09-12. Scope: the user-requested RhineLab-inspired landing page with Gaussian blur, integrated into the existing EqualPath website. The latest user revision replaces the cinematic transfer with one brief entrance.
 
-## Latest revision: direct entrance (2026-09-12)
+## Current revision: original 3D scene with childcare (2026-09-13)
+
+The user replaced the earlier map-led landing direction with an explicit request to use the original RhineLabUI 3D scene and add childcare elements. The current implementation vendors the real `ArchiveScene` and its supporting modules at commit `d9ecb6c6f7a36e8b522072a0ebbd7691a50550a7`, with the original GLB cassette models, glass, lighting, depth of field, long-lens camera, collection drag and extraction. The dedicated landing viewport changes framing only. [Source, license, asset and generation-prompt record](docs/CHILDCARE_SCENE.md).
+
+- Childcare changes: a picture book and physical A/B/C blocks on the selected cassette, EqualPath labels, care-themed objects, warmer parent-facing copy, and an explicit Find childcare action. The map backdrop, crosshair, coordinates and area selector have been removed from the landing. The search map remains flat.
+- Actual visual checks: `evidence/childcare-scene/desktop-detail.png` at 1440 × 900, `desktop-collection.png`, `mobile-detail.png` at 390 × 844, and `small-mobile.png` at 320 × 568. The models, picture-book face, blocks, fine rules and existing MiSans hierarchy were inspected. No horizontal overflow; the compact phone's action ends around y=557 within a 568 px screen.
+- [Resolved] The original selection callback also runs during dragging. The host now distinguishes browse updates from deliberate activation, so dragging stays in collection mode and clicking lifts the chosen card. Both paths were exercised in the real browser, along with previous/next and collection/close-up controls. Close-up dragging visibly rotates the same cassette; see `desktop-turned.png`.
+- [Resolved] The small phone's scene overlapped the brand descriptor. Revised spacing places the scene below the brand (scene y=81.5, brand ends y=78.5) while preserving the visible entry action.
+- Entry and reduced-motion keyboard entry return to the existing request input. After entry, the 3D scene is removed and only the existing map canvas remains; map pitch/bearing stay 0. Returning home recreates the scene. No backend or request/comparison logic changed.
+- The 420 ms entrance is retained, with no intermediate screen. Model loading does not block entry. The lazy scene has a local error boundary and asynchronous model disposal guards.
+- Existing How it works opens/closes, and existing landing process controls remain available. Browser console: zero error entries during the checked journeys.
+- `evidence/childcare-scene/release.log`: 43 tests pass, production build passes, and release validation checks the lazy scene chunk, both GLB headers and the image texture.
+- Limits: the captured scene is live WebGL, not a video or physical low-end phone frame-rate benchmark. The 3D bundle and cassette load on the landing; direct search does not mount them. Custom-domain HTTPS remains a separate deployment gate.
+
+Current result: passed. The earlier sections below preserve the previous map-led design and entrance history; their visual targets are superseded by this revision.
+
+## Previous revision: direct entrance (2026-09-12)
 
 The user found the 3.5-second GTA sequence excessive. The current version has only `welcome → entering → ready`, lasting 420 ms, and shows the main interface from the first entering frame. A 2% map settle and 6 px content movement accompany a brief crossfade. No standalone map screen, transfer labels, progress bar, regional pan or extra panel animation remains. The landing design is unchanged.
 
