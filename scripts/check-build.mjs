@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import assert from "node:assert/strict";
+import { sourceDigest } from "./source-digest.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const html = readFileSync(resolve(root, "dist/index.html"), "utf8");
@@ -40,19 +40,13 @@ assert(
   !existsSync(resolve(root, "dist/server")),
   "Server source must not be published as static content",
 );
-const commit =
-  process.env.GITHUB_SHA ||
-  execFileSync("git", ["rev-parse", "HEAD"], {
-    cwd: root,
-    encoding: "utf8",
-  }).trim();
-assert(/^[a-f0-9]{40}$/.test(commit), "Missing exact source revision");
+const source = sourceDigest(root);
 writeFileSync(
   resolve(root, "dist/build-info.json"),
   JSON.stringify(
-    { commit, builtAt: new Date().toISOString(), assets },
+    { source, builtAt: new Date().toISOString(), assets },
     null,
     2,
   ),
 );
-console.log(`Validated ${assets.length} entry assets for ${commit}`);
+console.log(`Validated ${assets.length} entry assets for source ${source}`);
