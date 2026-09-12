@@ -1,5 +1,4 @@
 .experience {
-  --intro-sidebar: 440px;
   --landing-ink: #30362c;
   --landing-muted: #707568;
   --landing-rule: #a6ab98;
@@ -8,13 +7,13 @@
   height: 100dvh;
   background: var(--landing-paper);
 }
-.experience:not(.phase-ready) .equalpath {
+.experience.phase-welcome .equalpath {
   background: var(--landing-paper);
 }
-.experience:not(.phase-ready) .equalpath > :not(.map-wrap) {
+.experience.phase-welcome .equalpath > :not(.map-wrap) {
   visibility: hidden;
 }
-.experience:not(.phase-ready) .map-wrap {
+.experience.phase-welcome .map-wrap {
   display: block !important;
   visibility: visible;
   position: absolute;
@@ -23,64 +22,55 @@
   height: 100%;
   overflow: hidden;
   z-index: 0;
-  transition:
-    left 600ms cubic-bezier(0.25, 0.7, 0.2, 1),
-    top 600ms ease,
-    width 600ms cubic-bezier(0.25, 0.7, 0.2, 1),
-    height 600ms ease;
 }
-@media (min-width: 761px) {
-  .experience.phase-reveal .map-wrap {
-    left: var(--intro-sidebar);
-    top: 88px;
-    width: calc(100% - var(--intro-sidebar));
-    height: calc(100% - 88px);
-  }
-  .experience.phase-reveal .equalpath > .app-header,
-  .experience.phase-reveal .equalpath > .discovery-panel {
-    visibility: visible;
-    animation: panel-arrive 600ms ease both;
-  }
-}
-@media (min-width: 1550px) {
-  .experience {
-    --intro-sidebar: 470px;
-  }
-}
-@media (min-width: 761px) and (max-width: 1100px) {
-  .experience {
-    --intro-sidebar: 385px;
-  }
-}
-.experience:not(.phase-ready) .map-wrap .map-region {
+.experience.phase-welcome .map-wrap .map-region {
   height: 100%;
   width: 100%;
 }
-.experience:not(.phase-ready) .map-wrap .map-region > :not(.map-canvas),
-.experience:not(.phase-ready) .map-wrap > :not(.map-region),
-.experience:not(.phase-ready) .provider-pin,
-.experience:not(.phase-ready) .pickup-pin {
+.experience.phase-welcome .map-wrap .map-region > :not(.map-canvas),
+.experience.phase-welcome .map-wrap > :not(.map-region),
+.experience.phase-welcome .provider-pin,
+.experience.phase-welcome .pickup-pin {
   visibility: hidden;
 }
-.experience:not(.phase-ready) .map-canvas {
+.experience.phase-welcome .map-canvas {
   filter: blur(4px) saturate(0.65);
   transform: scale(1.025);
-  transition:
-    filter 900ms ease,
-    transform 1200ms ease;
 }
-.experience.phase-depart .map-canvas {
-  filter: blur(7px) saturate(0.6);
-  transform: scale(1.06);
+.phase-entering .equalpath {
+  animation: app-entry 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
-.experience.phase-travel .map-canvas {
-  filter: blur(2px) saturate(0.75);
-  transform: scale(1.025);
+.phase-entering .map-canvas {
+  animation: map-entry 420ms ease-out both;
 }
-.experience.phase-arrive .map-canvas,
-.experience.phase-reveal .map-canvas {
-  filter: blur(0) saturate(1);
-  transform: scale(1);
+.phase-entering .landing {
+  pointer-events: none;
+  animation: landing-exit 220ms ease-out both;
+}
+@keyframes app-entry {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes map-entry {
+  from {
+    filter: blur(2px);
+    transform: scale(1.02);
+  }
+  to {
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+@keyframes landing-exit {
+  to {
+    opacity: 0;
+  }
 }
 .landing {
   position: absolute;
@@ -457,107 +447,6 @@
 .landing-process .landing-enter {
   margin-top: 24px;
 }
-.experience:not(.phase-welcome) .landing-content {
-  opacity: 0;
-  filter: blur(8px);
-  transform: scale(1.035);
-  pointer-events: none;
-}
-.experience:not(.phase-welcome) .landing-wash {
-  opacity: 0;
-}
-.map-transfer {
-  position: absolute;
-  inset: 0;
-  color: #35412e;
-}
-.map-transfer header {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 42px;
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  background: rgba(245, 245, 236, 0.88);
-}
-.map-transfer header button {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 9px;
-}
-.transfer-focus {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  color: #3a4b31;
-}
-.transfer-caption {
-  position: absolute;
-  left: 50%;
-  bottom: 16%;
-  min-width: 335px;
-  transform: translateX(-50%);
-  background: rgba(241, 243, 233, 0.91);
-  backdrop-filter: blur(14px);
-  padding: 18px 25px;
-  text-align: center;
-  border-top: 1px solid #596b48;
-}
-.transfer-caption small {
-  display: block;
-  font-size: 8px;
-  letter-spacing: 0.16em;
-  margin-bottom: 9px;
-}
-.transfer-caption strong {
-  display: block;
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  animation: caption-reveal 300ms ease both;
-}
-.transfer-caption > span {
-  display: block;
-  margin-top: 12px;
-  font-size: 8px;
-  letter-spacing: 0.12em;
-  color: #697760;
-}
-.transfer-progress {
-  position: absolute;
-  bottom: 9%;
-  left: 42px;
-  right: 42px;
-  height: 2px;
-  background: #52674324;
-}
-.transfer-progress i {
-  display: block;
-  height: 100%;
-  background: #455a36;
-  transform-origin: left;
-  animation: transfer-progress 3450ms linear both;
-}
-.transfer-credit {
-  position: absolute;
-  bottom: 22px;
-  left: 42px;
-  font-size: 9px;
-}
-.phase-reveal .map-transfer {
-  animation: transfer-exit 600ms ease both;
-}
-.phase-ready .app-header {
-  animation: header-arrive 500ms ease both;
-}
-.phase-ready .discovery-panel {
-  animation: panel-arrive 600ms cubic-bezier(0.2, 0.65, 0.25, 1) both;
-}
 @keyframes caption-reveal {
   from {
     opacity: 0;
@@ -566,40 +455,6 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-@keyframes transfer-progress {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-@keyframes transfer-exit {
-  to {
-    opacity: 0;
-    filter: blur(5px);
-  }
-}
-@keyframes header-arrive {
-  from {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes panel-arrive {
-  from {
-    opacity: 0;
-    transform: translateX(-28px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
 @media (min-width: 1550px) {
@@ -874,32 +729,6 @@
   }
   .process-row p {
     font-size: 11px;
-  }
-  .map-transfer header {
-    height: 62px;
-    padding-inline: 22px;
-    font-size: 7px;
-  }
-  .map-transfer header button {
-    font-size: 7px;
-    gap: 7px;
-  }
-  .transfer-caption {
-    min-width: 0;
-    width: calc(100% - 44px);
-    padding: 17px 12px;
-    bottom: 18%;
-  }
-  .transfer-caption strong {
-    font-size: 14px;
-  }
-  .transfer-progress {
-    left: 22px;
-    right: 22px;
-  }
-  .transfer-credit {
-    left: 22px;
-    font-size: 7px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

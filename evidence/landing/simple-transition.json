@@ -1,0 +1,98 @@
+[
+  {
+    "ms": 438,
+    "appOpacity": "0.0706729",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 446,
+    "appOpacity": "0.141334",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 454,
+    "appOpacity": "0.213487",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 460,
+    "appOpacity": "0.285969",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 467,
+    "appOpacity": "0.285969",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 473,
+    "appOpacity": "0.356419",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 479,
+    "appOpacity": "0.422514",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 486,
+    "appOpacity": "0.483853",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 491,
+    "appOpacity": "0.483853",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 498,
+    "appOpacity": "0.540285",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 505,
+    "appOpacity": "0.586221",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  },
+  {
+    "ms": 512,
+    "appOpacity": "0.630981",
+    "canvasCount": 1,
+    "interstitial": false,
+    "panelVisible": "visible",
+    "phase": "entering"
+  }
+]

@@ -1,6 +1,19 @@
 # Landing page and map entrance QA
 
-Date: 2026-09-12. Scope: the user-requested RhineLab-inspired landing page with Gaussian blur and a GTA-style flat map transition, integrated into the existing EqualPath website.
+Date: 2026-09-12. Scope: the user-requested RhineLab-inspired landing page with Gaussian blur, integrated into the existing EqualPath website. The latest user revision replaces the cinematic transfer with one brief entrance.
+
+## Latest revision: direct entrance (2026-09-12)
+
+The user found the 3.5-second GTA sequence excessive. The current version has only `welcome → entering → ready`, lasting 420 ms, and shows the main interface from the first entering frame. A 2% map settle and 6 px content movement accompany a brief crossfade. No standalone map screen, transfer labels, progress bar, regional pan or extra panel animation remains. The landing design is unchanged.
+
+- Actual browser checks: desktop and 390 × 844 mobile enter the existing search interface directly; the pickup input receives focus, one map canvas remains mounted, and no horizontal overflow was observed.
+- `evidence/landing/simple-transition.json` records entering-frame DOM/style observations: the discovery panel is already visible and no `.map-transfer` element exists. Its timestamps include browser click dispatch latency; these are not precise animation-duration measurements.
+- `simple-crossfade-desktop.png`, `simple-entry-desktop.png` and `simple-entry-mobile.png` show the short crossfade and resulting interface. All three were visually inspected.
+- Reduced motion plus keyboard Enter enters immediately. Browser console reports zero errors. No data, search or comparison code was changed; the same App stays mounted across entry/home.
+- Updated tests enforce completion within 450 ms, no intermediate camera destination, flat regional previews, cancellation and reduced-motion behavior. `evidence/landing/release-simple.log`: 43 tests pass, production build and asset validation pass.
+- Temporary viewport overrides were reset. Current result: passed.
+
+The following initial-design evidence is retained for provenance. Its longer GTA sequence and skip button describe the superseded version, not current behavior.
 
 ## Visual target and evidence
 

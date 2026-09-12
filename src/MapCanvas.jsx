@@ -45,10 +45,10 @@ export default function MapCanvas({
     introArea,
     cameraReduced: reduced || introReduced,
   };
-  const fit = () => {
+  const fit = ({ immediate = false } = {}) => {
     const m = map.current;
     if (!m) return;
-    if (latest.current.introPhase !== "ready") return;
+    if (latest.current.introPhase === "welcome") return;
     const coords = [
       ...latest.current.items
         .filter((p) => p.location)
@@ -63,7 +63,7 @@ export default function MapCanvas({
         zoom: 10.8,
         pitch: 0,
         bearing: 0,
-        duration: latest.current.cameraReduced ? 0 : 600,
+        duration: immediate || latest.current.cameraReduced ? 0 : 600,
       });
       return;
     }
@@ -79,7 +79,7 @@ export default function MapCanvas({
         right: 65,
       },
       maxZoom: 14.4,
-      duration: latest.current.cameraReduced ? 0 : 650,
+      duration: immediate || latest.current.cameraReduced ? 0 : 650,
       pitch: 0,
       bearing: 0,
     });
@@ -127,7 +127,7 @@ export default function MapCanvas({
         latest.current.introArea,
       );
       if (shot) m.jumpTo(shot);
-      else fit();
+      else fit({ immediate: true });
     });
     m.on("idle", () => {
       if (
@@ -230,7 +230,7 @@ export default function MapCanvas({
           duration: reduced || introReduced ? 0 : shot.duration,
           easing: (t) => t * t * (3 - 2 * t),
         });
-      else if (introPhase === "ready") fit();
+      else fit({ immediate: true });
     });
     return () => cancelAnimationFrame(frame);
   }, [introPhase, introArea, retry, reduced, introReduced]);

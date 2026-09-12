@@ -2,7 +2,7 @@
 
 新版无登录网页：填写本次照护需求 → 查找机构 → 检查条件 → 比较 → 准备联系。另已加入用户主动授权的当前位置获取。
 
-首页提供 RhineLab 风格的模糊地图入口。点击进入后，以约 3.5 秒的平面地图拉远、平移和推进衔接搜索；支持跳过、减少动态效果以及返回首页后保留本次需求。直接打开 `/#discover` 可进入搜索。[首页与转场验收](design-qa.md)。
+首页提供 RhineLab 风格的模糊地图入口。点击进入后，以约 0.4 秒的轻微地图移动直接显示搜索主界面，没有中间过场；支持减少动态效果以及返回首页后保留本次需求。直接打开 `/#discover` 可进入搜索。[首页与转场验收](design-qa.md)。
 
 - [本地预览](http://127.0.0.1:4179/)
 - [Appwrite 线上预览](https://equalpath-web.appwrite.network/)、[正式域名](https://equalpathcare.me/)、[独立仓库](https://github.com/Cheolhwi/equalpath-web)、[发布说明与域名状态](docs/DEPLOYMENT.md)

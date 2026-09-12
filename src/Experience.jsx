@@ -26,12 +26,6 @@ const steps = [
     text: "Take a focused list of questions with you. Contact the institution when you are ready.",
   },
 ];
-const stageLabels = {
-  depart: "WIDENING THE VIEW",
-  travel: "KUALA LUMPUR + SELANGOR",
-  arrive: "A CLOSER LOOK",
-  reveal: "YOUR NEXT STEP STARTS HERE",
-};
 
 export default function Experience() {
   const [phase, setPhase] = useState(() =>
@@ -125,7 +119,11 @@ export default function Experience() {
         onHome={home}
       />
       {phase !== "ready" && (
-        <section className="landing" aria-label="Welcome to EqualPath">
+        <section
+          className="landing"
+          aria-label="Welcome to EqualPath"
+          aria-hidden={moving || undefined}
+        >
           <div className="landing-wash" aria-hidden="true" />
           <div
             className="landing-content"
@@ -323,30 +321,6 @@ export default function Experience() {
                 <ArrowRight size={23} />
               </button>
             </section>
-          )}
-          {moving && (
-            <div className="map-transfer" aria-label="Entering the care map">
-              <header>
-                <span>EQUALPATH / AREA TRANSFER</span>
-                <button onClick={finish}>
-                  SKIP ANIMATION <ArrowRight size={17} />
-                </button>
-              </header>
-              <div className="transfer-focus" aria-hidden="true">
-                <Crosshair size={58} strokeWidth={0.7} />
-              </div>
-              <div className="transfer-caption" role="status">
-                <small>01 / REGIONAL VIEW</small>
-                <strong key={phase}>{stageLabels[phase]}</strong>
-                <span>03.1300° N / 101.6400° E</span>
-              </div>
-              <div className="transfer-progress" aria-hidden="true">
-                <i />
-              </div>
-              <span className="transfer-credit">
-                © OpenStreetMap · OpenFreeMap · OpenMapTiles
-              </span>
-            </div>
           )}
         </section>
       )}

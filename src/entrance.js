@@ -15,11 +15,8 @@ export const INTRO_AREAS = [
 ];
 
 export const ENTRANCE_STAGES = [
-  { phase: "depart", at: 0 },
-  { phase: "travel", at: 900 },
-  { phase: "arrive", at: 1650 },
-  { phase: "reveal", at: 2850 },
-  { phase: "ready", at: 3450 },
+  { phase: "entering", at: 0 },
+  { phase: "ready", at: 420 },
 ];
 
 // A single cancellation handle owns every pending frame of the transition.
@@ -31,7 +28,7 @@ export function startEntrance(
   const timers = [];
   if (reduced) onPhase("ready");
   else {
-    onPhase("depart");
+    onPhase("entering");
     for (const stage of ENTRANCE_STAGES.slice(1)) {
       timers.push(schedule(() => active && onPhase(stage.phase), stage.at));
     }
@@ -47,10 +44,5 @@ export function entranceCamera(phase, area = 0) {
   const flat = { pitch: 0, bearing: 0 };
   if (phase === "welcome")
     return { ...flat, center, zoom: 13.1, duration: 1100 };
-  if (phase === "depart") return { ...flat, center, zoom: 8.1, duration: 900 };
-  if (phase === "travel")
-    return { ...flat, center: [101.64, 3.13], zoom: 8.1, duration: 750 };
-  if (phase === "arrive")
-    return { ...flat, center: [101.64, 3.13], zoom: 10.8, duration: 1200 };
   return null;
 }
