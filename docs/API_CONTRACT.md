@@ -61,7 +61,7 @@ Times are on one day in Asia/Kuala_Lumpur. Age is completed age 0–6 or empty; 
 
 Each fact has a source object with label, URL, retrieval date, source date where available, and kind. Source-less fields stay null. Registration provenance, separately obtained address/phone, business hours, temporary care, pickup coverage, fee basis and actual acceptance are different facts.
 
-Condition states are `supported`, `conflict`, `unknown`, each with a reason and source where applicable. Transfer/arrival remains unknown: this requirements baseline has no route-time calculation. Known business hours cannot satisfy temporary-care end-time checks. Monthly charges cannot produce an hourly total. A tariff total is available only for a complete validated fee rule; current real records have none.
+Condition states are `supported`, `conflict`, `unknown`, each with a reason and source where applicable. Transfer/arrival remains unknown: this requirements baseline has no route-time calculation. Revision 2.1 uses published opening hours for care-end timing, with specific care schedules, closed days and date exceptions taking precedence. Contact displays a sourced phone number without invoking a device dialler. Monthly charges cannot produce an hourly total. A tariff total is available only for a complete validated fee rule; current real records have none.
 
 Requests and comparisons carry canonical request and fact version. A supplied obsolete fact version returns `FACTS_CHANGED`; partial refreshes never replace a complete cached release. Retrieval success is not a provider update timestamp.
 

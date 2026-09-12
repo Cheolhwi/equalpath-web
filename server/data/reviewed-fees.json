@@ -1,0 +1,340 @@
+{
+  "version": "fees-reviewed-2026-09-13",
+  "reviewedAt": "2026-09-12T20:44:26.850Z",
+  "records": [
+    {
+      "id": "provider_ca2fdffa05c77d7b08df4d82784",
+      "matchedAddress": "89, Jalan USJ 13/3, Subang Jaya",
+      "matchSource": {
+        "label": "Rising Stars — branch address and contact",
+        "url": "https://risingstars.my/",
+        "retrievedAt": "2026-09-12T20:40:21.107Z",
+        "sourceDate": null,
+        "kind": "provider_website",
+        "sha256": "19d9db61514b6259045d70d4fa0def9685b0bd3c271d840577d5891908dec811"
+      },
+      "fees": [
+        {
+          "amount": 1200,
+          "basis": "month",
+          "kind": "daycare",
+          "conditions": "Tiny Roots (published ages 0–2): full-day daycare, 08:00–19:00. Ordinary enrolment; confirm one-off applicability.",
+          "currency": "MYR",
+          "source": {
+            "label": "Rising Stars — published fees",
+            "url": "https://risingstars.my/admissions/",
+            "retrievedAt": "2026-09-12T20:40:21.819Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "af38a1e63d23bf316be07f68d8e459f1730d14055c7fa908ef7c9edb34f06869"
+          }
+        },
+        {
+          "amount": 600,
+          "basis": "month",
+          "kind": "daycare",
+          "conditions": "Tiny Roots (published ages 0–2): half-day daycare, 13:00–19:00. Ordinary enrolment.",
+          "currency": "MYR",
+          "source": {
+            "label": "Rising Stars — published fees",
+            "url": "https://risingstars.my/admissions/",
+            "retrievedAt": "2026-09-12T20:40:21.819Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "af38a1e63d23bf316be07f68d8e459f1730d14055c7fa908ef7c9edb34f06869"
+          }
+        },
+        {
+          "amount": 500,
+          "basis": "month",
+          "kind": "daycare",
+          "conditions": "Rising Buds (published ages 2–3): daycare, 12:00–19:00; playschool is charged separately.",
+          "currency": "MYR",
+          "source": {
+            "label": "Rising Stars — published fees",
+            "url": "https://risingstars.my/admissions/",
+            "retrievedAt": "2026-09-12T20:40:21.819Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "af38a1e63d23bf316be07f68d8e459f1730d14055c7fa908ef7c9edb34f06869"
+          }
+        },
+        {
+          "amount": 500,
+          "basis": "month",
+          "kind": "playschool",
+          "conditions": "Rising Buds (published ages 2–3): playschool, 08:00–12:00; daycare is charged separately.",
+          "currency": "MYR",
+          "source": {
+            "label": "Rising Stars — published fees",
+            "url": "https://risingstars.my/admissions/",
+            "retrievedAt": "2026-09-12T20:40:21.819Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "af38a1e63d23bf316be07f68d8e459f1730d14055c7fa908ef7c9edb34f06869"
+          }
+        },
+        {
+          "amount": 1000,
+          "basis": "month",
+          "kind": "school_and_daycare",
+          "conditions": "Preschool K1/K2 (published ages 4–5): full-day school and daycare. Confirm session and one-off eligibility.",
+          "currency": "MYR",
+          "source": {
+            "label": "Rising Stars — published fees",
+            "url": "https://risingstars.my/admissions/",
+            "retrievedAt": "2026-09-12T20:40:21.819Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "af38a1e63d23bf316be07f68d8e459f1730d14055c7fa908ef7c9edb34f06869"
+          }
+        },
+        {
+          "amount": 150,
+          "basis": "year",
+          "kind": "registration",
+          "conditions": "Annual enrolment registration fee. Deposits and programme-specific annual charges are additional.",
+          "currency": "MYR",
+          "source": {
+            "label": "Rising Stars — published fees",
+            "url": "https://risingstars.my/admissions/",
+            "retrievedAt": "2026-09-12T20:40:21.819Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "af38a1e63d23bf316be07f68d8e459f1730d14055c7fa908ef7c9edb34f06869"
+          }
+        },
+        {
+          "amount": 20,
+          "basis": "hour",
+          "kind": "late_collection",
+          "conditions": "Overtime after 19:00. This is an additional charge, not the base hourly care rate. Confirm latest collection and rounding.",
+          "currency": "MYR",
+          "source": {
+            "label": "Rising Stars — published fees",
+            "url": "https://risingstars.my/admissions/",
+            "retrievedAt": "2026-09-12T20:40:21.819Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "af38a1e63d23bf316be07f68d8e459f1730d14055c7fa908ef7c9edb34f06869"
+          }
+        }
+      ],
+      "phone": {
+        "display": "0175683160",
+        "source": {
+          "label": "Rising Stars — branch address and contact",
+          "url": "https://risingstars.my/",
+          "retrievedAt": "2026-09-12T20:40:21.107Z",
+          "sourceDate": null,
+          "kind": "provider_website",
+          "sha256": "19d9db61514b6259045d70d4fa0def9685b0bd3c271d840577d5891908dec811"
+        }
+      }
+    },
+    {
+      "id": "provider_0fc96ea057a2ea958dbdc499f62",
+      "matchedAddress": "74, Jalan Damai, Kuala Lumpur",
+      "matchSource": {
+        "label": "Children’s Discovery House — branch contacts",
+        "url": "https://childrensdiscoveryhouse.com/contact-us/",
+        "retrievedAt": "2026-09-12T20:40:23.913Z",
+        "sourceDate": null,
+        "kind": "provider_website",
+        "sha256": "05350a63a50a3b0192c2025fb0bc235567c9a9c69c7f219592fa5af9b1dd1144"
+      },
+      "fees": [
+        {
+          "amount": 350,
+          "basis": "one_off",
+          "kind": "registration",
+          "conditions": "Operator fee guide: non-refundable registration; confirm the applicable branch and enrolment terms.",
+          "currency": "MYR",
+          "source": {
+            "label": "Children’s Discovery House — operator fee guide",
+            "url": "https://childrensdiscoveryhouse.com/fees-term-dates/",
+            "retrievedAt": "2026-09-12T20:40:24.446Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "1b3a2a8af6c2e4db86ddfeff932e09bc1f8b82b3874c5b071cb701ebccc26fc9"
+          }
+        },
+        {
+          "amount": 1000,
+          "basis": "deposit",
+          "kind": "deposit",
+          "conditions": "Operator fee guide: refundable subject to two months’ advance written withdrawal notice and the provider’s terms.",
+          "currency": "MYR",
+          "source": {
+            "label": "Children’s Discovery House — operator fee guide",
+            "url": "https://childrensdiscoveryhouse.com/fees-term-dates/",
+            "retrievedAt": "2026-09-12T20:40:24.446Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "1b3a2a8af6c2e4db86ddfeff932e09bc1f8b82b3874c5b071cb701ebccc26fc9"
+          }
+        },
+        {
+          "amount": null,
+          "basis": "term",
+          "kind": "montessori",
+          "conditions": "Operator fee guide: half-day Montessori; each term covers four months. Final branch fee and age programme require confirmation.",
+          "currency": "MYR",
+          "source": {
+            "label": "Children’s Discovery House — operator fee guide",
+            "url": "https://childrensdiscoveryhouse.com/fees-term-dates/",
+            "retrievedAt": "2026-09-12T20:40:24.446Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "1b3a2a8af6c2e4db86ddfeff932e09bc1f8b82b3874c5b071cb701ebccc26fc9"
+          },
+          "min": 5700,
+          "max": 8800
+        },
+        {
+          "amount": null,
+          "basis": "term",
+          "kind": "montessori_and_creche",
+          "conditions": "Operator fee guide: half-day Montessori plus crèche; each term covers four months. Final branch fee and one-off applicability require confirmation.",
+          "currency": "MYR",
+          "source": {
+            "label": "Children’s Discovery House — operator fee guide",
+            "url": "https://childrensdiscoveryhouse.com/fees-term-dates/",
+            "retrievedAt": "2026-09-12T20:40:24.446Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "1b3a2a8af6c2e4db86ddfeff932e09bc1f8b82b3874c5b071cb701ebccc26fc9"
+          },
+          "min": 6700,
+          "max": 11900
+        }
+      ],
+      "phone": {
+        "display": "+603 2144 7001",
+        "source": {
+          "label": "Children’s Discovery House — branch contacts",
+          "url": "https://childrensdiscoveryhouse.com/contact-us/",
+          "retrievedAt": "2026-09-12T20:40:23.913Z",
+          "sourceDate": null,
+          "kind": "provider_website",
+          "sha256": "05350a63a50a3b0192c2025fb0bc235567c9a9c69c7f219592fa5af9b1dd1144"
+        }
+      }
+    },
+    {
+      "id": "provider_aba57796128bd51a5c1c077d4a9",
+      "matchedAddress": "Ground Floor, i-Zen @ Kiara II, 1 Jalan Kiara, Mont Kiara",
+      "matchSource": {
+        "label": "Children’s Discovery House — branch contacts",
+        "url": "https://childrensdiscoveryhouse.com/contact-us/",
+        "retrievedAt": "2026-09-12T20:40:23.913Z",
+        "sourceDate": null,
+        "kind": "provider_website",
+        "sha256": "05350a63a50a3b0192c2025fb0bc235567c9a9c69c7f219592fa5af9b1dd1144"
+      },
+      "fees": [
+        {
+          "amount": 350,
+          "basis": "one_off",
+          "kind": "registration",
+          "conditions": "Operator fee guide: non-refundable registration; confirm the applicable branch and enrolment terms.",
+          "currency": "MYR",
+          "source": {
+            "label": "Children’s Discovery House — operator fee guide",
+            "url": "https://childrensdiscoveryhouse.com/fees-term-dates/",
+            "retrievedAt": "2026-09-12T20:40:24.446Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "1b3a2a8af6c2e4db86ddfeff932e09bc1f8b82b3874c5b071cb701ebccc26fc9"
+          }
+        },
+        {
+          "amount": 1000,
+          "basis": "deposit",
+          "kind": "deposit",
+          "conditions": "Operator fee guide: refundable subject to two months’ advance written withdrawal notice and the provider’s terms.",
+          "currency": "MYR",
+          "source": {
+            "label": "Children’s Discovery House — operator fee guide",
+            "url": "https://childrensdiscoveryhouse.com/fees-term-dates/",
+            "retrievedAt": "2026-09-12T20:40:24.446Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "1b3a2a8af6c2e4db86ddfeff932e09bc1f8b82b3874c5b071cb701ebccc26fc9"
+          }
+        },
+        {
+          "amount": null,
+          "basis": "term",
+          "kind": "montessori",
+          "conditions": "Operator fee guide: half-day Montessori; each term covers four months. Final branch fee and age programme require confirmation.",
+          "currency": "MYR",
+          "source": {
+            "label": "Children’s Discovery House — operator fee guide",
+            "url": "https://childrensdiscoveryhouse.com/fees-term-dates/",
+            "retrievedAt": "2026-09-12T20:40:24.446Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "1b3a2a8af6c2e4db86ddfeff932e09bc1f8b82b3874c5b071cb701ebccc26fc9"
+          },
+          "min": 5700,
+          "max": 8800
+        },
+        {
+          "amount": null,
+          "basis": "term",
+          "kind": "montessori_and_creche",
+          "conditions": "Operator fee guide: half-day Montessori plus crèche; each term covers four months. Final branch fee and one-off applicability require confirmation.",
+          "currency": "MYR",
+          "source": {
+            "label": "Children’s Discovery House — operator fee guide",
+            "url": "https://childrensdiscoveryhouse.com/fees-term-dates/",
+            "retrievedAt": "2026-09-12T20:40:24.446Z",
+            "sourceDate": null,
+            "kind": "provider_website",
+            "sha256": "1b3a2a8af6c2e4db86ddfeff932e09bc1f8b82b3874c5b071cb701ebccc26fc9"
+          },
+          "min": 6700,
+          "max": 11900
+        }
+      ],
+      "phone": {
+        "display": "+603 6203 7001",
+        "source": {
+          "label": "Children’s Discovery House — branch contacts",
+          "url": "https://childrensdiscoveryhouse.com/contact-us/",
+          "retrievedAt": "2026-09-12T20:40:23.913Z",
+          "sourceDate": null,
+          "kind": "provider_website",
+          "sha256": "05350a63a50a3b0192c2025fb0bc235567c9a9c69c7f219592fa5af9b1dd1144"
+        }
+      }
+    }
+  ],
+  "held": [
+    {
+      "source": "https://starriestbaby.com/",
+      "reason": "Official site address differs from imported branch; retain price candidate until branch identity resolved."
+    },
+    {
+      "source": "https://imtiyazeducare.edu.my/struktur-yuran-2025/",
+      "reason": "2025 operator estimate; cannot assign tadika prices to the imported playschool branch."
+    },
+    {
+      "source": "https://anakpintarcentre.com/",
+      "reason": "Operator branch link for these hospital/KDN records not corroborated."
+    },
+    {
+      "source": "https://mindme.my/service-fee/",
+      "reason": "Provider not found in current catalogue."
+    },
+    {
+      "source": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+      "reason": "Provider not matched in current catalogue; displayed RM120 unit unclear."
+    },
+    {
+      "source": "https://www.edwethink.com/book-a-trial-session",
+      "reason": "Trial enrichment session fee does not establish childcare fee."
+    }
+  ]
+}

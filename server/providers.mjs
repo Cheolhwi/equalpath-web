@@ -1,10 +1,12 @@
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { providerRegion } from "./geography.mjs";
+import { parsePublishedHours } from "../shared/published-hours.mjs";
 const index = JSON.parse(
   readFileSync(new URL("./data/provenance-index.json", import.meta.url)),
 );
-export const supplementVersion = "service-review-2026-09-12-v2";
+const reviewedFees = JSON.parse(readFileSync(new URL('./data/reviewed-fees.json', import.meta.url)));
+export const supplementVersion = "service-review-2026-09-13-v3";
 export function safeURL(value) {
   try {
     const u = new URL(value);
@@ -96,6 +98,7 @@ export function normalizeProvider(raw, release) {
     raw.age_source?.source_url ?? raw.admission?.evidence_urls?.[0],
     directory.retrievedAt,
   );
+  const translatedHours = parsePublishedHours(h.notes);
   const p = {
     id: raw.id,
     name: raw.display_name ?? raw.official_name,
@@ -192,6 +195,7 @@ export function normalizeProvider(raw, release) {
       closedDays: h.closed_weekdays ?? [],
       source: hs,
       notes: h.notes ?? null,
+      translatedNotes: translatedHours.translated || null,
     },
     dateExceptions: (h.date_exceptions ?? []).map((e) => ({
       ...e,
@@ -204,8 +208,7 @@ export function normalizeProvider(raw, release) {
       currency: f.currency ?? "MYR",
       basis: f.basis ?? "unspecified",
       kind: f.kind,
-      conditions:
-        "Published basis only; one-off applicability and extra charges need confirmation.",
+      conditions: f.conditions ?? "Published basis only; one-off applicability and extra charges need confirmation.",
       source: source(
         "Published fees",
         f.source_url,
@@ -220,6 +223,12 @@ export function normalizeProvider(raw, release) {
       (s) => s?.url,
     ),
   };
+  if (!p.businessHours.windows.length && hs.url) {
+    p.businessHours.windows = translatedHours.windows
+      .map(w => ({...w, days:w.days.filter(d=>!(h.excluded_estimated_weekdays ?? []).includes(d)),source:hs}))
+      .filter(w => w.days.length);
+    p.businessHours.closedDays = [...new Set([...p.businessHours.closedDays,...translatedHours.closedDays])];
+  }
   if (raw.id === "provider_c00ea9e07bdc5e171806cc3e768") {
     const s = source(
       "EDWETHINK — childcare and contact",
@@ -293,6 +302,12 @@ export function normalizeProvider(raw, release) {
       "Kiddy123 describes weekend care, while Maps lists weekends closed. Ask whether weekend care is by arrangement.",
     );
   p.sources = [...new Map(p.sources.map((s) => [s.url, s])).values()];
+  const reviewed = reviewedFees.records.find(row => row.id === p.id);
+  if (reviewed) {
+    p.fees.push(...reviewed.fees);
+    if (reviewed.phone) p.phone = phoneFact(reviewed.phone.display, reviewed.phone.source);
+    p.sources.push(reviewed.matchSource, ...new Map(reviewed.fees.map(f => [f.source.url,f.source])).values());
+  }
   return { provider: p };
 }
 export function buildCatalog(rows, release) {

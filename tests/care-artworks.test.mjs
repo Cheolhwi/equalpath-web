@@ -13,8 +13,8 @@ test("gallery visits every artwork and reverses at each end without duplicates",
     state = nextArtwork(state.index, state.direction);
     sequence.push(state.index);
   }
-  assert.deepEqual(sequence, [0, 1, 2, 3, 2, 1, 0, 1, 2, 3, 2, 1, 0]);
-  assert.equal(new Set(careArtworks.map((a) => a.image)).size, 4);
+  assert.deepEqual(sequence, [0, 1, 2, 3, 4, 3, 2, 1, 0, 1, 2, 3, 4]);
+  assert.equal(new Set(careArtworks.map((a) => a.image)).size, 5);
 });
 
 test("single-art fallback never produces an out-of-bounds index", () => {

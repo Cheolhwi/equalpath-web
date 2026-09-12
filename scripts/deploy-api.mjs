@@ -36,8 +36,10 @@ for (const f of [
   "server/appwrite-store.mjs",
   "shared/request.mjs",
   "shared/conditions.mjs",
+  "shared/published-hours.mjs",
   "server/data/service-boundaries.json",
   "server/data/provenance-index.json",
+  "server/data/reviewed-fees.json",
   "server/data/boundary-source.json",
 ])
   cpSync(resolve(root, f), resolve(path, f));

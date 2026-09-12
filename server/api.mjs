@@ -178,7 +178,7 @@ function ordering(sort, items, date) {
       sort === "distance"
         ? "Nearest straight-line distance first; missing coordinates last. This is not a travel-time estimate."
         : sort === "closing"
-          ? "Later published business closing first; missing hours last. Business hours do not confirm temporary care."
+          ? "Later published business closing first; missing hours last. Opening hours check care timing; one-off admission and capacity remain unconfirmed."
           : sort === "pickup"
             ? "Published institutional transport first; unknown transport last. Coverage and seats are checked separately."
             : "Names in alphabetical order, with a stable branch identifier for ties.",

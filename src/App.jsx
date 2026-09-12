@@ -1343,9 +1343,10 @@ export default function App({
                 own source links and retrieval dates.
               </p>
               <p>
-                Business hours, temporary-care windows, transport coverage and
-                actual acceptance are different facts. Missing information stays
-                unknown. No route duration or live vacancy is inferred.
+                Published opening hours are used for the care end check.
+                Specific care schedules and date exceptions take precedence.
+                Transport coverage and actual acceptance are checked separately.
+                No route duration or live vacancy is inferred.
               </p>
               <p>
                 Geographic checks use a versioned{" "}

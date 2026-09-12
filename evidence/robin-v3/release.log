@@ -1,0 +1,89 @@
+
+> equalpath-web@0.0.0 release
+> npm test && npm run build && node scripts/check-build.mjs
+
+
+> equalpath-web@0.0.0 test
+> node --test tests/*.test.mjs
+
+✔ gallery visits every artwork and reverses at each end without duplicates (1.572125ms)
+✔ single-art fallback never produces an out-of-bounds index (0.140292ms)
+✔ pausing or unmounting cancels a dwell including an already queued callback (0.124958ms)
+✔ a resumed gallery gets a full dwell before advancing (0.072875ms)
+✔ opening-hour closing boundary, closed day and missing day are distinct (1.923542ms)
+✔ specific care schedule and unresolved exceptions override general opening hours (0.254375ms)
+✔ Malay weekday and AM/PM phrases translate into the right day and clock (2.419125ms)
+✔ no day or ambiguous overnight range is not converted into invented service dates (0.379167ms)
+✔ closed-day notes do not close weekdays and conflicting claims remain unresolved (0.254708ms)
+✔ essential fields, impossible dates and same-day time ordering fail without changing valid values (3.413875ms)
+✔ omitted age and transport are accepted and visibly unspecified (2.591583ms)
+✔ age four is a full [48,60) month interval, with partial and ambiguous overlap unknown (0.092625ms)
+✔ regular enrolment does not become one-off admission (0.098833ms)
+✔ pickup window wholly before, wholly after and spanning the deadline produce three different states (0.159708ms)
+✔ transport existence does not supply missing pickup coverage or an arrival estimate (0.247042ms)
+✔ self delivery removes institutional transport requirement, preserving other request conditions (0.125291ms)
+✔ opening hours supply care timing while unresolved holiday exceptions stay unknown (0.121291ms)
+✔ care end and applicable latest collection restrictions preserve conflicts (0.176625ms)
+✔ monthly fees and missing extras do not generate fabricated hourly prices (0.135666ms)
+✔ controlled complete tariff explains duration, minimum, rounding and extras (0.0965ms)
+✔ one deduplicated enquiry list carries unknown service conditions without any reviews (0.19625ms)
+✔ missing coordinates stay in list and sort after known straight-line distances (0.988375ms)
+✔ comparison uses separate branch facts and deterministic unknown-last priorities (1.286959ms)
+✔ no result is distinct from source failure (0.742459ms)
+✔ request revisions update evaluations and stale facts cannot be presented as current (1.228084ms)
+✔ KL, Selangor, Putrajaya and other states are enforced on server requests (0.947166ms)
+✔ source-region disagreement is held, while sourced regional records without coordinates remain usable (0.299666ms)
+✔ imported links and phone actions cannot inject executable schemes (0.180166ms)
+✔ representative public source import is deterministic and real contact facts retain separate provenance (3.477583ms)
+✔ Malay notes fallback never restores weekdays excluded as estimates (0.580167ms)
+✔ skipping cancels pending entrance phases and ignores already queued callbacks (1.740958ms)
+✔ reduced motion enters immediately without scheduling camera animation (0.113959ms)
+✔ entrance always completes without waiting for map tiles or a backend response (0.142334ms)
+✔ city previews stay flat and entrance adds no intermediate camera destination (0.095166ms)
+✔ public function handles preflight and disallows unsupported methods without touching the store (1.12925ms)
+✔ invalid JSON and oversized requests return bounded private errors (0.930042ms)
+✔ entry returns controlled examples only when demo mode is requested explicitly (0.265917ms)
+✔ age lower-exclusive endpoint cannot fully support a completed age interval (0.115625ms)
+✔ first available location includes accuracy and immediately stops observation (2.094917ms)
+✔ error 2 gets one longer fresh high-accuracy attempt (0.351416ms)
+✔ error 3 gets one longer fresh high-accuracy attempt (0.116292ms)
+✔ permission denial stops immediately and explains site/device access and manual recovery (0.302458ms)
+✔ two failures end the operation without endless retry or fabricated coordinates (0.123208ms)
+✔ a browser that never calls back is bounded to 40 seconds and both watches are cleared (0.521ms)
+✔ cancelling stops the device request and discards late callbacks without retry (1.178042ms)
+✔ cancellation during the retry clears its watch too (0.370459ms)
+✔ an already-cancelled request never asks for device location (0.347125ms)
+✔ unsupported and insecure browsers explain the cause and allow manual selection (0.231291ms)
+✔ invalid or missing coordinates are rejected and the watch is released (0.439375ms)
+✔ synchronous browser callbacks still release the returned watch ID (0.188167ms)
+✔ cold requests coalesce, public-only table reads are bounded, and failed refresh does not renew the cache (3.565958ms)
+✔ partial source pages never become a new complete directory (0.340417ms)
+✔ release changes during collection are rejected and a later retry can recover (0.750583ms)
+ℹ tests 53
+ℹ suites 0
+ℹ pass 53
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 138.529709
+
+> equalpath-web@0.0.0 build
+> vite build
+
+vite v6.4.2 building for production...
+transforming...
+✓ 1645 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                        0.64 kB │ gzip:   0.40 kB
+dist/assets/index-2zbgceDN.css       684.43 kB │ gzip: 206.79 kB
+dist/assets/CareScene-CXbOvVSS.js    768.23 kB │ gzip: 223.77 kB
+dist/assets/index-BpAPmclU.js      1,236.33 kB │ gzip: 341.68 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.38s
+Validated 3 entry assets for source d63fd11e94c3612487e7eae9a8263fde76a1f87944992bb63f3de3586e9058f4

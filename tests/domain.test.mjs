@@ -110,12 +110,12 @@ test("self delivery removes institutional transport requirement, preserving othe
     "conflict",
   );
 });
-test("general opening hours and holiday exceptions never turn into confirmed temporary care", () => {
+test("opening hours supply care timing while unresolved holiday exceptions stay unknown", () => {
   assert.equal(
     assess({ ...fixtureProviders[0], careWindows: [] }, req).conditions.find(
       (c) => c.id === "care",
     ).state,
-    "unknown",
+    "supported",
   );
   assert.equal(
     assess(
@@ -289,4 +289,17 @@ test("representative public source import is deterministic and real contact fact
   assert.equal(c.items.length, 3);
   assert.equal(c.held.length, 1);
   assert.ok(c.items.some((p) => !p.location));
+});
+test("Malay notes fallback never restores weekdays excluded as estimates", () => {
+  const rows = JSON.parse(readFileSync(new URL("./fixtures/public-catalog-sample.json", import.meta.url)));
+  const raw = structuredClone(rows.find(p => p.state === "Selangor"));
+  raw.id = "hours-parser-regression";
+  raw.operating_hours = {
+    weekly_windows: [],
+    source_url: "https://example.org/hours",
+    notes: "Isnin - Jumaat: 7 pagi hingga 6 petang",
+    excluded_estimated_weekdays: ["FRI"],
+  };
+  const p = buildCatalog([raw], "parser-regression").items[0];
+  assert.deepEqual(p.businessHours.windows[0].days, ["MON", "TUE", "WED", "THU"]);
 });

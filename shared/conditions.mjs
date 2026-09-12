@@ -179,11 +179,14 @@ export function assess(p, r) {
       ),
     );
   }
-  const care = applicableWindows(p.careWindows, r.date),
+  // Revised product rule: sourced opening hours supply the default care window.
+  // A more specific published care schedule takes precedence, even on a day off.
+  const hasCareSchedule = (p.careWindows ?? []).length > 0,
+    care = applicableWindows(hasCareSchedule ? p.careWindows : p.businessHours?.windows, r.date),
     end = minutes(r.end),
     exception = (p.dateExceptions ?? []).find((x) => x.date === r.date);
   let state = "unknown",
-    reason = "General opening hours do not confirm a temporary-care window.",
+    reason = "No care or opening hours are published for this date.",
     careSource = p.businessHours?.source;
   if (exception) {
     reason = `${exception.label ?? exception.displayed_label ?? "Date-specific hours unresolved"}. Confirm temporary care for this date.`;
@@ -192,8 +195,11 @@ export function assess(p, r) {
     state = care.some((w) => end >= w.start && end <= w.end)
       ? "supported"
       : "conflict";
-    reason = `Temporary care: ${care.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")}. Requested final collection: ${r.end}.`;
+    reason = `${hasCareSchedule ? "Published care hours" : "Care hours (published opening hours)"}: ${care.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")}. Requested final collection: ${r.end}.`;
     careSource = care[0].source;
+  } else if (!hasCareSchedule && (p.businessHours?.closedDays ?? []).includes(dayFor(r.date))) {
+    state = "conflict";
+    reason = "The institution is listed closed on the requested day.";
   }
   if (
     !exception &&

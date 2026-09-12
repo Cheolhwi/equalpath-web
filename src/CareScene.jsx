@@ -192,7 +192,7 @@ export default function CareScene({ reduced }) {
           aria-live={playing ? "off" : "polite"}
           aria-atomic="true"
         >
-          <span>0{artIndex + 1} / 04</span>
+          <span>{String(artIndex + 1).padStart(2, "0")} / {String(careArtworks.length).padStart(2, "0")}</span>
           <strong>{artwork.title}</strong>
           <span className="sr-only">{artwork.alt}</span>
         </div>

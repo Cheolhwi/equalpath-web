@@ -295,9 +295,9 @@ export function Details({ p, onPrepare, onCompare, compared }) {
           ))}
         </div>
         <div className="business-note">
-          <strong>General business hours: {p.businessHoursLabel}</strong>
+          <strong>Opening hours: {p.businessHoursLabel}</strong>
           <p>
-            These are business hours, not confirmed temporary-care coverage.
+            Opening hours are used to check your required care end time.
           </p>
           <SourceLink source={p.businessHours.source} />
         </div>
@@ -441,7 +441,7 @@ export function Comparison({
               {items.map((p) => (
                 <td key={p.id}>
                   {p.businessHoursLabel}
-                  <p>Temporary care checked separately.</p>
+                  <p>Used for the care end check.</p>
                 </td>
               ))}
             </tr>
@@ -470,10 +470,11 @@ export function Comparison({
                 <td key={p.id}>
                   {p.fees.length
                     ? p.fees.map((f, i) => (
-                        <p key={i}>
-                          {feeLabel(f)}
+                        <div key={i}>
+                          <strong>{feeLabel(f)}</strong>
+                          <p>{f.conditions}</p>
                           <SourceLink source={f.source} />
-                        </p>
+                        </div>
                       ))
                     : "No published rate"}
                   <p>
@@ -621,11 +622,10 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
         <div className="section-kicker">CONTACT WHEN YOU ARE READY</div>
         {p.phone ? (
           <>
-            <a className="call-link" href={p.phone.href}>
+            <div className="call-link" aria-label="Institution phone">
               <Phone size={19} />
-              Call {p.phone.display}
-              <ArrowUpRight size={18} />
-            </a>
+              {p.phone.display}
+            </div>
             <SourceLink source={p.phone.source} />
           </>
         ) : (
@@ -651,8 +651,8 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
           <p>Controlled examples have no real contact action.</p>
         )}
         <p className="notice">
-          You contact the institution yourself. A call or source link does not
-          confirm acceptance or a booking.
+          Contact the institution using the displayed number. This page does
+          not record contact, acceptance or a booking.
         </p>
       </section>
       <button className="text-link" onClick={onCompare}>

@@ -8,7 +8,7 @@ export const careArtworks = [
   {
     id: "play",
     title: "PLAY",
-    alt: "Children and a caregiver building with wooden blocks",
+    alt: "A caregiver and two children playing catch in the grass",
   },
   {
     id: "create",
@@ -16,13 +16,18 @@ export const careArtworks = [
     alt: "Children drawing leaves and flowers with their caregiver",
   },
   {
-    id: "together",
-    title: "TOGETHER",
-    alt: "A child with a backpack greeting a parent at pickup",
+    id: "grow",
+    title: "GROW",
+    alt: "A caregiver and two children watering small plants together",
+  },
+  {
+    id: "build",
+    title: "BUILD",
+    alt: "A caregiver and two children building an arch with wooden blocks",
   },
 ].map((artwork) => ({
   ...artwork,
-  image: `images/care-gallery/anime-v2/${artwork.id}.webp`,
+  image: `images/care-gallery/robin-v3/${artwork.id}.webp`,
 }));
 
 export function nextArtwork(index, direction, count = careArtworks.length) {

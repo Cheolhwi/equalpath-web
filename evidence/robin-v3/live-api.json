@@ -1,0 +1,38 @@
+{
+  "verifiedAt": "2026-09-12T21:02:08.679Z",
+  "health": {
+    "ok": true,
+    "contract": "equalpath-web-p03-v1",
+    "mode": "live",
+    "version": "web_79f1397603c1e28325955f64:service-review-2026-09-13-v3",
+    "release": "web_79f1397603c1e28325955f64",
+    "regions": [
+      "Kuala Lumpur",
+      "Selangor"
+    ],
+    "available": 3122,
+    "withheld": 417,
+    "distanceBasis": "Straight-line distance; not road distance or travel time."
+  },
+  "example": {
+    "id": "provider_ca2fdffa05c77d7b08df4d82784",
+    "name": "TASKA RISING STARS",
+    "phone": "0175683160",
+    "fees": 7,
+    "care": {
+      "id": "care",
+      "label": "Care end time",
+      "state": "supported",
+      "reason": "Care hours (published opening hours): 07:15–19:00. Requested final collection: 18:00.",
+      "source": {
+        "label": "Published business hours",
+        "url": "https://www.carischools.com/school/taska-rising-stars-selangor",
+        "retrievedAt": "2026-09-07T19:20:45.354Z",
+        "sourceDate": null,
+        "kind": "public_directory"
+      },
+      "question": "Can temporary care continue until the required end time, including any late-collection rules?"
+    }
+  },
+  "ownerDataAccessed": false
+}
