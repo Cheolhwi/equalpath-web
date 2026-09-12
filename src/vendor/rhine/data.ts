@@ -1,5 +1,6 @@
 // These are decorative care themes, not institution records or availability claims.
-export const archiveColumns = ["PLAY", "READ", "GROW", "CARE", "TOGETHER"];
+import { careArtworks } from "../../care-artworks.js";
+export const archiveColumns = careArtworks.map(artwork => artwork.title);
 export const records = archiveColumns.flatMap((category, lane) =>
   Array.from({ length: 8 }, (_, row) => ({
     id: `CARE-${lane}-${row}`, category,

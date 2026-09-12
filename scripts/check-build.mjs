@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import assert from "node:assert/strict";
 import { sourceDigest } from "./source-digest.mjs";
+import { careArtworks } from "../src/care-artworks.js";
 
 const root = resolve(import.meta.dirname, "..");
 const html = readFileSync(resolve(root, "dist/index.html"), "utf8");
@@ -60,6 +61,14 @@ assert(
   existsSync(resolve(root, "dist/images/childcare-book-cover.png")),
   "Missing childcare picture-book texture",
 );
+for (const artwork of careArtworks) {
+  const bytes = readFileSync(resolve(root, `dist/${artwork.image}`));
+  assert.equal(
+    bytes.subarray(8, 12).toString(),
+    "WEBP",
+    `Missing or invalid artwork: ${artwork.id}`,
+  );
+}
 const source = sourceDigest(root);
 writeFileSync(
   resolve(root, "dist/build-info.json"),

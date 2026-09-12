@@ -23,10 +23,10 @@ export function viewportLayout(width: number, height: number, coarse: boolean, c
 // Keep the original long-lens camera and object scale, centering the selected item.
 export function archiveFraming(width: number, height: number, span: number, detail: number, compact: boolean) {
   const aspect = width / Math.max(1, height);
-  const baseSpan = span + (5.9 - span) * detail;
+  const baseSpan = span + (7.3 - span) * detail;
   return {
     span: Math.max(baseSpan, 6.2 / aspect),
     portrait: aspect < 1.05,
-    previewY: 0.5, detailX: 0.5, detailY: 0.5,
+    previewY: 0.48, detailX: 0.5, detailY: 0.47,
   };
 }

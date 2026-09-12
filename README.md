@@ -2,7 +2,7 @@
 
 新版无登录网页：填写本次照护需求 → 查找机构 → 检查条件 → 比较 → 准备联系。另已加入用户主动授权的当前位置获取。
 
-首页直接复用 RhineLabUI 的 3D 场景、磨砂玻璃卡片模型和交互，并加入绘本、A/B/C 积木等照护元素；地图仅用于进入后的机构搜索。点击进入后，以约 0.4 秒的轻微地图移动直接显示搜索主界面，没有中间过场；支持减少动态效果以及返回首页后保留本次需求。直接打开 `/#discover` 可进入搜索。[首页与转场验收](design-qa.md)。[3D 场景来源](src/vendor/rhine/UPSTREAM.md)。
+首页直接复用 RhineLabUI 的 3D 场景、磨砂玻璃卡片模型和交互，以四张 childcare 插画组成极简画廊：默认弹出一张，每 6.5 秒往返切换；拖动或手动选择时暂停，可主动继续。首页只保留品牌、切画、动态开关和进入按钮；地图仅用于进入后的机构搜索。点击进入后，以约 0.4 秒的轻微地图移动直接显示搜索主界面，没有中间过场；支持减少动态效果以及返回首页后保留本次需求。直接打开 `/#discover` 可进入搜索。[首页与转场验收](design-qa.md)。[3D 场景来源](src/vendor/rhine/UPSTREAM.md)。
 
 - [本地预览](http://127.0.0.1:4179/)
 - [Appwrite 线上预览](https://equalpath-web.appwrite.network/)、[正式域名](https://equalpathcare.me/)、[独立仓库](https://github.com/Cheolhwi/equalpath-web)、[发布说明与域名状态](docs/DEPLOYMENT.md)

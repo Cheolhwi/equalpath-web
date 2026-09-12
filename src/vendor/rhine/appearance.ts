@@ -29,6 +29,8 @@ export class CardAppearance {
         continue;
       }
       const mat = palette.high.clone();
+      // Returning cards retain their own print while the selected card changes.
+      if (name === "Childcare_PictureBook") mat.map = (mesh.material as Surface).map;
       const amount = { value: 0 };
       const clarity = { value: 0 };
       mesh.material = mat;

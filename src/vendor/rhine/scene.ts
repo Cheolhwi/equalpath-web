@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { createChildcareMeshes } from "../../childcare-objects";
+import { createChildcareMeshes, loadCareArtworks } from "../../childcare-objects";
 import { ArchiveVisibility } from "./archive-visibility";
 import { InstanceUpdates } from "./instance-updates";
 import { RenderState } from "./render-state";
@@ -59,6 +59,7 @@ const ease = (t: number) => {
 export class ArchiveScene {
   private inputEvents = new AbortController();
   private disposed = false;
+  private artworkTextures: THREE.Texture[] = [];
   private presence = 1;
   private presenceTarget = 1;
   setPresentationVisible(visible: boolean, immediate = false) {
@@ -79,6 +80,8 @@ export class ArchiveScene {
     this.cancelPointer();
     disposeThreeTree(this.scene);
     this.appearance.disposeSources();
+    this.artworkTextures.forEach(texture => texture.dispose());
+    this.artworkTextures = [];
     this.model.clear();
     this.outgoing = [];
     this.instances = [];
@@ -473,7 +476,10 @@ export class ArchiveScene {
       this.instances.push(inst);
       this.scene.add(inst);
     }
-    for (const mesh of createChildcareMeshes()) {
+    const artworkTextures = await loadCareArtworks();
+    if (this.disposed) { artworkTextures.forEach(texture => texture.dispose()); return; }
+    this.artworkTextures = artworkTextures;
+    for (const mesh of createChildcareMeshes(artworkTextures[0])) {
       const name = mesh.userData.surface;
       const material = mesh.material as THREE.MeshPhysicalMaterial;
       this.appearance.register(name, material, material);
@@ -750,6 +756,12 @@ export class ArchiveScene {
       this.pendingPulse = this.looping ? { ...cell } : null;
     } else this.emitPulse(cell);
     this.targetRotation = 0;
+    const picture = this.model.children.find(child => child.userData.surface === "Childcare_PictureBook") as THREE.Mesh | undefined;
+    if (picture) {
+      const material = picture.material as THREE.MeshPhysicalMaterial;
+      material.map = this.artworkTextures[canonical.lane];
+      material.needsUpdate = true;
+    }
     this.drawLabel(index);
   }
   private emitPulse(cell: ArchiveCell) {

@@ -2,7 +2,23 @@
 
 Date: 2026-09-12. Scope: the user-requested RhineLab-inspired landing page with Gaussian blur, integrated into the existing EqualPath website. The latest user revision replaces the cinematic transfer with one brief entrance.
 
-## Current revision: original 3D scene with childcare (2026-09-13)
+## Current revision: minimal four-artwork gallery (2026-09-13)
+
+The latest user request removes the entire marketing column and makes the landing a minimal art collection close to the reference. The original scene now fills the viewport. READ is raised by default; READ / PLAY / CREATE / TOGETHER use four distinct illustrated prints. The scene automatically cycles back and forth on a 6.5-second dwell. Branding, tiny regional context, gallery controls, motion toggle and one entry button are the only interface elements.
+
+- Three new images were generated and visually reviewed; exact prompts and unchanged PNGs are in `design-assets/childcare-gallery/`. The existing reading artwork is retained. WebP runtime encodings preserve all compositions, totalling 921,418 bytes.
+- Actual desktop rendering: `evidence/landing-gallery/default-raised.png`, `desktop.png` (PLAY), `create.png`, `together.png`. All four distinct images are visible inside the original glass shell, clear of the printed label. The right-hand marketing column is absent.
+- Automatic READ → PLAY was observed in the actual browser; resuming from TOGETHER returned through the gallery. Manual next, pause and resume were exercised. The scheduler tests additionally enforce the complete 0,1,2,3,2,1,0 sequence, cancellation of already queued callbacks and a full dwell after resuming.
+- [Resolved] A visibility change could occur between mounting and registering the listener, leaving autoplay incorrectly paused. Registering the listener now immediately refreshes visibility. The browser subsequently reported `playing` and advanced normally.
+- Original interactions: `collection.png` and `turned.png` record array exploration and rotated detail. Dragging the array retains collection mode; close-up returns to a raised artwork. Manual interaction suspends autoplay. Reduced motion disables autoplay and its play button.
+- Mobile: `mobile.png` at 390 × 844 and `small-mobile.png` at 320 × 568. No horizontal overflow, full artwork visible, no marketing copy covering it. Entry ends at y=762 and y=502 respectively, inside the viewport.
+- Normal and reduced-motion keyboard entry reach the existing main interface. After entry, the scene is removed, only one map canvas remains, and map pitch/bearing are 0. The normal keyboard entry focused `pickup-search`. Returning home and entering again retained the checked 18:30 care-until value.
+- Browser console: zero error entries during the checked local journeys. `evidence/landing-gallery/release.log`: 47 tests pass, production build and all four WebP/model/chunk checks pass.
+- Limits: browser viewport emulation, not a physical low-end phone performance benchmark. Hidden-tab gating and pending-load disposal have been reviewed in code; no new claim of physical-device or custom-domain verification is made.
+
+The 420 ms entrance remains direct. Earlier visual sections below are historical and superseded.
+
+## Previous revision: original 3D scene with childcare (2026-09-13)
 
 The user replaced the earlier map-led landing direction with an explicit request to use the original RhineLabUI 3D scene and add childcare elements. The current implementation vendors the real `ArchiveScene` and its supporting modules at commit `d9ecb6c6f7a36e8b522072a0ebbd7691a50550a7`, with the original GLB cassette models, glass, lighting, depth of field, long-lens camera, collection drag and extraction. The dedicated landing viewport changes framing only. [Source, license, asset and generation-prompt record](docs/CHILDCARE_SCENE.md).
 
