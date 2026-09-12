@@ -1,0 +1,292 @@
+[14:48:17] [open-runtimes] Build cache miss. 
+[14:48:17] [open-runtimes] Environment preparation started. 
+[14:48:17] [open-runtimes] Environment preparation finished. 
+[14:48:17] [open-runtimes] Build command execution started. 
+npm warn Unknown env config "store-dir". This will error in a future major version of npm. See `npm help npmrc` for supported config options.
+added 104 packages in 4s
+13 packages are looking for funding
+  run `npm fund` for details
+npm warn install-scripts 1 package had install scripts blocked because they are not covered by allowScripts:
+npm warn install-scripts   esbuild@0.25.12 (postinstall: node install.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+npm warn Unknown env config "store-dir". This will error in a future major version of npm. See `npm help npmrc` for supported config options.
+npm notice run equalpath-web@0.0.0 release
+npm notice run npm test && npm run build && node scripts/check-build.mjs
+npm warn Unknown env config "store-dir". This will error in a future major version of npm. See `npm help npmrc` for supported config options.
+npm notice run equalpath-web@0.0.0 test
+npm notice run node --test tests/*.test.mjs
+  duration_ms: 0.269753
+  type: 'test'
+  ...
+# Subtest: one deduplicated enquiry list carries unknown service conditions without any reviews
+ok 12 - one deduplicated enquiry list carries unknown service conditions without any reviews
+  ---
+  duration_ms: 0.276306
+  type: 'test'
+  ...
+# Subtest: missing coordinates stay in list and sort after known straight-line distances
+ok 13 - missing coordinates stay in list and sort after known straight-line distances
+  ---
+  duration_ms: 5.038816
+  type: 'test'
+  ...
+# Subtest: comparison uses separate branch facts and deterministic unknown-last priorities
+ok 14 - comparison uses separate branch facts and deterministic unknown-last priorities
+  ---
+  duration_ms: 2.373615
+  type: 'test'
+  ...
+# Subtest: no result is distinct from source failure
+ok 15 - no result is distinct from source failure
+  ---
+  duration_ms: 2.968552
+  type: 'test'
+  ...
+# Subtest: request revisions update evaluations and stale facts cannot be presented as current
+ok 16 - request revisions update evaluations and stale facts cannot be presented as current
+  ---
+  duration_ms: 5.300315
+  type: 'test'
+  duration_ms: 1.054717
+  type: 'test'
+  ...
+# Subtest: an already-cancelled request never asks for device location
+ok 33 - an already-cancelled request never asks for device location
+  ---
+  duration_ms: 0.575409
+  type: 'test'
+  ...
+# Subtest: unsupported and insecure browsers explain the cause and allow manual selection
+ok 34 - unsupported and insecure browsers explain the cause and allow manual selection
+  ---
+  duration_ms: 0.835488
+  type: 'test'
+  ...
+# Subtest: invalid or missing coordinates are rejected and the watch is released
+ok 35 - invalid or missing coordinates are rejected and the watch is released
+  ---
+  duration_ms: 0.758973
+  type: 'test'
+  ...
+# Subtest: synchronous browser callbacks still release the returned watch ID
+ok 36 - synchronous browser callbacks still release the returned watch ID
+  ---
+  duration_ms: 0.409947
+  type: 'test'
+  ...
+# Subtest: cold requests coalesce, public-only table reads are bounded, and failed refresh does not renew the cache
+ok 37 - cold requests coalesce, public-only table reads are bounded, and failed refresh does not renew the cache
+  ---
+  duration_ms: 9.027594
+  type: 'test'
+ok 6 - transport existence does not supply missing pickup coverage or an arrival estimate
+  ---
+  duration_ms: 0.405641
+  type: 'test'
+  ...
+# Subtest: self delivery removes institutional transport requirement, preserving other request conditions
+ok 7 - self delivery removes institutional transport requirement, preserving other request conditions
+  ---
+  duration_ms: 0.35378
+  type: 'test'
+  ...
+# Subtest: general opening hours and holiday exceptions never turn into confirmed temporary care
+ok 8 - general opening hours and holiday exceptions never turn into confirmed temporary care
+  ---
+  duration_ms: 0.435922
+  type: 'test'
+  ...
+# Subtest: care end and applicable latest collection restrictions preserve conflicts
+ok 9 - care end and applicable latest collection restrictions preserve conflicts
+  ---
+  duration_ms: 0.823546
+  type: 'test'
+  ...
+# Subtest: monthly fees and missing extras do not generate fabricated hourly prices
+ok 10 - monthly fees and missing extras do not generate fabricated hourly prices
+  ---
+  duration_ms: 0.748894
+  type: 'test'
+  ...
+# Subtest: controlled complete tariff explains duration, minimum, rounding and extras
+ok 11 - controlled complete tariff explains duration, minimum, rounding and extras
+  ---
+TAP version 13
+# Subtest: essential fields, impossible dates and same-day time ordering fail without changing valid values
+ok 1 - essential fields, impossible dates and same-day time ordering fail without changing valid values
+  ---
+  duration_ms: 3.998653
+  type: 'test'
+  ...
+# Subtest: omitted age and transport are accepted and visibly unspecified
+ok 2 - omitted age and transport are accepted and visibly unspecified
+  ---
+  duration_ms: 8.997889
+  type: 'test'
+  ...
+# Subtest: age four is a full [48,60) month interval, with partial and ambiguous overlap unknown
+ok 3 - age four is a full [48,60) month interval, with partial and ambiguous overlap unknown
+  ---
+  duration_ms: 0.319275
+  type: 'test'
+  ...
+# Subtest: regular enrolment does not become one-off admission
+ok 4 - regular enrolment does not become one-off admission
+  ---
+  duration_ms: 0.471383
+  type: 'test'
+  ...
+# Subtest: pickup window wholly before, wholly after and spanning the deadline produce three different states
+ok 5 - pickup window wholly before, wholly after and spanning the deadline produce three different states
+  ---
+  duration_ms: 0.748685
+  type: 'test'
+  ...
+# Subtest: transport existence does not supply missing pickup coverage or an arrival estimate
+  ...
+# Subtest: KL, Selangor, Putrajaya and other states are enforced on server requests
+ok 17 - KL, Selangor, Putrajaya and other states are enforced on server requests
+  ---
+  duration_ms: 5.247879
+  type: 'test'
+  ...
+# Subtest: source-region disagreement is held, while sourced regional records without coordinates remain usable
+ok 18 - source-region disagreement is held, while sourced regional records without coordinates remain usable
+  ---
+  duration_ms: 2.135502
+  type: 'test'
+  ...
+# Subtest: imported links and phone actions cannot inject executable schemes
+ok 19 - imported links and phone actions cannot inject executable schemes
+  ---
+  duration_ms: 0.695871
+  type: 'test'
+  ...
+# Subtest: representative public source import is deterministic and real contact facts retain separate provenance
+ok 20 - representative public source import is deterministic and real contact facts retain separate provenance
+  ---
+  duration_ms: 11.009331
+  type: 'test'
+  ...
+# Subtest: public function handles preflight and disallows unsupported methods without touching the store
+ok 21 - public function handles preflight and disallows unsupported methods without touching the store
+  ---
+  duration_ms: 2.246134
+  type: 'test'
+  ...
+# Subtest: invalid JSON and oversized requests return bounded private errors
+ok 27 - error 3 gets one longer fresh high-accuracy attempt
+  ---
+  duration_ms: 0.452715
+  type: 'test'
+  ...
+# Subtest: permission denial stops immediately and explains site/device access and manual recovery
+ok 28 - permission denial stops immediately and explains site/device access and manual recovery
+  ---
+  duration_ms: 1.209511
+  type: 'test'
+  ...
+# Subtest: two failures end the operation without endless retry or fabricated coordinates
+ok 29 - two failures end the operation without endless retry or fabricated coordinates
+  ---
+  duration_ms: 0.776492
+  type: 'test'
+  ...
+# Subtest: a browser that never calls back is bounded to 40 seconds and both watches are cleared
+ok 30 - a browser that never calls back is bounded to 40 seconds and both watches are cleared
+  ---
+  duration_ms: 2.494794
+  type: 'test'
+  ...
+# Subtest: cancelling stops the device request and discards late callbacks without retry
+ok 31 - cancelling stops the device request and discards late callbacks without retry
+  ---
+  duration_ms: 1.44094
+  type: 'test'
+  ...
+# Subtest: cancellation during the retry clears its watch too
+ok 32 - cancellation during the retry clears its watch too
+  ---
+  ...
+# Subtest: partial source pages never become a new complete directory
+ok 38 - partial source pages never become a new complete directory
+  ---
+  duration_ms: 0.902507
+  type: 'test'
+  ...
+# Subtest: release changes during collection are rejected and a later retry can recover
+ok 39 - release changes during collection are rejected and a later retry can recover
+  ---
+  duration_ms: 2.065448
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 230.582023
+npm warn Unknown env config "store-dir". This will error in a future major version of npm. See `npm help npmrc` for supported config options.
+npm notice run equalpath-web@0.0.0 build
+npm notice run vite build
+vite v6.4.2 building for production...
+transforming...
+ok 22 - invalid JSON and oversized requests return bounded private errors
+  ---
+  duration_ms: 1.579343
+  type: 'test'
+  ...
+# Subtest: entry returns controlled examples only when demo mode is requested explicitly
+ok 23 - entry returns controlled examples only when demo mode is requested explicitly
+  ---
+  duration_ms: 0.736047
+  type: 'test'
+  ...
+# Subtest: age lower-exclusive endpoint cannot fully support a completed age interval
+ok 24 - age lower-exclusive endpoint cannot fully support a completed age interval
+  ---
+  duration_ms: 0.458996
+  type: 'test'
+  ...
+# (node:59) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: first available location includes accuracy and immediately stops observation
+ok 25 - first available location includes accuracy and immediately stops observation
+  ---
+  duration_ms: 6.067991
+  type: 'test'
+  ...
+# Subtest: error 2 gets one longer fresh high-accuracy attempt
+ok 26 - error 2 gets one longer fresh high-accuracy attempt
+  ---
+  duration_ms: 1.196591
+  type: 'test'
+  ...
+# Subtest: error 3 gets one longer fresh high-accuracy attempt
+✓ 1593 modules transformed.
+rendering chunks...
+computing gzip size...
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+dist/index.html                     0.64 kB │ gzip:   0.40 kB
+dist/assets/index-B8ERQu17.css    679.63 kB │ gzip: 205.77 kB
+dist/assets/index-b79EPzz5.js   1,229.71 kB │ gzip: 340.89 kB
+✓ built in 7.45s
+Validated 3 entry assets for source 6ad50377c818ea32b9d4815403f0aab70056150090aadc1b837764b6785b7230
+[14:48:31] [open-runtimes] Build command execution finished. 
+[14:48:31] [open-runtimes] Build packaging started. 
+[14:48:31] [open-runtimes] Build packaging finished. 
+[14:48:31] [open-runtimes] Build manifest written. (1 files) 
+[14:48:31] [open-runtimes] Build cache saved. (23584768 bytes) 
+[14:48:31] [open-runtimes] Build finished. 
+[14:48:37] [appwrite] Edge distribution started. 
+[14:49:50] [appwrite] Edge distribution finished successfully (6/6). 
+[14:49:50] [appwrite] Deployment finished. 
+[14:49:52] [appwrite] Screenshot capturing started. 
+[14:49:53] [appwrite] Screenshot capturing failed. Deployment will continue. 

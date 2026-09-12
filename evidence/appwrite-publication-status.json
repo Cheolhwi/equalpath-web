@@ -1,0 +1,86 @@
+{
+  "checkedAt": "2026-09-12T14:51:52.351837+00:00",
+  "github": {
+    "repo": "Cheolhwi/equalpath-web",
+    "visibility": "private",
+    "installationId": 161155135,
+    "repositorySelection": "selected",
+    "repositories": ["Cheolhwi/equalpath-web"],
+    "scopeEvidence": "GitHub installation settings UI read-back after Save"
+  },
+  "site": {
+    "$id": "equalpath-web",
+    "enabled": true,
+    "live": true,
+    "logging": false,
+    "scopes": [],
+    "framework": "vite",
+    "installationId": "6aa565a2e11d3c445de3",
+    "providerRepositoryId": "1367366712",
+    "providerBranch": "main",
+    "providerBranches": ["main"],
+    "providerSilentMode": true,
+    "installCommand": "npm ci",
+    "buildCommand": "npm run release",
+    "outputDirectory": "dist",
+    "adapter": "static",
+    "fallbackFile": "index.html",
+    "buildRuntime": "node-22",
+    "deploymentId": "6aa56629ba17bb203a00"
+  },
+  "deployment": {
+    "$id": "6aa56629ba17bb203a00",
+    "status": "ready",
+    "activate": true,
+    "buildDuration": 92,
+    "providerCommitHash": "725a25425ee3dc9c32e21baed9bc4a9d57565f7e"
+  },
+  "domains": [
+    {
+      "$id": "fc6701a63c66c6bb78720c9dc1765c33",
+      "domain": "equalpathcare.me",
+      "status": "verifying",
+      "type": "deployment",
+      "deploymentId": "6aa56629ba17bb203a00",
+      "redirectUrl": null,
+      "redirectStatusCode": 301,
+      "logs": "\u001b[90m[14:49:27] \u001b[97mProcessing SSL certificate issuance. \u001b[0m\n\u001b[90m[14:49:32] \u001b[97mSSL certificate is being issued. This usually takes a few minutes \u2014 no action needed on your end. We'll periodically check and update the status. \u001b[0m\n"
+    },
+    {
+      "$id": "5a3927aba398f5c664442d7fb6349b8c",
+      "domain": "www.equalpathcare.me",
+      "status": "verifying",
+      "type": "redirect",
+      "deploymentId": null,
+      "redirectUrl": "https://equalpathcare.me/",
+      "redirectStatusCode": 307,
+      "logs": "\u001b[90m[14:49:26] \u001b[97mProcessing SSL certificate issuance. \u001b[0m\n\u001b[90m[14:49:32] \u001b[97mSSL certificate is being issued. This usually takes a few minutes \u2014 no action needed on your end. We'll periodically check and update the status. \u001b[0m\n"
+    }
+  ],
+  "dns": {
+    "provider": "Namecheap",
+    "nameserversUnchanged": true,
+    "emailRecordsUnchanged": true,
+    "verification": "Namecheap page reloaded and all host records expanded",
+    "records": [
+      {
+        "type": "ALIAS",
+        "host": "@",
+        "value": "appwrite.network.",
+        "ttl": 60
+      },
+      {
+        "type": "CNAME",
+        "host": "www",
+        "value": "appwrite.network.",
+        "ttl": 60
+      },
+      {
+        "type": "CAA",
+        "host": "@",
+        "value": "0 issue \"certainly.com\"",
+        "ttl": 60
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 # Appwrite website publishing
 
-The new repository is `Cheolhwi/equalpath-web` (private). Appwrite Sites hosts the website as site `equalpath-web` in the existing Singapore project. The intended public domain is `https://equalpathcare.me/`. GitHub Pages is disabled for this repository. The old iOS repository is not used to build or deploy this website.
+The new repository is `Cheolhwi/equalpath-web` (private). Appwrite Sites hosts the website as site `equalpath-web` in the existing Singapore project. Its public domain is `https://equalpathcare.me/`, with `www.equalpathcare.me` redirecting to the root domain. GitHub Pages is disabled for this repository. The old iOS repository is not used to build or deploy this website.
 
 ## Automatic delivery
 
@@ -9,12 +9,23 @@ The new repository is `Cheolhwi/equalpath-web` (private). Appwrite Sites hosts t
 - `release` runs all 39 tests, builds the frontend and checks the published entry assets and API configuration. Failed checks prevent activation of a new Appwrite deployment.
 - A deterministic digest of source, dependencies and tests is written into `dist/build-info.json`. GitHub Actions then waits for the matching Appwrite release and checks HTTPS, entry assets and the public backend using the website's origin.
 - Repository credentials are managed by the Appwrite GitHub integration. The GitHub workflow has only `contents: read` and requires no Appwrite administrator API key.
+- The GitHub App is limited to **only `Cheolhwi/equalpath-web`**. The Site's production branch and automatic deployment branch filter are both `main`. Silent mode is enabled, so deployments do not post repository comments.
 
 ## Configuration
 
 The frontend uses public constants in `src/config.js`. Do not enable the development `/api` override in production. `equalpathcare.me` is registered as a Web platform in Appwrite for origin validation. The Site has no database scopes and does not change existing owner data.
 
-At Namecheap, replace only the website's GitHub Pages A records with the Appwrite-provided apex ALIAS/CAA configuration. Keep Namecheap nameservers, mail forwarding and Resend records. The final DNS values and live deployment results will be recorded in the publishing evidence after verification.
+Namecheap keeps the original `dns1.registrar-servers.com` / `dns2.registrar-servers.com` nameservers. The former four GitHub Pages A records were replaced with the Appwrite-provided configuration:
+
+| Type  | Host  | Value                     | TTL      |
+| ----- | ----- | ------------------------- | -------- |
+| ALIAS | `@`   | `appwrite.network.`       | 1 minute |
+| CNAME | `www` | `appwrite.network.`       | 1 minute |
+| CAA   | `@`   | `0 issue "certainly.com"` | 1 minute |
+
+Email Forwarding, the root SPF record, both Resend CNAME records and the Resend DKIM TXT record were preserved and checked again after reloading Namecheap. [The previous DNS records](../evidence/dns-before-appwrite.json) provide a rollback reference. [Publication evidence](../evidence/appwrite-publication-status.json) records the Site, deployment, installation scope and domain status at the stated check time.
+
+Older DNS answers may remain cached for the previous 30-minute TTL. Certificate issuance is asynchronous after Appwrite validates DNS; wait for normal HTTPS verification to pass before treating a new domain as available. Do not disable TLS verification to work around an unfinished certificate.
 
 ## Rollback
 

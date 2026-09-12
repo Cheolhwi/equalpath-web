@@ -18,9 +18,9 @@ assert(
   "Expected source digest is missing",
 );
 
-async function get(path) {
+async function get(path, timeoutMs = 15000) {
   const response = await fetch(new URL(path, base), {
-    signal: AbortSignal.timeout(15000),
+    signal: AbortSignal.timeout(timeoutMs),
     cache: "no-store",
   });
   assert(response.ok, `Website request failed: ${response.status}`);
@@ -31,9 +31,17 @@ async function get(path) {
   return response;
 }
 let manifest;
-for (let attempt = 0; attempt < 60; attempt++) {
+const verificationDeadline = Date.now() + 5 * 60 * 1000;
+let lastProgressAt = 0;
+while (true) {
   try {
-    manifest = await (await get(`build-info.json?revision=${expected}`)).json();
+    const remaining = Math.max(1, verificationDeadline - Date.now());
+    manifest = await (
+      await get(
+        `build-info.json?revision=${expected}`,
+        Math.min(15000, remaining),
+      )
+    ).json();
     assert.equal(
       manifest.source,
       expected,
@@ -41,8 +49,20 @@ for (let attempt = 0; attempt < 60; attempt++) {
     );
     break;
   } catch (error) {
-    if (attempt === 59) throw error;
-    await delay(5000);
+    const reason = [error.message, error.cause?.code]
+      .filter(Boolean)
+      .join(" | ");
+    const remaining = verificationDeadline - Date.now();
+    if (remaining <= 0) {
+      throw new Error(
+        `Unable to verify ${base.origin} within five minutes: ${reason}`,
+      );
+    }
+    if (Date.now() - lastProgressAt >= 30000) {
+      console.log(`Waiting for ${base.origin}: ${reason}`);
+      lastProgressAt = Date.now();
+    }
+    await delay(Math.min(5000, remaining));
   }
 }
 assert.match(

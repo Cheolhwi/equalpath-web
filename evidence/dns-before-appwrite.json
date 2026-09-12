@@ -1,0 +1,51 @@
+{
+  "domain": "equalpathcare.me",
+  "observedAt": "2026-09-12T22:47:00+08:00",
+  "source": "Namecheap Advanced DNS UI",
+  "nameservers": ["dns1.registrar-servers.com", "dns2.registrar-servers.com"],
+  "websiteRecords": [
+    { "type": "A", "host": "@", "value": "185.199.108.153", "ttl": "30 min" },
+    { "type": "A", "host": "@", "value": "185.199.109.153", "ttl": "30 min" },
+    { "type": "A", "host": "@", "value": "185.199.110.153", "ttl": "30 min" },
+    { "type": "A", "host": "@", "value": "185.199.111.153", "ttl": "30 min" },
+    {
+      "type": "CNAME",
+      "host": "www",
+      "value": "equalpathcare.me.",
+      "ttl": "30 min"
+    }
+  ],
+  "preservedMailRecords": [
+    {
+      "type": "CNAME",
+      "host": "rsend.care",
+      "value": "rsend-apne1.forge.rmta.net.",
+      "ttl": "Automatic"
+    },
+    {
+      "type": "CNAME",
+      "host": "send.care",
+      "value": "send.forge.rmta.net.",
+      "ttl": "Automatic"
+    },
+    {
+      "type": "TXT",
+      "host": "resend._domainkey.care",
+      "value": "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfrBhaWIcs9rnRVf0y2uMdmd28IOeC7D2l7Lfayq9b5ZxTw8uWePE6d2mVf7hf3evBge4h+HY2P/wyuOTvx9M83nLQVfPm4Sp1gMhA02kjAt6M4eJMJyEpf6mXxmHeseXkqDDi9RWBHW6yDANBWCqJF8N1UwsuQ8m028TrtIU0IwIDAQAB",
+      "ttl": "Automatic"
+    },
+    {
+      "type": "TXT",
+      "host": "@",
+      "value": "v=spf1 include:spf.efwd.registrar-servers.com ~all",
+      "ttl": "Automatic",
+      "managedBy": "Email Forwarding"
+    }
+  ],
+  "mailSettings": "Email Forwarding",
+  "appwriteRequested": {
+    "source": "Appwrite site domain verification UI",
+    "target": "appwrite.network",
+    "caa": "0 issue \"certainly.com\""
+  }
+}

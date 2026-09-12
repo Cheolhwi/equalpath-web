@@ -1,0 +1,87 @@
+{
+  "checkedAt": "2026-09-12T14:58:18.847233+00:00",
+  "resolver": "1.1.1.1",
+  "records": [
+    {
+      "host": "equalpathcare.me",
+      "type": "A",
+      "answers": [
+        "151.101.131.52",
+        "151.101.67.52",
+        "151.101.195.52",
+        "151.101.3.52"
+      ]
+    },
+    {
+      "host": "equalpathcare.me",
+      "type": "AAAA",
+      "answers": [
+        "2a04:4e42::820",
+        "2a04:4e42:400::820",
+        "2a04:4e42:200::820",
+        "2a04:4e42:600::820"
+      ]
+    },
+    {
+      "host": "equalpathcare.me",
+      "type": "NS",
+      "answers": [
+        "dns1.registrar-servers.com.",
+        "dns2.registrar-servers.com."
+      ]
+    },
+    {
+      "host": "equalpathcare.me",
+      "type": "CAA",
+      "answers": [
+        "0 issue \"certainly.com\""
+      ]
+    },
+    {
+      "host": "equalpathcare.me",
+      "type": "MX",
+      "answers": [
+        "10 eforward1.registrar-servers.com.",
+        "10 eforward2.registrar-servers.com.",
+        "10 eforward3.registrar-servers.com.",
+        "15 eforward4.registrar-servers.com.",
+        "20 eforward5.registrar-servers.com."
+      ]
+    },
+    {
+      "host": "equalpathcare.me",
+      "type": "TXT",
+      "answers": [
+        "\"v=spf1 include:spf.efwd.registrar-servers.com ~all\""
+      ]
+    },
+    {
+      "host": "www.equalpathcare.me",
+      "type": "CNAME",
+      "answers": [
+        "appwrite.network."
+      ]
+    },
+    {
+      "host": "rsend.care.equalpathcare.me",
+      "type": "CNAME",
+      "answers": [
+        "rsend-apne1.forge.rmta.net."
+      ]
+    },
+    {
+      "host": "send.care.equalpathcare.me",
+      "type": "CNAME",
+      "answers": [
+        "send.forge.rmta.net."
+      ]
+    },
+    {
+      "host": "resend._domainkey.care.equalpathcare.me",
+      "type": "TXT",
+      "answers": [
+        "\"p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfrBhaWIcs9rnRVf0y2uMdmd28IOeC7D2l7Lfayq9b5ZxTw8uWePE6d2mVf7hf3evBge4h+HY2P/wyuOTvx9M83nLQVfPm4Sp1gMhA02kjAt6M4eJMJyEpf6mXxmHeseXkqDDi9RWBHW6yDANBWCqJF8N1UwsuQ8m028TrtIU0IwIDAQAB\""
+      ]
+    }
+  ]
+}
