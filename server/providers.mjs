@@ -7,7 +7,7 @@ const index = JSON.parse(
   readFileSync(new URL("./data/provenance-index.json", import.meta.url)),
 );
 const reviewedFees = JSON.parse(readFileSync(new URL('./data/reviewed-fees.json', import.meta.url)));
-export const supplementVersion = "service-review-2026-09-13-v4";
+export const supplementVersion = "service-review-2026-09-13-v5";
 export function safeURL(value) {
   try {
     const u = new URL(value);
@@ -315,7 +315,7 @@ export function normalizeProvider(raw, release) {
     p.sources.push(reviewed.matchSource, ...new Map(reviewed.fees.map(f => [f.source.url,f.source])).values());
   }
   if(raw.additional_operating_hours){
-    const h=raw.additional_operating_hours,s=source('Kiddy123 opening hours',h.source_url,h.retrieved_at);
+    const h=raw.additional_operating_hours,s=source(h.source_kind==='provider_website'?'Provider website opening hours':'Kiddy123 opening hours',h.source_url,h.retrieved_at);
     const alternative={windows:h.weekly_windows.map(w=>({days:[w.weekday],start:w.start_minute,end:w.end_minute,source:s})),closedDays:h.closed_weekdays,notes:h.notes,source:s};
     const known=new Set([...p.businessHours.closedDays,...p.businessHours.windows.flatMap(w=>w.days)]);
     p.businessHours.windows.push(...alternative.windows.filter(w=>!known.has(w.days[0])));

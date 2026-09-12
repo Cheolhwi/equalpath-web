@@ -73,4 +73,7 @@ test('newly sourced weekdays fill unknown days with their own source; explicit c
  assert.equal(businessHoursFor(p,'2026-09-14'),'07:30–19:00');
  const care={...p,careWindows:[{days:['MON'],start:480,end:1080}]};
  assert.equal(assess(care,{pickup:demoPickup,date:'2026-09-14',deadline:'16:00',end:'18:30',age:'4',transport:'self'}).conditions.find(c=>c.id==='care').state,'conflict');
+ const websiteRecord={...record,source_kind:'provider_website',source_url:'https://example.com/contact'};
+ const website=normalizeProvider(applyServicesEvidence([known],[websiteRecord],'test-release',hash([websiteRecord]))[0],'test-release').provider;
+ assert.equal(website.businessHours.alternative.source.label,'Provider website opening hours');
 });
