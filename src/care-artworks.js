@@ -19,6 +19,7 @@ export const careArtworks = [
     id: "grow",
     title: "GROW",
     alt: "A caregiver and two children watering small plants together",
+    image: "images/care-gallery/robin-v3/grow-soft.webp",
   },
   {
     id: "build",
@@ -27,7 +28,7 @@ export const careArtworks = [
   },
 ].map((artwork) => ({
   ...artwork,
-  image: `images/care-gallery/robin-v3/${artwork.id}.webp`,
+  image: artwork.image ?? `images/care-gallery/robin-v3/${artwork.id}.webp`,
 }));
 
 export function nextArtwork(index, direction, count = careArtworks.length) {
