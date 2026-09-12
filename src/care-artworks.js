@@ -8,12 +8,12 @@ export const careArtworks = [
   {
     id: "play",
     title: "PLAY",
-    alt: "Children and a caregiver building a wooden block neighbourhood",
+    alt: "Children and a caregiver building with wooden blocks",
   },
   {
     id: "create",
     title: "CREATE",
-    alt: "Children painting leaves and flowers with their caregiver",
+    alt: "Children drawing leaves and flowers with their caregiver",
   },
   {
     id: "together",
@@ -22,7 +22,7 @@ export const careArtworks = [
   },
 ].map((artwork) => ({
   ...artwork,
-  image: `images/care-gallery/${artwork.id}.webp`,
+  image: `images/care-gallery/anime-v2/${artwork.id}.webp`,
 }));
 
 export function nextArtwork(index, direction, count = careArtworks.length) {

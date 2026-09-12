@@ -11,10 +11,10 @@ The 2026-09-13 revision follows the user's explicit request to use the original 
 - License: MIT, retained in `src/vendor/rhine/LICENSE` and `public/licenses/RhineLabUI-MIT.txt`. [Change notes](../src/vendor/rhine/UPSTREAM.md).
 - Added art: four printed childcare illustrations in the selected transparent case. Original shell, fasteners, array and optics remain. The printed label uses EqualPath; the scene's sample items are decorative care themes, not provider data.
 
-## Image asset
+## Original image asset (superseded)
 
 - Project asset: [childcare-book-cover.png](../public/images/childcare-book-cover.png).
-- Generated using the built-in ImageGen tool; the image is used as the READ artwork inside the real 3D scene. It depicts fictional illustrated people.
+- Generated using the built-in ImageGen tool; this was the original READ artwork. The current anime series below replaces it in the real 3D scene. It depicts fictional illustrated people.
 - The original generated PNG was copied unchanged into the project. No actual institution, caregiver, availability or review is represented.
 
 ### Generation prompt
@@ -30,7 +30,7 @@ Constraints: no text, no typography, no logos, no watermark, no maps, no coordin
 
 ## Four-artwork gallery
 
-READ, PLAY, CREATE and TOGETHER depict reading, cooperative play, painting, and pickup. Three new ImageGen artworks match the existing reading picture. Exact new prompts, original PNGs and encoding details are retained in [the artwork source folder](../design-assets/childcare-gallery/PROVENANCE.md). All four runtime WebP textures total 921,418 bytes and preserve the full 3:2 composition.
+READ, PLAY, CREATE and TOGETHER depict reading, cooperative play, drawing, and pickup. On 2026-09-13 the user requested new covers referencing their `Firefly.PNG`: fine anime linework, cel shading, expressive faces and selective optical softness, recolored to the site's ivory, sage and charcoal palette. All four covers were regenerated with built-in ImageGen. Exact prompts and unchanged original PNGs are retained in [the anime artwork source folder](../design-assets/childcare-gallery/anime-v2/PROVENANCE.md). The four active WebP textures total 725,144 bytes, preserve the full 1536 × 1024 composition, and use versioned `images/care-gallery/anime-v2/` URLs. [The earlier gouache series](../design-assets/childcare-gallery/PROVENANCE.md) is retained for rollback.
 
 The page has one brand, a small region label, artwork controls, motion toggle, and a single entry button. No marketing column or process panel. The CD-style artwork is raised on first render.
 
@@ -47,3 +47,5 @@ The page has one brand, a small region label, artwork controls, motion toggle, a
 ## Verification
 
 Actual desktop and mobile checks are recorded in [design-qa.md](../design-qa.md) and `evidence/landing-gallery/` (the earlier `evidence/childcare-scene/` captures are historical). Release validation checks the lazy scene chunk, both binary model headers and all four WebP textures as well as the existing app checks.
+
+The anime cover replacement has separate [verification evidence](../evidence/landing-anime-v2/verification.md), including all four desktop covers and the mobile layout. The scene geometry, materials, interactions and main app flow are unchanged.
