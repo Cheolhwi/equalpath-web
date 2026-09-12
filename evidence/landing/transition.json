@@ -1,0 +1,62 @@
+[
+  {
+    "elapsedMs": 344,
+    "active": "",
+    "canvasCount": 1,
+    "map": {
+      "mapBearing": "0",
+      "mapPitch": "0",
+      "mapStatus": "ready",
+      "mapZoom": "12.728703209765289"
+    },
+    "phase": "depart"
+  },
+  {
+    "elapsedMs": 1058,
+    "active": "",
+    "canvasCount": 1,
+    "map": {
+      "mapBearing": "0",
+      "mapPitch": "0",
+      "mapStatus": "ready",
+      "mapZoom": "8.1"
+    },
+    "phase": "travel"
+  },
+  {
+    "elapsedMs": 1768,
+    "active": "",
+    "canvasCount": 1,
+    "map": {
+      "mapBearing": "0",
+      "mapPitch": "0",
+      "mapStatus": "ready",
+      "mapZoom": "8.1"
+    },
+    "phase": "arrive"
+  },
+  {
+    "elapsedMs": 3110,
+    "active": "",
+    "canvasCount": 1,
+    "map": {
+      "mapBearing": "0",
+      "mapPitch": "0",
+      "mapStatus": "ready",
+      "mapZoom": "10.8"
+    },
+    "phase": "reveal"
+  },
+  {
+    "elapsedMs": 3599,
+    "active": "pickup-search",
+    "canvasCount": 1,
+    "map": {
+      "mapBearing": "0",
+      "mapPitch": "0",
+      "mapStatus": "ready",
+      "mapZoom": "10.8"
+    },
+    "phase": "ready"
+  }
+]

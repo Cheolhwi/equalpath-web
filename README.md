@@ -2,8 +2,10 @@
 
 新版无登录网页：填写本次照护需求 → 查找机构 → 检查条件 → 比较 → 准备联系。另已加入用户主动授权的当前位置获取。
 
+首页提供 RhineLab 风格的模糊地图入口。点击进入后，以约 3.5 秒的平面地图拉远、平移和推进衔接搜索；支持跳过、减少动态效果以及返回首页后保留本次需求。直接打开 `/#discover` 可进入搜索。[首页与转场验收](design-qa.md)。
+
 - [本地预览](http://127.0.0.1:4179/)
-- [线上网页](https://equalpathcare.me/)、[独立仓库](https://github.com/Cheolhwi/equalpath-web)、[发布说明](docs/DEPLOYMENT.md)
+- [Appwrite 线上预览](https://equalpath-web.appwrite.network/)、[正式域名](https://equalpathcare.me/)、[独立仓库](https://github.com/Cheolhwi/equalpath-web)、[发布说明与域名状态](docs/DEPLOYMENT.md)
 - [受控演示](http://127.0.0.1:4179/?mode=demo)：明确标明的虚构机构，用于试验符合、冲突、未知和完整费用规则。
 - [验收记录](docs/PHASE0_3_VERIFICATION.md)、[完整 AC 台账](docs/AC_LEDGER.md)、[接口与资源](docs/API_CONTRACT.md)
 

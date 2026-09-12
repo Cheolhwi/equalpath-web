@@ -1,0 +1,78 @@
+
+> equalpath-web@0.0.0 release
+> npm test && npm run build && node scripts/check-build.mjs
+
+
+> equalpath-web@0.0.0 test
+> node --test tests/*.test.mjs
+
+✔ essential fields, impossible dates and same-day time ordering fail without changing valid values (1.989917ms)
+✔ omitted age and transport are accepted and visibly unspecified (1.83675ms)
+✔ age four is a full [48,60) month interval, with partial and ambiguous overlap unknown (0.064833ms)
+✔ regular enrolment does not become one-off admission (0.067ms)
+✔ pickup window wholly before, wholly after and spanning the deadline produce three different states (0.221459ms)
+✔ transport existence does not supply missing pickup coverage or an arrival estimate (0.202ms)
+✔ self delivery removes institutional transport requirement, preserving other request conditions (0.072375ms)
+✔ general opening hours and holiday exceptions never turn into confirmed temporary care (0.06875ms)
+✔ care end and applicable latest collection restrictions preserve conflicts (0.061834ms)
+✔ monthly fees and missing extras do not generate fabricated hourly prices (0.072958ms)
+✔ controlled complete tariff explains duration, minimum, rounding and extras (0.05825ms)
+✔ one deduplicated enquiry list carries unknown service conditions without any reviews (0.0685ms)
+✔ missing coordinates stay in list and sort after known straight-line distances (0.551375ms)
+✔ comparison uses separate branch facts and deterministic unknown-last priorities (0.691958ms)
+✔ no result is distinct from source failure (0.36225ms)
+✔ request revisions update evaluations and stale facts cannot be presented as current (0.737459ms)
+✔ KL, Selangor, Putrajaya and other states are enforced on server requests (0.594208ms)
+✔ source-region disagreement is held, while sourced regional records without coordinates remain usable (0.235458ms)
+✔ imported links and phone actions cannot inject executable schemes (0.134167ms)
+✔ representative public source import is deterministic and real contact facts retain separate provenance (1.407416ms)
+✔ skipping cancels pending entrance phases and ignores already queued callbacks (1.270125ms)
+✔ reduced motion enters immediately without scheduling camera animation (0.077833ms)
+✔ entrance always completes without waiting for map tiles or a backend response (0.109125ms)
+✔ city preview and transfer cameras stay flat and remain in the served region (0.140709ms)
+✔ public function handles preflight and disallows unsupported methods without touching the store (0.602834ms)
+✔ invalid JSON and oversized requests return bounded private errors (0.612459ms)
+✔ entry returns controlled examples only when demo mode is requested explicitly (0.195084ms)
+✔ age lower-exclusive endpoint cannot fully support a completed age interval (0.082083ms)
+✔ first available location includes accuracy and immediately stops observation (1.680708ms)
+✔ error 2 gets one longer fresh high-accuracy attempt (0.157542ms)
+✔ error 3 gets one longer fresh high-accuracy attempt (0.073542ms)
+✔ permission denial stops immediately and explains site/device access and manual recovery (0.200667ms)
+✔ two failures end the operation without endless retry or fabricated coordinates (0.082542ms)
+✔ a browser that never calls back is bounded to 40 seconds and both watches are cleared (0.362833ms)
+✔ cancelling stops the device request and discards late callbacks without retry (0.747375ms)
+✔ cancellation during the retry clears its watch too (0.168917ms)
+✔ an already-cancelled request never asks for device location (0.140459ms)
+✔ unsupported and insecure browsers explain the cause and allow manual selection (0.099542ms)
+✔ invalid or missing coordinates are rejected and the watch is released (0.126458ms)
+✔ synchronous browser callbacks still release the returned watch ID (0.09425ms)
+✔ cold requests coalesce, public-only table reads are bounded, and failed refresh does not renew the cache (2.173917ms)
+✔ partial source pages never become a new complete directory (0.160958ms)
+✔ release changes during collection are rejected and a later retry can recover (0.315791ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 43
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94.590292
+
+> equalpath-web@0.0.0 build
+> vite build
+
+vite v6.4.2 building for production...
+transforming...
+✓ 1596 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.64 kB │ gzip:   0.40 kB
+dist/assets/index-D4jyNVal.css    694.25 kB │ gzip: 209.30 kB
+dist/assets/index-KktHXUaY.js   1,239.93 kB │ gzip: 342.25 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.72s
+Validated 3 entry assets for source ea708dd86581f50a31d77952a044651cbdd022fcfc342abfd62dc0e51d671222

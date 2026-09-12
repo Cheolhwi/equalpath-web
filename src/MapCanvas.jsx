@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import { LocateFixed, Plus, Minus, RotateCcw } from "lucide-react";
 import { makeStyle } from "./map-style.js";
+import { entranceCamera } from "./entrance.js";
 export default function MapCanvas({
   items = [],
   pickup,
@@ -14,18 +15,40 @@ export default function MapCanvas({
   labels,
   visible,
   onStatus,
+  introPhase = "ready",
+  introArea = 0,
+  introReduced = false,
 }) {
   const host = useRef(null),
     map = useRef(null),
     markers = useRef([]),
-    latest = useRef({ items, pickup, onPick, choosing, onSelect }),
+    latest = useRef({
+      items,
+      pickup,
+      onPick,
+      choosing,
+      onSelect,
+      introPhase,
+      introArea,
+      cameraReduced: reduced || introReduced,
+    }),
     [retry, setRetry] = useState(0),
     [status, setStatus] = useState("loading"),
     [camera, setCamera] = useState({ pitch: 0, bearing: 0, zoom: 10.8 });
-  latest.current = { items, pickup, onPick, choosing, onSelect };
+  latest.current = {
+    items,
+    pickup,
+    onPick,
+    choosing,
+    onSelect,
+    introPhase,
+    introArea,
+    cameraReduced: reduced || introReduced,
+  };
   const fit = () => {
     const m = map.current;
     if (!m) return;
+    if (latest.current.introPhase !== "ready") return;
     const coords = [
       ...latest.current.items
         .filter((p) => p.location)
@@ -40,7 +63,7 @@ export default function MapCanvas({
         zoom: 10.8,
         pitch: 0,
         bearing: 0,
-        duration: reduced ? 0 : 600,
+        duration: latest.current.cameraReduced ? 0 : 600,
       });
       return;
     }
@@ -56,7 +79,7 @@ export default function MapCanvas({
         right: 65,
       },
       maxZoom: 14.4,
-      duration: reduced ? 0 : 650,
+      duration: latest.current.cameraReduced ? 0 : 650,
       pitch: 0,
       bearing: 0,
     });
@@ -69,8 +92,8 @@ export default function MapCanvas({
       m = new maplibregl.Map({
         container: host.current,
         style: makeStyle(theme, labels),
-        center: [101.64, 3.13],
-        zoom: 10.8,
+        center: entranceCamera(introPhase, introArea)?.center ?? [101.64, 3.13],
+        zoom: entranceCamera(introPhase, introArea)?.zoom ?? 10.8,
         maxZoom: 18,
         minZoom: 7,
         pitch: 0,
@@ -98,7 +121,14 @@ export default function MapCanvas({
           zoom: m.getZoom(),
         });
     });
-    m.on("load", () => fit());
+    m.on("load", () => {
+      const shot = entranceCamera(
+        latest.current.introPhase,
+        latest.current.introArea,
+      );
+      if (shot) m.jumpTo(shot);
+      else fit();
+    });
     m.on("idle", () => {
       if (
         alive &&
@@ -172,7 +202,11 @@ export default function MapCanvas({
       el.title = "Pickup: " + pickup.label;
       el.setAttribute("aria-label", "Pickup: " + pickup.label);
       markers.current.push(
-        new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -19] })
+        new maplibregl.Marker({
+          element: el,
+          anchor: "bottom",
+          offset: [0, -19],
+        })
           .setLngLat([pickup.lng, pickup.lat])
           .addTo(m),
       );
@@ -184,6 +218,22 @@ export default function MapCanvas({
   useEffect(() => {
     if (visible) requestAnimationFrame(() => map.current?.resize());
   }, [visible]);
+  useEffect(() => {
+    const m = map.current;
+    if (!m) return;
+    const frame = requestAnimationFrame(() => {
+      m.resize();
+      const shot = entranceCamera(introPhase, introArea);
+      if (shot)
+        m.easeTo({
+          ...shot,
+          duration: reduced || introReduced ? 0 : shot.duration,
+          easing: (t) => t * t * (3 - 2 * t),
+        });
+      else if (introPhase === "ready") fit();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [introPhase, introArea, retry, reduced, introReduced]);
   return (
     <section
       className={`map-region ${choosing ? "choosing" : ""}`}

@@ -66,7 +66,7 @@ const fingerprint = (r) =>
         r.sort,
       ])
     : "";
-function PlaceInput({ mode, value, onChange, onMap, error }) {
+function PlaceInput({ mode, value, onChange, onMap, error, active = true }) {
   const [query, setQuery] = useState(value?.label ?? ""),
     [options, setOptions] = useState([]),
     [busy, setBusy] = useState(false),
@@ -94,6 +94,14 @@ function PlaceInput({ mode, value, onChange, onMap, error }) {
     setGeoFailed(false);
     setGeoMessage("");
   };
+  useEffect(() => {
+    if (!active) {
+      token.current++;
+      stopLocating();
+      setBusy(false);
+      setOpen(false);
+    }
+  }, [active]);
   const locate = async () => {
     stopLocating();
     const seq = ++token.current;
@@ -297,7 +305,12 @@ function PlaceInput({ mode, value, onChange, onMap, error }) {
     </div>
   );
 }
-export default function App() {
+export default function App({
+  introPhase = "ready",
+  introArea = 0,
+  introReduced = false,
+  onHome,
+}) {
   const [mode, setMode] = useState(
       new URLSearchParams(location.search).get("mode") === "demo"
         ? "demo"
@@ -369,6 +382,7 @@ export default function App() {
   useEffect(() => {
     const key = (e) => {
       if (
+        introPhase === "ready" &&
         e.key === "/" &&
         !dialog &&
         !["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)
@@ -381,7 +395,7 @@ export default function App() {
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [dialog]);
+  }, [dialog, introPhase]);
   const setField = (field, value) => {
     setDraft((x) => ({ ...x, [field]: value }));
     setErrors((x) => ({ ...x, [field]: null }));
@@ -520,6 +534,8 @@ export default function App() {
       className={`equalpath ${theme} mobile-${mobilePane}`}
       data-reduced={reduced}
       data-mode={mode}
+      inert={introPhase !== "ready"}
+      aria-hidden={introPhase !== "ready" || undefined}
     >
       <a className="skip-link" href="#request-form">
         Skip to your request
@@ -527,10 +543,11 @@ export default function App() {
       <header className="app-header">
         <button
           className="wordmark"
-          aria-label="EqualPath discover"
+          aria-label="EqualPath home"
           onClick={() => {
             close();
             setMobilePane("list");
+            onHome?.();
           }}
         >
           <strong>
@@ -644,6 +661,7 @@ export default function App() {
           className={formOpen ? "request-form" : "request-form collapsed"}
         >
           <PlaceInput
+            active={introPhase === "ready"}
             mode={mode}
             value={draft.pickup}
             onChange={(p) => setField("pickup", p)}
@@ -1025,6 +1043,9 @@ export default function App() {
           labels={labels}
           visible={mobilePane === "map"}
           onStatus={setMapStatus}
+          introPhase={introPhase}
+          introArea={introArea}
+          introReduced={introReduced}
         />
         {choosing && (
           <button

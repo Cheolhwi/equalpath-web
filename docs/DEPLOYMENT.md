@@ -14,7 +14,7 @@ After Appwrite marks both domains verified, rerun the latest failed GitHub Actio
 
 - GitHub Actions runs `npm ci` and `npm run release` for pull requests and pushes to `main`.
 - Appwrite's native Git integration builds pushes to `main` using the same `npm ci` / `npm run release` sequence and publishes only `dist`.
-- `release` runs all 39 tests, builds the frontend and checks the published entry assets and API configuration. Failed checks prevent activation of a new Appwrite deployment.
+- `release` runs all 43 tests, builds the frontend and checks the published entry assets and API configuration. Failed checks prevent activation of a new Appwrite deployment.
 - A deterministic digest of source, dependencies and tests is written into `dist/build-info.json`. GitHub Actions then waits for the matching Appwrite release and checks HTTPS, entry assets and the public backend using the website's origin.
 - Repository credentials are managed by the Appwrite GitHub integration. The GitHub workflow has only `contents: read` and requires no Appwrite administrator API key.
 - The GitHub App is limited to **only `Cheolhwi/equalpath-web`**. The Site's production branch and automatic deployment branch filter are both `main`. Silent mode is enabled, so deployments do not post repository comments.

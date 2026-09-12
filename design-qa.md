@@ -1,0 +1,60 @@
+# Landing page and map entrance QA
+
+Date: 2026-09-12. Scope: the user-requested RhineLab-inspired landing page with Gaussian blur and a GTA-style flat map transition, integrated into the existing EqualPath website.
+
+## Visual target and evidence
+
+- Reference: https://github.com/LBEILC/RhineLabUI and the actual interface at https://rhine.lubeiluchen.cc/?scene=archive.
+- Source visual truth: `evidence/landing/reference-archive-desktop.png` (1440 × 900) and `reference-archive-mobile.png` (390 × 844). The source entry and archive/detail states were also inspected in the browser.
+- Implementation: `evidence/landing/landing-desktop.png` (1440 × 900) and `landing-mobile.png` (390 × 844), captured from http://127.0.0.1:4179/ with a ready map.
+- Both pairs have matching CSS viewport and image dimensions, one image pixel per CSS pixel. `comparison-desktop.jpg` contains both 1440 × 900 views scaled identically to 65%; `comparison-mobile.jpg` contains both 390 × 844 views at 1:1. Both comparison files were opened together for review.
+- State: source archive overview versus the requested EqualPath landing adaptation. This is style matching, not an identical product or 3D-scene reproduction. The replacement of archive models by the existing map, EqualPath copy, larger introductory headline, useful region choices, and the GTA camera sequence are intentional user-requested differences.
+- Focused review: the full-resolution 390 × 844 comparison makes the brand, heading, body, primary action and footer legible without further cropping. Full-size desktop landing, process and transition screenshots were also inspected.
+
+## Comparison history and findings
+
+1. Initial desktop capture passed the composition and interaction review: quiet warm background, top-left MiSans brand, right-side information and action, bottom indexed controls, square corners and thin rules. The Gaussian blur is applied to the real map; there are no replacement 3D objects or copied archive graphics.
+2. [P2, resolved] The initial mobile secondary controls and footer were too small at 6–7 px. Evidence: `landing-mobile-v1.png`. Increased welcome navigation to 9 px, secondary labels/credits/motion control to 8 px and the motion control's height to 32 px. The final `landing-mobile.png` and combined mobile comparison show the revised readable controls without horizontal overflow.
+3. [P2, resolved] Short mobile/landscape screens could clip the lower landing controls because the introductory layout was taller than the viewport. The landing now scrolls on small/short screens and does not impose a minimum height on the existing app. Verified at 320 × 568 and 844 × 390; the main action remains visible on the small phone, and the landscape region controls can be reached and activated by scrolling.
+4. Integration corrections before final capture: force the introductory map visible on mobile even though the underlying app initially selects its list; cancel a pending location operation and close transient place results when returning home; keep manual reduced-motion mode effective for MapLibre camera movement, not only CSS; keep the request-form deep link usable.
+
+No actionable P0/P1/P2 visual findings remain.
+
+## Required fidelity surfaces
+
+| Surface                  | Result                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Fonts and typography     | Existing locally hosted MiSans matches the reference family. Bold compact brand, light large headline, restrained uppercase metadata and normal case explanatory text are intentional EqualPath hierarchy. No clipping or unintended heading wrapping at checked widths.                                                                                                                                                |
+| Spacing and layout       | Desktop keeps the reference's upper-left brand, right-side focus and lower indexed controls. Mobile uses one readable column. Main action stays above the fold at 320 × 568; lower supplementary content scrolls. Square edges, thin separators and broad negative space are retained.                                                                                                                                  |
+| Colors and tokens        | Warm off-white and dark olive follow both the source and the existing app. The subdued map is progressively sharpened during entry. Contrast is retained for core controls; revised small-screen metadata was checked at 1:1.                                                                                                                                                                                           |
+| Image quality and assets | The background is the real OpenFreeMap / OpenMapTiles / OSM map already used by EqualPath, rendered in one persistent MapLibre canvas. Blur and translucent surfaces are CSS effects explicitly requested by the user. No stock images, generated archive objects, models or copied logos. Existing Lucide arrows/crosshair match the simple line controls and the product's icon set. Map attribution remains visible. |
+| Copy and content         | The landing describes discover, compare and prepare-to-contact outcomes. Public city-centre coordinates are labelled as preview areas, not user location. No fictional availability, acceptance, booking or authentication claims.                                                                                                                                                                                      |
+
+## Interaction and technical verification
+
+- Selected Kuala Lumpur / Selangor: active label and city-centre camera change. These choices preview the area and do not overwrite a user's pickup request.
+- Selected process tabs and opened/closed How it works on desktop and mobile.
+- Actual stage capture in `transition.json`: depart at approximately 344 ms (zoom 12.73), travel at 1058 ms (zoom 8.1), arrive at 1768 ms (zoom 8.1), reveal at 3110 ms (zoom 10.8), ready at 3599 ms (zoom 10.8). Each observation found exactly one canvas and pitch/bearing 0. The final desktop focus moved to `pickup-search`.
+- `transition-depart.png`, `transition-travel.png`, `transition-arrive.png`, `transition-reveal.png`, `transition-ready.png` and `transition-mobile.png` are actual browser frames. They are stage samples, not a video or frame-rate benchmark.
+- Skip animation works. Escape exits the mobile transition. Reduced motion plus keyboard Enter reached the existing app in the next frame without waiting for a map/backend response.
+- Existing live place search and provider search still work: EDWETHINK, 2026-09-14, 17:00–19:00 returned 983 candidates (68 located plus 915 without coordinates). After selecting one comparison institution, returning home and re-entering retained the request, results and selection.
+- Introductory app content is inert and hidden from assistive technology until entry. No automatic device location, music, messaging, booking, new account or backend mutation was added.
+- Browser console: zero error entries during the checked landing, transition, mobile and existing-search journey. No new network providers or runtime dependencies.
+- `evidence/landing/release.log`: 43 tests pass, Vite production build and public-asset release validation pass. Four new tests cover cancelled/queued callbacks, reduced motion, completion independent of external services, and flat camera constraints in the served region.
+- Screenshot evidence includes 1440 × 900 desktop, 390 × 844 mobile, 320 × 568 small mobile and 844 × 390 landscape. Temporary viewport overrides are reset after testing.
+
+## Follow-up polish and limits
+
+- [P3] Motion captures prove the stage sequence and continuity; they do not measure frame rate on low-end physical phones. Gaussian blur performance and external map tile latency depend on the device/network.
+- The live catalog's previously recorded missing facts and registration limitations remain unchanged.
+- Custom-domain certificate status and GitHub's production verification gate are recorded separately in the deployment documentation; a visual QA pass is not proof that custom-domain HTTPS is ready.
+
+## Implementation checklist
+
+- [x] Capture reference and implementation on desktop and mobile.
+- [x] Compare combined images; repair mobile readability and short-screen overflow.
+- [x] Verify a continuous flat map entrance, skip, reduced motion and keyboard entry.
+- [x] Verify existing request/results/comparison state survives return to landing.
+- [x] Run the release checks and inspect browser errors.
+
+final result: passed
