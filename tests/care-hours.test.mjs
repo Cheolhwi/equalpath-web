@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {parsePublishedHours,translateMalayHours} from '../shared/published-hours.mjs';
-import {assess} from '../shared/conditions.mjs';
+import {assess,businessHoursFor} from '../shared/conditions.mjs';
 import {fixtureProviders,demoPickup} from '../server/fixtures.mjs';
 const p={...fixtureProviders[0],careWindows:[],lateRule:null};
 const r={pickup:demoPickup,date:'2026-09-14',deadline:'16:00',end:'19:00',age:'4',transport:'self'};
@@ -37,4 +37,11 @@ test('closed-day notes do not close weekdays and conflicting claims remain unres
  assert.deepEqual(parsePublishedHours('Monday 08:00-18:00; Monday closed').windows,[]);
  assert.deepEqual(parsePublishedHours('Monday 08:00-18:00; Monday closed').closedDays,[]);
  assert.deepEqual(parsePublishedHours('Monday-Friday 08:00-18:00 Saturday closed').windows,[]);
+});
+
+test('missing selected-day hours are distinguished from an entirely empty weekly schedule',()=>{
+ const weekday={...p,businessHours:{windows:[{days:['MON'],start:420,end:1110}],closedDays:['SAT']}};
+ assert.equal(businessHoursFor(weekday,'2026-09-14'),'07:00–18:30');
+ assert.equal(businessHoursFor(weekday,'2026-09-13'),'Not listed for this day');
+ assert.equal(businessHoursFor(weekday,'2026-09-12'),'Listed closed');
 });

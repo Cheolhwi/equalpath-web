@@ -32,7 +32,7 @@ test("entry returns controlled examples only when demo mode is requested explici
   });
   assert.equal(r.status, 200);
   assert.equal(r.body.mode, "demo");
-  assert.equal(r.body.available, 4);
+  assert.equal(r.body.available, 10);
 });
 test("age lower-exclusive endpoint cannot fully support a completed age interval", () => {
   assert.equal(

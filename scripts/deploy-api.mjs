@@ -34,6 +34,7 @@ for (const f of [
   "server/fixtures.mjs",
   "server/providers.mjs",
   "server/appwrite-store.mjs",
+  "server/hours-overlay.mjs",
   "shared/request.mjs",
   "shared/conditions.mjs",
   "shared/published-hours.mjs",

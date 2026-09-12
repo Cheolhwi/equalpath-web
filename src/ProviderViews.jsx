@@ -12,7 +12,7 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { requestCaption, todayKL } from "../shared/request.mjs";
+import { requestCaption, todayKL, timeLabel } from "../shared/request.mjs";
 export function SourceLink({ source, children }) {
   if (!source)
     return (
@@ -94,7 +94,7 @@ export function ProviderCard({
           {p.district} · {p.region}
         </p>
         <div className="row-facts">
-          <span>Business hours</span>
+          <span>{p.businessHoursDay ? `Hours · ${p.businessHoursDay}` : "Business hours"}</span>
           <strong>{p.businessHoursLabel}</strong>
         </div>
         <div className="row-status">
@@ -295,11 +295,22 @@ export function Details({ p, onPrepare, onCompare, compared }) {
           ))}
         </div>
         <div className="business-note">
-          <strong>Opening hours: {p.businessHoursLabel}</strong>
+          <strong>{p.businessHoursDay ?? "Opening hours"}: {p.businessHoursLabel}</strong>
           <p>
             Opening hours are used to check your required care end time.
           </p>
           <SourceLink source={p.businessHours.source} />
+          <details className="weekly-hours">
+            <summary>View weekly opening hours</summary>
+            <dl>
+              {['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map((name,i) => {
+                const day=['MON','TUE','WED','THU','FRI','SAT','SUN'][i];
+                const windows=(p.businessHours?.windows ?? []).filter(w=>w.days.includes(day));
+                const label=windows.length ? windows.map(w=>`${timeLabel(w.start)}–${timeLabel(w.end)}`).join(', ') : (p.businessHours?.closedDays ?? []).includes(day) ? 'Listed closed' : 'Not published';
+                return <div key={day} className={name===p.businessHoursDay?'requested-day':''}><dt>{name}{name===p.businessHoursDay?' · requested':''}</dt><dd>{label}</dd></div>;
+              })}
+            </dl>
+          </details>
         </div>
         {p.notes.map((n, i) => (
           <p className="notice" key={i}>

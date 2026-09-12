@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-09-12T21:38:45.188Z",
+  "before": {
+    "verifiedAt": "2026-09-12T21:16:46.598Z",
+    "version": "web_79f1397603c1e28325955f64:service-review-2026-09-13-v3",
+    "usable": 3122,
+    "withHours": 1255,
+    "mondayHours": 1250,
+    "lateAfter19": 32
+  },
+  "after": {
+    "verifiedAt": "2026-09-12T21:32:36.871Z",
+    "version": "web_79f1397603c1e28325955f64:service-review-2026-09-13-v3:hours_13c0a865faf974e8c2f9a556",
+    "usable": 3122,
+    "withHours": 1350,
+    "mondayHours": 1329,
+    "lateAfter19": 42,
+    "held": 417
+  },
+  "publication": {
+    "mode": "publish",
+    "table": "web_provider_evidence",
+    "rows": 95,
+    "release": "hours_13c0a865faf974e8c2f9a556",
+    "baseRelease": "web_79f1397603c1e28325955f64",
+    "manifest": "web_data_releases/current",
+    "owner_tables_mutated": 0,
+    "startedAt": "2026-09-12T21:31:05.071Z",
+    "verified": 95,
+    "completedAt": "2026-09-12T21:31:08.131Z",
+    "manifestVerified": true
+  },
+  "hoursSources": {
+    "waze_public_place": 69,
+    "google_maps_public_search": 26
+  },
+  "reviewHeld": 18,
+  "publicMapCollection": {
+    "queuedPlaces": 606,
+    "observed": 442,
+    "noPlaceDetails": 2,
+    "rateLimited": 1,
+    "pendingPlaces": 161,
+    "retry": "Retried once after a five-minute cooldown with one worker and a three-second interval; HTTP 429 persisted; stopped."
+  },
+  "demo": {
+    "providers": 10,
+    "withHours": 9,
+    "eveningEnds": [
+      "21:00",
+      "22:00"
+    ],
+    "fictional": true
+  },
+  "validation": {
+    "automatedTests": 60,
+    "phoneViewport": "390x844: searched until 21:00, opened Moonlight details, verified supported care end and seven-day table.",
+    "liveAPI": "Anonymous Appwrite Function returned the exact hours version.",
+    "dataLimit": "1350 of 3122 usable records have a published opening window. This is 43.2%, not majority completion; unknown weekdays and unmatched branches remain unknown.",
+    "desktopViewport": "1440x900: live TASKA DAMANSARA UTAMA displayed sourced Monday 07:00–20:30, supported a requested 20:30 end, and showed unknown weekends in the expanded weekly table."
+  }
+}

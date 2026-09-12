@@ -106,6 +106,7 @@ export function createAPI({ store = createStore() } = {}) {
         cost: costFor(p, request),
         enquiries: enquiries(p, request, fit),
         businessHoursLabel: businessHoursFor(p, request.date),
+        businessHoursDay: new Intl.DateTimeFormat("en", {weekday:"long", timeZone:"UTC"}).format(new Date(request.date + "T12:00:00Z")),
       };
     };
     if (body.action === "search") {

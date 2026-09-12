@@ -253,7 +253,7 @@ export function businessHoursFor(p, date) {
     ? ws.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")
     : (p.businessHours?.closedDays ?? []).includes(dayFor(date))
       ? "Listed closed"
-      : "Not published";
+      : p.businessHours?.windows?.length ? "Not listed for this day" : "Not published";
 }
 export function costFor(p, r) {
   const rule = p.feeRule,

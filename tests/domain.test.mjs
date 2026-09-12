@@ -168,7 +168,7 @@ test("one deduplicated enquiry list carries unknown service conditions without a
 });
 test("missing coordinates stay in list and sort after known straight-line distances", async () => {
   const r = await api(body);
-  assert.equal(r.items.length, 4);
+  assert.equal(r.items.length, 10);
   assert.equal(r.missingLocations, 1);
   assert.equal(r.items.at(-1).id, "demo-cloud");
   assert.equal(r.items.at(-1).distanceKm, null);

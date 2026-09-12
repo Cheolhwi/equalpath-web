@@ -10,7 +10,7 @@ export function translateMalayHours(raw) {
 export function parsePublishedHours(raw) {
   const translated = translateMalayHours(raw), windows=[], closedDays=[];
   const clock = '(\\d{1,2})(?:[:.](\\d{2}))?\\s*(AM|PM)?';
-  const range = new RegExp(clock+'\\s*[-–—]\\s*'+clock,'i');
+  const range = new RegExp(clock+'\\s*(?:[-–—]|until|to)\\s*'+clock,'i');
   const minute = (h,m,ap) => { h=Number(h); m=Number(m??0); if(m>59||h>23||(ap&&(h<1||h>12)))return null; return (ap ? h%12+(/pm/i.test(ap)?12:0) : h)*60+m; };
   // Without a named weekday / Every day, retain the text but do not invent days.
   // Parentheses commonly separate a closed-day note from the opening range.
@@ -18,7 +18,7 @@ export function parsePublishedHours(raw) {
     const found = [...part.matchAll(/Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday/gi)].map(m=>dayNames.findIndex(d=>d.toLowerCase()===m[0].toLowerCase()));
     let days=[];
     if (/Every day/i.test(part)) days=[...dayKeys];
-    else if(found.length===2 && new RegExp(dayNames[found[0]]+'\\s*[-–—]\\s*'+dayNames[found[1]],'i').test(part)) {
+    else if(found.length===2 && new RegExp(dayNames[found[0]]+'\\s*(?:[-–—]|until|to)\\s*'+dayNames[found[1]],'i').test(part)) {
       for(let d=found[0],n=0;n<7;n++,d=(d+1)%7){days.push(dayKeys[d]);if(d===found[1])break;}
     } else days=[...new Set(found.map(i=>dayKeys[i]))];
     if(!days.length)continue;

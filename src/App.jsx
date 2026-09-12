@@ -612,7 +612,7 @@ export default function App({
         {mode === "demo" && (
           <p className="demo-notice">
             Controlled examples — fictional providers, times and prices for
-            trying the flow.{" "}
+            trying daytime and evening care.{" "}
             <button onClick={() => switchMode("live")}>
               Use real directory
             </button>
@@ -1310,8 +1310,8 @@ export default function App({
               <div className="data-mode">
                 <h3>Explore with real facts or controlled examples.</h3>
                 <p>
-                  Examples demonstrate supported, conflicting and unknown
-                  conditions. Changing mode clears the current search and
+                  Ten fictional examples include daytime care, two evening-care
+                  schedules, and supported, conflicting and unknown conditions. Changing mode clears the current search and
                   selection.
                 </p>
                 <button

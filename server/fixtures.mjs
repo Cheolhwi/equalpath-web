@@ -16,7 +16,7 @@ const base = {
   region: "Kuala Lumpur",
   district: "Kuala Lumpur",
   mode: "demo",
-  version: "demo-p03-v1",
+  version: "demo-p03-v2",
   category: "TADIKA",
   address: "Illustrative public location in Kuala Lumpur",
   addressSource: s,
@@ -204,9 +204,33 @@ export const fixtureProviders = [
     },
   },
 ];
+// Coursework schedules are intentionally fictional, never merged into live facts.
+const additionalExamples = [
+  ['meadow', 'Meadow Care House', 3.138, 101.681, 1110],
+  ['little-steps', 'Little Steps Studio', 3.144, 101.683, 1110],
+  ['sunbeam', 'Sunbeam Learning House', 3.141, 101.695, 1080],
+  ['fern', 'Fern Care House', 3.132, 101.685, 1140],
+  ['moonlight', 'Moonlight Private Care', 3.137, 101.696, 1260],
+  ['starlight', 'Starlight Private Care', 3.146, 101.691, 1320],
+];
+for (const [id, name, lat, lng, end] of additionalExamples) {
+  fixtureProviders.push({
+    ...structuredClone(base),
+    id: `demo-${id}`,
+    name: `Demo · ${name}`,
+    registeredName: `FICTIONAL ${name.toUpperCase()}`,
+    registration: {...structuredClone(base.registration), number: `DEMO-${id.toUpperCase()}`, publishedName: `FICTIONAL ${name.toUpperCase()}`},
+    location: {lat, lng, source:s},
+    // Deliberately exercise the opening-hours fallback used by the real directory.
+    careWindows: [],
+    businessHours: {windows:[w(420, end)], closedDays:[], source:s},
+    lateRule: {latestEnd:end, source:s},
+    notes: ['Coursework scenario: fictional provider and modelled hours, including evening care. Not a Malaysian default or a real service listing.'],
+  });
+}
 export const fixtureCatalog = {
   items: fixtureProviders,
   held: [],
-  version: "demo-p03-v1",
-  release: "demo-p03-v1",
+  version: "demo-p03-v2",
+  release: "demo-p03-v2",
 };
