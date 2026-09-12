@@ -1,0 +1,95 @@
+{
+  "checked_at": "2026-09-12T14:07:05.964Z",
+  "endpoint": "https://sgp.cloud.appwrite.io/v1/functions/web-provider-query/executions",
+  "authentication": "none; public project identifier only",
+  "contract": "equalpath-web-p03-v1",
+  "version": "web_79f1397603c1e28325955f64:service-review-2026-09-12-v2",
+  "available": 3122,
+  "withheld": 417,
+  "queryTotal": 983,
+  "missingLocations": 915,
+  "checks": [
+    {
+      "action": "health",
+      "mode": "live",
+      "status": 200,
+      "ms": 596,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    },
+    {
+      "action": "places",
+      "mode": "live",
+      "status": 200,
+      "ms": 223,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    },
+    {
+      "action": "search",
+      "mode": "live",
+      "status": 200,
+      "ms": 379,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    },
+    {
+      "action": "compare",
+      "mode": "live",
+      "status": 200,
+      "ms": 206,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    },
+    {
+      "action": "details",
+      "mode": "live",
+      "status": 200,
+      "ms": 227,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    },
+    {
+      "action": "search",
+      "mode": "live",
+      "status": 422,
+      "ms": 200,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    },
+    {
+      "action": "compare",
+      "mode": "live",
+      "status": 409,
+      "ms": 210,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    },
+    {
+      "action": "details",
+      "mode": "live",
+      "status": 404,
+      "ms": 222,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    },
+    {
+      "action": "publish",
+      "mode": "live",
+      "status": 400,
+      "ms": 209,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    },
+    {
+      "action": "search",
+      "mode": "demo",
+      "status": 200,
+      "ms": 242,
+      "deployment": "6aa55c1bcdbbe47c0cf3",
+      "cors": "http://127.0.0.1:4179"
+    }
+  ],
+  "passed": true,
+  "ownerWrites": 0
+}

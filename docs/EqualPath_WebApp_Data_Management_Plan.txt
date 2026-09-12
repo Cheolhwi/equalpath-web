@@ -1,0 +1,248 @@
+Data Management Plan
+Temporary care and pickup coordination
+Prepared for the EqualPath project team and FIT5120 reviewers. 12 September 2026.
+This plan defines the datasets, interpretation rules, preparation, storage, conceptual relationships and analysis required for temporary care and pickup coordination. Collection and controls are planned unless identified as existing reference work.
+1 Datasets overview
+The named institutional and geographic sources are OpenDOSM, OpenStreetMap, JKM, KPM and Kiddy123. The parent-experience feature also uses a separate supplementary corpus of third-party public reviews. The review corpus is not attributed to those five sources and is not classified as open data.
+Source
+Purpose and grain
+Access and current evidence
+OpenDOSM
+Existing state and district reference used with JKM area lookup. Geographic reference grain; not institution registration.
+Official CSV or catalogue. Existing source register and district crosswalk document the prior mapping [R3, R12].
+OpenStreetMap
+Public map features and locations for institution discovery. Feature and coordinate grain.
+OSM-derived dataset or service. Map data does not by itself supply a route duration or live transport coverage [R4].
+JKM
+Official TASKA and relevant child-care Pusat Jagaan records. Institution record grain.
+Official directory pages. Record identifiers, recorded validity terms and categories are evidence, not capacity [R5, R6].
+KPM
+Corresponding private-kindergarten registration evidence. Institution record grain.
+Official lookup entry; current guidance directs users to a registered-user lookup. Complete acquisition has not been verified [R7].
+Kiddy123
+Branch service descriptions, age ranges, contacts, hours, transport and fee information. Listing grain.
+Listing pages and any relevant published attachments. Direct reading was restricted during preparation; indexed examples support field discovery only [R8].
+Supplementary public reviews
+Comment text, dated experience evidence and topic excerpts for Epic 6. Review grain.
+Third-party review pages or an authorised export. Source-specific rights and completeness remain to be established; not an open dataset.
+
+
+1.1 Source access, refresh and reuse
+A source being publicly visible does not make its contents openly licensed. The source register must distinguish a published licence from an unresolved reuse condition. Supplementary review material is identified here at source-category level. Exact source URLs, acquisition conditions and collection scope must be documented in the operational source register before use.
+Source
+Source updates
+Proposed project check
+Reuse position
+OpenDOSM
+Annual dataset; publication dates come from catalogue metadata.
+Reuse the existing district mapping; review when a new release or mapping change appears.
+CC BY 4.0 stated by the catalogue; preserve attribution and modifications [R3].
+OpenStreetMap
+Contributions are updated continuously.
+Record the date of the chosen extract or service result; check before each reviewed release.
+ODbL and attribution apply; service usage conditions are separate [R4].
+JKM
+No reliable dataset-wide schedule is assumed.
+Monthly proposed record refresh, plus a release-time check. A failed check does not renew freshness.
+No blanket open licence is asserted. Minimise factual fields and record source-specific reuse decision [R5, R6].
+KPM
+Update schedule not established.
+Refresh through the available permitted route before release; show unresolved retrieval honestly.
+No open licence or unrestricted automated access is asserted [R7].
+Kiddy123
+Listing-specific updates; schedule not established.
+Weekly proposed check for shortlisted service facts, subject to permitted access.
+Directory material and attachments retain their own conditions. No republication permission is claimed [R8].
+Public reviews
+Publication and edits are item-specific.
+At each permitted corpus refresh, preserve dates, sample scope and removed-item handling.
+Restricted external content; review access, quotation, attribution and retention conditions separately.
+
+The proposed frequencies are operational intentions, not observed source guarantees or running jobs. A successful collection date does not establish that the institution has updated its service facts. Until a refresh workflow is implemented and verified, outputs must say when each fact was last retrieved.
+
+2 Web App data usage
+The first delivery stage targets Must-have stories in Epics 1 to 3 under Revision 2. Stories 1.4, 3.4 and 3.5 are Should-have additions, and reference totals remain data-gated. Service enquiries do not depend on reviews. D1 to D5 below identify the evidence required for real-data release.
+Data group
+Minimum information
+Use and limitation
+Institution identity
+Source ID or URL, branch name, area and category; address and institutional contact only when acquired with separate provenance.
+Epics 1 and 3. The reused JKM import excludes address and contact. New branch matches remain unresolved until supporting evidence is available.
+Registration evidence
+Authority, source record ID, recorded category and dates where supplied, match state.
+Epic 3. Record presence is not proof of available capacity or current safety.
+Service claims
+Age range, temporary admission policy, hours, transport existence/type/coverage, late-collection rules.
+Epic 2. A missing claim remains unknown; transport Yes does not establish a particular route.
+Fees
+Amount, currency, unit, duration, minimum charge, known extras and source text.
+Epic 3. Monthly fees cannot be converted into one-off hourly prices without a published rule.
+Spatial reference
+Public place reference, coordinates when supported, place label and data timestamp.
+Epics 1 and 2. Coordinates support location; no route-time calculation or inferred transport coverage is included.
+Review evidence
+Review reference, original text or permitted excerpt, date precision, retrieval time, topic and content type.
+Epic 6. Exclude editorial copy from review counts; redact child identities and private contact details.
+Request context
+Service date, public pickup place, deadline, care end time, optional AGE value and transport need. No date of birth.
+Transient request; explicit browser template or explicit shared card only when chosen.
+Preparation and rehearsal
+Approved checklist items; scenario changes; checked fact versions and result states.
+Epics 5, 7 and 8. No child identity or health input, authorisation record, consent status or real-time vacancy.
+
+OpenDOSM supports the existing district-reference relationship used in JKM lookup [R12]. JKM remains the authority for its registration records. This redesign adds no population dashboard, inferred vacancy measure or demographic ranking of individual providers.
+
+2.1 Data preparation
+Acquire and record
+For each permitted source collection, retain source identifier, access route, retrieval time, coverage scope and any source date. Keep partial collections identifiable. Do not claim a complete directory when pagination, authentication or page access was incomplete.
+Separate institution branches
+Preserve original identity fields where actually acquired, alongside normalised values. Existing JKM imports exclude phone and postal address [R12]; new fields need separate source evidence. Match branches using multiple corroborating signals. Ambiguous matches remain separate rather than inheriting another branch facts.
+Reuse the area crosswalk
+Use the existing OpenDOSM-backed canonical district labels and explicit JKM aliases. Preserve provider-only or non-one-to-one areas. Do not guess that a locality is an administrative district or silently join a missing area [R12].
+Retain individual claims
+Store hours, fees, age, transport and registration as separate evidence items. Each retains its source, original wording, date and interpretation. Conflicting sources are visible; the most recently fetched page is not automatically the most authoritative fact.
+Normalise with preserved meaning
+Represent service hours with applicable weekdays and exceptions, and retain currency and fee basis. AGE below defines the selectable age intervals and partial-overlap rule. Separate no, unknown and contact for information. Reject invalid coordinates rather than repairing them by guesswork.
+Prepare review evidence
+Separate reviews from editorial and institutional copy. Deduplicate exact or demonstrably repeated items without discarding independently similar experiences. Preserve language and meaning. Topic labels and excerpts must be traceable to original passages; no invented balancing quotes.
+Validate before publication
+Check identity matches, collection scope, dates, coordinates, fee units and missingness before publication. Existing JKM observations include reused registration identifiers and missing or invalid fields [R12]; this is evidence for branch-review controls, not a completed control test. Failed refreshes retain the last usable version and dates.
+
+2.2 Storage, access and retention
+Storage is described by data purpose and access boundary. A database engine, hosting provider and application framework are not selected here. Even without accounts, a place plus service time may reveal a household routine; request and share-card data are therefore treated as context-sensitive rather than automatically anonymous.
+Material
+Access and intended location
+Proposed retention and deletion
+Public catalogue
+Reviewed institution facts; readable by visitors. Source publication restricted to assigned operators.
+Current reviewed version and necessary provenance. Retain older versions only while needed to explain changes and subject to source conditions.
+Raw source evidence
+Restricted working material; not a public mirror of source pages.
+Up to 90 days for validation where permitted, or shorter source-specific limits. Preserve only necessary evidence thereafter.
+Review corpus
+Restricted preparation; only permitted excerpts and required attribution are published.
+Source-specific period must be recorded before collection. Remove withdrawn or no-longer-permitted content at the next validated refresh.
+Unsaved request
+Current browser task and only necessary transient service processing.
+No intentional server history; discard on leaving the task unless the user deliberately saves allowed content.
+Local favourites and templates
+Current browser only, including private non-identifying notes.
+Until user deletion or browser clearing. No automatic cross-device recovery is promised.
+Active share card
+Only holders of the appropriate read or edit capability; not searchable or indexed.
+Active until the editor revokes it or the service is withdrawn. State the service-lifetime limit; no silent lifetime guarantee.
+Revoked card and backups
+Immediately inaccessible online. Restricted recovery material only.
+Proposed active-store removal within 24 hours; backup expiry within 30 days. Revocation must be reapplied before restored data can be served.
+Security logs
+Restricted operational events; no card credentials, raw notes or request payloads.
+Proposed maximum 30 days unless a documented incident requires narrower retained evidence.
+Printed or downloaded copy
+User-held offline document.
+Outside online recall. Show revision date and a read-only online check reference, never an edit credential.
+
+
+2.3 Conceptual data relationships
+The conceptual model below defines the relationships needed to keep institutional evidence, local reusable material and shared plans traceable.
+
+Figure 1. Proposed information relationships. Public evidence and user-created private material have different access and retention requirements.
+Relationship rules
+A source record belongs to a source and a collection event. Several source records may describe one institution branch, while an ambiguous match remains unresolved.
+Registration, service, spatial and review evidence refer to the branch without losing their own source identity. Neither a directory review nor an operator note can replace an official registration record.
+Local favourites reference branches. Shared card items reference branches and preserve the contact order chosen by the editor; local notes do not transfer automatically.
+A rehearsal snapshot refers to a card revision and the fact versions checked. It records the chosen scenario and condition states, allowing a later result to be compared without rewriting history.
+Read and edit capabilities are separate secrets associated with the private card. Public source records and search results do not contain or expose these capabilities.
+Source traceability record
+Each published item needs a stable source reference, branch-match status, original claim or excerpt, normalised interpretation, source date or date precision, retrieval time and a reason for any exclusion or warning. An acquisition timestamp alone is insufficient evidence that a claim is current.
+
+2.4 Data analysis and interpretation
+Descriptive evidence
+Counts describe the collected sample, not the full platform. A recurring concern needs at least two distinct collected reviews. A topic with fewer than two dated relevant reviews in the recent twelve months is labelled limited recent evidence under story 6.3.3. These are display rules, not statistical proof of reliability or a current institutional problem.
+Current request checks
+Epic 2 defines supported, conflict and unknown results for age, temporary admission, transport existence, pickup coverage, pickup timing and care end. It compares applicable published pickup windows with the deadline; no route duration is computed. General business hours do not establish a temporary-care window, and actual reception remains a question for the provider.
+Conditional scenarios
+Epic 8 preserves the actual request and baseline card while changing hypothetical assumptions. Story 8.2 compares baseline and scenario using the same evidence version; story 8.6 retains the same assumptions while comparing newer evidence. Shared limitations and common information gaps are distinct. Neither produces a health score or acceptance probability.
+Convenience and costs
+Use source-backed location and service factors. This baseline has no route-time calculation; transfer duration and arrival stay unknown when unsupported. Cost comparison preserves the published charging basis and missing extras. A reference total under 3.5.3 requires applicable one-off rates and complete charging rules, as specified by D4.
+Acceptance and quality targets
+Check
+Proposed acceptance condition
+Provenance
+Every published registration and service claim, and every review excerpt, can be traced to the appropriate branch and source.
+Missing information
+No missing critical field becomes a positive fit or fabricated default in the acceptance fixtures.
+Identity
+Every published cross-source branch match has inspectable evidence; unresolved matches are not labelled verified.
+Sample coverage
+No review count claims completeness unless the collection record establishes it.
+Refresh failure
+A failed source update does not advance retrieval or verification dates or clear prior warnings.
+
+
+Responsibilities and release evidence
+Role
+Responsibility
+Evidence required
+Data steward role
+Maintain source access, reuse conditions, field definitions and review sampling rules.
+Source register, collection coverage record and field-level provenance sample.
+Product reviewer role
+Check that displayed claims and uncertainty match the numbered acceptance criteria.
+Scenario walkthrough and approved wording for unknown, conflicting and dated evidence.
+Security reviewer role
+Check private-card access, local-only data, deletion and source-content handling.
+Results against the Security Plan, including revocation and read-only export checks.
+Team coordinator role
+Assign actual owners, schedule source reviews and record governance decisions.
+Named responsibility record and links to the team-approved review location.
+
+These are responsibility roles, not named appointments. No acquisition job, dataset completeness percentage, provider count or successful security test is asserted in this document. Before release, the team must establish the unresolved source access and review-use conditions and verify the specified handling.
+Relationship to the original materials
+The original persona and broad work-care problem remain historical source material. The current recognised-gap scenario and scope decisions are recorded in [R13]. Existing OpenDOSM and JKM work supports area lookup [R12]; it does not establish acquisition of the new contact, fee, service or review fields.
+
+3 Field definitions and requirement ownership
+AGE: The user selects completed age on the service date: Under 1, 1, 2, 3, 4, 5 or 6 years. These mean [0,12), [12,24), [24,36), [36,48), [48,60), [60,72) and [72,84) months respectively; the lower endpoint is included and the upper endpoint excluded. No birth date is requested. This is a product input definition for the current under-seven search scope, not a claim about institutional admission. Unselected age is unknown.
+Published service ages retain their original wording and endpoints. A fully included selected interval is supported by published ages; a disjoint interval is a conflict; a partial overlap, unclear endpoint or missing range requires confirmation. For example, age 4 is fully within an explicit 48 to under 72 month range, conflicts with under 48 months, and only partly overlaps 54 to under 72 months. A bare 4 to 6 label needs its endpoint convention checked. Registration category alone never confirms temporary admission.
+JKM describes TASKA in terms of children below four years, while KPM defines preschool education for four to six years [R14, R15]. These categories guide evidence lookup, not a promise that a branch accepts a particular child or one-off request. The preserved persona description is historical context; current candidate ages must be checked explicitly.
+Shared freshness interpretation
+FRESH: Compare source fact versions, preserving both source date and retrieval time. A successful retrieval does not prove a provider updated its facts. A failed refresh does not renew a timestamp or establish no change. Show material changes to the relevant user, preserve the chosen order and saved snapshots, and require an explicit action to replace a plan or rerun a comparison.
+Enquiries and preparation
+Story 3.6 owns the contact enquiry list, including context, ordering, deduplication and copying. Epic 2 supplies unresolved conditions. Story 6.5 optionally supplies selected review concerns and does not create another list. Core enquiries work without Epic 6.
+Epic 3 helps choose and question a candidate provider. Epic 5 prepares the subsequent pickup, transfer and collection discussion with the usual centre, receiving centre and transport party. It does not record their agreement.
+
+4 Data readiness for delivery
+D1 Registration and identity
+Existing JKM reference work supplies names, record identifiers, categories, validity terms and coordinates where published [R12]. KPM acquisition is not yet verified.
+Required evidence: Branch matching needs corroborating identity evidence. The old import excludes address and contact. Missing or conflicting evidence remains unresolved.
+Related requirements: 1.1, 3.1, 3.2
+D2 Places and contacts
+Existing sourced coordinates may support map locations. OpenStreetMap and Kiddy123 are proposed sources of branch places or public contacts where actually published [R4, R8].
+Required evidence: A branch-matched phone, address or contact route needs an inspected source and retrieval record. No inherited JKM phone/address is claimed. Call demonstration requires a verified institutional number.
+Related requirements: 1.4, 3.7, 7.2
+D3 Service conditions
+Kiddy123 is a proposed source of admission ages, care hours, transport and temporary-care statements [R8]. Access and field coverage remain to be established.
+Required evidence: Validate real examples for decisive claims before release. A daycare label is not evidence of one-off admission; transport Yes is not pickup coverage. No route-time source or route-time calculation is included.
+Related requirements: 1.2, 1.3, Epic 2
+
+4 Data readiness for delivery continued
+D4 Fees
+Published one-off fees and charging rules, if actually acquired and applicable, support cost comparison [R8]. No usable full fee set is claimed.
+Required evidence: Show original charging basis and missing extras first. Reference totals remain data-gated until duration, minimum charges and required extras are validated.
+Related requirements: 3.5
+D5 Experiences
+A separate supplementary third-party public review corpus is proposed; it is not attributed to the five named sources or represented as open data.
+Required evidence: Before Epic 6 release, record permitted use, collection scope, branch matches, dates and excerpt traceability. Service enquiries remain available without this corpus.
+Related requirements: Epic 6
+Validate the core market premise with traceable real examples of relevant services and institutional contact routes before claiming real-world usefulness. Label synthetic fixtures as Demo only. No new source collection or availability finding is asserted by this revision.
+References
+[R3] Department of Statistics Malaysia. Population Table Administrative Districts. https://open.dosm.gov.my/data-catalogue/population_district
+[R4] OpenStreetMap Foundation. Copyright and License. https://www.openstreetmap.org/copyright
+[R5] Jabatan Kebajikan Masyarakat. Registered TASKA directory. https://www.jkm.gov.my/main/taska
+[R6] Jabatan Kebajikan Masyarakat. Pusat Jagaan directory. https://www.jkm.gov.my/main/pusat-jagaan
+[R7] Kementerian Pendidikan Malaysia. Private kindergarten lookup information. https://www.moe.gov.my/semakan-tadika-swasta
+[R8] Kiddy123. Institution listings. https://www.kiddy123.com/listing/
+[R12] EqualPath existing reference documentation. Source register and district crosswalk. Local source: appwrite-backend/reference/SOURCES.md and district-normalization.v1.json. These describe existing reference work, not delivery of the redesigned web app.
+[R13] EqualPath project owner. Web App scope decisions. Local source: EqualPath_WebApp_Scope_Decisions.md. User-approved product direction and subsequent story-review decisions; not new user research.
+[R14] Jabatan Kebajikan Masyarakat. Panduan Permohonan Pendaftaran TASKA. https://www.jkm.gov.my/jkm/uploads/files/Bahagian%20KK/Panduan%20Permohonan%20Pendaftaran%20TASKA%20%5BFINAL%5D.pdf
+[R15] Kementerian Pendidikan Malaysia. Garis Panduan Penubuhan Pendaftaran dan Pengoperasian Tadika Swasta. https://moe.gov.my/storage/files/shares/Bahagian%20dan%20Unit/Bahagian%20Pendidikan%20Swasta/tadika/garis-panduan-3/GP%20TADIKA%20SWASTA.pdf
+Web sources were checked for document preparation on 12 September 2026. A catalogue reference is not evidence of a complete dataset download, reuse permission or a live provider check. Local sources are supplied project materials.

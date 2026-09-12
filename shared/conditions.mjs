@@ -1,0 +1,356 @@
+import { minutes, timeLabel } from "./request.mjs";
+const result = (id, label, state, reason, source = null, question = null) => ({
+  id,
+  label,
+  state,
+  reason,
+  source,
+  question,
+});
+const dayFor = (date) =>
+  ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][
+    new Date(date + "T12:00:00+08:00").getUTCDay()
+  ];
+export function applicableWindows(windows, date) {
+  return (windows ?? []).filter(
+    (w) =>
+      (!w.days || w.days.includes(dayFor(date))) &&
+      (!w.from || date >= w.from) &&
+      (!w.until || date <= w.until) &&
+      !(w.excludedDates ?? []).includes(date),
+  );
+}
+export function checkAge(age, r) {
+  if (r.age === "")
+    return result(
+      "age",
+      "Admission age",
+      "unknown",
+      "Age has not been selected.",
+      age?.source,
+      "Does your service accept the child’s age group?",
+    );
+  if (!age)
+    return result(
+      "age",
+      "Admission age",
+      "unknown",
+      "No branch-specific admission ages are published.",
+      null,
+      `Do you accept children ${r.age === "0" ? "under 1 year" : `aged ${r.age}`} for temporary care?`,
+    );
+  const lo = Number(r.age) * 12,
+    hi = lo + 12,
+    min = age.min ?? 0,
+    max = age.max ?? Infinity;
+  const disjoint =
+    hi <= min || lo > max || (lo === max && age.maxInclusive === false);
+  if (disjoint)
+    return result(
+      "age",
+      "Admission age",
+      "conflict",
+      `${age.wording}. This excludes the selected age interval.`,
+      age.source,
+      "Is there a separate temporary programme for this age group?",
+    );
+  if (
+    age.endpointKnown &&
+    (lo > min || (lo === min && age.minInclusive !== false)) &&
+    hi <= max
+  )
+    return result(
+      "age",
+      "Admission age",
+      "supported",
+      `${age.wording}. The whole selected age interval is covered.`,
+      age.source,
+    );
+  return result(
+    "age",
+    "Admission age",
+    "unknown",
+    `${age.wording}. The age interval only partly overlaps, or the endpoints need confirmation.`,
+    age.source,
+    "Can you confirm the exact ages accepted for this temporary visit?",
+  );
+}
+export function assess(p, r) {
+  const states = [checkAge(p.age, r)],
+    ad = p.admission,
+    transport = p.transport ?? {},
+    source = transport.source;
+  states.push(
+    result(
+      "admission",
+      "Temporary admission",
+      ad?.value === true
+        ? "supported"
+        : ad?.value === false
+          ? "conflict"
+          : "unknown",
+      ad?.wording ??
+        "Ordinary enrolment or general childcare does not establish one-off admission.",
+      ad?.source,
+      ad?.value === true
+        ? null
+        : "Can you accept a one-off temporary care visit on this date?",
+    ),
+  );
+  if (r.transport === "self") {
+    states.push(
+      result(
+        "transport",
+        "Institutional transport",
+        "supported",
+        "You will arrange delivery; institutional pickup is not required.",
+      ),
+      result(
+        "coverage",
+        "Pickup coverage",
+        "supported",
+        "Not required for self-arranged delivery.",
+      ),
+      result(
+        "pickup",
+        "Collection deadline",
+        "supported",
+        `You will arrange collection by ${r.deadline}; no institutional pickup window is required.`,
+      ),
+    );
+  } else {
+    states.push(
+      result(
+        "transport",
+        "Institutional transport",
+        !r.transport
+          ? "unknown"
+          : transport.exists === true
+            ? "supported"
+            : transport.exists === false
+              ? "conflict"
+              : "unknown",
+        !r.transport
+          ? "Transport preference has not been selected."
+          : [transport.type, transport.wording ?? "No branch-specific transport service is published."].filter(Boolean).join(' · '),
+        source,
+        "Do you operate or arrange institutional pickup for this visit?",
+      ),
+    );
+    let coverage = "unknown",
+      why =
+        "A transport listing does not establish coverage of this pickup place.";
+    if (r.transport && transport.coverage?.placeIds) {
+      coverage = transport.coverage.placeIds.includes(r.pickup.id)
+        ? "supported"
+        : transport.coverage.exhaustive
+          ? "conflict"
+          : "unknown";
+      why = transport.coverage.wording;
+    }
+    states.push(
+      result(
+        "coverage",
+        "Pickup coverage",
+        coverage,
+        why,
+        transport.coverage?.source ?? source,
+        "Can you collect from the named pickup place, and is a seat available?",
+      ),
+    );
+    const ws = applicableWindows(p.pickupWindows, r.date),
+      deadline = minutes(r.deadline);
+    let state = "unknown",
+      reason = "No applicable pickup window is published for this date.";
+    if (r.transport && ws.length) {
+      const allBefore = ws.every((w) => w.end <= deadline),
+        allAfter = ws.every((w) => w.start > deadline);
+      state = allBefore ? "supported" : allAfter ? "conflict" : "unknown";
+      reason = `Published pickup: ${ws.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")}. ${allBefore ? "All listed times are at or before your deadline." : allAfter ? "All listed times are after your deadline." : "The window crosses your deadline; confirm the actual collection time."}`;
+    }
+    states.push(
+      result(
+        "pickup",
+        "Collection deadline",
+        state,
+        reason,
+        ws[0]?.source,
+        "Can collection be completed by the stated deadline?",
+      ),
+    );
+  }
+  const care = applicableWindows(p.careWindows, r.date),
+    end = minutes(r.end),
+    exception = (p.dateExceptions ?? []).find((x) => x.date === r.date);
+  let state = "unknown",
+    reason = "General opening hours do not confirm a temporary-care window.",
+    careSource = p.businessHours?.source;
+  if (exception) {
+    reason = `${exception.label ?? exception.displayed_label ?? "Date-specific hours unresolved"}. Confirm temporary care for this date.`;
+    careSource = exception.source ?? careSource;
+  } else if (care.length) {
+    state = care.some((w) => end >= w.start && end <= w.end)
+      ? "supported"
+      : "conflict";
+    reason = `Temporary care: ${care.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")}. Requested final collection: ${r.end}.`;
+    careSource = care[0].source;
+  }
+  if (
+    !exception &&
+    p.lateRule?.latestEnd != null &&
+    end > p.lateRule.latestEnd
+  ) {
+    state = "conflict";
+    reason += ` Latest permitted collection is ${timeLabel(p.lateRule.latestEnd)}.`;
+    careSource = p.lateRule.source;
+  }
+  states.push(
+    result(
+      "care",
+      "Care end time",
+      state,
+      reason,
+      careSource,
+      "Can temporary care continue until the required end time, including any late-collection rules?",
+    ),
+  );
+  states.push(
+    result(
+      "transfer",
+      "Transfer and arrival",
+      "unknown",
+      "Transfer duration and arrival time are not calculated in this version.",
+      null,
+      r.transport === "self"
+        ? "How early must the child arrive for this temporary session?"
+        : "What transfer duration and arrival time should we allow?",
+    ),
+  );
+  const counts = { supported: 0, conflict: 0, unknown: 0 };
+  for (const c of states) counts[c.state]++;
+  return {
+    conditions: states,
+    counts,
+    summary: counts.conflict
+      ? "Known conditions conflict"
+      : counts.unknown
+        ? "Conditions need confirmation"
+        : "Published conditions checked",
+    acceptance: "Provider acceptance and availability remain unconfirmed.",
+    requestVersion: JSON.stringify(r),
+    factVersion: p.version,
+  };
+}
+export function businessHoursFor(p, date) {
+  const ws = applicableWindows(p.businessHours?.windows, date);
+  return ws.length
+    ? ws.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")
+    : (p.businessHours?.closedDays ?? []).includes(dayFor(date))
+      ? "Listed closed"
+      : "Not published";
+}
+export function costFor(p, r) {
+  const rule = p.feeRule,
+    missing = [
+      "one-off care rate",
+      "minimum charge and rounding",
+      "registration / materials / meals",
+      "late-collection charges",
+      ...(r.transport === "institution" ? ["transport charge"] : []),
+    ];
+  if (
+    !rule?.validated ||
+    !rule.complete ||
+    !["hour", "visit"].includes(rule.basis) ||
+    !Number.isFinite(rule.rate) ||
+    rule.rate < 0 ||
+    !Number.isFinite(rule.minimumMinutes) ||
+    !Number.isFinite(rule.roundingMinutes) ||
+    rule.roundingMinutes <= 0 ||
+    !Array.isArray(rule.includedExtras) ||
+    (r.transport === "institution" && !rule.transportIncluded)
+  )
+    return {
+      available: false,
+      reason: "A complete one-off fee total is unavailable.",
+      missing,
+      published: p.fees ?? [],
+    };
+  const duration = minutes(r.end) - minutes(r.deadline),
+    charged = Math.max(
+      rule.minimumMinutes,
+      Math.ceil(duration / rule.roundingMinutes) * rule.roundingMinutes,
+    ),
+    total = rule.basis === "hour" ? (charged / 60) * rule.rate : rule.rate;
+  return {
+    available: true,
+    total: Math.round(total * 100) / 100,
+    currency: rule.currency,
+    durationMinutes: duration,
+    chargedMinutes: charged,
+    minimumMinutes: rule.minimumMinutes,
+    roundingMinutes: rule.roundingMinutes,
+    calculation:
+      rule.basis === "hour"
+        ? `${charged} minutes ÷ 60 × ${rule.rate}`
+        : `One visit × ${rule.rate}`,
+    includedExtras: rule.includedExtras,
+    source: rule.source,
+    notice:
+      "Reference estimate for the stated duration. Confirm actual arrival, charges and acceptance with the provider.",
+    published: p.fees ?? [],
+  };
+}
+export function enquiries(p, r, fit = assess(p, r)) {
+  const questions = fit.conditions
+    .filter((c) => c.state !== "supported" && c.question)
+    .map((c) => ({ id: c.id, text: c.question, reason: c.state }));
+  questions.splice(Math.min(1, questions.length), 0, {
+    id: "capacity",
+    text: `Is a place available on ${r.date} until ${r.end}, and what notice or documents do you require?`,
+    reason: "availability",
+  });
+  const cost = costFor(p, r);
+  questions.push({
+    id: "fees",
+    text: cost.available
+      ? "Can you confirm this reference price and any changes for our actual arrival and collection?"
+      : "What is the one-off charge, including minimum duration, transport, meals, registration and late collection?",
+    reason: "charges",
+  });
+  return [...new Map(questions.map((q) => [q.id, q])).values()];
+}
+export function sortProviders(items, sort, date) {
+  const value = (p) =>
+    sort === "distance"
+      ? p.distanceKm
+      : sort === "pickup"
+        ? p.transport?.exists === true
+          ? 1
+          : p.transport?.exists === false
+            ? 0
+            : null
+        : sort === "closing"
+          ? Math.max(
+              ...applicableWindows(p.businessHours?.windows, date).map(
+                (w) => w.end,
+              ),
+              -Infinity,
+            )
+          : p.name.toLocaleLowerCase("en");
+  return [...items].sort((a, b) => {
+    let x = value(a),
+      y = value(b);
+    if (x === -Infinity) x = null;
+    if (y === -Infinity) y = null;
+    if (x == null && y != null) return 1;
+    if (y == null && x != null) return -1;
+    if (x != null && y != null && x !== y)
+      return typeof x === "string"
+        ? x.localeCompare(y)
+        : sort === "closing" || sort === "pickup"
+          ? y - x
+          : x - y;
+    return a.id.localeCompare(b.id);
+  });
+}

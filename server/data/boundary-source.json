@@ -1,0 +1,11 @@
+{
+  "id": "MYS-ADM1-15666254",
+  "version": "9469f09",
+  "represents": "2017",
+  "source": "OpenStreetMap / Wambacher via geoBoundaries",
+  "url": "https://www.geoboundaries.org/api/current/gbOpen/MYS/ADM1/",
+  "download": "https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/9469f09/releaseData/gbOpen/MYS/ADM1/geoBoundaries-MYS-ADM1.geojson",
+  "license": "ODbL 1.0",
+  "retrieved_at": "2026-09-12T13:31:38.526Z",
+  "note": "Full geometry for KL, Selangor and excluded Putrajaya; ambiguous boundary records withheld, not survey-grade boundaries."
+}

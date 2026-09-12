@@ -1,0 +1,58 @@
+{
+  "checked_at": "2026-09-12T14:07:58.345Z",
+  "function": {
+    "id": "web-provider-query",
+    "execute": [
+      "any"
+    ],
+    "scopes": [],
+    "logging": false,
+    "deployment": "6aa55c1bcdbbe47c0cf3"
+  },
+  "deployment": {
+    "id": "6aa55c1bcdbbe47c0cf3",
+    "status": "ready"
+  },
+  "domains": [
+    {
+      "domain": "6a916c370006d8268446.appwrite.network",
+      "status": "verified",
+      "resource": "iteration1-core"
+    },
+    {
+      "domain": "6a916c370000de98ffc7.appwrite.network",
+      "status": "verified",
+      "resource": "delete-account"
+    },
+    {
+      "domain": "6a95d7bc0023f8480e10.appwrite.network",
+      "status": "verified",
+      "resource": "reference-ingestion"
+    },
+    {
+      "domain": "6a95d84c003c789dcf69.appwrite.network",
+      "status": "verified",
+      "resource": "provider-query"
+    },
+    {
+      "domain": "6a961ccf0011b45ea6ac.appwrite.network",
+      "status": "verified",
+      "resource": "planner-persistence"
+    },
+    {
+      "domain": "6a964b72001a64c9d1f9.appwrite.network",
+      "status": "verified",
+      "resource": "planner-solver"
+    },
+    {
+      "domain": "6a969bb9003c22453508.appwrite.network",
+      "status": "verified",
+      "resource": "plan-coordination"
+    },
+    {
+      "domain": "equalpath-support-6a916a6c.appwrite.network",
+      "status": "verified",
+      "resource": "support-coordination"
+    }
+  ]
+}

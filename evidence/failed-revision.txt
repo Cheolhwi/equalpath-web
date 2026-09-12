@@ -1,0 +1,189 @@
+- main:
+  - link "Skip to your request":
+    - /url: "#request-form"
+  - button "EqualPath discover":
+    - strong: EQUALPATH／
+    - generic: CARE FOR THIS OCCASION
+  - navigation "Main navigation":
+    - button "01 DISCOVER":
+      - generic: "01"
+      - text: DISCOVER
+    - button "02 COMPARE 0":
+      - generic: "02"
+      - text: COMPARE
+      - emphasis: "0"
+    - button "03 ENQUIRY":
+      - generic: "03"
+      - text: ENQUIRY
+  - generic: CONTROLLED DEMO
+  - button "Display and data settings":
+  - complementary "Find care for this request":
+    - text: FOR THE DAY THAT CHANGED
+    - generic: ／ 01
+    - heading "A little more time. A clearer next step." [level=1]:
+      - text: A little more time.
+      - text: A clearer next step.
+    - paragraph:
+      - text: Find institutional care. Check the conditions.
+      - text: Know what to ask before you call.
+    - paragraph:
+      - text: Controlled examples — fictional providers, times and prices for trying the flow.
+      - button "Use real directory"
+    - strong: YOUR CURRENT OCCASION
+    - button "Hide form":
+      - text: Hide form
+    - text: Public pickup place
+    - generic: Required
+    - textbox "Public pickup place Required":
+      - /placeholder: Your usual childcare centre
+      - text: Demo usual centre · Kuala Lumpur
+    - button "Find pickup place":
+    - text: Demo usual centre · Kuala Lumpur
+    - generic: Region checked when you search
+    - button "Use my location":
+      - text: Use my location
+    - generic: Only after your permission
+    - generic: Institution names in KL / Selangor
+    - button "Choose on map":
+      - text: Choose on map
+    - text: Service date
+    - generic: Malaysia time
+    - textbox "Service date Malaysia time": 2026-09-12
+    - generic: Collect by
+    - textbox "Collect by": 16:00
+    - generic: Care until
+    - textbox "Care until": 19:00
+    - text: Age on this date
+    - generic: Optional
+    - combobox "Age on this date Optional":
+      - option "Not specified"
+      - option "Under 1 year"
+      - option "1 year"
+      - option "2 years"
+      - option "3 years"
+      - option "4 years" [selected]
+      - option "5 years"
+      - option "6 years"
+    - text: Pickup preference
+    - generic: Optional
+    - combobox "Pickup preference Optional":
+      - option "Not specified"
+      - option "Institutional pickup" [selected]
+      - option "I'll arrange delivery"
+    - generic "Refine the search":
+      - text: Refine the search
+      - generic: ＋
+    - option "Within 5 km (straight-line)" [selected]
+    - option "Within 10 km (straight-line)"
+    - option "Within 25 km (straight-line)"
+    - option "Within 50 km (straight-line)"
+    - option "All KL + Selangor"
+    - button "Update results":
+      - text: Update results
+    - paragraph: One date, one care gap. No account or child profile.
+    - alert:
+      - strong: Search unavailable
+      - paragraph: The search service is temporarily unavailable. Your entries and earlier results are still here. Please retry.
+      - button "Retry search":
+        - text: Retry search
+    - status:
+      - strong: Showing the earlier request
+      - paragraph: Demo usual centre · Kuala Lumpur · 2026-09-12 · collect by 16:00 · care until 18:00
+      - button "Apply edited request":
+        - text: Apply edited request
+    - strong: "4"
+    - generic: institutions to explore
+    - generic: Order search results
+    - combobox "Order search results":
+      - option "Nearest first" [selected]
+      - option "Later business closing"
+      - option "Published pickup first"
+      - option "By name"
+    - button "Why this order?":
+      - text: Why this order?
+    - generic: Page 1 · 4 shown
+    - paragraph: 3 located candidates + 1 without coordinates. Their distance cannot be checked.
+    - article:
+      - button "Select Demo · Garden Learning House" [pressed]:
+        - generic: 01 / TADIKA
+        - generic: 0.5 km · straight-line
+        - heading "Demo · Garden Learning House" [level=3]
+        - paragraph: Kuala Lumpur · Kuala Lumpur
+        - generic: Business hours
+        - strong: 08:00–19:00
+        - text: 1 condition to confirm
+        - generic: Hourly / one-off care listed
+      - button "Compare Demo · Garden Learning House":
+        - text: Compare
+      - button "Check conditions for Demo · Garden Learning House":
+        - text: Check conditions
+    - article:
+      - button "Select Demo · Riverside Care":
+        - generic: 02 / TADIKA
+        - generic: 0.7 km · straight-line
+        - heading "Demo · Riverside Care" [level=3]
+        - paragraph: Kuala Lumpur · Kuala Lumpur
+        - generic: Business hours
+        - strong: 08:00–17:00
+        - text: 2 conflicting conditions
+        - generic: Hourly / one-off care listed
+      - button "Compare Demo · Riverside Care":
+        - text: Compare
+      - button "Check conditions for Demo · Riverside Care":
+        - text: Check conditions
+    - article:
+      - button "Select Demo · Garden Learning House — other branch":
+        - generic: 03 / TADIKA
+        - generic: 1.2 km · straight-line
+        - heading "Demo · Garden Learning House — other branch" [level=3]
+        - paragraph: Kuala Lumpur · Kuala Lumpur
+        - generic: Business hours
+        - strong: 08:00–19:00
+        - text: 2 conflicting conditions
+      - button "Compare Demo · Garden Learning House — other branch":
+        - text: Compare
+      - button "Check conditions for Demo · Garden Learning House — other branch":
+        - text: Check conditions
+    - article:
+      - button "Select Demo · Cloud Care Studio":
+        - generic: 04 / TADIKA
+        - generic: Location incomplete
+        - heading "Demo · Cloud Care Studio" [level=3]
+        - paragraph: Kuala Lumpur · Kuala Lumpur
+        - generic: Business hours
+        - strong: Not published
+        - text: 6 conditions to confirm
+      - button "Compare Demo · Cloud Care Studio":
+        - text: Compare
+      - button "Check conditions for Demo · Cloud Care Studio":
+        - text: Check conditions
+    - paragraph: 1 matching records have no coordinates. They remain in the list; their distance cannot be checked.
+    - text: Fictional examples
+    - button "Data & sources"
+  - region "Flat childcare map":
+    - region "Map"
+    - button "Select Demo · Garden Learning House on map" [pressed]: "01"
+    - button "Select Demo · Riverside Care on map": "02"
+    - button "Select Demo · Garden Learning House — other branch on map": "03"
+    - 'generic "Pickup: Demo usual centre · Kuala Lumpur"': P
+    - text: ONE OCCASION. A FEW POSSIBILITIES.
+    - heading "KUALA LUMPUR + SELANGOR" [level=2]
+    - paragraph: 3 mapped on this page · P marks the pickup place
+    - button "Fit pickup and results":
+    - button "Zoom in":
+    - button "Zoom out":
+    - generic: MAP CONNECTED · 2D
+    - link "OpenFreeMap":
+      - /url: https://openfreemap.org/
+    - text: ·
+    - link "OpenMapTiles":
+      - /url: https://openmaptiles.org/
+    - text: ·
+    - link "© OpenStreetMap":
+      - /url: https://www.openstreetmap.org/copyright
+  - text: SELECTED INSTITUTION
+  - heading "Demo · Garden Learning House" [level=3]
+  - paragraph: Kuala Lumpur · Kuala Lumpur
+  - text: Needs confirmation
+  - button "Check conditions":
+    - text: Check conditions

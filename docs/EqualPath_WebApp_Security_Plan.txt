@@ -1,0 +1,234 @@
+Security Plan
+Temporary care and pickup coordination
+Prepared for the EqualPath project team and FIT5120 reviewers. 12 September 2026.
+This plan defines security, privacy and information-integrity requirements for the proposed no-login EqualPath web app. Controls and verification activities require implementation evidence before they can be marked complete.
+1 Project System Overview
+Visitors inspect institutional evidence, compare candidates and prepare questions. Browser-local favourites and request templates support reuse. An explicit share-card action creates a private link-based record containing an ordered contact draft and minimal service context. External institutions remain responsible for their own admission, transport and release procedures.
+
+Figure 1. Proposed information and access boundaries. This is a conceptual overview, not a deployed architecture or a choice of programming framework.
+Protected assets
+The key assets are accurate branch-level evidence, integrity of condition explanations, availability of the public service, private card context, edit capabilities, operational credentials and the ability to honour revocation. No-login access does not make a shared card public or its contents automatically anonymous.
+
+2 System Security Overview
+Public institutional facts can be read without an account. Private card access depends on a valid capability. Operational publication is restricted to assigned team roles. A read capability never grants edit authority, and knowing an institution or card identifier alone must not permit a private operation. These proposed boundaries follow least-privilege and per-request authorisation principles [R10].
+Actor
+Allowed activity
+Activity that remains prohibited
+Public visitor
+Search and inspect published catalogue facts; prepare a request and local material.
+Enumerate private cards, publish provider facts or change another person’s card.
+Read-link holder
+Read the corresponding active card and produce a read-only export.
+Edit, revoke or discover the edit credential.
+Edit-link holder
+Change or revoke the corresponding active card.
+Change another card or alter authoritative provider records.
+Assigned operator
+Review, correct and publish source material within the assigned role.
+Assume private card ownership or bypass documented deletion and source-use rules.
+External institution
+Receive a user-initiated call through its usual channels.
+Receive automatic website requests, assignments or claimed pickup authorisations.
+
+Important misuse cases
+A malicious user may attempt to obtain an edit link from a read page, insert executable content in an imported review, impersonate a branch through a similar name, or turn unknown service facts into misleading positive claims. The integrity of care-related information matters as much as conventional confidentiality. The plan therefore includes source mismatch and overstatement risks, not only generic website attacks.
+
+3 Security Awareness
+Access control
+Team members must understand the difference between public catalogue access, read-link access, edit-link authority and source-publication roles. Parent login is not introduced as a blanket answer to these risks.
+Data protection
+Treat request context and local notes as potentially sensitive. Do not place real child information, live edit links or operational credentials in screenshots, examples, repository files or routine logs. Use labelled synthetic scenarios for document and product demonstrations.
+Threat detection and response
+Record only events necessary to detect repeated failed access, unusual card creation, source-publication changes and retrieval failures. Do not adopt full request recording or a household activity history as a substitute for a considered logging policy.
+Network and service security
+Before deployment, verify encrypted transport, restricted operational access, safe external retrieval and service limits. Exact platform settings will be documented when a platform is selected; this plan does not assert an existing cloud configuration.
+Software and content review
+Review handling of imported text, external links, private capabilities and source-change logic. Security checks should exercise behaviour and evidence boundaries rather than merely check that a security library is installed.
+Team training
+At the start of work involving shared cards or source publication, review a short synthetic misuse scenario. At each iteration review, revisit changed risks and assign named owners. Dates and participant attendance are recorded only when the activity takes place.
+
+4 Ethical, Legal, Security and Privacy Issues
+Ethical presentation of care evidence
+A registered institution may still have unknown capacity, service restrictions or missing transport information. A directory entry or favourable review does not establish suitability for this child on this day. Reviews are opinions and may contain allegations; present supported excerpts with context and frame concerns as questions. Do not rank institutions by unsupported demographic assumptions or infer an individual mother’s circumstances from area statistics.
+Source and reuse conditions
+OpenDOSM and OpenStreetMap state open-data terms, while official registration directories, commercial listing material and public comments require their own access and reuse review [R3-R8]. The supplementary review corpus is not represented as an openly licensed source. Exact review provenance and source-specific conditions must be documented in the operational source register before use. No licence, consent or completed acquisition is asserted.
+Privacy and applicable rules
+Malaysia is the primary user context. The team must assess its processing against applicable Malaysian personal-data requirements and institutional project rules, including the current official PDPA materials [R11]. This plan does not certify compliance or make a legal determination about the final deployment.
+The privacy notice should explain what stays in the browser, what is uploaded only when a card is deliberately created, who can use each link, what is logged, how revocation works and what cannot be recalled from offline copies. Public institutional contacts may sometimes identify an individual proprietor; use only what is necessary for contacting the service and preserve the institutional context.
+No child records and no authorisation claims
+Do not provide online inputs for child names, identity documents or health details. Any such information required by a provider is supplied privately outside the website; a blank printable preparation space is not uploaded. Handover prompts ask the parent to check the institution’s procedure. Neither a card nor an exported checklist grants permission to release a child.
+
+5 Risk Analysis
+Ratings are proposed design estimates. Likelihood and impact each use a five-point scale from 1 low to 5 high. The score is their product: 1 to 4 low, 5 to 9 moderate, 10 to 15 high and 16 to 25 critical. These estimates prioritise verification; they are not measured incident probabilities or proof that controls work.
+ID and risk
+Cause and effect
+L
+I
+Score
+S1 Card link disclosure
+Sensitive place and time context is exposed through a forwarded, logged or indexed link.
+3
+4
+12
+S2 Unauthorised card changes
+A viewer or another card holder changes order, content or revocation state.
+3
+5
+15
+S3 Unsafe external content
+Imported review, listing or user note is rendered as executable markup or a malicious link.
+3
+4
+12
+S4 Wrong branch evidence
+A brand match attaches registration, reviews or transport to the wrong location.
+3
+5
+15
+S5 Stale or overstated fit
+Missing or old service information becomes a current acceptance or safety claim.
+4
+5
+20
+S6 Sensitive material in local or shared notes
+Free text or a combined place and time reveals private child or family details.
+3
+4
+12
+
+All risks are Open design items. The team assigns named owners and accepts or reduces residual risk only after reviewing implementation evidence. No residual score is fabricated for untested controls.
+
+5 Risk Analysis continued
+ID and risk
+Cause and effect
+L
+I
+Score
+S7 Operational access misuse
+An unauthorised operator changes source facts or publishes misleading contact data.
+2
+5
+10
+S8 Abuse and service exhaustion
+Automated searches, card creation or repeated exports make the service unavailable.
+3
+3
+9
+S9 Unsafe external retrieval
+A supplied source URL causes access to unintended internal or sensitive locations.
+2
+4
+8
+S10 Secrets or payloads in error output
+Keys, edit links or full requests appear in errors, analytics or build artefacts.
+3
+4
+12
+S11 Revoked data reappears after recovery
+Restoring a backup makes a previously revoked card accessible again.
+2
+5
+10
+S12 Unavailable or impermissible source reuse
+A collection is incomplete or rights are assumed, producing misleading or unusable evidence.
+3
+4
+12
+
+S5 is critical because overstated fit can influence a time-sensitive care decision. S2, S4, S7 and S11 are in the high band. Unauthorised changes, wrong-branch facts, publication misuse and failed revocation after recovery therefore require explicit release evidence.
+Failure and availability boundaries
+If a map, official record lookup or review source fails, preserve a usable list and show what could not be checked. An unavailable source is not an empty market. A failed refresh does not renew evidence dates. If private-card authority cannot be checked, deny private access without exposing an old card. This availability behaviour is part of the numbered acceptance criteria.
+
+6 Risk Mitigation Strategies
+S1 Card link disclosure
+Exclude private identifiers and notes; restrict indexing and referrers; omit credentials from logs; support revocation.
+Verification required: Open a read-only link and inspect page, export, requests and logs for edit credentials and excluded content.
+S2 Unauthorised card changes
+Separate read and edit capabilities; check authority for every change; do not rely on hidden buttons.
+Verification required: Acceptance criterion 7.3.2 rejects read-only changes; 7.3.3 rejects a different card edit capability; 7.3.5 rejects public identifiers and invalid capabilities. Both attempted mutation and retained card state must be checked.
+S3 Unsafe external content
+Treat all imported text as untrusted; render text safely, constrain links and exclude scripts from publication.
+Verification required: Use harmless hostile-markup fixtures; verify they display as inert text and cannot execute.
+S4 Wrong branch evidence
+Match branches with multiple signals; retain conflicts and require review of ambiguous identity.
+Verification required: Give two same-brand branches different facts and verify no cross-branch inheritance.
+S5 Stale or overstated fit
+Keep field dates, uncertainty and claim types; do not infer capacity, consent or one-off admission.
+Verification required: Use missing admission, old hours, expired records and incomplete pickup-window evidence under 2.5, 3.2, 8.2 and Q9. No route-time source is assumed and no whole-arrangement pass is allowed.
+S6 Sensitive material in local or shared notes
+Do not request child identity or health data; keep notes local; shared fields use an approved minimal set.
+Verification required: Verify notes do not transfer to cards, exports or logs and that online forms have no child identity or health inputs.
+
+6 Risk Mitigation Strategies continued
+S7 Operational access misuse
+Restrict publication roles, protect operator access and retain attributable change evidence.
+Verification required: Check that a public visitor cannot access publication functions and that a reviewed change has an audit event.
+S8 Abuse and service exhaustion
+Set reasonable request and size limits; limit public creation; provide clear retry without leaking details.
+Verification required: Exercise agreed limits with bounded test traffic and check that other basic read operations remain available.
+S9 Unsafe external retrieval
+Use a maintained source allowlist and reject arbitrary user-supplied fetch destinations; validate redirects.
+Verification required: Attempt unsupported addresses and redirect chains in a controlled fixture; no unintended resource is fetched.
+S10 Secrets or payloads in error output
+Use restricted secret handling and minimal event logging; redact sensitive URLs and payloads.
+Verification required: Inspect representative failure paths and packaged outputs for credentials and private payloads.
+S11 Revoked data reappears after recovery
+Carry revocation state into recovery; deny access until restoration checks finish; respect deletion periods.
+Verification required: Restore a test backup containing a revoked card and verify every old link remains unusable.
+S12 Unavailable or impermissible source reuse
+Record access, scope and reuse conditions separately; keep incomplete sources and review corpora identifiable.
+Verification required: Inspect the source register and failed refresh behaviour; no fabricated record count, licence or fresh date is accepted.
+
+Incident response, recovery and review
+Planned response sequence
+Identify the affected asset and contain access. Revoke exposed card capabilities, withdraw misleading published facts or disable the affected operation as appropriate; avoid collecting extra child or household data during diagnosis.
+Preserve minimal relevant evidence with restricted access. Record event times, affected record identifiers, scope and the corrective decision without copying secrets into the incident log.
+Investigate the cause and correct the smallest affected component or record set. Recheck identity matching, capability permissions or source provenance as relevant.
+Restore only after validation. Reapply all revocations before serving restored cards and check that older snapshots cannot bypass the current access state.
+Determine whether affected users, the institution, project staff or authorities need notice under the applicable requirements. The website cannot promise direct notification to anonymous card holders when no contact information was collected.
+Record the incident outcome, lessons and revised checks. Do not mark a risk closed without evidence that the failure can no longer be reproduced.
+Recovery and retention intentions
+The Data Management Plan proposes immediate denial for a revoked card, removal from the active store within 24 hours and backup expiry within 30 days. A restoration must preserve denial during recovery. Public facts can be restored from a reviewed source version, retaining the original evidence dates. Users are responsible for their own offline documents; the site cannot erase downloaded or printed copies.
+Release checks
+Before shared-card release, evidence must cover 7.3 access boundaries, 7.5 export secrecy, 7.7 revocation and the relevant Q checks, including Q6 error handling and Q7 recovery. The matrix below links every security risk to named verification requirements. These controls remain planned until actual implementation evidence is recorded.
+
+Revision 2 Verification traceability
+The requirements now separate parent-facing story acceptance from cross-cutting quality checks. Operational publication and retrieval controls remain explicit release requirements without being presented as artificial working-mother stories. All referenced identifiers belong to Revision 2.
+Security risk
+Required verification references
+S1
+7.3.1; 7.5.3; Q6
+S2
+7.3.2 to 7.3.5
+S3
+Q2
+S4
+3.1.3; 3.2.2; 3.3.2; Q9
+S5
+2.5.2; 4.3; 7.6; 8.2; 8.6; Q9
+S6
+5.5.2; 7.4.2; Q6; Q10
+S7
+Q3
+S8
+Q4
+S9
+Q5
+S10
+Q6
+S11
+7.7; Q7
+S12
+Q8; D1 to D5
+
+Q1 to Q10 are defined in the requirements. They have no executed pass status in this design package. A release reviewer records each result and links it to the affected story and risk. Any source access or operational threshold still awaiting a decision must be resolved before its check can pass.
+References
+[R3] Department of Statistics Malaysia. Population Table Administrative Districts. https://open.dosm.gov.my/data-catalogue/population_district
+[R4] OpenStreetMap Foundation. Copyright and License. https://www.openstreetmap.org/copyright
+[R5] Jabatan Kebajikan Masyarakat. Registered TASKA directory. https://www.jkm.gov.my/main/taska
+[R6] Jabatan Kebajikan Masyarakat. Pusat Jagaan directory. https://www.jkm.gov.my/main/pusat-jagaan
+[R7] Kementerian Pendidikan Malaysia. Private kindergarten lookup information. https://www.moe.gov.my/semakan-tadika-swasta
+[R8] Kiddy123. Institution listings. https://www.kiddy123.com/listing/
+[R10] OWASP Foundation. Authorization Cheat Sheet. https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html
+[R11] Department of Personal Data Protection Malaysia. Personal Data Protection Act 2010 Act 709. https://www.pdp.gov.my/ppdpv1/en/akta/pdp-act-2010-en/
+Web sources were checked for document preparation on 12 September 2026. A catalogue reference is not evidence of a complete dataset download, reuse permission or a live provider check. Local sources are supplied project materials.

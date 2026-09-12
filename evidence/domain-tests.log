@@ -1,0 +1,42 @@
+
+> equalpath-web@0.0.0 test
+> node --test tests/*.test.mjs
+
+✔ essential fields, impossible dates and same-day time ordering fail without changing valid values (4.294875ms)
+✔ omitted age and transport are accepted and visibly unspecified (4.007042ms)
+✔ age four is a full [48,60) month interval, with partial and ambiguous overlap unknown (0.142209ms)
+✔ regular enrolment does not become one-off admission (0.13125ms)
+✔ pickup window wholly before, wholly after and spanning the deadline produce three different states (0.212333ms)
+✔ transport existence does not supply missing pickup coverage or an arrival estimate (0.094292ms)
+✔ self delivery removes institutional transport requirement, preserving other request conditions (0.243625ms)
+✔ general opening hours and holiday exceptions never turn into confirmed temporary care (0.128334ms)
+✔ care end and applicable latest collection restrictions preserve conflicts (0.275083ms)
+✔ monthly fees and missing extras do not generate fabricated hourly prices (0.147167ms)
+✔ controlled complete tariff explains duration, minimum, rounding and extras (0.161416ms)
+✔ one deduplicated enquiry list carries unknown service conditions without any reviews (0.251542ms)
+✔ missing coordinates stay in list and sort after known straight-line distances (1.133458ms)
+✔ comparison uses separate branch facts and deterministic unknown-last priorities (1.653583ms)
+✔ no result is distinct from source failure (0.819375ms)
+✔ request revisions update evaluations and stale facts cannot be presented as current (1.479459ms)
+✔ KL, Selangor, Putrajaya and other states are enforced on server requests (1.127458ms)
+✔ source-region disagreement is held, while sourced regional records without coordinates remain usable (0.630208ms)
+✔ imported links and phone actions cannot inject executable schemes (0.527083ms)
+✔ current source import is deterministic and real contact facts retain separate provenance (564.099875ms)
+✔ public function handles preflight and disallows unsupported methods without touching the store (1.472125ms)
+✔ invalid JSON and oversized requests return bounded private errors (2.321ms)
+✔ entry returns controlled examples only when demo mode is requested explicitly (0.266959ms)
+✔ age lower-exclusive endpoint cannot fully support a completed age interval (0.123417ms)
+✔ location is read once with a timeout, accuracy, and no tracking subscription (1.207542ms)
+✔ denied, timeout, unavailable and unsupported location retain a manual recovery instruction (0.728792ms)
+✔ invalid coordinates are rejected rather than copied into a request (0.246625ms)
+✔ cold requests coalesce, public-only table reads are bounded, and failed refresh does not renew the cache (6.046042ms)
+✔ partial source pages never become a new complete directory (0.302166ms)
+✔ release changes during collection are rejected and a later retry can recover (0.824958ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 738.68175

@@ -1,0 +1,55 @@
+{
+  "checked_on": "2026-09-12",
+  "preview": "http://127.0.0.1:4179/",
+  "desktop_initial": {
+    "width": 1280,
+    "height": 720
+  },
+  "mobile_comparison": {
+    "width": 390,
+    "height": 844,
+    "documentWidth": 390,
+    "tableVisibleWidth": 330,
+    "tableScrollWidth": 760
+  },
+  "final_user_viewport": {
+    "width": 421,
+    "height": 984,
+    "mapPitch": 0,
+    "mapBearing": 0,
+    "mapStatus": "ready",
+    "geolocationButton": true
+  },
+  "verified": [
+    "Required fields preserve valid input",
+    "Optional age and transport can be omitted",
+    "Real Appwrite EDWETHINK and Little Whale records",
+    "Sourced age, hourly-care statement, registration and contact",
+    "Same-page map/list provider selection",
+    "Three-provider comparison and unknown-last sorting",
+    "Reference tariff explanation in explicit demo mode",
+    "Question selection and order retained across comparison",
+    "Real EDWETHINK copied context and tel href read back",
+    "Invalid revised times show previous request",
+    "Changed valid request reassessed",
+    "Explained empty results",
+    "Isolated 503 retained inputs and recovered on retry",
+    "Map unavailable retains list and provider details",
+    "Dark/light, map label toggle, reduced motion",
+    "Native dialog Escape and focus restoration",
+    "Mobile table scroll without document overflow"
+  ],
+  "not_claimed": [
+    "Actual user GPS coordinates acquired",
+    "Actual device telephone launch or provider contact",
+    "200 percent text audit",
+    "Full real-world pickup policies or complete one-off rates",
+    "All formal release quality gates passed"
+  ],
+  "screenshots": [
+    "desktop-real-detail.jpg",
+    "mobile-comparison.jpg",
+    "mobile-real-map.jpg",
+    "mobile-final.jpg"
+  ]
+}

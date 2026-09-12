@@ -1,0 +1,127 @@
+{
+  "checked_at": "2026-09-12T13:29:22.334Z",
+  "functions": [
+    {
+      "id": "delete-account",
+      "name": "EqualPath Delete Account",
+      "enabled": true,
+      "active_deployment": "6a969c138d216bfccf1d",
+      "runtime": "node-22"
+    },
+    {
+      "id": "iteration1-core",
+      "name": "EqualPath Iteration 1 Core",
+      "enabled": true,
+      "active_deployment": "6a969bef1067f8fb3c20",
+      "runtime": "node-22"
+    },
+    {
+      "id": "reference-ingestion",
+      "name": "EqualPath Reference Ingestion",
+      "enabled": true,
+      "active_deployment": "6a95e4af0514c53ff48a",
+      "runtime": "node-22"
+    },
+    {
+      "id": "provider-query",
+      "name": "EqualPath Public Place and TASKA Query",
+      "enabled": true,
+      "active_deployment": "6aa2f18fce8e3ab39702",
+      "runtime": "node-22"
+    },
+    {
+      "id": "planner-persistence",
+      "name": "EqualPath Planner Persistence",
+      "enabled": true,
+      "active_deployment": "6a969e361355d55cb42f",
+      "runtime": "node-22"
+    },
+    {
+      "id": "planner-solver",
+      "name": "EqualPath CP-SAT Planner Solver",
+      "enabled": true,
+      "active_deployment": "6a96dd6a86bb4878175a",
+      "runtime": "python-ml-3.11"
+    },
+    {
+      "id": "plan-coordination",
+      "name": "EqualPath Plan Confirmation Coordination",
+      "enabled": true,
+      "active_deployment": "6a969e3920e58a064fba",
+      "runtime": "node-22"
+    },
+    {
+      "id": "planner-sync",
+      "name": "EqualPath Local Planner Sync",
+      "enabled": true,
+      "active_deployment": "6a97abe98563ae4cb4c9",
+      "runtime": "node-22"
+    },
+    {
+      "id": "support-coordination",
+      "name": "EqualPath Automatic Support Coordination",
+      "enabled": true,
+      "active_deployment": "6aa3bc1dbb327ac92ddb",
+      "runtime": "node-22"
+    }
+  ],
+  "sites": [],
+  "domains": [
+    {
+      "domain": "6a916c370006d8268446.appwrite.network",
+      "type": "deployment",
+      "status": "verified",
+      "resource_type": "function",
+      "resource_id": "iteration1-core"
+    },
+    {
+      "domain": "6a916c370000de98ffc7.appwrite.network",
+      "type": "deployment",
+      "status": "verified",
+      "resource_type": "function",
+      "resource_id": "delete-account"
+    },
+    {
+      "domain": "6a95d7bc0023f8480e10.appwrite.network",
+      "type": "deployment",
+      "status": "verified",
+      "resource_type": "function",
+      "resource_id": "reference-ingestion"
+    },
+    {
+      "domain": "6a95d84c003c789dcf69.appwrite.network",
+      "type": "deployment",
+      "status": "verified",
+      "resource_type": "function",
+      "resource_id": "provider-query"
+    },
+    {
+      "domain": "6a961ccf0011b45ea6ac.appwrite.network",
+      "type": "deployment",
+      "status": "verified",
+      "resource_type": "function",
+      "resource_id": "planner-persistence"
+    },
+    {
+      "domain": "6a964b72001a64c9d1f9.appwrite.network",
+      "type": "deployment",
+      "status": "verified",
+      "resource_type": "function",
+      "resource_id": "planner-solver"
+    },
+    {
+      "domain": "6a969bb9003c22453508.appwrite.network",
+      "type": "deployment",
+      "status": "verified",
+      "resource_type": "function",
+      "resource_id": "plan-coordination"
+    },
+    {
+      "domain": "equalpath-support-6a916a6c.appwrite.network",
+      "type": "deployment",
+      "status": "verified",
+      "resource_type": "function",
+      "resource_id": "support-coordination"
+    }
+  ]
+}

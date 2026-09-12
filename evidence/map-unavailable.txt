@@ -1,0 +1,219 @@
+- main:
+  - link "Skip to your request":
+    - /url: "#request-form"
+  - button "EqualPath discover":
+    - strong: EQUALPATH／
+    - generic: CARE FOR THIS OCCASION
+  - navigation "Main navigation":
+    - button "01 DISCOVER":
+      - generic: "01"
+      - text: DISCOVER
+    - button "02 COMPARE 0":
+      - generic: "02"
+      - text: COMPARE
+      - emphasis: "0"
+    - button "03 ENQUIRY":
+      - generic: "03"
+      - text: ENQUIRY
+  - generic: CONTROLLED DEMO
+  - button "Display and data settings":
+  - complementary "Find care for this request":
+    - text: FOR THE DAY THAT CHANGED
+    - generic: ／ 01
+    - heading "A little more time. A clearer next step." [level=1]:
+      - text: A little more time.
+      - text: A clearer next step.
+    - paragraph:
+      - text: Find institutional care. Check the conditions.
+      - text: Know what to ask before you call.
+    - paragraph:
+      - text: Controlled examples — fictional providers, times and prices for trying the flow.
+      - button "Use real directory"
+    - strong: YOUR CURRENT OCCASION
+    - button "Edit request":
+      - text: Edit request
+    - paragraph:
+      - text: Demo usual centre · Kuala Lumpur
+    - strong: 2026-09-12
+    - generic: By 16:00 → until 18:00
+    - generic: Age 4 · Institutional pickup
+    - strong: "4"
+    - generic: institutions to explore
+    - generic: Order search results
+    - combobox "Order search results":
+      - option "Nearest first" [selected]
+      - option "Later business closing"
+      - option "Published pickup first"
+      - option "By name"
+    - button "Why this order?":
+      - text: Why this order?
+    - generic: Page 1 · 4 shown
+    - paragraph: 3 located candidates + 1 without coordinates. Their distance cannot be checked.
+    - article:
+      - button "Select Demo · Garden Learning House":
+        - generic: 01 / TADIKA
+        - generic: 0.5 km · straight-line
+        - heading "Demo · Garden Learning House" [level=3]
+        - paragraph: Kuala Lumpur · Kuala Lumpur
+        - generic: Business hours
+        - strong: 08:00–19:00
+        - text: 1 condition to confirm
+        - generic: Hourly / one-off care listed
+      - button "Compare Demo · Garden Learning House":
+        - text: Compare
+      - button "Check conditions for Demo · Garden Learning House":
+        - text: Check conditions
+    - article:
+      - button "Select Demo · Riverside Care":
+        - generic: 02 / TADIKA
+        - generic: 0.7 km · straight-line
+        - heading "Demo · Riverside Care" [level=3]
+        - paragraph: Kuala Lumpur · Kuala Lumpur
+        - generic: Business hours
+        - strong: 08:00–17:00
+        - text: 2 conflicting conditions
+        - generic: Hourly / one-off care listed
+      - button "Compare Demo · Riverside Care":
+        - text: Compare
+      - button "Check conditions for Demo · Riverside Care":
+        - text: Check conditions
+    - article:
+      - button "Select Demo · Garden Learning House — other branch":
+        - generic: 03 / TADIKA
+        - generic: 1.2 km · straight-line
+        - heading "Demo · Garden Learning House — other branch" [level=3]
+        - paragraph: Kuala Lumpur · Kuala Lumpur
+        - generic: Business hours
+        - strong: 08:00–19:00
+        - text: 2 conflicting conditions
+      - button "Compare Demo · Garden Learning House — other branch":
+        - text: Compare
+      - button "Check conditions for Demo · Garden Learning House — other branch":
+        - text: Check conditions
+    - article:
+      - button "Select Demo · Cloud Care Studio" [pressed]:
+        - generic: 04 / TADIKA
+        - generic: Location incomplete
+        - heading "Demo · Cloud Care Studio" [level=3]
+        - paragraph: Kuala Lumpur · Kuala Lumpur
+        - generic: Business hours
+        - strong: Not published
+        - text: 6 conditions to confirm
+      - button "Compare Demo · Cloud Care Studio":
+        - text: Compare
+      - button "Check conditions for Demo · Cloud Care Studio":
+        - text: Check conditions
+    - paragraph: 1 matching records have no coordinates. They remain in the list; their distance cannot be checked.
+    - text: Fictional examples
+    - button "Data & sources"
+  - region "Flat childcare map":
+    - region "Map"
+    - button "Select Demo · Garden Learning House on map": "01"
+    - button "Select Demo · Riverside Care on map": "02"
+    - button "Select Demo · Garden Learning House — other branch on map": "03"
+    - 'generic "Pickup: Demo usual centre · Kuala Lumpur"': P
+    - text: ONE OCCASION. A FEW POSSIBILITIES.
+    - heading "KUALA LUMPUR + SELANGOR" [level=2]
+    - paragraph: 3 mapped on this page · P marks the pickup place
+    - button "Fit pickup and results":
+    - button "Zoom in":
+    - button "Zoom out":
+    - generic: MAP UNAVAILABLE · 2D
+    - link "OpenFreeMap":
+      - /url: https://openfreemap.org/
+    - text: ·
+    - link "OpenMapTiles":
+      - /url: https://openmaptiles.org/
+    - text: ·
+    - link "© OpenStreetMap":
+      - /url: https://www.openstreetmap.org/copyright
+    - status:
+      - heading "The list is still available." [level=3]
+      - paragraph: The map could not connect. Browse the same institutions from the list.
+      - button "Retry map":
+        - text: Retry map
+  - text: SELECTED INSTITUTION
+  - heading "Demo · Cloud Care Studio" [level=3]
+  - paragraph: Kuala Lumpur · Kuala Lumpur
+  - text: Needs confirmation
+  - button "Check conditions":
+    - text: Check conditions
+  - dialog "Demo · Cloud Care Studio":
+    - generic: CONDITIONS & EVIDENCE
+    - button "Close dialog" [active]:
+    - heading "Demo · Cloud Care Studio" [level=2]
+    - paragraph: Demo usual centre · Kuala Lumpur · 2026-09-12 · collect by 16:00 · care until 18:00
+    - generic: TADIKA · Kuala Lumpur, Kuala Lumpur
+    - paragraph: Controlled example — fictional institution and service facts.
+    - paragraph: Illustrative public location in Kuala Lumpur
+    - text: Controlled example — fictional facts
+    - generic: Retrieved 2026-09-12 · Source date unavailable
+    - paragraph: Coordinates unavailable. This institution remains in the list without a map marker.
+    - button "Prepare questions":
+      - text: Prepare questions
+    - button "Compare":
+      - text: Compare
+    - generic: 01 / THIS REQUEST
+    - heading "Conditions need confirmation" [level=3]
+    - paragraph: Provider acceptance and availability remain unconfirmed.
+    - heading "Admission age" [level=4]
+    - text: Needs confirmation
+    - paragraph: 54 months to under 72 months. The age interval only partly overlaps, or the endpoints need confirmation.
+    - text: Controlled example — fictional facts
+    - generic: Retrieved 2026-09-12 · Source date unavailable
+    - heading "Temporary admission" [level=4]
+    - text: Needs confirmation
+    - paragraph: A monthly programme is described; temporary admission is unspecified.
+    - text: Controlled example — fictional facts
+    - generic: Retrieved 2026-09-12 · Source date unavailable
+    - heading "Institutional transport" [level=4]
+    - text: Supported
+    - paragraph: Transport is advertised, without a published service area.
+    - text: Controlled example — fictional facts
+    - generic: Retrieved 2026-09-12 · Source date unavailable
+    - heading "Pickup coverage" [level=4]
+    - text: Needs confirmation
+    - paragraph: A transport listing does not establish coverage of this pickup place.
+    - text: Controlled example — fictional facts
+    - generic: Retrieved 2026-09-12 · Source date unavailable
+    - heading "Collection deadline" [level=4]
+    - text: Needs confirmation
+    - paragraph: "Published pickup: 15:30–16:30. The window crosses your deadline; confirm the actual collection time."
+    - text: Controlled example — fictional facts
+    - generic: Retrieved 2026-09-12 · Source date unavailable
+    - heading "Care end time" [level=4]
+    - text: Needs confirmation
+    - paragraph: General opening hours do not confirm a temporary-care window.
+    - text: Controlled example — fictional facts
+    - generic: Retrieved 2026-09-12 · Source date unavailable
+    - heading "Transfer and arrival" [level=4]
+    - text: Needs confirmation
+    - paragraph: Transfer duration and arrival time are not calculated in this version.
+    - generic: No applicable published source
+    - strong: "General business hours: Not published"
+    - paragraph: These are business hours, not confirmed temporary-care coverage.
+    - text: Controlled example — fictional facts
+    - generic: Retrieved 2026-09-12 · Source date unavailable
+    - paragraph: Fictional provider. Do not use these details to arrange real care.
+    - generic: 02 / REGISTRATION EVIDENCE
+    - heading "Controlled example" [level=3]
+    - term: Published name
+    - definition: FICTIONAL LEARNING HOUSE
+    - term: Authority / record
+    - definition: KPM · DEMO-CODE
+    - term: Recorded category
+    - definition: Controlled example
+    - term: Recorded validity
+    - definition: 2025-01-01 → 2028-12-31
+    - paragraph: Fictional identity for repeatable testing only.
+    - paragraph: Postal address and telephone were not included in the JKM import. Contact and address shown here have separate sources.
+    - text: Controlled example — fictional facts
+    - generic: Retrieved 2026-09-12 · Source date unavailable
+    - generic: 03 / COST BASIS
+    - heading "One-off total unavailable" [level=3]
+    - paragraph: No applicable fee has been published in the current sources.
+    - paragraph: "Confirm: one-off care rate; minimum charge and rounding; registration / materials / meals; late-collection charges; transport charge. Monthly fees are not converted into hourly prices."
+    - heading "Keep the important questions together." [level=3]
+    - paragraph: Use these conditions to prepare a focused enquiry for this branch.
+    - button "Prepare questions":
+      - text: Prepare questions

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.qa-dist/
+.build/
+.env*
+!.env.example
+.DS_Store
+*.local

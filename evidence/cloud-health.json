@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-09-12T13:51:41.466Z",
+  "url": "https://sgp.cloud.appwrite.io/v1/functions/web-provider-query/executions",
+  "http": 201,
+  "cors": "http://127.0.0.1:4179",
+  "status": "completed",
+  "applicationStatus": 200,
+  "body": {
+    "ok": true,
+    "contract": "equalpath-web-p03-v1",
+    "mode": "live",
+    "version": "web_79f1397603c1e28325955f64:service-review-2026-09-12-v1",
+    "release": "web_79f1397603c1e28325955f64",
+    "regions": [
+      "Kuala Lumpur",
+      "Selangor"
+    ],
+    "available": 3122,
+    "withheld": 417,
+    "distanceBasis": "Straight-line distance; not road distance or travel time."
+  },
+  "deployment": "6aa558bd669abfac0d05"
+}

@@ -1,0 +1,723 @@
+Epics User Stories and Definition of Done
+Temporary care and pickup coordination
+Prepared for the EqualPath project team and FIT5120 reviewers. 12 September 2026.
+Revision 2 specifies eight epics, 46 user stories and 114 Given / When / Then acceptance criteria. Story and criterion counts follow complete user outcomes and the evidence needed to verify them. They are not quotas. All requirements remain Planned.
+Aina is a working mother whose child already attends a usual centre. When work or another commitment overruns, she needs to find temporary institutional care and understand the pickup connection. The persona is retained; the current intervention is defined by the owner-approved Web App scope [R1, R2, R13].
+Four pain points
+Pain point
+Meaning
+P1 Unexpected pickup and care gaps
+Work or another commitment overruns, so the mother cannot collect her child from the usual centre on time and needs both a pickup solution and continued care.
+P2 Backup services are difficult to find and assess
+Temporary admission, transport coverage, hours, fees, registration evidence and parent experiences are scattered across different sources.
+P3 Repeated enquiries and handover explanations
+The mother must ask several parties similar questions and explain locations, times, preparation and alternatives to family members.
+P4 Similar disruptions require repeated work
+When the situation recurs, previous searches, comparisons and arrangements are difficult to reuse without starting again.
+
+Reading the revised baseline
+A story records one usable outcome and may contain several related actions. Its priority and dependencies are explicit. Given describes the precondition, When the trigger, and Then the observable result. All applicable criteria must pass; partial implementation does not make a story Done.
+Identifiers belong to this revision. Appendix A maps every previous story to its new location; numbers must not be migrated by position alone. Appendix B defines data readiness. Cross-cutting quality checks Q1 to Q10 supplement story acceptance without creating artificial parent-facing stories for operational controls.
+
+Product boundaries and definitions
+A public web app with no parent account or mandatory child profile. The primary persona remains Aina Rahman, a 32-year-old senior executive in the Klang Valley with a four-year-old child and limited partner and family availability.
+The journey begins after the mother recognises a pickup or care gap. A single service request may contain a date, public pickup place, latest collection time, care end time, age band and transport preference. Work calendars, recurring work schedules and automated conflict detection are outside this redesign.
+Only institutional care services and transport publicly offered or arranged by those institutions are considered. There is no marketplace for individual drivers or carers, and no assignment or pickup-authorisation function.
+The parent contacts providers herself. The website offers telephone links, source links and copyable questions, but sends no messages, makes no booking, takes no payment and does not infer call outcomes or provider agreement.
+Published services, checked conditions and actual acceptance are separate. Unknown capacity, temporary admission, route coverage, fees and operating exceptions remain unknown. Registration evidence does not establish current availability or guaranteed care quality.
+Favourites and reusable request templates stay in the browser unless the user explicitly creates a shareable card. Shared cards contain only approved institutional facts and minimal request context. Child names, documents, health details, private family contacts and private notes are excluded.
+Source facts retain their origin, source date when available and retrieval time. Parent comments, editorial material and provider descriptions remain separate. Public reviews are not verified parent identities or a source of confirmed service promises.
+Epics are optional entry points rather than a compulsory sequence. Preparation applies to every relevant temporary arrangement, including repeat use. Rehearsals do not produce a health score or probability of successful care.
+Request times are interpreted on the selected service date in Asia/Kuala_Lumpur. This baseline models one day, with care end later than the collection deadline; an overnight request requires a separate scope decision. Search can start without an age selection, but age remains unknown until selected.
+
+Age and evidence interpretation
+AGE: The user selects completed age on the service date: Under 1, 1, 2, 3, 4, 5 or 6 years. These mean [0,12), [12,24), [24,36), [36,48), [48,60), [60,72) and [72,84) months respectively; the lower endpoint is included and the upper endpoint excluded. No birth date is requested. This is a product input definition for the current under-seven search scope, not a claim about institutional admission. Unselected age is unknown.
+Published service ages retain their original wording and endpoints. A fully included selected interval is supported by published ages; a disjoint interval is a conflict; a partial overlap, unclear endpoint or missing range requires confirmation. For example, age 4 is fully within an explicit 48 to under 72 month range, conflicts with under 48 months, and only partly overlaps 54 to under 72 months. A bare 4 to 6 label needs its endpoint convention checked. Registration category alone never confirms temporary admission.
+JKM describes TASKA in terms of children below four years, while KPM defines preschool education for four to six years [R14, R15]. These categories guide evidence lookup, not a promise that a branch accepts a particular child or one-off request. The preserved persona description is historical context; current candidate ages must be checked explicitly.
+Published condition states
+Supported means the published fact meets the stated condition under the request assumptions. Conflict means a known fact contradicts it. Unknown means evidence is missing, ambiguous, out of scope or only partly covers the age interval. None of these states represents confirmed admission, a completed handover or a probability of success.
+One freshness rule
+FRESH: Compare source fact versions, preserving both source date and retrieval time. A successful retrieval does not prove a provider updated its facts. A failed refresh does not renew a timestamp or establish no change. Show material changes to the relevant user, preserve the chosen order and saved snapshots, and require an explicit action to replace a plan or rerun a comparison.
+Current data limits
+The existing JKM import does not include telephone or postal address [R12]. New contact or address evidence needs its own source and branch match. Pickup timing uses applicable published pickup windows; this baseline has no route-time calculation. One-off fee totals and public reviews require the additional evidence defined in Appendix B.
+
+Epic responsibilities
+Current search and rehearsal
+Epic 1 changes the actual request and its search results. Epic 8 preserves the baseline card and compares a hypothetical alternative; only an explicit find-alternatives action carries scenario inputs into a new search.
+Fit and comparison
+Epic 2 defines single-candidate condition checks. Epic 3 owns cross-candidate comparison and priority ordering. Epic 8 reuses those checks to explain scenario differences and shared weaknesses.
+Enquiry list ownership
+Story 3.6 owns the contact enquiry list, including context, ordering, deduplication and copying. Epic 2 supplies unresolved conditions. Story 6.5 optionally supplies selected review concerns and does not create another list. Core enquiries work without Epic 6.
+Contact questions and handover prompts
+Epic 3 helps choose and question a candidate provider. Epic 5 prepares the subsequent pickup, transfer and collection discussion with the usual centre, receiving centre and transport party. It does not record their agreement.
+Saved material and shared plans
+Epic 4 provides local reuse through complete save-and-revisit tasks. Epic 7 organises a specific ordered card for its creator and recipients. Neither requires a fixed number of stories per actor.
+Preparation and exports
+Story 5.6 exports an independent preparation sheet. Story 7.4 attaches approved preparation to a card; 7.5 exports that ordered contact plan. Shared printing behaviour does not make the two user outcomes identical.
+Changed evidence
+FRESH is one common rule. Story 4.3 supports reconsidering a saved option, 7.6 alerts a card reader to changed facts, and 8.6 compares a saved scenario against newer facts. The three contexts do not define separate freshness policies.
+
+Delivery scope and dependencies
+Epic
+Stories
+Criteria
+Epic priority
+1 Temporary Care and Pickup Service Discovery
+6
+14
+Must have
+2 Temporary Admission, Transport and Time Fit
+5
+10
+Must have
+3 Provider Evidence, Comparison and Contact Decisions
+7
+19
+Must have
+4 Saved Institutions and Reusable Requests
+4
+10
+Should have
+5 Care Preparation and Handover
+6
+13
+Should have
+6 Parent Experiences and Reviews
+5
+12
+Should have
+7 Shareable Backup Plan Cards Without Login
+7
+21
+Should have
+8 Backup Scenario Rehearsal and Gap Checks
+6
+15
+Could have
+
+Staged delivery
+The first stage targets the Must-have stories in Epics 1 to 3: a relevant search, honest condition checks, registration evidence, comparison, one enquiry list and a source-backed contact route. The map convenience story 1.4, priority ordering 3.4 and fee story 3.5 are Should-have additions within those epics. Stage-one release needs usable real contact and service evidence; an unknown-only demonstration does not establish that the core need is met.
+Epics 4 and 5 provide reuse and preparation. Epic 6 is a separate Should-have addition only after D5 is satisfied. Its concern-to-enquiry integration is accepted under 6.5; core story 3.6 does not depend on it. Shared-card stories form the next stage, with 7.4 requiring preparation from Epic 5. Epic 8 follows usable cards and single-candidate checks.
+
+Epic 1 Temporary Care and Pickup Service Discovery
+Must have | Primary P1 and P2 | Status Planned
+As a working mother, I want to find institutions relevant to the current pickup location and temporary care need with minimal input, so that I can quickly identify providers worth investigating when I cannot collect my child on time.
+Epic 1 changes the actual request and its search results. Epic 8 preserves the baseline card and compares a hypothetical alternative; only an explicit find-alternatives action carries scenario inputs into a new search.
+User Story 1.1 Find candidates for a specific care gap
+Must have | Dependencies: None | Evidence: D1 and D2
+As a working mother, I want to search using the pickup place, service date, latest collection time and required care end time, so that I can find providers worth investigating before my usual centre closes.
+1.1.1  Given a visitor has no saved information, when she submits a public pickup place, service date, collection deadline and care end time, then a candidate list or explained empty result appears without account or child-profile setup.
+1.1.2  Given an essential field is missing or care end is not later than collection deadline, when she submits the request, then the affected fields are named, valid entries remain and no new assessment is shown.
+1.1.3  Given age or transport preference has not been selected, when she starts the search, then results identify those conditions as unspecified and allow her to refine them without restarting.
+User Story 1.2 Find services for the required transport arrangement
+Must have | Dependencies: 1.1 | Evidence: D3
+As a working mother, I want to specify whether an institution needs to arrange pickup or I can arrange delivery, so that I can focus on services my child could reach.
+1.2.1  Given she needs pickup and care, when she chooses institutional pickup, then results distinguish published institutional transport, explicitly unavailable transport and unknown transport; unknown coverage is visible.
+1.2.2  Given she can arrange delivery, when she selects self-arranged delivery, then institutional transport is no longer a required condition and her other request details remain.
+User Story 1.3 Find services relevant to the selected age
+Must have | Dependencies: 1.1 | Evidence: D3 and AGE
+As a working mother, I want to select my child's age group for the service date and see the published admission ages for each candidate, so that I can avoid pursuing services that clearly exclude my child's age.
+1.3.1  Given the age choices defined in this specification, when she selects age 4, then the request uses the interval from the fourth birthday up to the fifth birthday without requesting a date of birth.
+1.3.2  Given a sourced admission interval fully includes or excludes the selected age interval, when she checks age relevance, then it shows supported by published ages or an explicit age conflict, with the published wording and source.
+1.3.3  Given a selected interval only partly overlaps the published range or its endpoints are ambiguous, when she checks age relevance, then it shows age needs confirmation and explains the uncertainty; missing ages are also unknown.
+User Story 1.4 Understand location convenience
+Should have | Dependencies: 1.1 | Evidence: D2 and D3
+As a working mother, I want to see where candidates are in relation to the pickup place alongside their main service facts, so that I can identify locations that would make collection and transfer more practical.
+1.4.1  Given source-backed locations exist, when she opens a candidate location, then she can identify both the pickup place and institution and inspect its care, hours and transport facts; any displayed distance states its basis.
+1.4.2  Given a candidate location is missing or the map is unavailable, when she browses results, then the list and sourced area labels remain accessible with a location limitation; no invented coordinate or journey time appears.
+User Story 1.5 Revise the current search without starting again
+Must have | Dependencies: 1.1 | Evidence: D1 to D3
+As a working mother, I want to change the pickup place, service date or care times while keeping the other details, so that I can explore a practical alternative without repeating the whole search.
+1.5.1  Given she has an active search, when she applies changed request details, then candidates and current fit results use the revised actual request and unchanged fields remain.
+1.5.2  Given the new search is pending or fails, when she inspects the page, then any retained result is labelled with its earlier request and a retry is offered; it is not presented as a result of the revision.
+User Story 1.6 Recover from an empty or unavailable search
+Must have | Dependencies: 1.1 | Evidence: D1 to D3
+As a working mother, I want to understand why no usable result is shown and choose a relevant next step, so that I can continue looking instead of reaching a dead end.
+1.6.1  Given no candidates meet the selected filters, when she opens the empty result, then active restrictions are shown and she can deliberately change an area or include unknown service information without changing other inputs.
+1.6.2  Given the search source or service is unavailable, when she submits a request, then an availability message and retry appear instead of a claim that no local services exist.
+Epic completion outcome
+A user obtains relevant candidates or an explained empty result and can revise the actual request.
+Completion requires evidence for all 14 applicable numbered criteria in this epic, its demonstrated outcome and the shared quality checks. Any deferred story remains open and must be excluded explicitly from the release claim.
+
+Epic 2 Temporary Admission, Transport and Time Fit
+Must have | Primary P1 and P2 | Status Planned
+As a working mother, I want to understand whether each candidate fits the known parts of this pickup and care request, so that I can see which connections work on paper and which questions still need an answer.
+Epic 2 defines single-candidate condition checks. Epic 3 owns cross-candidate comparison and priority ordering. Epic 8 reuses those checks to explain scenario differences and shared weaknesses.
+User Story 2.1 Check temporary admission conditions
+Must have | Dependencies: Current request | Evidence: D3
+As a working mother, I want to distinguish one-off temporary care from ordinary enrolment, so that I can decide whether a candidate is relevant to this occasion.
+2.1.1  Given a source explicitly describes one-off admission or an age restriction, when she inspects the candidate, then the wording, source and applicable request condition appear together.
+2.1.2  Given only daycare or a monthly programme is described, when she inspects admission, then one-off admission remains unknown with the missing policy identified; ordinary enrolment is not treated as temporary acceptance.
+User Story 2.2 Understand institutional transport and coverage
+Must have | Dependencies: Current request | Evidence: D3
+As a working mother, I want to see how institutional pickup is offered and which places it publicly covers, so that I can judge whether my usual centre is within the stated pickup service.
+2.2.1  Given a source names self-operated or partner transport and its service area, when she opens transport details, then transport type and coverage appear separately with their source.
+2.2.2  Given a source states only that transportation exists, when she checks her pickup place, then transport existence is visible while coverage and same-day capacity remain unknown.
+User Story 2.3 Identify conflicts with the collection deadline
+Must have | Dependencies: Current request | Evidence: D3
+As a working mother, I want to compare a published pickup window with the latest time my child must leave the usual centre, so that I can identify a collection-time conflict before calling.
+2.3.1  Given pickup times applicable to the requested day are published, when she checks the deadline, then a window wholly after the deadline is a conflict, a window wholly at or before it meets the published timing condition, and a window spanning it needs confirmation.
+2.3.2  Given pickup times or their applicability are missing, when she checks the deadline, then pickup timing needs confirmation; transfer duration and arrival remain unknown because this baseline supplies no route-time calculation.
+User Story 2.4 Check continued care and final collection
+Must have | Dependencies: Current request | Evidence: D3
+As a working mother, I want to compare my required care end time with the published temporary-care window and late-collection rules, so that I can see whether I need a different arrangement for the remaining time.
+2.4.1  Given a temporary-care window applies to the requested day, when she checks final collection, then her end time is compared with that window and any sourced late-collection restrictions.
+2.4.2  Given only general business hours or unresolved holiday hours exist, when she checks final collection, then those hours are labelled by their actual meaning and temporary-care coverage remains unconfirmed.
+User Story 2.5 Understand why a candidate fits or does not fit
+Must have | Dependencies: 2.1 to 2.4 and age definition | Evidence: D3 and AGE
+As a working mother, I want to see the evidence and missing information behind each condition result, so that I can distinguish a definite conflict from a question that still needs an answer.
+2.5.1  Given a candidate has been checked, when she opens its fit explanation, then age, admission, transport existence, pickup coverage, pickup timing and care end each show supported, conflict or unknown with a reason.
+2.5.2  Given at least one decisive condition is unknown, when she reads the summary, then that condition remains visible and the page does not label the whole arrangement accepted or confirmed.
+Epic completion outcome
+The user distinguishes supported conditions, conflicts and unanswered questions for one candidate without interpreting fit as acceptance.
+Completion requires evidence for all 10 applicable numbered criteria in this epic, its demonstrated outcome and the shared quality checks. Any deferred story remains open and must be excluded explicitly from the release claim.
+
+Epic 3 Provider Evidence, Comparison and Contact Decisions
+Must have | Primary P2 and secondary P3 | Status Planned
+As a working mother, I want to check institutional evidence and compare relevant costs and constraints before choosing whom to contact, so that I can make a defensible contact decision and avoid repeating unfocused enquiries.
+Epic 2 defines single-candidate condition checks. Epic 3 owns cross-candidate comparison and priority ordering. Epic 8 reuses those checks to explain scenario differences and shared weaknesses.
+User Story 3.1 Inspect registration evidence for the specific branch
+Must have | Dependencies: None | Evidence: D1 and D2
+As a working mother, I want to view the official record and the evidence linking it to the candidate branch, so that I can judge whether the registration information concerns the institution I am considering.
+3.1.1  Given a supported branch-to-record match exists, when she opens registration evidence, then authority, source record, published name, category, identifiers and available validity dates appear with the original-source link.
+3.1.2  Given the reused JKM import has no address or telephone, when she opens its evidence, then those fields are labelled not included in this import; any separately acquired address or contact has its own source and is not attributed to that import.
+3.1.3  Given a name is shared by several branches and supporting identity evidence is insufficient, when she opens registration evidence, then the match stays unresolved and no other branch record is presented as verified for this one.
+User Story 3.2 Recognise uncertain registration evidence
+Must have | Dependencies: 3.1 | Evidence: D1
+As a working mother, I want to tell apart a record match and an unresolved registration question, so that I do not mistake a missing match for proof of non-registration.
+3.2.1  Given a recorded validity term has ended or identity facts conflict, when she inspects status, then the precise issue and source date are shown; renewal is unknown unless separately evidenced.
+3.2.2  Given only a directory claim or another branch record is available, when she inspects status, then the candidate is not labelled officially verified and she can inspect the source of the claim.
+User Story 3.3 Compare candidate differences
+Must have | Dependencies: 2.5 and 3.1 to 3.2 | Evidence: D1 to D4
+As a working mother, I want to compare shortlisted institutions using the same care, transport, timing, registration and cost factors, so that I can choose which trade-offs are acceptable for this request.
+3.3.1  Given she selects at least two candidates, when she opens comparison, then the same factors and uncertainty labels are shown for each candidate.
+3.3.2  Given one candidate lacks a fact or has conflicting evidence, when she compares it, then that gap remains in its own entry and is not filled with information from another branch.
+User Story 3.4 Prioritise candidates by what matters to me
+Should have | Dependencies: 3.3 | Evidence: D2 and D3
+As a working mother, I want to put candidates in order using a chosen factor such as later closing or published pickup, so that I can investigate the most relevant options first.
+3.4.1  Given comparable facts exist, when she selects one supported priority, then the candidate order and factor used are visible and repeatable.
+3.4.2  Given some candidates lack the chosen factor, when she orders them, then unknown values are labelled and placed after candidates with comparable values; they are not treated as zero or best fit.
+3.4.3  Given the requested ordering requires absent facts, when she opens priorities, then that option is marked unavailable with a reason and she can choose another; distance ordering requires a stated distance basis.
+User Story 3.5 Understand the known cost and remaining charges
+Should have | Dependencies: 3.3 | Evidence: D4; total calculation is data-gated
+As a working mother, I want to see applicable charges, their charging basis and any missing extras for this request, so that I can avoid choosing an apparently cheap option before understanding its likely cost.
+3.5.1  Given a sourced fee is available, when she opens costs, then its amount, currency, charging unit and applicable conditions appear together with the source.
+3.5.2  Given only monthly fees or incomplete charges are known, when she compares costs, then the published basis and missing charge categories appear, and the total is labelled unavailable; no hourly conversion is invented.
+3.5.3  Given the team has validated an applicable one-off rate and all required calculation rules, when she requests a reference total, then its duration, minimum charge, included extras and calculation are shown as an estimate requiring provider confirmation.
+User Story 3.6 Prepare one focused enquiry list
+Must have | Dependencies: 2.5; independent of Epic 6 | Evidence: D3; missing fields can generate questions
+As a working mother, I want to organise the unanswered service questions for a chosen candidate in one short list, so that I can ask about the decisive facts without repeating or forgetting questions.
+3.6.1  Given the request and candidate contain unanswered conditions, when she prepares the list, then admission, pickup coverage, timing and charges are ordered by relevance to her request.
+3.6.2  Given the same unknown appears more than once, when she prepares the list, then it appears as one question retaining the candidate and request context.
+3.6.3  Given the review feature is unavailable or she selects no review concern, when she prepares or copies the list, then a usable service-question list is still produced without requiring review data.
+User Story 3.7 Contact the selected institution with my questions
+Must have | Dependencies: 3.6 | Evidence: D2 contact gate
+As a working mother, I want to use the published institutional contact route with my prepared questions, so that I can ask the provider whether this arrangement is possible today.
+3.7.1  Given a branch-matched public institutional phone number has a source, when she chooses call, then the device opens the telephone action and the number remains inspectable; the website sends nothing automatically.
+3.7.2  Given a phone number is unavailable, when she opens contact options, then phone unavailable and the institution source page are shown with copyable questions; no number or contact outcome is invented.
+3.7.3  Given she returns from the phone action or source page in the same browser task, when she resumes comparison, then the selected candidates and questions remain and no contacted, accepted or booked status is inferred.
+Epic completion outcome
+The user compares candidates, chooses whom to contact and prepares one focused enquiry list with a source-backed contact route where available.
+Completion requires evidence for all 19 applicable numbered criteria in this epic, its demonstrated outcome and the shared quality checks. Any deferred story remains open and must be excluded explicitly from the release claim.
+
+Epic 4 Saved Institutions and Reusable Requests
+Should have | Primary P4 and secondary P3 | Status Planned
+As a working mother, I want to reuse useful institutions and request preferences when a similar disruption occurs, so that I spend less time repeating searches while still checking this occasion.
+Epic 4 provides local reuse through complete save-and-revisit tasks. Epic 7 organises a specific ordered card for its creator and recipients. Neither requires a fixed number of stories per actor.
+User Story 4.1 Save and revisit useful institutions
+Should have | Dependencies: 1.1 and 2.5 | Evidence: D1 and D3
+As a working mother, I want to keep and reopen institutions I may use again with a short reason for each, so that I can return to a promising candidate without searching for it from scratch.
+4.1.1  Given she chooses a candidate, when she saves it and later opens saved institutions, then its branch reference and optional non-identifying reason are available for reopening.
+4.1.2  Given she reopens a favourite, when she starts a new request for it, then she chooses the service date and current conditions are checked rather than restoring an old fit decision.
+4.1.3  Given browser storage is unavailable or full, when she saves an institution, then a not-saved message appears and the current candidate remains available; the save view explains that saved items stay in this browser.
+User Story 4.2 Save and reuse common request details
+Should have | Dependencies: 1.1 and 1.5 | Evidence: D2 and current request
+As a working mother, I want to reuse my usual public pickup place and common care and transport preferences, so that I can start a similar request with less repeated entry.
+4.2.1  Given she saves request details, when she starts another request from that template, then the pickup place, care end preference and transport need are prefilled and she selects a fresh service date.
+4.2.2  Given the saved place cannot be matched or saved times conflict with the new request, when she uses the template, then the affected field needs correction and is not silently replaced.
+4.2.3  Given she opens the save explanation, when she reviews what is retained, then she sees the allowed fields, current-browser storage and possible loss after browser clearing; no automatic cross-device recovery is promised.
+User Story 4.3 Reassess a saved option for the current occasion
+Should have | Dependencies: 4.1 or 4.2 and 2.5 | Evidence: D1 to D3 and FRESH
+As a working mother, I want to see which relevant provider facts have changed since I saved or last checked an option, so that I can avoid relying on an old arrangement that no longer fits.
+4.3.1  Given saved evidence versions differ from current published versions, when she reopens a saved option, then material differences and their dates appear and she can check them against the new request.
+4.3.2  Given a current refresh has failed or there is no comparable earlier fact, when she reviews the option, then the page states what cannot be compared and retains the last known dates without claiming that nothing changed.
+User Story 4.4 Keep saved choices relevant
+Should have | Dependencies: 4.1 or 4.2 | Evidence: Local saved material
+As a working mother, I want to update or remove institutions and request details that no longer suit me, so that I can avoid selecting an outdated backup or reusing the wrong preferences next time.
+4.4.1  Given she chooses a saved item, when she applies an edit or deletion, then her saved list and subsequent reuse reflect that choice while provider source facts remain unchanged.
+4.4.2  Given the local change cannot be saved, when she applies it, then failure is shown and the previous saved version remains identified rather than claiming the change succeeded.
+Epic completion outcome
+A returning user reopens saved institutions or request details, selects the current occasion and checks whether the option still fits.
+Completion requires evidence for all 10 applicable numbered criteria in this epic, its demonstrated outcome and the shared quality checks. Any deferred story remains open and must be excluded explicitly from the release claim.
+
+Epic 5 Care Preparation and Handover
+Should have | Primary P3 and secondary P1 | Status Planned
+As a working mother, I want to organise the questions and preparation needed to move from the usual centre to temporary care and then final collection, so that I can reduce omissions every time I make a temporary arrangement.
+Epic 3 helps choose and question a candidate provider. Epic 5 prepares the subsequent pickup, transfer and collection discussion with the usual centre, receiving centre and transport party. It does not record their agreement.
+User Story 5.1 Prepare for this care arrangement
+Should have | Dependencies: Current request and candidate | Evidence: D3 and labelled general prompts
+As a working mother, I want to get preparation prompts relevant to the chosen care duration and transport arrangement, so that I can identify what needs attention before my child moves between centres.
+5.1.1  Given a request and candidate are selected, when she creates preparation material, then the prompts reflect transport mode, care duration and known service requirements, separating general prompts from provider-sourced requirements.
+5.1.2  Given she uses the same provider with changed times or transport, when she prepares the new occasion, then the prompts reflect that occasion and no previous successful visit is required.
+User Story 5.2 Direct handover questions to the right party
+Should have | Dependencies: 5.1 | Evidence: D3 and request assumptions
+As a working mother, I want to group unresolved handover questions by the usual centre, receiving centre and transport service, so that I know whom to ask about each missing arrangement.
+5.2.1  Given handover questions exist, when she opens preparation, then each question is grouped under the party able to answer it; provider-selection questions remain in the contact enquiry list.
+5.2.2  Given the transporter or receiving contact is unspecified, when she checks the questions, then the relevant party is labelled to be confirmed rather than being assigned by the website.
+User Story 5.3 Understand the collection and handover sequence
+Should have | Dependencies: 5.1 | Evidence: D2 and D3
+As a working mother, I want to view pickup, transfer and final collection in order, so that I can notice a missing location or time before explaining the arrangement to someone else.
+5.3.1  Given known locations and times exist, when she opens the sequence, then each step labels its information as a request assumption, published fact or unresolved item.
+5.3.2  Given transfer duration or arrival time is unsupported, when she opens the sequence, then that step shows arrival to be confirmed and no journey time is calculated from coordinates.
+User Story 5.4 Prepare release and identification questions
+Should have | Dependencies: 5.1 | Evidence: Labelled general prompts and D3 when published
+As a working mother, I want to know which release, collector identification and delay procedures to check, so that I can agree the handover arrangements directly with the relevant institutions.
+5.4.1  Given she opens handover guidance, when she reviews release arrangements, then prompts cover the release procedure at the usual centre, collector identification, receiving party and delay contact.
+5.4.2  Given another person reads the guidance, when the material is opened or printed, then its draft status and the need for institution-managed authorisation are explicit.
+User Story 5.5 Prepare the items and information the child needs
+Should have | Dependencies: 5.1 | Evidence: D3 and labelled general prompts
+As a working mother, I want to receive a relevant packing and information checklist, so that I can hand over my child with the essentials ready and reduce last-minute omissions.
+5.5.1  Given preparation prompts are available, when she opens the checklist, then care-appropriate items and provider-specific published requirements are distinguishable.
+5.5.2  Given the receiving institution needs identity or health information, when she reviews the information checklist, then it directs her to provide it privately and offers blank print-only spaces without online entry fields.
+5.5.3  Given she changes the care duration or transport arrangement, when she regenerates the checklist, then relevant prompts update without asking her to maintain a child profile.
+User Story 5.6 Take a standalone preparation sheet with me
+Should have | Dependencies: 5.1 to 5.5; independent of Epic 7 | Evidence: Approved preparation draft
+As a working mother, I want to print or download the preparation and handover draft, so that I can consult the same instructions while travelling or talking with the institutions.
+5.6.1  Given a preparation draft exists, when she prints or downloads it, then the sequence, sourced institutional contacts when available, unanswered questions and preparation date are readable without creating a shared card.
+5.6.2  Given the draft contains offline information prompts, when she exports it, then those spaces remain blank and the document states that authorisation and provider agreement must be arranged separately.
+Epic completion outcome
+The user obtains a preparation and handover draft with questions for each party and can take a standalone preparation sheet away.
+Completion requires evidence for all 13 applicable numbered criteria in this epic, its demonstrated outcome and the shared quality checks. Any deferred story remains open and must be excluded explicitly from the release claim.
+
+Epic 6 Parent Experiences and Reviews
+Should have | Primary P2 and secondary P3 | Status Planned
+As a working mother, I want to understand relevant experiences in third-party public reviews and recognise the limits of that evidence, so that I can ask better questions about pickup, temporary care, late collection and communication.
+Review inspection is optional. Story 6.5 passes selected concerns into the existing enquiry list owned by 3.6. All review stories require D5 before release.
+User Story 6.1 Inspect the experience behind a review
+Should have | Dependencies: None | Evidence: D5
+As a working mother, I want to read relevant review passages with their original context and dates, so that I can understand what someone reported instead of relying only on an average score.
+6.1.1  Given a permitted branch-matched review exists, when she opens an excerpt, then the passage, route to original context, publication date or date uncertainty, and retrieval time are distinguishable.
+6.1.2  Given only positive or only negative experiences support a topic, when she reads the excerpts, then that evidence is shown without an invented opposing quote; allegations remain attributed opinions.
+6.1.3  Given reviewer identity or publication date cannot be verified, when she inspects the review, then the limitation is visible and retrieval time is not substituted for the publication date.
+User Story 6.2 Find experiences about the issues I care about
+Should have | Dependencies: 6.1 | Evidence: D5
+As a working mother, I want to browse reviews by temporary care, pickup, late collection, fees or communication, so that I can find experiences relevant to the decision I am making.
+6.2.1  Given supported topic labels exist, when she selects a topic, then relevant passages appear with access to their context.
+6.2.2  Given the collected sample contains no relevant passage, when she selects the topic, then no topic evidence is shown explicitly instead of unrelated praise.
+User Story 6.3 Judge whether review evidence is sufficient and recent
+Should have | Dependencies: 6.1 | Evidence: D5
+As a working mother, I want to see the size, age and topic coverage of the collected review sample, so that I can recognise when there is too little recent experience to support my judgement.
+6.3.1  Given dated reviews exist, when she opens the evidence summary, then collected counts, date distribution and the recent twelve-month subset appear.
+6.3.2  Given collection is partial or dates are unknown, when she checks the summary, then collection scope and undated counts are visible and no complete-platform coverage claim is made.
+6.3.3  Given a topic has fewer than two dated relevant reviews in the recent twelve months, when she checks that topic, then a limited recent evidence label and the count appear; this is a display threshold, not a reliability score.
+User Story 6.4 Distinguish reported experiences from promotional descriptions
+Should have | Dependencies: 6.1 | Evidence: D5
+As a working mother, I want to recognise which material is a reported care experience and which is a provider or editorial description, so that I can avoid treating promotional claims as independent experience.
+6.4.1  Given reviews and other page material have been collected, when she opens experiences, then care-related reviews are shown separately and promotional or editorial descriptions are excluded from review counts.
+6.4.2  Given an item is excluded by a relevance rule or is old, when she opens the explanation, then its classification or date reason is available without describing all excluded or older material as false.
+User Story 6.5 Ask about concerns raised in reviews
+Should have | Dependencies: 6.1 and 3.6 | Evidence: D5
+As a working mother, I want to choose review concerns to include in my existing enquiry list, so that I can ask the institution about issues that matter before choosing it.
+6.5.1  Given a concern appears in at least two distinct collected reviews, when she inspects the recurring-concern suggestion, then its supporting excerpts and sample limitation are visible.
+6.5.2  Given she selects a concern, when she adds it to her enquiry list, then the contact page shows a neutral question with evidence and merges any duplicate through the same list used for service questions.
+Epic completion outcome
+The user inspects relevant experiences and evidence limits, and can add selected concerns to the existing contact enquiry list.
+Completion requires evidence for all 12 applicable numbered criteria in this epic, its demonstrated outcome and the shared quality checks. Any deferred story remains open and must be excluded explicitly from the release claim.
+
+Epic 7 Shareable Backup Plan Cards Without Login
+Should have | Primary P3 and P4 | Status Planned
+As a working mother, I want to take an ordered institutional contact plan to another device or share it with a family member, so that someone else can understand whom to try first and what still needs checking.
+Epic 4 provides local reuse through complete save-and-revisit tasks. Epic 7 organises a specific ordered card for its creator and recipients. Neither requires a fixed number of stories per actor.
+User Story 7.1 Create and maintain an ordered backup card
+Should have | Dependencies: Current candidates; Epic 4 optional | Evidence: D1 to D3
+As a working mother, I want to choose institutions and arrange the first and backup contacts in an order I can update, so that the person using the card knows which option to try next.
+7.1.1  Given candidates or favourites are available, when she creates a card, then selected branch references appear in her chosen order with optional approved reasons.
+7.1.2  Given she can edit the card, when she changes its membership or order, then the card revision reflects the change while published provider facts remain unchanged.
+7.1.3  Given a local favourite is also referenced by a card, when she deletes that favourite and opens the card, then the card retains its separately chosen contents and editing the card remains a separate action.
+User Story 7.2 Understand the next contact as a family recipient
+Should have | Dependencies: 7.1 and 7.3 | Evidence: D1 to D3
+As a family member helping with collection, I want to see the first contact, next backup and key collection constraints together, so that I can act on the shared plan without asking the mother to explain it again.
+7.2.1  Given an active read-only card exists, when the recipient opens it on a phone without signing in, then the first contact, next backup and critical timing limits are visible, with institutional locations, contacts and further details available.
+7.2.2  Given a phone, time or transport fact is unknown or conflicting, when the recipient reads the card, then the limitation and remaining questions are explicit and no confirmed reception is implied.
+7.2.3  Given the card has been revoked or cannot be retrieved, when the recipient opens its link, then the relevant access or availability state is shown without displaying a cached private card.
+User Story 7.3 Share the plan while retaining editing control
+Should have | Dependencies: 7.1 | Evidence: Capability access rules
+As a working mother, I want to let someone read my plan without giving them permission to change it, so that I can share useful instructions while keeping control of the arrangement I prepared.
+7.3.1  Given she creates a shared card, when she chooses to share for reading, then separate unpredictable read and edit capabilities are supplied and the read view reveals no edit credential.
+7.3.2  Given a person has only the read capability, when that person attempts to edit or revoke the card, then the change is refused and the card remains unchanged.
+7.3.3  Given a person has an edit capability for a different card, when that person attempts to edit or revoke this card, then access is refused and neither card is changed.
+7.3.4  Given the editor opens the management explanation, when she reviews link handling, then it explains that anyone holding the edit link can manage this card and a lost edit link cannot be recovered through the read link.
+7.3.5  Given only a public card identifier or an invalid capability is supplied, when private card content is requested, then access is denied without disclosing the card.
+User Story 7.4 Include preparation in the shared plan
+Should have | Dependencies: 7.1 and 5.1 to 5.5 | Evidence: Approved preparation material
+As a working mother, I want to include the relevant preparation sheet with the ordered contacts, so that my family can find the instructions and contact order together.
+7.4.1  Given a preparation draft exists, when she chooses content to attach, then the card includes the approved checklist and sequence with their preparation date.
+7.4.2  Given local notes or print-only identity prompts exist, when she attaches preparation, then private notes and completed offline information are excluded and blank prompts grant no pickup authority.
+User Story 7.5 Use an offline copy of the backup plan
+Should have | Dependencies: 7.1 and 7.3 | Evidence: D1 to D3
+As a working mother, I want to print or download the ordered contacts and any attached preparation, so that I can consult the backup plan when the website is inconvenient or unavailable.
+7.5.1  Given an active card exists, when she exports it, then the ordered contacts, critical unknowns, card revision date and read-only online checking reference are legible.
+7.5.2  Given preparation has not been attached, when she exports the card, then the contact plan is still usable without requiring Epic 5 material.
+7.5.3  Given the exported document is inspected, when the reader looks for management access or current status, then no edit credential is present and the copy explains that later online changes or revocation cannot update it.
+User Story 7.6 Recognise changed facts in a shared plan
+Should have | Dependencies: 7.1 and 2.5 | Evidence: FRESH and D1 to D3
+As a working mother, I want to see whether important institution facts have changed since the card was prepared, so that I can reconsider the next contact before relying on outdated instructions.
+7.6.1  Given underlying facts have changed, when a reader reopens the card, then the material differences and dates are highlighted while the chosen order remains intact; an authorised editor can recheck fit and revise the order.
+7.6.2  Given current facts cannot be refreshed, when the reader opens the card, then the last known dates and refresh limitation remain visible and unchanged is not asserted.
+User Story 7.7 Withdraw access to a shared plan
+Should have | Dependencies: 7.3 | Evidence: Capability access and retention rules
+As a working mother, I want to stop an old shared plan from being accessible online, so that I can prevent others from continuing to rely on a plan I have withdrawn.
+7.7.1  Given she holds the valid edit capability, when she revokes the card, then subsequent read and edit access is refused and successful revocation is confirmed.
+7.7.2  Given the revocation request fails, when she returns to management, then the page states revocation has not been confirmed and offers retry rather than claiming access has ended.
+7.7.3  Given she opens revocation information, when she reviews its effect, then it explains that previously downloaded or printed copies cannot be recalled and that losing the edit link prevents anonymous recovery.
+Epic completion outcome
+The creator can maintain and withdraw an ordered card; a read-only recipient can understand its next contact and constraints without gaining editing rights.
+Completion requires evidence for all 21 applicable numbered criteria in this epic, its demonstrated outcome and the shared quality checks. Any deferred story remains open and must be excluded explicitly from the release claim.
+
+Epic 8 Backup Scenario Rehearsal and Gap Checks
+Could have | Primary P4 and secondary P1 and P3 | Status Planned
+As a working mother, I want to test how a backup card changes when collection is later or an option becomes unusable, so that I can identify a weak link and prepare a more useful alternative before relying on the plan.
+Epic 2 defines single-candidate condition checks. Epic 3 owns cross-candidate comparison and priority ordering. Epic 8 reuses those checks to explain scenario differences and shared weaknesses.
+User Story 8.1 Choose the disruption I want to rehearse
+Could have | Dependencies: 7.1 and 2.5 | Evidence: D3 and scenario assumptions
+As a working mother, I want to try a preset or custom change to pickup timing, care end time or transport availability, so that I can examine the situation I am worried about before it happens.
+8.1.1  Given a baseline card and required times exist, when she selects a thirty-minute or one-hour extension to care end time, an unavailable first choice or unavailable institutional pickup, then the changed assumption and unchanged baseline appear together.
+8.1.2  Given she enters her own valid one-off changes, when she runs a rehearsal, then the scenario uses those changes while the actual request and baseline card remain unchanged.
+8.1.3  Given a baseline time is missing or the scenario times are inconsistent, when she tries to run it, then the required correction is identified and no result is produced from an invented time.
+User Story 8.2 See what changes for each backup
+Could have | Dependencies: 8.1 and 2.5 | Evidence: D3 and FRESH
+As a working mother, I want to compare each backup under the original request and the rehearsed scenario, so that I can see which options are affected and why.
+8.2.1  Given baseline and scenario results use the same evidence version, when she opens their comparison, then changed and unchanged condition states are distinguished for each backup with the assumption that caused each change.
+8.2.2  Given a condition is unknown in either result, when she compares the backup, then uncertainty remains explicit and is not represented as a whole-arrangement pass or failure.
+8.2.3  Given evidence changes during the comparison, when she opens the results, then she is prompted to rerun both sides using one evidence version rather than attributing a data change to the scenario.
+User Story 8.3 Recognise weaknesses shared by backups
+Could have | Dependencies: 8.2 | Evidence: D3
+As a working mother, I want to see when several alternatives depend on the same limiting condition, so that I can look for a backup that would remain useful if that condition fails.
+8.3.1  Given multiple backups have the same relevant closing limit or delivery dependency, when she opens shared weaknesses, then the dependency, affected candidates and scenario impact are identified.
+8.3.2  Given several backups lack transport or hours evidence, when she checks shared weaknesses, then the common information gap is distinguished from a known common service limitation.
+User Story 8.4 Take the next step to resolve a rehearsal gap
+Could have | Dependencies: 8.2 and 1.1 and 3.6 | Evidence: Scenario results
+As a working mother, I want to carry an identified gap into a relevant search or enquiry, so that I can improve the backup plan without reconstructing the problem.
+8.4.1  Given the scenario exposes a conflict, when she chooses find alternatives, then the search page opens with the scenario request and triggering restriction clearly labelled, without silently replacing the saved baseline card.
+8.4.2  Given the scenario exposes an unknown condition, when she chooses prepare questions, then the contact enquiry page opens for that candidate with the condition and scenario context as a question, not a confirmed failure.
+User Story 8.5 Keep and revisit a rehearsal result
+Could have | Dependencies: 8.2 and 7.3 | Evidence: Saved rehearsal snapshot
+As a working mother, I want to save a dated rehearsal with my plan and read it again, so that I can remember what I tested and which issues were still unresolved.
+8.5.1  Given a rehearsal has results, when she saves it to the card, then its assumptions, baseline revision, checked evidence versions, condition states and check time are retained.
+8.5.2  Given a saved rehearsal exists, when an authorised reader opens it, then the assumptions, conflicts and unknowns are readable and clearly labelled as a dated rehearsal rather than a live confirmation.
+User Story 8.6 Recheck and compare a previous rehearsal
+Could have | Dependencies: 8.5 and 2.5 | Evidence: FRESH and D3
+As a working mother, I want to rerun the same saved scenario against current information and compare the results, so that I can see whether new facts change the usefulness of my backups.
+8.6.1  Given relevant fact versions differ from a saved rehearsal, when she opens it, then a recheck prompt identifies the changed information without rewriting the saved result.
+8.6.2  Given she reruns that scenario, when the comparison opens, then the same assumptions are retained and old and new condition states, evidence versions and check times appear with an explanation of differences.
+8.6.3  Given current information cannot be obtained, when she attempts a recheck, then the earlier snapshot remains dated and a failed-recheck message appears; its timestamp is not renewed.
+Epic completion outcome
+The user compares a hypothetical scenario with the baseline, identifies affected backups and shared weaknesses, and can revisit or recheck a saved rehearsal.
+Completion requires evidence for all 15 applicable numbered criteria in this epic, its demonstrated outcome and the shared quality checks. Any deferred story remains open and must be excluded explicitly from the release claim.
+
+Shared Definition of Done
+Each delivered story has repeatable results for every applicable numbered criterion, its actual data dependencies and the relevant quality checks. An unmet criterion leaves the story open. A fixture pass establishes behaviour only, not real-source readiness.
+A fresh visitor can complete the relevant browser task. Returning-user and read-only-recipient outcomes are checked where applicable. No account, child identity or work calendar is introduced to satisfy the journey.
+Published facts, user assumptions and unknowns remain distinct; registration evidence, condition fit and actual provider acceptance are never interchangeable.
+Sources and fact dates remain traceable to the correct institution branch. Review excerpts and counts preserve their collection scope and original context.
+Review evidence uses this revision identifier, story and AC numbers, quality-check identifiers and linked Security Plan risks. A named reviewer records any accepted limitation; no previous iOS status is reused as proof of Web App completion.
+Story priority is separate from data readiness. Deferred features and optional integrations cannot silently become prerequisites for a Must-have story.
+Documentation, exported artefacts and future board records use the same revised mapping. Publication or board changes require the team-authorised process.
+Illustrative acceptance walkthrough
+Use institutions explicitly labelled Demo only. Aina needs collection by 17:00 and care until 19:00. The candidate advertises transport and general hours until 19:30, but no one-off admission or pickup coverage. The result must keep those conditions unknown, distinguish business hours from temporary-care hours and prepare focused questions. A one-hour rehearsal compares changed assumptions with the same baseline evidence; it does not turn the original unknowns into a successful arrangement.
+
+Cross cutting quality checks
+Q1 Accessible use
+Use the relevant journey by keyboard with visible focus; inspect it at 200% text size and narrow mobile width. Every condition has text as well as colour, and exported material remains legible.
+Traceability: All epics
+Q2 Safe imported content
+Display harmless hostile-markup fixtures as inert content; allow only approved external-link schemes and verify that no imported script executes.
+Traceability: S3; 3.1, 6.1
+Q3 Controlled publication
+Attempt source publication as a public visitor and unauthorised operator; both fail. A permitted reviewed publication records who changed which evidence version.
+Traceability: S7; all sourced facts
+Q4 Bounded service use
+Record approved request, payload and card-creation limits before release; exercise each boundary with controlled test traffic and verify a useful retry response while ordinary reading remains available.
+Traceability: S8; discovery and cards
+Q5 Safe source retrieval
+Reject unsupported fetch destinations and redirect chains in controlled fixtures; user input cannot trigger retrieval of arbitrary internal or unapproved resources.
+Traceability: S9; data preparation
+
+Cross cutting quality checks continued
+Q6 Private error handling
+Inspect representative errors, logs and exports for edit capabilities, private notes, child information and raw request payloads; none may be exposed.
+Traceability: S1, S6, S10
+Q7 Revocation through recovery
+Restore a test backup containing a revoked card; read and edit access remain refused. Check active-store removal within 24 hours and backup expiry within 30 days against the planned policy.
+Traceability: S11; 7.7
+Q8 Source readiness
+For every published source, inspect acquisition scope, permitted use, matching and field provenance. A failed refresh retains prior evidence dates and no unsupported data-completeness claim is published.
+Traceability: S12; D1 to D5
+Q9 Evidence integrity
+Check same-brand branches with different facts, partial age overlaps, missing admission and pickup coverage, and changed evidence. Unknowns and mismatches remain visible; no complete care-success claim is made.
+Traceability: S4, S5; AGE and FRESH
+Q10 Data minimisation
+Review online inputs, local storage and shared outputs against the allowed-field list. Children have no online identity or health fields; local notes do not transfer to shared cards.
+Traceability: S6; 4.1, 5.5, 7.4
+
+Appendix A Story migration
+This table records how the previous 48 stories relate to Revision 2. Retain the prior version when updating identifiers. Acceptance criteria were revised for their new outcome and must be migrated by meaning rather than by matching numeric suffixes.
+Previous
+Revision 2
+Action
+Reason
+1.1
+1.1
+Rewrite
+Name the actual request inputs and the discovery outcome.
+1.2
+1.2
+Refine
+Keep the transport need; preserve unknown coverage.
+1.3
+1.3
+Define
+Add age values and explicit interval rules.
+1.4
+1.4
+Refocus
+Location convenience is the outcome; map/list consistency is supporting behaviour.
+1.5
+1.5
+Clarify
+Actual-request revision differs from a hypothetical scenario.
+1.6
+1.6
+Retain
+Keep empty-result and source-failure recovery.
+2.1
+2.1
+Refine
+Keep one-off admission distinct from enrolment.
+2.2
+2.2
+Retain
+Keep transport type separate from coverage.
+2.3
+2.3
+Narrow
+Check published pickup windows; remove the unsupported route-estimate prerequisite.
+2.4
+2.4
+Retain
+Keep care-window and late-collection checks.
+2.5
+3.4
+Move
+Cross-candidate priority ordering belongs to comparison.
+2.6
+2.5 and 3.6
+Separate ownership
+Keep fit explanations in Epic 2; the enquiry list belongs to Epic 3.
+
+
+Appendix A Story migration continued
+Previous
+Revision 2
+Action
+Reason
+3.1
+3.1
+Rewrite
+Make branch evidence and missing imported contact/address explicit.
+3.2
+3.2
+Retain
+Preserve uncertain registration states.
+3.3
+3.3
+Refine
+Compare the same factors rather than prescribe a particular layout.
+3.4
+3.5
+Reframe
+Known charge basis is useful before totals; total calculation is data-gated.
+3.5
+3.6
+Clarify
+One list owner; service questions work without Epic 6.
+3.6
+3.7
+Refine
+Contact is the outcome; return-state continuity is an acceptance condition.
+4.1
+4.1
+Extend outcome
+Save and revisit the institution in one usable story.
+4.2
+4.2
+Merge
+Combine the usual pickup place with reusable request details.
+4.3
+4.2
+Merge
+Include common care and transport preferences in the same reuse task.
+4.4
+4.1 and 4.2
+Absorb
+Reuse is part of both end-to-end saved-material stories.
+4.5
+4.4; 7.1.3
+Refocus
+Maintain useful saved choices; card independence is checked in the card stage.
+4.6
+4.3; 4.1.3 and 4.2.3
+Separate
+Reassessment is a story; local-storage explanation supports save/reuse.
+
+
+Appendix A Story migration continued
+Previous
+Revision 2
+Action
+Reason
+5.1
+5.1
+Refine
+Focus on omissions for this occasion, including repeated use.
+5.2
+5.2
+Clarify
+Handover questions have distinct parties and purpose from candidate enquiries.
+5.3
+5.3
+Refine
+Show a usable sequence and unsupported arrival explicitly.
+5.4
+5.4
+Retain
+Keep institution-managed release and identification procedures.
+5.5
+5.5
+Rewrite benefit
+Focus on essentials ready and fewer last-minute omissions.
+5.6
+5.6 and 7.4
+Split
+Standalone preparation export is independent; attachment belongs to the shared card.
+6.1
+6.1
+Merge
+Combine source context and dates with review passages.
+6.2
+6.2
+Retain
+Keep topic-based review exploration.
+6.3
+6.1
+Merge
+Actual excerpts and their context form one inspectable-evidence outcome.
+6.4
+6.3
+Define
+State sample limits and a defined recent-evidence label.
+6.5
+6.4
+Rewrite benefit
+Help the parent distinguish experience from promotion.
+6.6
+6.5
+Clarify
+Select concerns here; organise and deduplicate them in the Epic 3 list.
+
+
+Appendix A Story migration continued
+Previous
+Revision 2
+Action
+Reason
+7.1
+7.1
+Retain
+Keep creator control of contact order and membership.
+7.2
+7.2
+Merge and change actor
+Merge essential facts with the recipient reading task.
+7.3
+7.3
+Rewrite and expand
+State sharing control as the need; add cross-card and invalid-capability cases.
+7.4
+7.2
+Merge
+Recipient access and comprehension form one complete story.
+7.5
+7.5
+Refine
+Export an ordered plan with optional preparation, independently of standalone export.
+7.6
+7.6 and 7.7
+Split
+Changed facts and withdrawal are separate user outcomes.
+8.1
+8.1
+Merge
+Preset and custom inputs express the same choice of concern.
+8.2
+8.1
+Merge
+Preserve the actual baseline during the hypothetical test.
+8.3
+8.2
+Refocus
+Explain changes from baseline using shared condition checks.
+8.4
+8.3
+Retain
+Keep shared weaknesses as a plan-level outcome.
+8.5
+8.4
+Retain with branches
+Both next actions resolve a detected gap; show concrete destination-page behaviour.
+8.6
+8.5 and 8.6
+Split
+Save and revisit a result separately from rerunning and comparing it.
+
+
+Appendix B Data readiness
+D1 Registration and identity
+Existing JKM reference work supplies names, record identifiers, categories, validity terms and coordinates where published [R12]. KPM acquisition is not yet verified.
+Required evidence: Branch matching needs corroborating identity evidence. The old import excludes address and contact. Missing or conflicting evidence remains unresolved.
+Related requirements: 1.1, 3.1, 3.2
+D2 Places and contacts
+Existing sourced coordinates may support map locations. OpenStreetMap and Kiddy123 are proposed sources of branch places or public contacts where actually published [R4, R8].
+Required evidence: A branch-matched phone, address or contact route needs an inspected source and retrieval record. No inherited JKM phone/address is claimed. Call demonstration requires a verified institutional number.
+Related requirements: 1.4, 3.7, 7.2
+D3 Service conditions
+Kiddy123 is a proposed source of admission ages, care hours, transport and temporary-care statements [R8]. Access and field coverage remain to be established.
+Required evidence: Validate real examples for decisive claims before release. A daycare label is not evidence of one-off admission; transport Yes is not pickup coverage. No route-time source or route-time calculation is included.
+Related requirements: 1.2, 1.3, Epic 2
+
+Appendix B Data readiness continued
+D4 Fees
+Published one-off fees and charging rules, if actually acquired and applicable, support cost comparison [R8]. No usable full fee set is claimed.
+Required evidence: Show original charging basis and missing extras first. Reference totals remain data-gated until duration, minimum charges and required extras are validated.
+Related requirements: 3.5
+D5 Experiences
+A separate supplementary third-party public review corpus is proposed; it is not attributed to the five named sources or represented as open data.
+Required evidence: Before Epic 6 release, record permitted use, collection scope, branch matches, dates and excerpt traceability. Service enquiries remain available without this corpus.
+Related requirements: Epic 6
+Before real-data release, the team must establish that the intended region contains institutions with relevant temporary-care or pickup evidence and a usable institutional contact route. Do not infer this market premise from a registry count. A labelled synthetic demo is valid for checking interface behaviour but is not evidence that these services are available in practice.
+
+References
+[R1] EqualPath project team. Existing persona for Aina Rahman. Local source: EqualPath_Persona_Aina.docx. Persona facts are a supplied design baseline, not a newly conducted interview.
+[R2] EqualPath project team. Existing problem statement. Local source: EqualPath_Problem_Statement.docx. The wider work and care problem is retained; the current scope begins after a gap is recognised.
+[R3] Department of Statistics Malaysia. Population Table Administrative Districts. https://open.dosm.gov.my/data-catalogue/population_district
+[R4] OpenStreetMap Foundation. Copyright and License. https://www.openstreetmap.org/copyright
+[R5] Jabatan Kebajikan Masyarakat. Registered TASKA directory. https://www.jkm.gov.my/main/taska
+[R6] Jabatan Kebajikan Masyarakat. Pusat Jagaan directory. https://www.jkm.gov.my/main/pusat-jagaan
+[R7] Kementerian Pendidikan Malaysia. Private kindergarten lookup information. https://www.moe.gov.my/semakan-tadika-swasta
+[R8] Kiddy123. Institution listings. https://www.kiddy123.com/listing/
+[R12] EqualPath existing reference documentation. Source register and district crosswalk. Local source: appwrite-backend/reference/SOURCES.md and district-normalization.v1.json. These describe existing reference work, not delivery of the redesigned web app.
+[R13] EqualPath project owner. Web App scope decisions. Local source: EqualPath_WebApp_Scope_Decisions.md. User-approved product direction and subsequent story-review decisions; not new user research.
+[R14] Jabatan Kebajikan Masyarakat. Panduan Permohonan Pendaftaran TASKA. https://www.jkm.gov.my/jkm/uploads/files/Bahagian%20KK/Panduan%20Permohonan%20Pendaftaran%20TASKA%20%5BFINAL%5D.pdf
+[R15] Kementerian Pendidikan Malaysia. Garis Panduan Penubuhan Pendaftaran dan Pengoperasian Tadika Swasta. https://moe.gov.my/storage/files/shares/Bahagian%20dan%20Unit/Bahagian%20Pendidikan%20Swasta/tadika/garis-panduan-3/GP%20TADIKA%20SWASTA.pdf
+Document assistance
+OpenAI Codex assisted with drafting and document checks. The project owner supplied the Web App direction and the external story review used to revise this baseline. These activities are not implementation, user testing or source-acquisition evidence.

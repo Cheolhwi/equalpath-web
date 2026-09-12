@@ -1,0 +1,2302 @@
+{
+  "checked_at": "2026-09-12T14:23:25.271Z",
+  "sourceRecords": 3539,
+  "accepted": 3122,
+  "missingCoordinates": 915,
+  "held": [
+    {
+      "id": "provider_da33b03ab0c8848d308045cf988",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_34f9e2b41e163277966d25cdb5f",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_96f0f92f9d6ba97c03fdd1a9969",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_f3b176ca4822c57d5037c54664e",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_2a6bce9c0dcbe101e8cfbdb9c16",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_d6c7601a0b6a302105bbca8a65f",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_d6be2ca95bbc71a0ebbfef119f7",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_e0c6e19c3fb8ae3e78b39897120",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_4bc7430d9dba2c5f72050afce27",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_f398d81ec0256cd40bd37a9e39f",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_c1d715e6f50a4255f66cd81e9f9",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_0cd0dbb145a6f82ba422fd8c13a",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_f257b9b3fd702342dbd226dae8f",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_4d507ddf9bf5456da0f81bee9f9",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_caa740e390c8c2284ae9c18a302",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_208cc525e13dc4e20bba653b242",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_0c50102dfa3222032654a9d16bc",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_1274647f70edd8c1647440b1021",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_cc09950dc6b10a7c41eb14add49",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_b4fecd5f18ca58dbcb2f71f59e1",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_7d5afa080811180ad189d953582",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_e9b3091bb7c798fff7be48a93a9",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": null
+    },
+    {
+      "id": "provider_c4429ee17a4bba660e6496c71bc",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_9c55802a66c14404e7ba6ae1847",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_488191dff37fbb08121131e5405",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_9631eb01ac3e8c23480fe0a22f8",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_0e52eea42445171de5cf2a28d57",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_5c74b7b3a6788cc6199bbc2a318",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_8f9fe4cc45890dcf14a1f6b1ee5",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_fbf3281c3bf2c39b6cebe0eda82",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": null
+    },
+    {
+      "id": "provider_f8ed79e923dc1d788b619144ba8",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_89c9de847f414a1436671c0450b",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_26a4742e82c7d120ee184711710",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": null
+    },
+    {
+      "id": "provider_5cd2d0910e600f2866fbf8359f2",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_ad39d0862927194f863d0f92750",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_31ae212dec9c079bf8c4c5463e4",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_81ba29e4f4756afb689b448cff0",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_70608f778495ee6975c63d50527",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_90a1330a21edc2979edc7c1cccc",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_1e61e9a8266b9a115bcc32947f7",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_5383800c14645bebd8177bbe41d",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_0f977e32516571740e2c8873761",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_af04bdd2e86441f04dd17c2a8a4",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_88a545ed9e06fe8eb5892073dea",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_14485e66a5d4811dd1c5283754e",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_95a517ca656054e12d92c694bdd",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": null
+    },
+    {
+      "id": "provider_5d8d07299d1679d8c24d98d2273",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_ab5f1622e91528a4e26c1282788",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_df95bf46b0758717f4109c9a6d8",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_159287eaa8803459de9f9565ce9",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_5f74ef59c9c2d2ff3c083bd72f6",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_55ae52ff3f7a519ac8a3a3fd5f8",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_36bee00c09fb57a33114f5ae22a",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_86734348f9c38ad65fb857f990f",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_20edb146755ed5cdd52b341061e",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_0ceb96e8faed9a7aee3e55c1ee8",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_3add6488a86961a4894bb08b987",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_f5859965d4e737efdcbbbdf8a86",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_6a7739944c15fe5ad27f22c5b8c",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_0c72927a52eb9620c0f77915592",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_64ce9dd2fc68742dfba3312a088",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_aa5651d553af03dfae3036680b1",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_f0a7941fad7a4b919a64fa6a121",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_bc6af211bb395e3324096bb06e7",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_038f75281e2a1a65fc1e69752e3",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_6c9615fe248509ef7f5a1e30beb",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_2f50ca67620856abd72f472534c",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_6cd01a00edcc8e5b77070752da5",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_49ac59dbbc8ef1616ff92394a2a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_098908a44a921e57b3990e8c7ef",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_146f126310d500c9d41a36331bc",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_15deb4182b230b40df27974072e",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_779b47c76f4a9d8cd4ca01ae86a",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_a5b5a558e6f740ebdeb7df5e83c",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_65a05c79d06be571941a0de860c",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_65435c8edc3dac2d2c3b3d8474a",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_97401bdc5f26531b2ca7c4cd109",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_6007f3dfd7622b69d502f1b6936",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_5be18fd14ae08fa00055cb0a6cd",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_3a3fe27ecb325a57134a436a052",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_0cf75fc510fe16962d7230d0c1e",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_503855d7a09d31c7651febead33",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_7908deed78181e8089cfde30a49",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_16982df65d5b6229ab56360e7ce",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_57a5831e2d8285208c5c83fd6bd",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_001acca24e2e74d855298842adb",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_debbcec4339983ea848130b4233",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_4e55d8dea5c15e32dbfee491914",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_eb75c3205c1b479f76b8c907fe9",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_268b98c356b2023c02000d69531",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_6f999c8b9a53c36f84b6a21b3d1",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_5a7eb3b06857af1b3c8d8b9e571",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_ddd890c839ed099b9d6f18d050d",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_d73a3409c1d94e78bbba17ee7b6",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_36b060f89e41e73119bb947b8de",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_524a12b700f1036e8995a97bc92",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_bbb82d8b5040401088e02fd652c",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": null
+    },
+    {
+      "id": "provider_725523522f55c40509032625cfe",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_23ef2fa68a948353c5f4ecd6553",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_958141893481313719fa4db117e",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_8272ea049fad2f4591bb40de96b",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_644335cc1c59007980cda0173d6",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_df4759176a4df3763a36f987df1",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_28cea1319b3c18d3143a2e1dc00",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_2bf59a259887b17373533f002d8",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_262b5cdeaa27ccfd1c99cf724da",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_4eab32976dd9517cd05f491d24a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_78225ad37d6be0be76b3898cdab",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_d059b321bab5e82d8cc172193f7",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_36b9d2d6675667b2fa00ded8963",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_d974fda0a6d518c9ab3a10b4a89",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_56caea99175831ac41d8744a444",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_ace859c816ea013c55aa6053fad",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_956d4e6dca527d5d16b08271cde",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_027d876e3fd4ae8cc1f1a25e1ee",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_5bf0678f81f9b7f68e2e8a60b17",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_11127c91677ba00e67d47c64e1e",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_910793e8ca312ecdbde7bc76e7f",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_43dfef5b3ef56d57fb43fbb8265",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_84e053e7e97f5983bb1a9153328",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_0a90d387c553ba4873f3d11e22e",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_cbd688c86e804899ecd0cb96b36",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_a33f33fe6eb788a23a522bd0600",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": null
+    },
+    {
+      "id": "provider_84a18c2ab70cc574d132b99e271",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_3b7955dbd9742456e8dca8c52e7",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_ff2328de4badcfe05c304ed5ef7",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_242b39c15e7500d2f70baedd9ce",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_3913d78dc94eeb32d2b1e586611",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_0883327b8bf37096b888571bc38",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_38e96b915bff2c4ceb328a22fc5",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_3bba3a5dd6f0f3f0b809e3dfc44",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_2265b92f68c4cc5e1d469cf92c3",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_d5614eca4e671ca2cb819d12c3f",
+      "reason": "directory_branch_match_unresolved"
+    },
+    {
+      "id": "provider_kpm_e27669266a77f66ac1ee1127",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": null
+    },
+    {
+      "id": "provider_kpm_ee2ce75b4c514342f43c7487",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_deeb63c6840c1b24ac224963",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_ca7c0bfc74f77c979327cccc",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_564df30df68608063a83f928",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_bbf3273f9a29e2826cff10ab",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_247bd42576c83c6f8ea046bf",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_0779a3d44a6cdc434151b6ac",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_0d25c965a5a242862e558715",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_a4935cd7b80bec51667df03d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_9a5397828a9269a6e4228ad9",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_4bc090e795b01b29b9423b8b",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_547febd014263b9257fad074",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_f5dbe373eeaee146dbe301de",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_33648d5f30dcd6dafdd753f1",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_12c1ee267896f3f6017dcb1e",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_63c4459090d7ca4040eac4b3",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e7d9df03c1290c73f1a5a27c",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_61863191a0ca97d5c6b7bb81",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_084d539a9082d79c9fd4e3ff",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_b68af886842535cbfbc9d27a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_06b10d077af26dcc282a1087",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_59656c2bb1dde3e9a7a39e0c",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_afd0e9d2a5bb18535fdb4028",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_f7643a06433f849f27f9d8af",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e46a94b9b821edd1f829559f",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_fdbfefa3e9353ae42f9ba7d2",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_f6d59ff281ab0de9530d0c09",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_44c9be98256b1c9ea6fb2f29",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_1b7e5dcac0049981de1e1fc9",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_220a1c97d5bd056065914cba",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_264ede6c97fa188d74abb02b",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_edb56c0107997379fc848ef1",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_933dcf192d70db06c474c40e",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_0ea9c99a1c94633cd3a3b0be",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_86ebe0e2ad50378e08450950",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_c7c8a9454d3bb7abfefaaa78",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_b650d7052554311db010ae2f",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_7d03a832252881cb039920be",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_1c95973a33c2731232957a3c",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_1c73e0bd4848006fade39c49",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_ff295dc0e39163cf5f3e91fe",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_7468c78df5b985893ae7fd75",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e3d93c9c0c8fe66c3a3adbd3",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_48befca6f77dcb29cc9479d2",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_cae6a21ad16baeaeea8c3cd1",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_f6a11b47aecea627869af451",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_4ef64f39519b1bf5e24ffcff",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_3d12eeee8855ab0c98f604ed",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_864e286234c8505b64037e5a",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_7b895dd4ac551f765c4ef8ff",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_65d19f6d26f0655e480d511d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_c608a07ef9444ca05e4f2fe6",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_66cba32ac11da13734456833",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_6c9077521d3558ccb95e6651",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_bb6d64bc738e338636acd067",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_de827e701f6a66cfa04ca75a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_4dec9bc1c0086491c33776ab",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_47ea97f366e88fa26515b9b5",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_fcbccc76d56804830eae9eeb",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_c81b219ffb7834cd6a1c59e0",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_a0cdddab9b132ec819bfa196",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_dc1a535d56df79d9665bdc75",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_eeb62cf83e26886f079aa478",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_c81c49b15280a4b8aa64d389",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_ed90435262d46cd90b6053ce",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_f72e74b8b424101587b4040f",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_45e6382b3e613619eb728183",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_9c70fc9e40f30ff4ad199185",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e8664c2ec499a2864130dee1",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_3bf89a196104e497aabffa1c",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_d3b1e8df773ea02d01220156",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_9b8c7fb35107fd47a1786fc1",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_d5cde48e62c7c02fe8fda513",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_42f98acad0d6dceb5592bfb5",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_aeaa93b97502e10f6da6017d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_396818ab6aa67bbe35344ba1",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e8fd130d721ecc543dff1e69",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_19aaf3c079f11c9e42c8ec74",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_6798b13850a2a657250f9d39",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_1232fadf77924219edad5dad",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_299d464158014644c6e952f5",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_5698a2bfb32eccc3e2e6b03b",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_465b36d089e1342b21a56c57",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_03445c783f4ff4465360c1c7",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_6a685e829a58c0a388ecf6c1",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_01fb81b9ee25e15400106b95",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_2d4e727a4f7cb36d4fc9ddb3",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_ac828b02f9db3d1e96477d1c",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_dd3909ac89afd26f1130061c",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_209128bfd7b7928e9d904d07",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_ddb8f833d59e20dc7492596f",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_36104dfa1cd4ce8e4b90270a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_469898910dc3ecef77434726",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_89001d5aa6da7e8e48700b7e",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_f993b5c8737463ce0ff8c50e",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_02e8817816f28012f5341c7b",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_7c0897b46fd5c24d8c550300",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_cd02e4c50b87c1593e54976e",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_aca08adfe51899920c841763",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e34d123052e48ddc57dc0087",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_bb88b4fe6f77ba6a8106ac96",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Putrajaya"
+    },
+    {
+      "id": "provider_kpm_ca24b64116a57d7ac9607071",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_4fb1bfa85a23192ab50a2177",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_5e5d53c6eedcb773baf3bb80",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_5df839ac52b8842b95451bd9",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_2d2903a37881847ea2c31eb6",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_7b426e1f1e2cf6eb3e5fea4e",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_abe5b1e740d258780a28d346",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_1b69a37ec05117319657ab26",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_f8d6559a07ba52659784ecc6",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_f45dcc567fb16b1b244fb623",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_4977072a656daf4f50d877c6",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_e22c6d3ca68253b66fd2c03a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_4d688e368a560f430100ee64",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_a5d337591c0f3967e5f3b5b3",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_16ab15ef054d01b5bc7ad1f7",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_1c698b73589ed8cb0cfa5db6",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_37d2be1f816c24398949afd7",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_1091a27454f7931b552d2847",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_64342bc1a39bbcb4397d72a8",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_11c0ab001deb7ff7c62acffe",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_3c0523caf297a6d82239f674",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_db1dc85fca4dc8c92cd68d98",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e9299bcbfae6bffa04342646",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_55b9b8e4057ef3279f8274dc",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_ab1fc32ab7affa73d792bdff",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_3ed81f5b7bdceb06bab969cb",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_194f41106fc9334b64e1b4dd",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_05761e4f6e963257aca86d92",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_2c5798614914c1195fd3abad",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_a41cc64b8c307f9f1008aca4",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_a6c9f022b455c59fe6038f79",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_9399230f5f7eddd6de07ad20",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_cce3d9eb3c22191fba47f47b",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_74a013bce657e3a3c226a286",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_8cb9c3cc8fe86fbdff4f98c7",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_4695d74532ad9c6429883434",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_a516ce51838791890f37d1b2",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_9480fffed2079e9d3ecb6ed0",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_75d768309158f70aa7ac1f9d",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_3c2c589400b23f096426e7a1",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_8e75a543cbc4ec31c3bd87b9",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_f604a97af16b4980bf099535",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_989a7cb5977a4fab2f42524d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_dcf0e113e93bc3f51e0084cd",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_72ded32e1e9784c135c917b8",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_5ccb5686cc91dbc5a125615f",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_593a529e89e7aaa68651b4df",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_6a53ee7ee2c28ef176ebfe93",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_5664099c39f0951e2be330bf",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_c300c971d1822404719c0305",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_c9d8f08cc3b200a33cd5c6e3",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_9f3b010ed8a77309ed47dc94",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_4caf5250776293fd4430dc5d",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": null
+    },
+    {
+      "id": "provider_kpm_6c5931df434340514eabcd90",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_5908b9311952089cf8578677",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_2cade0d67e521cbebe9480c4",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_609a7ecc2f0e05c39f57b5fe",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_2283531d95d13c9b61574ee7",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_0c0694c56eac51b6258e0328",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_a656959f8701f6a82933f030",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_fbc4c8fcaa5821ac0e222c45",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_cd7078bb2966b8b19ef4b18a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_706c2a7cf79dcdb789cc09b9",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_8d30f9c16ce815c857171a48",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_794e0410afbf4515c2f2c461",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_b045a631b84d2011734c390d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_cce69a5c70012924d975a510",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_6923e3d77139ce888f85ed5c",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_ecbee246e5deeed70b5a4433",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_1f877a8a7387a7b53cff01ae",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_1171ff8e86e12bf003efbbdc",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_013cae656f4ee4138d1e976f",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_5c0f34256cca81e1addc532d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_24e5812bee786d24950047a8",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_20d1e41b0faf702ff997154a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_a39c23ae341fb2a006b04d21",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_1fad009881cf9bfad67cdc17",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_ad0d1a288db7f7c5ac3963d3",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_88d09ecf33ae2df555a27ecd",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_fdad15c8dae5d7df2b591c87",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_755dabfda54a60f3d7dfea2c",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_4260fffaf3e2421ea3fcc7d0",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_2b59e56ffd9f3c594a1fad5f",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_0fc91d5cf557108c9b741040",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_33b3eb7c2eb6588c6071aba6",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_aec68743b84c598fc14cc470",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_54ba5a7d453f46912c5f3180",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_228186f3e63d1b0d7bf2b72e",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_cb6fd0e1591b11d125fdc56d",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_70637584421f3f52e778a5e7",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_3e5b3a2acd9e94e018bb1664",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_0af454bee8ddc8c71928abb5",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_a1a2d985bd9e507c6890aaf6",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_3d7df5f37486942e0089e8b0",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_daf883affa805f2e0e707fd0",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_6945559019ca285bcecdfb38",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_5deb432ef2085ea2db730616",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_2e8545e161c0d3e541670d7d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_8bdb8f9ac709a453966ddf58",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_1fddc8afc6f67e0430aa5b68",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_b61b72fcabc6788649da9c6c",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_5426a8325e1ba69b6d28fd66",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_485c21a81c9f98e25b9485b8",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_7b40576839944061b2c1c2de",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_824bfd144928359467932d34",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_645c336c6701edd1d3c4d7f6",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_1cf9b6751d147aa9aae86264",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Putrajaya"
+    },
+    {
+      "id": "provider_kpm_b18c349401fe42d7e17b3dd5",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_741fe33614da4ab0ce8cc951",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_4f546a8bf711dff48a47a0d6",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_62e0ae60a4f047aa79c9d938",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_e01471db3b96a3631e454be7",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_72cf3c971d6dfb6e23a45bc7",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_a6b875c7512b08b3707a2eae",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_9acd66f91101d860de3695e6",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_c8d69bbe41951c7e9c8ca4e6",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_4e3a5aa78ff4cc056d5ef3bd",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_b96ecd14a007835ac8e6d067",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_d8d1109f30866a719e82d9c1",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_e22c246332b91b71edc19293",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_6bb1124c6676696294dab624",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_3c31a7c70950c2811cc4f75d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_642a47f4db22b4cf9a56a3cf",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_4bfbeb1e4e8ac48049be90c6",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_dd8abb38dd4dfac7267b38bd",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_a09fbc4ae2de67c6ec7eadc0",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_246ff04e21707c1ad8b8ac69",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_c03aa3d8a1431140a1911683",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_b5c91a32e846f0137a579e2b",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_d86f99c592cca388ed9689e2",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_58d80ae2529ffbb942dbce5c",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e7aa5c96cef37b2d07d9050a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_04d0c23f1882a12accd635bf",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_1abb4f24c03566a821f0222b",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_9e078ffeb55df4c4bfe9a80d",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_19dd65dddb2c1e346c6c0dce",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_62050582a0c3dad88fa85bc3",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_f09e78227459052289827749",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_698f0a6ba0b8be2aa92aa66a",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_b5723cdc96173354174d6f01",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_20d406ebbfddfd4712caf83a",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_6b4c668eeff1b1ce637a8f1d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e9a8e8ad95454d443943a961",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_e36da4178bced740eed9ca87",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_ae4ba662d5abf31070dbb252",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_873b481032f42eba77e0286b",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_f927494b6b0edc3ba41e3c2e",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_98763db72ed8e3349bd115c9",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_425e3b816ecaccb0d6cbf234",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_fa5c772247c51f607ba46dda",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_b7423e94b55d891ace69fc3b",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_bfa03de0d012adfb1455248c",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_2d559fe0a6a4039affb4b9fa",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_f07f02a98ac46cbfce9e46fa",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_465b15c4ee0040ce57c32038",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_158aeb3e83d952c232505b7e",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_10672d1857837a3346b49144",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_a5132743dce41d4d7238030e",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_126eda051e84841cce7bade3",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_822a5736b930e26680f837fa",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_455e1a4fafafc726af446c2a",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_f9e8bb607369dc823b0755bf",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_35fa04ea5e2b4f70cb48946f",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_f64257745bbd92c310981471",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_759116415f51ac6718e7b82a",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_4f3508b8a6032b8f288f94da",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_be729e27c385b07ced83e7d0",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_c1b0d8d147b207f2c082c4be",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_a92dc24dc25be3622ad62174",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_d1307d5daa799903de391b96",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_490148fd1a6bb8d39bc08d15",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_4d317d1cfbb86d8ebbc92000",
+      "reason": "unresolved_area",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_f15d7447a1e3396065c86bbb",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_01f0fe532bab181bae27cc7d",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_074badb1d924c843a0631bc3",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_0db34b4492555c09844b081a",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_351ee2fcbf574f7b718fb5af",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Selangor"
+    },
+    {
+      "id": "provider_kpm_59a3ce3ebac1965018d15b11",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_82356a0c9898dc648310b90c",
+      "reason": "coordinate_region_conflict",
+      "sourceRegion": "Selangor",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_874641f2f38fc7e0607ee66b",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_0d0383436cd5e9cec161921f",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    },
+    {
+      "id": "provider_kpm_7e84fe4eb86191f1c0968bd0",
+      "reason": "unresolved_area",
+      "sourceRegion": "Kuala Lumpur",
+      "coordinateRegion": "Kuala Lumpur"
+    }
+  ],
+  "hash": "e118f353260525d50260888b340eb6b163445cdb2e5397af59ea9f2dc09b27e1",
+  "repeatImportEqual": true
+}
