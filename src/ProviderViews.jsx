@@ -5,6 +5,7 @@ import {
   Check,
   Copy,
   Phone,
+  MessageCircle,
   Plus,
   CheckCircle2,
   HelpCircle,
@@ -38,6 +39,17 @@ export function SourceLink({ source, children }) {
       )}
     </span>
   );
+}
+function PublishedContacts({p}) {
+  return <>
+    {p.phone && <div className="published-contact"><div className="call-link" aria-label="Institution phone"><Phone size={19}/>{p.phone.display}</div><SourceLink source={p.phone.source}/></div>}
+    {(p.whatsapp??[]).map(contact=><div className="published-contact" key={contact.href}>
+      <a className="call-link" href={contact.href} target="_blank" rel="noreferrer" aria-label={`Open WhatsApp for ${p.name}`}><MessageCircle size={19}/>WhatsApp · {contact.display}<ArrowUpRight size={15}/></a>
+      <SourceLink source={contact.source}/>
+      {contact.scope==='website'&&<small className="notice">Website enquiry number — may serve multiple branches.</small>}
+    </div>)}
+    {!p.phone&&!p.whatsapp?.length&&<p>No published contact number is available for this branch. Check the institution source page.</p>}
+  </>;
 }
 export function Status({ state, children }) {
   const Icon =
@@ -278,6 +290,7 @@ export function Details({ p, onPrepare, onCompare, compared }) {
           {compared ? <Check size={16} /> : <Plus size={16} />}Compare
         </button>
       </div>
+      {(p.phone||p.whatsapp?.length>0)&&<section className="detail-section"><div className="section-kicker">PUBLISHED CONTACTS</div><PublishedContacts p={p}/></section>}
       <section className="detail-section">
         <div className="section-kicker">01 / THIS REQUEST</div>
         <h3>{p.fit.summary}</h3>
@@ -300,6 +313,7 @@ export function Details({ p, onPrepare, onCompare, compared }) {
             Opening hours are used to check your required care end time.
           </p>
           <SourceLink source={p.businessHours.source} />
+          {p.businessHours.alternative&&<div className="notice"><p>Additional published hours: {p.businessHours.alternative.notes}</p><SourceLink source={p.businessHours.alternative.source}/></div>}
           <details className="weekly-hours">
             <summary>View weekly opening hours</summary>
             <dl>
@@ -307,11 +321,15 @@ export function Details({ p, onPrepare, onCompare, compared }) {
                 const day=['MON','TUE','WED','THU','FRI','SAT','SUN'][i];
                 const windows=(p.businessHours?.windows ?? []).filter(w=>w.days.includes(day));
                 const label=windows.length ? windows.map(w=>`${timeLabel(w.start)}–${timeLabel(w.end)}`).join(', ') : (p.businessHours?.closedDays ?? []).includes(day) ? 'Listed closed' : 'Not published';
-                return <div key={day} className={name===p.businessHoursDay?'requested-day':''}><dt>{name}{name===p.businessHoursDay?' · requested':''}</dt><dd>{label}</dd></div>;
+                return <div key={day} className={name===p.businessHoursDay?'requested-day':''}><dt>{name}{name===p.businessHoursDay?' · requested':''}</dt><dd>{label}{windows[0]?.source?.url&&windows[0].source.url!==p.businessHours.source?.url&&<SourceLink source={windows[0].source}/>}</dd></div>;
               })}
             </dl>
           </details>
         </div>
+        {p.transport?.source && <div className="business-note">
+          <strong>Transport: {p.transport.exists===true?'Advertised':p.transport.exists===false?'Listed as unavailable':'Enquire with institution'}</strong>
+          <p>{p.transport.wording}</p><SourceLink source={p.transport.source}/>
+        </div>}
         {p.notes.map((n, i) => (
           <p className="notice" key={i}>
             {n}
@@ -631,23 +649,7 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
       )}
       <section className="contact-panel">
         <div className="section-kicker">CONTACT WHEN YOU ARE READY</div>
-        {p.phone ? (
-          <>
-            <div className="call-link" aria-label="Institution phone">
-              <Phone size={19} />
-              {p.phone.display}
-            </div>
-            <SourceLink source={p.phone.source} />
-          </>
-        ) : (
-          <>
-            <h3>Phone unavailable</h3>
-            <p>
-              No branch-matched phone source is available. Use the source page
-              with your copied questions.
-            </p>
-          </>
-        )}
+        <PublishedContacts p={p}/>
         {p.sourcePage && (
           <a
             className="text-link"
@@ -662,7 +664,7 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
           <p>Controlled examples have no real contact action.</p>
         )}
         <p className="notice">
-          Contact the institution using the displayed number. This page does
+          Contact the institution using the displayed number or WhatsApp link. This page does
           not record contact, acceptance or a booking.
         </p>
       </section>

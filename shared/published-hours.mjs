@@ -2,9 +2,12 @@ const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Satur
 const dayKeys = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 export function translateMalayHours(raw) {
   if (typeof raw !== 'string') return '';
-  let text = raw.normalize('NFKC');
+  let text = raw.normalize('NFKC').replace(/(\d)(pagi|petang|malam)\b/gi,'$1 $2');
   const words = { 'Isnin':'Monday', 'Selasa':'Tuesday', 'Rabu':'Wednesday', 'Khamis':'Thursday', 'Jumaat':'Friday', 'Sabtu':'Saturday', 'Ahad':'Sunday', 'tengah hari':'PM', 'tghari':'PM', 'pagi':'AM', 'petang':'PM', 'malam':'PM', 'hingga':'–', 'sehingga':'until', 'tutup':'Closed', 'setiap hari':'Every day', 'waktu operasi':'Opening hours', 'cuti umum':'Public holidays' };
   for (const [ms,en] of Object.entries(words)) text=text.replace(new RegExp('\\b'+ms+'\\b','gi'),en);
+  const abbreviated={Mon:'Monday',Tue:'Tuesday',Tues:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Thur:'Thursday',Thurs:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
+  for(const [short,full] of Object.entries(abbreviated))text=text.replace(new RegExp('\\b'+short+'\\b\\.?','gi'),full);
+  text=text.replace(/\bClose\b/gi,'Closed').replace(/\ba\.m\./gi,'AM').replace(/\bp\.m\./gi,'PM');
   return text;
 }
 export function parsePublishedHours(raw) {
@@ -14,7 +17,9 @@ export function parsePublishedHours(raw) {
   const minute = (h,m,ap) => { h=Number(h); m=Number(m??0); if(m>59||h>23||(ap&&(h<1||h>12)))return null; return (ap ? h%12+(/pm/i.test(ap)?12:0) : h)*60+m; };
   // Without a named weekday / Every day, retain the text but do not invent days.
   // Parentheses commonly separate a closed-day note from the opening range.
-  for (const part of translated.split(/[|;\n()]/)) {
+  // A heading containing only weekdays can apply to its immediately following clock line.
+  const joined=translated.replace(/((?:(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)[ \t]*(?:[-–—,&]|to|until)?[ \t]*)+):?[ \t]*\n[ \t]*(?=\d)/g,'$1: ');
+  for (const part of joined.split(/[|;\n()]/)) {
     const found = [...part.matchAll(/Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday/gi)].map(m=>dayNames.findIndex(d=>d.toLowerCase()===m[0].toLowerCase()));
     let days=[];
     if (/Every day/i.test(part)) days=[...dayKeys];

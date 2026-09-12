@@ -201,6 +201,13 @@ export function assess(p, r) {
     state = "conflict";
     reason = "The institution is listed closed on the requested day.";
   }
+  if(!exception&&!hasCareSchedule&&p.businessHours?.alternative){
+    const alt=p.businessHours.alternative,ws=applicableWindows(alt.windows,r.date),closed=alt.closedDays.includes(dayFor(r.date));
+    if(ws.length||closed){
+      const alternateState=!closed&&ws.some(w=>end>=w.start&&end<=w.end)?'supported':'conflict';
+      if(state!==alternateState){state='unknown';reason+=` Another listing ${closed?'says closed':`lists ${ws.map(w=>`${timeLabel(w.start)}–${timeLabel(w.end)}`).join(', ')}`}; the sources disagree for your requested time.`;careSource=alt.source;}
+    }
+  }
   if (
     !exception &&
     p.lateRule?.latestEnd != null &&
@@ -249,11 +256,20 @@ export function assess(p, r) {
 }
 export function businessHoursFor(p, date) {
   const ws = applicableWindows(p.businessHours?.windows, date);
+  if(hoursDisagree(p,date))return 'Sources differ · check details';
   return ws.length
     ? ws.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")
     : (p.businessHours?.closedDays ?? []).includes(dayFor(date))
       ? "Listed closed"
       : p.businessHours?.windows?.length ? "Not listed for this day" : "Not published";
+}
+export function hoursDisagree(p,date){
+  const a=p.businessHours?.alternative;if(!a)return false;
+  const signature=h=>{
+    const ws=applicableWindows(h.windows,date);return ws.length?ws.map(w=>`${w.start}-${w.end}`).sort().join(','):h.closedDays?.includes(dayFor(date))?'closed':null;
+  };
+  const original=signature(p.businessHours),other=signature(a);
+  return original!==null&&other!==null&&original!==other;
 }
 export function costFor(p, r) {
   const rule = p.feeRule,
@@ -337,7 +353,7 @@ export function sortProviders(items, sort, date) {
             ? 0
             : null
         : sort === "closing"
-          ? Math.max(
+          ? hoursDisagree(p,date) ? null : Math.max(
               ...applicableWindows(p.businessHours?.windows, date).map(
                 (w) => w.end,
               ),

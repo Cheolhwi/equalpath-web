@@ -1,5 +1,6 @@
 import { buildCatalog } from "./providers.mjs";
 import { applyHoursEvidence } from "./hours-overlay.mjs";
+import { applyServicesEvidence } from "./services-overlay.mjs";
 const endpoint = "https://sgp.cloud.appwrite.io/v1",
   project = "6a916a6c0030a70a9d75";
 export class ServiceError extends Error {
@@ -32,7 +33,8 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
       throw new ServiceError("SOURCE_UNAVAILABLE");
     const summary = JSON.parse(manifest.payload);
     const hoursKey = [summary.hours_release, summary.hours_hash, summary.hours_count].join(":");
-    if (cache?.release === manifest.release_id && cache.hoursKey === hoursKey) {
+    const servicesKey = [summary.services_release, summary.services_hash, summary.services_count].join(":");
+    if (cache?.release === manifest.release_id && cache.hoursKey === hoursKey && cache.servicesKey === servicesKey) {
       checked = now();
       return cache;
     }
@@ -96,6 +98,18 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
         }), manifest.release_id, summary.hours_hash);
       } catch { throw new ServiceError("SOURCE_INVALID"); }
     }
+    if (summary.services_release) {
+      if (!/^services_[a-f0-9]{24}$/.test(summary.services_release) || !/^[a-f0-9]{64}$/.test(summary.services_hash ?? '') || !Number.isInteger(summary.services_count) || summary.services_count < 1 || summary.services_count > summary.provider_count) throw new ServiceError('SOURCE_INVALID');
+      const evidenceRows=[];
+      for(let offset=0;offset<summary.services_count;offset+=100){
+        const params=new URLSearchParams();
+        for(const q of [query('equal','release_id',[summary.services_release]),query('orderAsc','$id',[]),query('limit',null,[100]),query('offset',null,[offset])])params.append('queries[]',q);
+        params.set('total','false');
+        evidenceRows.push(...(await get('/tablesdb/equalpath/tables/web_provider_evidence/rows?'+params)).rows);
+      }
+      if(evidenceRows.length!==summary.services_count||evidenceRows.some(r=>r.release_id!==summary.services_release))throw new ServiceError('SOURCE_INCOMPLETE');
+      try{raw=applyServicesEvidence(raw,evidenceRows.map(r=>{const value=JSON.parse(r.payload);if(value.provider_id!==r.provider_id)throw Error('Identity differs');return value;}),manifest.release_id,summary.services_hash);}catch{throw new ServiceError('SOURCE_INVALID');}
+    }
     const after = await get(
       "/tablesdb/equalpath/tables/web_data_releases/rows/current",
     );
@@ -106,9 +120,14 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
       manifest.release_id,
     );
     candidate.hoursKey = hoursKey;
+    candidate.servicesKey = servicesKey;
     if (summary.hours_release) {
       candidate.version += ":" + summary.hours_release;
       for (const p of candidate.items) p.version = candidate.version;
+    }
+    if (summary.services_release) {
+      candidate.version += ':' + summary.services_release;
+      for (const p of candidate.items) p.version=candidate.version;
     }
     cache = candidate;
     checked = now();

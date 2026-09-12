@@ -2,11 +2,12 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { providerRegion } from "./geography.mjs";
 import { parsePublishedHours } from "../shared/published-hours.mjs";
+import { whatsappLink } from "../shared/whatsapp.mjs";
 const index = JSON.parse(
   readFileSync(new URL("./data/provenance-index.json", import.meta.url)),
 );
 const reviewedFees = JSON.parse(readFileSync(new URL('./data/reviewed-fees.json', import.meta.url)));
-export const supplementVersion = "service-review-2026-09-13-v3";
+export const supplementVersion = "service-review-2026-09-13-v4";
 export function safeURL(value) {
   try {
     const u = new URL(value);
@@ -140,6 +141,10 @@ export function normalizeProvider(raw, release) {
       warnings: r.warning_codes ?? [],
     },
     phone: phoneFact(raw.public_phone, contactSource),
+    whatsapp: (raw.whatsapp_contacts ?? []).flatMap(c => {
+      const contact=whatsappLink(c.url);
+      return contact && safeURL(c.source_url) ? [{...contact,scope:c.scope??'branch',source:source(c.source_kind==='kiddy123_directory'?'Kiddy123 branch contact':'Provider website enquiry',c.source_url,c.retrieved_at)}] : [];
+    }),
     website: safeURL(raw.website),
     sourcePage: safeURL(raw.website) ?? directory.url ?? regSource.url,
     age:
@@ -176,7 +181,8 @@ export function normalizeProvider(raw, release) {
           : null,
       type: raw.transport?.type ?? null,
       coverage: null,
-      source: null,
+      wording: raw.transport?.wording ?? null,
+      source: raw.transport?.source_url ? source('Published transport service',raw.transport.source_url,raw.transport.retrieved_at) : null,
     },
     pickupWindows: [],
     careWindows: [],
@@ -307,6 +313,15 @@ export function normalizeProvider(raw, release) {
     p.fees.push(...reviewed.fees);
     if (reviewed.phone) p.phone = phoneFact(reviewed.phone.display, reviewed.phone.source);
     p.sources.push(reviewed.matchSource, ...new Map(reviewed.fees.map(f => [f.source.url,f.source])).values());
+  }
+  if(raw.additional_operating_hours){
+    const h=raw.additional_operating_hours,s=source('Kiddy123 opening hours',h.source_url,h.retrieved_at);
+    const alternative={windows:h.weekly_windows.map(w=>({days:[w.weekday],start:w.start_minute,end:w.end_minute,source:s})),closedDays:h.closed_weekdays,notes:h.notes,source:s};
+    const known=new Set([...p.businessHours.closedDays,...p.businessHours.windows.flatMap(w=>w.days)]);
+    p.businessHours.windows.push(...alternative.windows.filter(w=>!known.has(w.days[0])));
+    p.businessHours.closedDays.push(...alternative.closedDays.filter(d=>!known.has(d)));
+    p.businessHours.alternative=alternative;
+    p.sources.push(s);
   }
   return { provider: p };
 }

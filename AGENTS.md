@@ -11,3 +11,4 @@
 - Run local preview and verify the actual desktop/mobile user journey. Record data limits and unverified release gates honestly.
 
 - On 2026-09-13 the user approved published opening hours as the default care-end window (specific care schedules/date exceptions take precedence), and sourced phone display instead of device-dialler acceptance checks. See docs/REQUIREMENTS_REVISION_2_1.md.
+- The user subsequently requested public WhatsApp contacts and continued hours/transport collection. Display sourced WhatsApp links as an external user-initiated contact action; do not send messages or represent listing evidence as provider confirmation. Keep website enquiry numbers distinguishable from branch contacts. See docs/PUBLIC_CONTACTS_AND_SERVICES.md.

@@ -1361,9 +1361,12 @@ dialog::backdrop {
   min-height: 44px;
   text-decoration: none;
 }
-.call-link svg:last-child {
+.call-link svg:last-child:not(:first-child) {
   margin-left: auto;
 }
+.published-contact { margin: 8px 0 16px; }
+.published-contact .call-link { font-size: clamp(15px, 1.5vw, 20px); overflow-wrap: anywhere; }
+.published-contact .call-link svg { flex-shrink: 0; }
 .contact-panel .notice {
   margin: 15px 0 0;
 }
