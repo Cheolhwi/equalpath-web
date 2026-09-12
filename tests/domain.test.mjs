@@ -21,7 +21,7 @@ import {
   source,
   buildCatalog,
 } from "../server/providers.mjs";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 const req = canonicalRequest({
   pickup: demoPickup,
   date: "2026-09-14",
@@ -265,12 +265,12 @@ test("imported links and phone actions cannot inject executable schemes", () => 
   );
   assert.equal(phoneFact("010-466 0613", null), null);
 });
-test("current source import is deterministic and real contact facts retain separate provenance", () => {
+test("representative public source import is deterministic and real contact facts retain separate provenance", () => {
   const rows = JSON.parse(
     readFileSync(
-      new URL("../../webapp-data/prepared/catalog.json", import.meta.url),
+      new URL("./fixtures/public-catalog-sample.json", import.meta.url),
     ),
-  ).map((r) => JSON.parse(r.payload));
+  );
   const c = buildCatalog(rows, "web_79f1397603c1e28325955f64"),
     repeat = buildCatalog(rows, "web_79f1397603c1e28325955f64");
   assert.equal(c.hash, repeat.hash);
@@ -286,20 +286,7 @@ test("current source import is deterministic and real contact facts retain separ
       .official,
     false,
   );
-  writeFileSync(
-    new URL("../evidence/region-validation.json", import.meta.url),
-    JSON.stringify(
-      {
-        checked_at: new Date().toISOString(),
-        sourceRecords: rows.length,
-        accepted: c.items.length,
-        missingCoordinates: c.items.filter((p) => !p.location).length,
-        held: c.held,
-        hash: c.hash,
-        repeatImportEqual: c.hash === repeat.hash,
-      },
-      null,
-      2,
-    ),
-  );
+  assert.equal(c.items.length, 3);
+  assert.equal(c.held.length, 1);
+  assert.ok(c.items.some((p) => !p.location));
 });
