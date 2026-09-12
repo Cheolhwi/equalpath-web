@@ -1,0 +1,115 @@
+{
+  "checkedAt": "2026-09-12T15:03:29.691Z",
+  "origin": "https://equalpathcare.me",
+  "interface": "public Appwrite execution API",
+  "calls": [
+    {
+      "action": "places",
+      "httpStatus": 201,
+      "functionStatus": 200,
+      "version": "web_79f1397603c1e28325955f64:service-review-2026-09-12-v2"
+    },
+    {
+      "action": "search",
+      "httpStatus": 201,
+      "functionStatus": 200,
+      "version": "web_79f1397603c1e28325955f64:service-review-2026-09-12-v2"
+    },
+    {
+      "action": "compare",
+      "httpStatus": 201,
+      "functionStatus": 200,
+      "version": "web_79f1397603c1e28325955f64:service-review-2026-09-12-v2"
+    }
+  ],
+  "pickup": {
+    "id": "provider_c00ea9e07bdc5e171806cc3e768",
+    "label": "EDWETHINK",
+    "address": "D-1-12, PLAZA ARKADIA NO.3, JALAN INTISARI PERDANA DESA PARKCITY, 52200 KUALA LUMPUR. 52200 WP Kuala Lumpur",
+    "region": "Kuala Lumpur",
+    "lat": 3.1866227,
+    "lng": 101.6359881,
+    "source": {
+      "label": "Published location",
+      "url": "https://www.google.com/maps/search/?api=1&query=EDWETHINK%20Plaza%20Arkadia&query_place_id=ChIJLS7BCwZJzDERuZm1pJPz-_I",
+      "retrievedAt": null,
+      "sourceDate": null,
+      "kind": "public_directory"
+    },
+    "basis": "boundary_and_source_agree"
+  },
+  "results": 983,
+  "compared": [
+    {
+      "id": "provider_c00ea9e07bdc5e171806cc3e768",
+      "name": "EDWETHINK",
+      "conditions": [
+        {
+          "id": "age",
+          "state": "unknown"
+        },
+        {
+          "id": "admission",
+          "state": "unknown"
+        },
+        {
+          "id": "transport",
+          "state": "unknown"
+        },
+        {
+          "id": "coverage",
+          "state": "unknown"
+        },
+        {
+          "id": "pickup",
+          "state": "unknown"
+        },
+        {
+          "id": "care",
+          "state": "unknown"
+        },
+        {
+          "id": "transfer",
+          "state": "unknown"
+        }
+      ],
+      "enquiryCount": 9
+    },
+    {
+      "id": "provider_kpm_4117c974036891b2180ab103",
+      "name": "International Village of Early Years (IVEY)",
+      "conditions": [
+        {
+          "id": "age",
+          "state": "unknown"
+        },
+        {
+          "id": "admission",
+          "state": "unknown"
+        },
+        {
+          "id": "transport",
+          "state": "unknown"
+        },
+        {
+          "id": "coverage",
+          "state": "unknown"
+        },
+        {
+          "id": "pickup",
+          "state": "unknown"
+        },
+        {
+          "id": "care",
+          "state": "unknown"
+        },
+        {
+          "id": "transfer",
+          "state": "unknown"
+        }
+      ],
+      "enquiryCount": 9
+    }
+  ],
+  "note": "API smoke test from the production origin. Does not assert browser rendering or custom-domain TLS readiness."
+}

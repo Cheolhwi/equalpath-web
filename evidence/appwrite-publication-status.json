@@ -1,12 +1,19 @@
 {
-  "checkedAt": "2026-09-12T14:51:52.351837+00:00",
+  "checkedAt": "2026-09-12T15:10:16.315447+00:00",
   "github": {
     "repo": "Cheolhwi/equalpath-web",
     "visibility": "private",
     "installationId": 161155135,
     "repositorySelection": "selected",
     "repositories": ["Cheolhwi/equalpath-web"],
-    "scopeEvidence": "GitHub installation settings UI read-back after Save"
+    "scopeEvidence": "GitHub installation settings UI read-back after Save",
+    "verifiedRun": {
+      "id": 34700950996,
+      "sourceCommit": "c8625a4fa4e799f6727cc9fb3a9a8bf88ca03c7a",
+      "testsAndBuild": "passed, 39 tests",
+      "productionVerification": "failed; custom-domain certificate issuance pending (ERR_TLS_CERT_ALTNAME_INVALID)",
+      "url": "https://github.com/Cheolhwi/equalpath-web/actions/runs/34700950996"
+    }
   },
   "site": {
     "$id": "equalpath-web",
@@ -26,14 +33,14 @@
     "adapter": "static",
     "fallbackFile": "index.html",
     "buildRuntime": "node-22",
-    "deploymentId": "6aa56629ba17bb203a00"
+    "deploymentId": "6aa5692fe6a6571c4b6e"
   },
   "deployment": {
-    "$id": "6aa56629ba17bb203a00",
+    "$id": "6aa5692fe6a6571c4b6e",
     "status": "ready",
     "activate": true,
-    "buildDuration": 92,
-    "providerCommitHash": "725a25425ee3dc9c32e21baed9bc4a9d57565f7e"
+    "buildDuration": 82,
+    "providerCommitHash": "c8625a4fa4e799f6727cc9fb3a9a8bf88ca03c7a"
   },
   "domains": [
     {
@@ -41,10 +48,10 @@
       "domain": "equalpathcare.me",
       "status": "verifying",
       "type": "deployment",
-      "deploymentId": "6aa56629ba17bb203a00",
+      "deploymentId": "6aa5692fe6a6571c4b6e",
       "redirectUrl": null,
       "redirectStatusCode": 301,
-      "logs": "\u001b[90m[14:49:27] \u001b[97mProcessing SSL certificate issuance. \u001b[0m\n\u001b[90m[14:49:32] \u001b[97mSSL certificate is being issued. This usually takes a few minutes \u2014 no action needed on your end. We'll periodically check and update the status. \u001b[0m\n"
+      "logs": "\u001b[90m[14:49:27] \u001b[97mProcessing SSL certificate issuance. \u001b[0m\n\u001b[90m[14:49:32] \u001b[97mSSL certificate is being issued. This usually takes a few minutes — no action needed on your end. We'll periodically check and update the status. \u001b[0m\n\u001b[90m[14:55:21] \u001b[33mStill waiting for SSL certificate issuance to complete... \u001b[0m\n\u001b[90m[15:01:21] \u001b[33mStill waiting for SSL certificate issuance to complete... \u001b[0m\n\u001b[90m[15:07:21] \u001b[33mStill waiting for SSL certificate issuance to complete... \u001b[0m\n"
     },
     {
       "$id": "5a3927aba398f5c664442d7fb6349b8c",
@@ -54,7 +61,17 @@
       "deploymentId": null,
       "redirectUrl": "https://equalpathcare.me/",
       "redirectStatusCode": 307,
-      "logs": "\u001b[90m[14:49:26] \u001b[97mProcessing SSL certificate issuance. \u001b[0m\n\u001b[90m[14:49:32] \u001b[97mSSL certificate is being issued. This usually takes a few minutes \u2014 no action needed on your end. We'll periodically check and update the status. \u001b[0m\n"
+      "logs": "\u001b[90m[14:49:26] \u001b[97mProcessing SSL certificate issuance. \u001b[0m\n\u001b[90m[14:49:32] \u001b[97mSSL certificate is being issued. This usually takes a few minutes — no action needed on your end. We'll periodically check and update the status. \u001b[0m\n\u001b[90m[14:55:21] \u001b[33mStill waiting for SSL certificate issuance to complete... \u001b[0m\n\u001b[90m[15:01:21] \u001b[33mStill waiting for SSL certificate issuance to complete... \u001b[0m\n\u001b[90m[15:07:21] \u001b[33mStill waiting for SSL certificate issuance to complete... \u001b[0m\n"
+    },
+    {
+      "$id": "d528e7500449d2ce13ec4f6042b4b16c",
+      "domain": "equalpath-web.appwrite.network",
+      "status": "verified",
+      "type": "deployment",
+      "deploymentId": "6aa5692fe6a6571c4b6e",
+      "redirectUrl": null,
+      "redirectStatusCode": 301,
+      "logs": null
     }
   ],
   "dns": {
@@ -82,5 +99,20 @@
         "ttl": 60
       }
     ]
-  }
+  },
+  "preview": {
+    "url": "https://equalpath-web.appwrite.network/",
+    "httpStatus": 200,
+    "tlsValidation": "default certificate verification enabled",
+    "buildInfo": {
+      "source": "3758a296adfde649eada757a14e8bac140272accc935538e3b99eef651ccaf90",
+      "builtAt": "2026-09-12T15:01:22.630Z",
+      "assets": [
+        "/favicon.svg",
+        "/assets/index-b79EPzz5.js",
+        "/assets/index-B8ERQu17.css"
+      ]
+    }
+  },
+  "completion": "Git integration, automatic Appwrite deployment, public DNS and preview journey verified. Custom-domain HTTPS remains pending; final production verification has not passed."
 }

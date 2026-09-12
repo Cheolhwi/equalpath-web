@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-09-12T15:01:51.300Z",
+  "origin": "https://equalpathcare.me",
+  "httpStatus": 201,
+  "allowOrigin": "https://equalpathcare.me",
+  "functionStatus": 200,
+  "health": {
+    "ok": true,
+    "contract": "equalpath-web-p03-v1",
+    "mode": "live",
+    "version": "web_79f1397603c1e28325955f64:service-review-2026-09-12-v2",
+    "release": "web_79f1397603c1e28325955f64",
+    "regions": ["Kuala Lumpur", "Selangor"],
+    "available": 3122,
+    "withheld": 417,
+    "distanceBasis": "Straight-line distance; not road distance or travel time."
+  }
+}
