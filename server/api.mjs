@@ -17,7 +17,8 @@ import {
 import { regionAt, regions, distanceKm } from "./geography.mjs";
 import { fixtureCatalog, demoPickup } from "./fixtures.mjs";
 import { createStore, ServiceError } from "./appwrite-store.mjs";
-export function createAPI({ store = createStore() } = {}) {
+import { createPlaceSearch } from "./places.mjs";
+export function createAPI({ store = createStore(), placeSearch = createPlaceSearch() } = {}) {
   return async function handle(body) {
     if (!body || typeof body !== "object" || Array.isArray(body))
       throw new ServiceError("INVALID_REQUEST", 400);
@@ -25,11 +26,14 @@ export function createAPI({ store = createStore() } = {}) {
     if (!["live", "demo"].includes(mode))
       throw new ServiceError("INVALID_MODE", 400);
     if (
-      !["health", "places", "search", "details", "compare"].includes(
+      !["health", "places", "nearby", "search", "details", "compare"].includes(
         body.action,
       )
     )
       throw new ServiceError("UNKNOWN_ACTION", 400);
+    // Place lookup is independent of childcare records and directory health.
+    if (body.action === "places" && mode === "live")
+      return { contract: CONTRACT, mode, regions, ...await placeSearch(body.query) };
     const catalog = mode === "demo" ? fixtureCatalog : await store.catalog(),
       items = catalog.items;
     const meta = {
@@ -44,6 +48,16 @@ export function createAPI({ store = createStore() } = {}) {
         "Straight-line distance; not road distance or travel time.",
     };
     if (body.action === "health") return { ...meta, ok: true };
+    if (body.action === "nearby") {
+      const center = { lat: body.center?.lat, lng: body.center?.lng };
+      if (!regions.includes(regionAt(center)))
+        throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
+      const radius = [5, 10, 25, 50].includes(body.radius) ? body.radius : 5;
+      const candidates = items.filter((p) => p.location && distanceKm(center, p.location) <= radius)
+        .map((p) => ({ id: p.id, name: p.name, category: p.category, address: p.address, district: p.district, region: p.region, location: p.location, distanceKm: distanceKm(center, p.location) }))
+        .sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
+      return { ...meta, center, radius, total: candidates.length, items: candidates.slice(0, 20) };
+    }
     if (body.action === "places") {
       const q = String(body.query ?? "")
         .normalize("NFKC")

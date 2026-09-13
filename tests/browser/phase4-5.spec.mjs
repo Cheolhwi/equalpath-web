@@ -298,7 +298,7 @@ test("unmatched saved place and conflicting times require correction, not silent
   await page.getByRole("button", { name: /Demo usual centre/ }).click();
   await page.locator("#care-end").fill("15:00");
   await page
-    .getByRole("button", { name: "Update results", exact: true })
+    .getByRole("button", { name: "Find care options", exact: true })
     .click();
   await expect(
     page.getByText("Care must end after collection on the same day.", {

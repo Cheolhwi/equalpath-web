@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
-import { LocateFixed, Plus, Minus, RotateCcw } from "lucide-react";
+import { LocateFixed, Plus, Minus, RotateCcw, MapPin } from "lucide-react";
+import { DEFAULT_MAP } from "../shared/map-memory.mjs";
 import { makeStyle } from "./map-style.js";
 import { entranceCamera } from "./entrance.js";
 export default function MapCanvas({
@@ -15,12 +16,20 @@ export default function MapCanvas({
   labels,
   visible,
   onStatus,
+  viewTarget = DEFAULT_MAP,
+  autoFit = true,
+  onViewChange,
+  onChoose,
+  onCancel,
   introPhase = "ready",
   introArea = 0,
   introReduced = false,
 }) {
   const host = useRef(null),
     map = useRef(null),
+    userMove = useRef(false),
+    lastView = useRef(viewTarget),
+    selectionStart = useRef(null),
     markers = useRef([]),
     latest = useRef({
       items,
@@ -34,7 +43,7 @@ export default function MapCanvas({
     }),
     [retry, setRetry] = useState(0),
     [status, setStatus] = useState("loading"),
-    [camera, setCamera] = useState({ pitch: 0, bearing: 0, zoom: 10.8 });
+    [camera, setCamera] = useState({ pitch: 0, bearing: 0, zoom: viewTarget.zoom, ...viewTarget.center });
   latest.current = {
     items,
     pickup,
@@ -43,6 +52,9 @@ export default function MapCanvas({
     onSelect,
     introPhase,
     introArea,
+    autoFit,
+    onViewChange,
+    viewTarget,
     cameraReduced: reduced || introReduced,
   };
   const fit = ({ immediate = false } = {}) => {
@@ -59,8 +71,8 @@ export default function MapCanvas({
     ];
     if (!coords.length) {
       m.easeTo({
-        center: [101.64, 3.13],
-        zoom: 10.8,
+        center: [lastView.current.center.lng, lastView.current.center.lat],
+        zoom: lastView.current.zoom,
         pitch: 0,
         bearing: 0,
         duration: immediate || latest.current.cameraReduced ? 0 : 600,
@@ -92,10 +104,11 @@ export default function MapCanvas({
       m = new maplibregl.Map({
         container: host.current,
         style: makeStyle(theme, labels),
-        center: entranceCamera(introPhase, introArea)?.center ?? [101.64, 3.13],
-        zoom: entranceCamera(introPhase, introArea)?.zoom ?? 10.8,
-        maxZoom: 18,
-        minZoom: 7,
+      center: entranceCamera(introPhase, introArea)?.center ?? [viewTarget.center.lng, viewTarget.center.lat],
+      zoom: entranceCamera(introPhase, introArea)?.zoom ?? viewTarget.zoom,
+      maxZoom: 18,
+      minZoom: 7,
+      maxBounds: [[100.7, 2.55], [102.05, 3.95]],
         pitch: 0,
         bearing: 0,
         maxPitch: 0,
@@ -119,7 +132,17 @@ export default function MapCanvas({
           pitch: m.getPitch(),
           bearing: m.getBearing(),
           zoom: m.getZoom(),
+          lat: m.getCenter().lat,
+          lng: m.getCenter().lng,
         });
+    });
+    m.on("movestart", (e) => { if (e.originalEvent) userMove.current = true; });
+    m.on("moveend", () => {
+      if (latest.current.introPhase !== "ready" || latest.current.choosing) { userMove.current = false; return; }
+      const center = m.getCenter();
+      lastView.current = { center: { lat: center.lat, lng: center.lng }, zoom: m.getZoom() };
+      if (userMove.current) latest.current.onViewChange?.(lastView.current);
+      userMove.current = false;
     });
     m.on("load", () => {
       const shot = entranceCamera(
@@ -127,7 +150,7 @@ export default function MapCanvas({
         latest.current.introArea,
       );
       if (shot) m.jumpTo(shot);
-      else fit({ immediate: true });
+      else if (latest.current.autoFit) fit({ immediate: true });
     });
     m.on("idle", () => {
       if (
@@ -143,12 +166,7 @@ export default function MapCanvas({
         latest.current.choosing &&
         !e.originalEvent.target.closest?.(".provider-pin")
       )
-        latest.current.onPick({
-          id: null,
-          label: "Selected public map point",
-          lat: e.lngLat.lat,
-          lng: e.lngLat.lng,
-        });
+        m.easeTo({ center: e.lngLat, duration: latest.current.cameraReduced ? 0 : 200 });
     });
     const ro = new ResizeObserver(() => m.resize());
     ro.observe(host.current);
@@ -195,7 +213,7 @@ export default function MapCanvas({
             .addTo(m),
         );
       });
-    if (pickup) {
+    if (pickup && !choosing) {
       const el = document.createElement("div");
       el.className = "pickup-pin";
       el.textContent = "P";
@@ -211,10 +229,27 @@ export default function MapCanvas({
           .addTo(m),
       );
     }
-  }, [items, pickup, selected, retry]);
+  }, [items, pickup, selected, retry, choosing]);
   useEffect(() => {
-    fit();
-  }, [items, pickup, retry]);
+    if (autoFit && !choosing) fit();
+  }, [items, pickup, retry, autoFit]);
+  useEffect(() => {
+    lastView.current = viewTarget;
+    if (map.current && introPhase === "ready") map.current.easeTo({ center: [viewTarget.center.lng, viewTarget.center.lat], zoom: viewTarget.zoom, padding: 0, duration: reduced ? 0 : 450 });
+  }, [viewTarget]);
+  useEffect(() => {
+    const m = map.current;
+    if (!m) return;
+    if (choosing) {
+      selectionStart.current = { view: lastView.current, target: viewTarget };
+      m.stop();
+      m.jumpTo({ center: m.getCenter(), padding: 0 });
+    } else if (selectionStart.current) {
+      const start = selectionStart.current;
+      if (start.target === viewTarget) m.jumpTo({ center: [start.view.center.lng, start.view.center.lat], zoom: start.view.zoom, padding: 0 });
+      selectionStart.current = null;
+    }
+  }, [choosing]);
   useEffect(() => {
     if (visible) requestAnimationFrame(() => map.current?.resize());
   }, [visible]);
@@ -230,7 +265,8 @@ export default function MapCanvas({
           duration: reduced || introReduced ? 0 : shot.duration,
           easing: (t) => t * t * (3 - 2 * t),
         });
-      else fit({ immediate: true });
+      else if (latest.current.autoFit) fit({ immediate: true });
+      else m.jumpTo({ center: [lastView.current.center.lng, lastView.current.center.lat], zoom: lastView.current.zoom, padding: 0 });
     });
     return () => cancelAnimationFrame(frame);
   }, [introPhase, introArea, retry, reduced, introReduced]);
@@ -242,6 +278,8 @@ export default function MapCanvas({
       data-map-pitch={camera.pitch}
       data-map-bearing={camera.bearing}
       data-map-zoom={camera.zoom}
+      data-map-lat={camera.lat}
+      data-map-lng={camera.lng}
     >
       <div ref={host} className="map-canvas" />
       <div className="map-heading">
@@ -251,20 +289,31 @@ export default function MapCanvas({
         </h2>
         <p>
           {choosing
-            ? "Click a public pickup place on the map."
+            ? "Drag the map to place the pin, then confirm."
             : items.length
-              ? `${items.filter((p) => p.location).length} mapped on this page · P marks the pickup place`
+              ? `${items.filter((p) => p.location).length} centres shown${pickup ? " · P marks your pickup place" : " · drag the map to explore"}`
               : "Find your pickup place and nearby centres here."}
         </p>
       </div>
+      {choosing ? <>
+        <div className="map-center-pin" aria-hidden="true"><MapPin size={40} fill="currentColor" /></div>
+        <div className="map-pick-confirm">
+          <strong>Pickup location</strong>
+          <small>{camera.lat?.toFixed(5)}, {camera.lng?.toFixed(5)}</small>
+          <div><button className="secondary" onClick={onCancel}>Cancel</button><button className="primary" onClick={() => {
+            const c = map.current?.getCenter();
+            if (c) onPick({ id: null, label: `Map point · ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`, lat: c.lat, lng: c.lng });
+          }}>Use this location</button></div>
+        </div>
+      </> : <button className="map-choose secondary" onClick={onChoose}><MapPin size={15} />Choose pickup here</button>}
       <div className="map-tools">
         <button onClick={fit} aria-label="Fit pickup and results">
           <LocateFixed size={19} />
         </button>
-        <button onClick={() => map.current?.zoomIn()} aria-label="Zoom in">
+        <button onClick={() => { userMove.current = true; map.current?.zoomIn(); }} aria-label="Zoom in">
           <Plus size={20} />
         </button>
-        <button onClick={() => map.current?.zoomOut()} aria-label="Zoom out">
+        <button onClick={() => { userMove.current = true; map.current?.zoomOut(); }} aria-label="Zoom out">
           <Minus size={20} />
         </button>
       </div>

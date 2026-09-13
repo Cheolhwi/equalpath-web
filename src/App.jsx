@@ -28,6 +28,7 @@ import {
 import { requestAPI, errorMessage } from "./api.js";
 import { requestErrors, todayKL, requestCaption } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
+import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
 import {
   SavedLibrary,
@@ -96,6 +97,14 @@ export default function App({
     [draft, setDraft] = useState(initial),
     [errors, setErrors] = useState({}),
     [results, setResults] = useState(null),
+    [nearby, setNearby] = useState(null),
+    [nearbyBusy, setNearbyBusy] = useState(true),
+    [nearbyError, setNearbyError] = useState(null),
+    [nearbyReload, setNearbyReload] = useState(0),
+    [browseCenter, setBrowseCenter] = useState(DEFAULT_MAP.center),
+    [mapTarget, setMapTarget] = useState(DEFAULT_MAP),
+    [mapRestored, setMapRestored] = useState(false),
+    [browseSelection, setBrowseSelection] = useState(null),
     [busy, setBusy] = useState(false),
     [failure, setFailure] = useState(null),
     [formOpen, setFormOpen] = useState(true),
@@ -128,6 +137,7 @@ export default function App({
     [reusePlace, setReusePlace] = useState(null),
     [preparation, setPreparation] = useState(null);
   const reuseSeq = useRef(0);
+  const mapView = useRef(DEFAULT_MAP), rememberedPickup = useRef(null);
   const requestSeq = useRef(0),
     dialogSeq = useRef(0),
     listRef = useRef(null),
@@ -201,13 +211,18 @@ export default function App({
     setMobilePane("list");
     close();
     try {
-      const response = await requestAPI({
+      const response = await requestAPI(mode === "live" ? {
+        action: "nearby", mode, center: item.pickup,
+      } : {
         action: "places",
         mode,
         query: item.pickup.label,
       });
       if (seq !== reuseSeq.current) return;
-      if (matchedSavedPlace(item.pickup, response.items)) setReusePlace(null);
+      if (mode === "live" || matchedSavedPlace(item.pickup, response.items)) {
+        setReusePlace(null);
+        showPickup(item.pickup);
+      }
       else
         setReusePlace({
           state: "invalid",
@@ -238,6 +253,16 @@ export default function App({
   };
   useEffect(() => {
     let alive = true;
+    let saved = null;
+    try { saved = readMapMemory(window.localStorage, mode); } catch { /* Storage can be disabled. */ }
+    const view = saved ?? DEFAULT_MAP;
+    mapView.current = view;
+    rememberedPickup.current = saved?.pickup ?? null;
+    setMapTarget(view);
+    setBrowseCenter(view.center);
+    setMapRestored(!!saved);
+    setNearby(null);
+    if (mode === "live") setDraft((d) => ({ ...d, pickup: saved?.pickup ?? null }));
     setHealth(null);
     requestAPI({ action: "health", mode })
       .then((h) => alive && setHealth(h))
@@ -262,6 +287,20 @@ export default function App({
     };
   }, [mode]);
   useEffect(() => {
+    if (results) return;
+    let alive = true;
+    setNearby(null);
+    setNearbyBusy(true);
+    setNearbyError(null);
+    const timer = setTimeout(() => {
+      requestAPI({ action: "nearby", mode, center: browseCenter })
+        .then((r) => { if (alive) { setNearby(r); setHealth(r); } })
+        .catch((e) => { if (alive) setNearbyError(e); })
+        .finally(() => { if (alive) setNearbyBusy(false); });
+    }, 300);
+    return () => { alive = false; clearTimeout(timer); };
+  }, [mode, browseCenter, results, nearbyReload]);
+  useEffect(() => {
     const key = (e) => {
       if (
         introPhase === "ready" &&
@@ -278,17 +317,38 @@ export default function App({
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
   }, [dialog, introPhase]);
+  const rememberMap = (view, pickup = rememberedPickup.current) => {
+    mapView.current = view;
+    rememberedPickup.current = pickup;
+    try { writeMapMemory(window.localStorage, mode, { ...view, pickup }); } catch { /* Map still works without storage. */ }
+  };
+  const showPickup = (pickup) => {
+    const view = { center: { lat: pickup.lat, lng: pickup.lng }, zoom: 13 };
+    rememberMap(view, pickup);
+    setMapTarget(view);
+    setBrowseCenter(view.center);
+    setResults(null);
+    setSelected(null);
+    setCompareIds([]);
+    setComparison(null);
+    setMapRestored(false);
+  };
   const setField = (field, value) => {
     if (field === "pickup") {
       reuseSeq.current++;
       setReusePlace(null);
+      if (value) {
+        requestSeq.current++;
+        setBusy(false);
+        showPickup(value);
+      }
     }
     setDraft((x) => ({ ...x, [field]: value }));
     setErrors((x) => ({ ...x, [field]: null }));
   };
   const dirty = results && fingerprint(draft) !== fingerprint(results.request),
     activeRequest = results?.request,
-    items = results?.items ?? EMPTY,
+    items = results?.items ?? nearby?.items ?? EMPTY,
     active = items.find((p) => p.id === selected);
   const switchMode = (next) => {
     requestSeq.current++;
@@ -300,6 +360,8 @@ export default function App({
     setMode(next);
     setDraft(initial());
     setResults(null);
+    setNearby(null);
+    setBrowseSelection(null);
     setErrors({});
     setFailure(null);
     setBusy(false);
@@ -350,6 +412,7 @@ export default function App({
         if (seq !== requestSeq.current) return;
       }
       setResults(r);
+      rememberMap(mapView.current, r.request.pickup);
       const editedWhilePending =
         fingerprint(draftRef.current) !== fingerprint(request);
       if (!editedWhilePending) setDraft(r.request);
@@ -368,6 +431,12 @@ export default function App({
         setReopening(null);
         setDialog("details");
         setDialogError(null);
+      } else if (browseSelection) {
+        const detail = await requestAPI({ action: "details", mode, id: browseSelection.id, request: r.request, version: r.version });
+        if (seq !== requestSeq.current) return;
+        setProfile({ p: detail.items[0], request: detail.request });
+        setDialog("details");
+        setBrowseSelection(null);
       }
     } catch (e) {
       if (seq !== requestSeq.current) return;
@@ -396,6 +465,15 @@ export default function App({
     else notify("Compare up to three centres. Remove one to add another.");
   };
   const openDetails = (p) => {
+    if (!activeRequest) {
+      setBrowseSelection(p);
+      setSelected(p.id);
+      setFormOpen(true);
+      setMobilePane("list");
+      notify("Add your pickup place and care hours to check this centre.");
+      setTimeout(() => document.getElementById(draft.pickup ? "deadline" : "pickup-search")?.focus(), 0);
+      return;
+    }
     setProfile({ p, request: activeRequest });
     setSelected(p.id);
     setDialogError(null);
@@ -571,6 +649,7 @@ export default function App({
             </button>
           )}
         </div>
+        {browseSelection && !results && <p className="notice-panel">Checking {browseSelection.name}. Add your care details below.</p>}
         {!formOpen && activeRequest && (
           <div className="compact-request">
             <p>
@@ -976,19 +1055,16 @@ export default function App({
             )}
           </>
         ) : (
-          <div className="before-results">
-            <span>01 — DISCOVER</span>
-            <p>
-              Choose a pickup place and the hours you need.
-              <br />
-              We’ll show you centres to explore.
-            </p>
-            {health?.unavailable && (
-              <p className="notice">
-                The directory could not connect yet. You can fill your request
-                and retry.
-              </p>
-            )}
+          <div className="before-results nearby-results" aria-busy={nearbyBusy}>
+            <h2>Nearby childcare</h2>
+            <p>{mapRestored ? "Back to your last map location." : "Explore centres around the map location."} Add care hours to check whether they fit.</p>
+            {nearbyBusy && <p role="status">Finding nearby centres…</p>}
+            {nearbyError && <p role="status">{errorMessage(nearbyError)} <button className="text-link" onClick={() => setNearbyReload((v) => v + 1)}>Retry nearby centres</button></p>}
+            {!nearbyBusy && nearby && <p>{nearby.total} centres within {nearby.radius} km · showing {nearby.items.length}</p>}
+            {!nearbyBusy && nearby?.total === 0 && <p>Move the map or choose another pickup place.</p>}
+            {items.map((p) => <button key={p.id} id={"card-" + p.id} className={`nearby-card ${selected === p.id ? "selected" : ""}`} onClick={() => select(p.id)} aria-label={`Select ${p.name}`} aria-pressed={selected === p.id}>
+              <strong>{p.name}</strong><span>{p.district} · {p.distanceKm.toFixed(1)} km</span>
+            </button>)}
           </div>
         )}
         <footer className="panel-footer">
@@ -1003,7 +1079,16 @@ export default function App({
       </aside>
       <div className="map-wrap">
         <MapCanvas
+          key={mode}
           items={items}
+          viewTarget={mapTarget}
+          autoFit={!!results}
+          onViewChange={(view) => {
+            rememberMap(view);
+            if (!results) { setBrowseCenter(view.center); setSelected(null); }
+          }}
+          onChoose={() => { setChoosing(true); setMobilePane("map"); }}
+          onCancel={() => { setChoosing(false); setMobilePane("list"); }}
           pickup={
             choosing ? draft.pickup : (activeRequest?.pickup ?? draft.pickup)
           }
@@ -1028,30 +1113,19 @@ export default function App({
           introArea={introArea}
           introReduced={introReduced}
         />
-        {choosing && (
-          <button
-            className="cancel-map-pick secondary"
-            onClick={() => {
-              setChoosing(false);
-              setMobilePane("list");
-            }}
-          >
-            Cancel place selection <X size={15} />
-          </button>
-        )}
         {active && !choosing && (
           <div className="map-preview">
             <span className="eyebrow">SELECTED CENTRE</span>
             <h3>{active.name}</h3>
             <p>
-              {active.district} · {active.region}
+              {active.address || `${active.district} · ${active.region}`}
             </p>
             <div>
-              <Status
+              {active.fit ? <Status
                 state={active.fit.counts.conflict ? "conflict" : "unknown"}
-              />
+              /> : <span>{active.distanceKm.toFixed(1)} km away</span>}
               <button onClick={() => openDetails(active)}>
-                Check conditions <ArrowUpRight size={18} />
+                {active.fit ? "Check conditions" : "Check this centre"} <ArrowUpRight size={18} />
               </button>
             </div>
           </div>
@@ -1467,10 +1541,11 @@ export default function App({
               <p>
                 Your current request stays in this browser’s active page and is
                 sent only for the current query. There is no parent account,
-                child identity form or automatic contact. Only explicit
-                favourites and request templates are stored locally in this
-                browser; there is no automatic search history. Public map tiles
-                are fetched from the map provider.
+                child identity form or automatic contact. This browser remembers
+                your last map location and pickup point, plus any centres and
+                templates you save. Dates and child ages are not saved automatically.
+                Place searches use OpenStreetMap data through Photon; map tiles
+                come from the map provider.
               </p>
               <p>
                 Registration and historical listings do not prove present

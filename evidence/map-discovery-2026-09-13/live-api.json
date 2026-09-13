@@ -1,0 +1,261 @@
+[
+  {
+    "body": {
+      "action": "places",
+      "query": "KL sentrl"
+    },
+    "http": 201,
+    "ok": true,
+    "total": 10,
+    "items": [
+      {
+        "id": "osm:N:5699514160",
+        "name": "KL Sentral (KTM)",
+        "address": "Jalan Stesen Sentral, Bangsar, Kuala Lumpur, 50566",
+        "location": {
+          "lat": 3.1344447,
+          "lng": 101.6863476
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "osm:N:9889293563",
+        "name": "KL Sentral (KTM)",
+        "address": "Jalan Stesen Sentral, Bangsar, Kuala Lumpur, 50566",
+        "location": {
+          "lat": 3.1343854,
+          "lng": 101.6863621
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "osm:W:638688527",
+        "name": "KL Sentral",
+        "address": "ERL Arrival, Seputeh, Kuala Lumpur, 50566",
+        "location": {
+          "lat": 3.1343068,
+          "lng": 101.6863691
+        },
+        "fitPresent": false
+      }
+    ]
+  },
+  {
+    "body": {
+      "action": "places",
+      "query": "Bukit Bint"
+    },
+    "http": 201,
+    "ok": true,
+    "total": 10,
+    "items": [
+      {
+        "id": "osm:W:24375094",
+        "name": "Bukit Bintang",
+        "address": "Jalan Sultan Ismail, Bukit Bintang, Kuala Lumpur, 55100",
+        "location": {
+          "lat": 3.1460953,
+          "lng": 101.7114762
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "osm:N:9880596058",
+        "name": "Bukit Bintang (Monorail)",
+        "address": "Jalan Sultan Ismail, Bukit Bintang, Kuala Lumpur, 55100",
+        "location": {
+          "lat": 3.1460769,
+          "lng": 101.7115145
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "osm:N:2914146123",
+        "name": "Bukit Bintang (Monorail)",
+        "address": "Jalan Sultan Ismail, Bukit Bintang, Kuala Lumpur, 55100",
+        "location": {
+          "lat": 3.1460728,
+          "lng": 101.7114864
+        },
+        "fitPresent": false
+      }
+    ]
+  },
+  {
+    "body": {
+      "action": "places",
+      "query": "Jln Ampang"
+    },
+    "http": 201,
+    "ok": true,
+    "total": 10,
+    "items": [
+      {
+        "id": "osm:W:244437690",
+        "name": "Jalan Ampang Muslim Cemetery",
+        "address": "Kampung Cendana, Kuala Lumpur",
+        "location": {
+          "lat": 3.159884,
+          "lng": 101.7068298
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "osm:W:1056175574",
+        "name": "Ampang and Sri Petaling Lines",
+        "address": "Jalan Bukit Nanas, Bukit Bintang, Kuala Lumpur, 50050",
+        "location": {
+          "lat": 3.1467086,
+          "lng": 101.6988989
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "osm:W:193670927",
+        "name": "Ampang and Sri Petaling Lines",
+        "address": "Jalan Bukit Nanas, Bukit Bintang, Kuala Lumpur, 50050",
+        "location": {
+          "lat": 3.146734,
+          "lng": 101.6989272
+        },
+        "fitPresent": false
+      }
+    ]
+  },
+  {
+    "body": {
+      "action": "nearby",
+      "center": {
+        "lat": 3.139,
+        "lng": 101.6869
+      }
+    },
+    "http": 201,
+    "ok": true,
+    "total": 68,
+    "items": [
+      {
+        "id": "provider_kpm_bfdc218f0320ac7961e47a87",
+        "name": "Brainy Bunch Montessori Playschool KL Sentral",
+        "address": "JALAN STESEN SENTRAL 5, KUALA LUMPUR",
+        "location": {
+          "lat": 3.13352,
+          "lng": 101.6842621,
+          "source": {
+            "label": "Published location",
+            "url": "https://www.carischools.com/school/brainy-bunch-montessori-playschool-kl-sentral-zon-bangsarpudu-kuala-lumpur",
+            "retrievedAt": null,
+            "sourceDate": null,
+            "kind": "public_directory"
+          },
+          "basis": "boundary_and_source_agree"
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "provider_kpm_d473b86c69991058be2ffed4",
+        "name": "Taska Tadika MIDA Genius",
+        "address": "BANGUNAN TH TOWER, TINGKAT 2, BLOK D, PLAZA STESEN SENTRAL 5, 50470 KUALA LUMPUR",
+        "location": {
+          "lat": 3.1324886,
+          "lng": 101.6844859,
+          "source": {
+            "label": "Published location",
+            "url": "https://www.carischools.com/school/taska-tadika-mida-genius-zon-bangsarpudu-kuala-lumpur",
+            "retrievedAt": null,
+            "sourceDate": null,
+            "kind": "public_directory"
+          },
+          "basis": "boundary_and_source_agree"
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "provider_kpm_03a43761ebb7f959df806c8c",
+        "name": "TADIKA METHODIST BRICKFIELDS",
+        "address": "197 JALAN SULTAN ABDUL SAMAD BRICKFIELDS",
+        "location": {
+          "lat": 3.1312278,
+          "lng": 101.6875632,
+          "source": {
+            "label": "Published location",
+            "url": "https://www.carischools.com/school/tadika-methodist-brickfields-zon-bangsarpudu-kuala-lumpur",
+            "retrievedAt": null,
+            "sourceDate": null,
+            "kind": "public_directory"
+          },
+          "basis": "boundary_and_source_agree"
+        },
+        "fitPresent": false
+      }
+    ]
+  },
+  {
+    "body": {
+      "action": "nearby",
+      "center": {
+        "lat": 3.1341,
+        "lng": 101.6865
+      }
+    },
+    "http": 201,
+    "ok": true,
+    "total": 64,
+    "items": [
+      {
+        "id": "provider_kpm_bfdc218f0320ac7961e47a87",
+        "name": "Brainy Bunch Montessori Playschool KL Sentral",
+        "address": "JALAN STESEN SENTRAL 5, KUALA LUMPUR",
+        "location": {
+          "lat": 3.13352,
+          "lng": 101.6842621,
+          "source": {
+            "label": "Published location",
+            "url": "https://www.carischools.com/school/brainy-bunch-montessori-playschool-kl-sentral-zon-bangsarpudu-kuala-lumpur",
+            "retrievedAt": null,
+            "sourceDate": null,
+            "kind": "public_directory"
+          },
+          "basis": "boundary_and_source_agree"
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "provider_kpm_d473b86c69991058be2ffed4",
+        "name": "Taska Tadika MIDA Genius",
+        "address": "BANGUNAN TH TOWER, TINGKAT 2, BLOK D, PLAZA STESEN SENTRAL 5, 50470 KUALA LUMPUR",
+        "location": {
+          "lat": 3.1324886,
+          "lng": 101.6844859,
+          "source": {
+            "label": "Published location",
+            "url": "https://www.carischools.com/school/taska-tadika-mida-genius-zon-bangsarpudu-kuala-lumpur",
+            "retrievedAt": null,
+            "sourceDate": null,
+            "kind": "public_directory"
+          },
+          "basis": "boundary_and_source_agree"
+        },
+        "fitPresent": false
+      },
+      {
+        "id": "provider_kpm_03a43761ebb7f959df806c8c",
+        "name": "TADIKA METHODIST BRICKFIELDS",
+        "address": "197 JALAN SULTAN ABDUL SAMAD BRICKFIELDS",
+        "location": {
+          "lat": 3.1312278,
+          "lng": 101.6875632,
+          "source": {
+            "label": "Published location",
+            "url": "https://www.carischools.com/school/tadika-methodist-brickfields-zon-bangsarpudu-kuala-lumpur",
+            "retrievedAt": null,
+            "sourceDate": null,
+            "kind": "public_directory"
+          },
+          "basis": "boundary_and_source_agree"
+        },
+        "fitPresent": false
+      }
+    ]
+  }
+]

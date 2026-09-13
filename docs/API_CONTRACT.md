@@ -15,7 +15,7 @@ Contract: `equalpath-web-p03-v1`. Public client configuration contains no secret
 | Browser query entry | `POST /v1/functions/web-provider-query/executions` |
 | Website preview | `http://127.0.0.1:4179/` |
 
-The new Function is deployed and anonymous calls have been read back successfully. No separate website Site or new domain rule has been created. The existing generated `.appwrite.network` domains were inventoried; their bindings and the nine old functions were left unchanged. This delivery is a local website with a deployed Appwrite backend, not a claim of a newly published production website.
+The Function is deployed and anonymous calls have been read back successfully. The subsequent authorised website release is hosted at `https://equalpath-web.appwrite.network/` with GitHub-triggered deployment for `Cheolhwi/equalpath-web`. Custom-domain TLS is a separate release gate; do not infer its status from a successful default-domain check. The old functions remain unchanged.
 
 The Function reads only anonymous public rows in `web_data_releases` and `web_provider_catalog`. It uses no API key, owner identifiers, account/session API or old planner endpoints. The existing `web_provider_evidence`, `web_provider_reviews` and `web_institution_sources` remain separate published resources. No new parent-data table is required for phases 0–3.
 
@@ -38,7 +38,8 @@ The Appwrite response envelope is parsed from `responseBody`. Application errors
 | Action | Input | Output |
 | --- | --- | --- |
 | `health` | mode | contract, mode, version, release, accepted / withheld counts, regions, distance basis |
-| `places` | mode, query | up to 10 sourced public pickup candidates with coordinates |
+| `places` | mode, query | up to 10 OSM/Photon address/place candidates with coordinates; partial names, typo tolerance and Malay road abbreviations; independent of the childcare catalog |
+| `nearby` | mode, center `{lat,lng}`, optional radius 5/10/25/50 | nearest 20 public childcare records within radius (default 5 km), total count and catalog version; no date/time/fit required or inferred |
 | `search` | mode, request, page | 20 candidates per page, applied request, counts, condition checks, cost availability, ordering explanation |
 | `details` | mode, request, id, optional version | one branch, source facts, registration, conditions and questions |
 | `compare` | mode, request, 1–3 unique ids, optional version | independent branch facts assessed under the same request, ordered by the selected factor |
@@ -69,11 +70,17 @@ Requests and comparisons carry canonical request and fact version. A supplied ob
 
 ## Boundaries and errors
 
-- Inner JSON body: maximum 12,000 characters; only five allowlisted actions.
+- Inner JSON body: maximum 12,000 characters; only six allowlisted actions.
 - Public pickup and keyword labels are bounded by the canonical request. Place query: 100 characters, maximum 10 results.
 - Search page: 20 records, page index 0–1000; comparison: maximum three unique IDs.
 - Store: public rows in pages of 100, six concurrent reads, release count and uniqueness checks, second manifest check, one-minute in-memory cache and coalesced refresh.
 - Browser timeout: 75 seconds. Function runtime timeout: 120 seconds. Application errors include `INVALID_REQUEST`, `OUTSIDE_SERVICE_AREA`, `PLACE_UNAVAILABLE`, `FACTS_CHANGED`, `SERVICE_UNAVAILABLE`, `REQUEST_TOO_LARGE` and `UNKNOWN_ACTION`.
 - Per-client sustained-load thresholds and unauthorised-operator publication tests remain release checks; no untested rate-limit claim is made.
 - The source fetcher uses fixed Appwrite URLs. A user-supplied URL is never fetched server-side. External evidence links are sanitized; imported text is rendered by React.
-- No raw request logging, parent identity storage or source modification. Current location is requested only after a button click, kept in active-page state, and included in the current query only when the user submits it.
+- No raw request logging, parent identity storage or source modification. Device location is requested only after a button click. Selecting a pickup point loads nearby centres and stores only the last pickup point/map centre/zoom in this browser, as requested on 2026-09-13. Date, time, age, fit results and provider records are not automatically persisted. Returning visits fetch fresh nearby records; saved templates still require a new date. Live template points are region-validated by `nearby`, not matched against childcare names.
+
+### OSM place lookup (2026-09-13)
+
+The live geocoder is [Photon](https://github.com/komoot/photon), an OSM-based service with partial-name, multilingual and typo matching. It accepts `Jln`, `Tmn` and `Kg` abbreviations after expansion. The browser only searches on Enter/search-button activation (minimum two characters). All results are checked against the existing KL/Selangor polygon; Putrajaya and other states are excluded. No centre-name restriction or category filter is applied. Candidates include OSM identifiers, labels, address and source, and require explicit selection.
+
+`EQUALPATH_PHOTON_URL` on the Function can replace the default `https://photon.komoot.io/api/` with a compatible hosted/private instance without a frontend release. Per warm runtime, searches are cached for 24 hours (512 keys), identical in-flight searches are coalesced, outbound starts are spaced by at least 1.1 s, and the pending queue is bounded at eight. Upstream 10 s timeout/failure is surfaced without provider-name or demo fallback. No query coordinates from the user's device are forwarded to Photon; the geographic bias is a fixed KL centre. Public endpoint availability is not guaranteed and high traffic requires a dedicated instance. Runtime throttling is not a global multi-instance quota. See [Photon usage and API](https://github.com/komoot/photon/blob/master/docs/api-v1.md). The UI credits OpenStreetMap and Photon.

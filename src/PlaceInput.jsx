@@ -29,7 +29,7 @@ export default function PlaceInput({
     geoController = useRef(null),
     token = useRef(0);
   useEffect(() => {
-    setQuery(value?.label ?? "");
+    if (value?.label) setQuery(value.label);
   }, [value?.label]);
   useEffect(
     () => () => {
@@ -91,7 +91,11 @@ export default function PlaceInput({
   const find = async (q) => {
     stopLocating();
     const seq = ++token.current;
+    if (q.trim().length < 2) {
+      setBusy(false); setMessage("Enter at least two characters."); setOptions([]); setOpen(true); return;
+    }
     setBusy(true);
+    setOptions([]);
     setMessage("");
     setOpen(true);
     try {
@@ -100,7 +104,7 @@ export default function PlaceInput({
         setOptions(r.items);
         if (!r.items.length)
           setMessage(
-            "We couldn’t find that centre. Try another name or choose a public place on the map.",
+            "No places found in KL or Selangor. Try a shorter name or choose on the map.",
           );
       }
     } catch {
@@ -132,7 +136,7 @@ export default function PlaceInput({
           id={idPrefix + "-search"}
           aria-invalid={!!error}
           aria-describedby={error ? idPrefix + "-error" : idPrefix + "-help"}
-          placeholder="Your usual childcare centre"
+          placeholder="Search an address, station or place"
           value={query}
           onChange={(e) => {
             stopLocating();
@@ -218,7 +222,7 @@ export default function PlaceInput({
             onMap?.();
           }}
         >
-          {onMap ? "Choose on map" : "Select a public centre above"}{" "}
+          {onMap ? "Choose on map" : "Choose a place above"}{" "}
           <ArrowUpRight size={12} />
         </button>
       </div>
@@ -244,6 +248,7 @@ export default function PlaceInput({
               </button>
             ))}
           {message && <p role="status">{message}</p>}
+          {mode === "live" && <p className="place-attribution">Partial names and small typos are OK. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap</a> · <a href="https://photon.komoot.io/" target="_blank" rel="noreferrer">Photon</a></p>}
           {!busy && (
             <button
               type="button"
