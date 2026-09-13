@@ -32,9 +32,7 @@ export function photonPlaces(data) {
 export function createPlaceSearch({ fetcher = fetch, endpoint = process.env.EQUALPATH_PHOTON_URL || "https://photon.komoot.io/api/", interval = 1100, now = Date.now } = {}) {
   const cache = new Map(), pending = new Map();
   let queue = Promise.resolve(), next = 0;
-  return async (input) => {
-    const query = placeQuery(input), key = query.toLocaleLowerCase("en");
-    if (query.length < 2) return { items: [], total: 0, source: "OpenStreetMap / Photon" };
+  const lookup = async (key, url, parse) => {
     const hit = cache.get(key);
     if (hit && hit.expires > now()) return hit.value;
     if (pending.has(key)) return pending.get(key);
@@ -43,13 +41,10 @@ export function createPlaceSearch({ fetcher = fetch, endpoint = process.env.EQUA
       const delay = Math.max(0, next - now());
       if (delay) await new Promise((r) => setTimeout(r, delay));
       next = now() + interval;
-      const url = new URL(endpoint);
-      for (const [k, v] of Object.entries({ q: query, limit: 20, lang: "en", bbox: "100.7,2.55,102.05,3.95", lat: 3.139, lon: 101.6869 })) url.searchParams.set(k, v);
       try {
         const response = await fetcher(url, { signal: AbortSignal.timeout(10000), headers: { "User-Agent": "EqualPath-Web/1.0 (https://equalpath-web.appwrite.network)", Accept: "application/json" } });
         if (!response.ok) throw Error("geocoder unavailable");
-        const items = photonPlaces(await response.json());
-        const value = { items, total: items.length, source: "OpenStreetMap / Photon" };
+        const value = parse(await response.json());
         cache.set(key, { value, expires: now() + 86400000 });
         if (cache.size > 512) cache.delete(cache.keys().next().value);
         return value;
@@ -61,4 +56,35 @@ export function createPlaceSearch({ fetcher = fetch, endpoint = process.env.EQUA
     pending.set(key, job);
     try { return await job; } finally { pending.delete(key); }
   };
+  const search = async (input) => {
+    const query = placeQuery(input);
+    if (query.length < 2) return { items: [], total: 0, source: "OpenStreetMap / Photon" };
+    const url = new URL(endpoint);
+    for (const [k, v] of Object.entries({ q: query, limit: 20, lang: "en", bbox: "100.7,2.55,102.05,3.95", lat: 3.139, lon: 101.6869 })) url.searchParams.set(k, v);
+    return lookup(`search:${query.toLocaleLowerCase("en")}`, url, data => {
+      const items = photonPlaces(data);
+      return { items, total: items.length, source: "OpenStreetMap / Photon" };
+    });
+  };
+  // Only resolve a confirmed pickup, never map movements. Share the forward
+  // search queue/cache, and keep the user's coordinates rather than the road centre.
+  search.reverse = async (point) => {
+    if (!regions.includes(regionAt(point))) throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
+    const url = new URL(process.env.EQUALPATH_PHOTON_REVERSE_URL || "../reverse/", endpoint);
+    for (const [k,v] of Object.entries({lat:point.lat,lon:point.lng,lang:"en",limit:3,radius:1,layer:"street"})) url.searchParams.set(k,v);
+    const resolved = await lookup(`reverse:${point.lat.toFixed(5)},${point.lng.toFixed(5)}`, url, data => {
+      if (!Array.isArray(data?.features)) throw Error("Invalid geocoder response");
+      const candidates = data.features.flatMap(f => {
+        const p=f.properties ?? {}, [lng,lat]=f.geometry?.coordinates ?? [];
+        if (f.geometry?.type!=="Point" || !regions.includes(regionAt({lat,lng})) || distanceKm(point,{lat,lng})>1) return [];
+        const street=p.street || ((p.type==="street" || p.osm_key==="highway") ? p.name : null);
+        if (typeof street!=="string" || !street.trim()) return [];
+        const label=[...new Set([street,p.locality || p.district,p.city || p.county].filter(x=>typeof x==="string" && x.trim()))].join(", ").slice(0,160);
+        return [{label,lat,lng,distance:distanceKm(point,{lat,lng})}];
+      }).sort((a,b)=>a.distance-b.distance);
+      return {label:candidates[0]?.label ?? null,source:"OpenStreetMap / Photon"};
+    });
+    return {pickup:resolved.label ? {id:null,label:resolved.label,lat:point.lat,lng:point.lng} : null,source:resolved.source};
+  };
+  return search;
 }

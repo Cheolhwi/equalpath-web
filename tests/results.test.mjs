@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { createDrivingRoutes } from "../server/driving.mjs";
 import { createAPI } from "../server/api.mjs";
 import { fixtureCatalog, demoPickup } from "../server/fixtures.mjs";
-import { sortProviders, suggestProviders } from "../shared/conditions.mjs";
+import { sortProviders, suggestProviders, bestForPriority } from "../shared/conditions.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { areaMoved, nearbyCacheKey } from "../shared/map-search.mjs";
 const origin = { lat: 3.139, lng: 101.6869 };
@@ -62,4 +62,21 @@ test("map suggestions prefer stronger relevant matches, cap at three and exclude
   const rows=[p("1",0),p("2",2),p("3",1),p("4",2),p("5",2,1),p("6",2,0,null)];
   assert.deepEqual(suggestProviders(rows,{age:"",transport:"self"}).filter(p=>p.suggested).map(p=>p.id),["2","3","4"]);
   assert.equal(suggestProviders([p("1",2,1)],{age:"",transport:"self"}).some(p=>p.suggested),false);
+});
+test("comparison highlights switch with priority, share ties, and never prefer conflicts or missing facts",()=>{
+  const p=(id,distance,end,pickup,conflict=0)=>({id,name:id,location:origin,distanceKm:distance,transport:{exists:pickup},careWindows:end==null?[]:[{days:["TUE"],start:420,end}],fit:{counts:{conflict},conditions:[]}});
+  const rows=[p("near",1,1140,false),p("late",2,1200,true),p("tied",3,1200,true),p("conflict",.1,1380,true,1),p("unknown",null,null,null)];
+  const date="2026-09-15";
+  assert.deepEqual(bestForPriority(rows,"distance",date).ids,["near"]);
+  assert.deepEqual(bestForPriority(rows,"closing",date).ids,["late","tied"]);
+  assert.deepEqual(bestForPriority(rows,"pickup",date).ids,["late","tied"]);
+  assert.deepEqual(bestForPriority(rows,"name",date).ids,[]);
+  assert.deepEqual(bestForPriority(rows.slice(3),"closing",date).ids,[]);
+  assert.deepEqual(bestForPriority(rows,"closing","2026-09-16").ids,[]);
+});
+test("map suggestions follow the selected strategy before fit-count tie breakers",()=>{
+  const rows=Array.from({length:4},(_,i)=>({id:String(i),name:String(i),location:origin,distanceKm:i+1,careWindows:[{days:["TUE"],start:420,end:1080+i*60}],fit:{counts:{conflict:0},conditions:[]}}));
+  const r={age:"",transport:"self",date:"2026-09-15"};
+  assert.deepEqual(suggestProviders(rows,{...r,sort:"distance"}).filter(p=>p.suggested).map(p=>p.id),["0","1","2"]);
+  assert.deepEqual(suggestProviders(rows,{...r,sort:"closing"}).filter(p=>p.suggested).map(p=>p.id),["1","2","3"]);
 });

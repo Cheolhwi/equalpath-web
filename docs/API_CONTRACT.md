@@ -39,6 +39,7 @@ The Appwrite response envelope is parsed from `responseBody`. Application errors
 | --- | --- | --- |
 | `health` | mode | contract, mode, version, release, accepted / withheld counts, regions, distance basis |
 | `places` | mode, query | up to 10 OSM/Photon address/place candidates with coordinates; partial names, typo tolerance and Malay road abbreviations; independent of the childcare catalog |
+| `reverse` | mode, point `{lat,lng}` | nearest named OSM street within 1 km, or null; returns the original pickup coordinates with a street/locality label; independent of the catalog |
 | `nearby` | mode, center `{lat,lng}`, optional radius 5/10/25/50 | nearest 20 public childcare records within radius (default 5 km), total count and catalog version; no date/time/fit required or inferred |
 | `search` | mode, request, page | 20 candidates per page, applied request, counts, condition checks, cost availability, ordering explanation |
 | `details` | mode, request, id, optional version | one branch, source facts, registration, conditions and questions |
@@ -70,7 +71,7 @@ Requests and comparisons carry canonical request and fact version. A supplied ob
 
 ## Boundaries and errors
 
-- Inner JSON body: maximum 12,000 characters; only six allowlisted actions.
+- Inner JSON body: maximum 12,000 characters; only seven allowlisted actions.
 - Public pickup and keyword labels are bounded by the canonical request. Place query: 100 characters, maximum 10 results.
 - Search page: 20 records, page index 0–1000; comparison: maximum three unique IDs.
 - Store: public rows in pages of 100, six concurrent reads, release count and uniqueness checks, second manifest check, one-minute in-memory cache and coalesced refresh.
@@ -78,6 +79,8 @@ Requests and comparisons carry canonical request and fact version. A supplied ob
 - Per-client sustained-load thresholds and unauthorised-operator publication tests remain release checks; no untested rate-limit claim is made.
 - The source fetcher uses fixed Appwrite URLs. A user-supplied URL is never fetched server-side. External evidence links are sanitized; imported text is rendered by React.
 - No raw request logging, parent identity storage or source modification. Device location is requested only after a button click. Selecting a pickup point loads nearby centres and stores only the last pickup point/map centre/zoom in this browser, as requested on 2026-09-13. Date, time, age, fit results and provider records are not automatically persisted. Returning visits fetch fresh nearby records; saved templates still require a new date. Live template points are region-validated by `nearby`, not matched against childcare names.
+
+Reverse lookup runs only for a selected/restored coordinate with a generic label; pan and zoom do not trigger it. Forward and reverse Photon calls share the bounded sequential queue (1.1 seconds between starts, at most eight jobs, 512 cached entries, 24-hour TTL). Reverse cache keys use five decimal places, but every response preserves the caller's exact coordinates. `EQUALPATH_PHOTON_REVERSE_URL` can replace the endpoint. Address failures keep the pickup usable and offer retry. Old `Map point` browser entries gain a street label after a successful lookup. The [Photon reverse API](https://github.com/komoot/photon/blob/master/docs/api-v1.md#reverse) returns nearby street information rather than certifying an exact building address.
 
 ### OSM place lookup (2026-09-13)
 

@@ -386,8 +386,7 @@ export function enquiries(p, r, fit = assess(p, r)) {
   });
   return [...new Map(questions.map((q) => [q.id, q])).values()];
 }
-export function sortProviders(items, sort, date) {
-  const value = (p) =>
+export const priorityValue = (p, sort, date) =>
     sort === "distance"
       ? p.distanceKm
       : sort === "pickup"
@@ -399,6 +398,7 @@ export function sortProviders(items, sort, date) {
         : sort === "closing"
           ? careEndScheduleFor(p,date).end
           : p.name.toLocaleLowerCase("en");
+export function sortProviders(items, sort, date) {
   return [...items].sort((a, b) => {
     // Conflicts always rank below every result without a known conflict,
     // regardless of the selected secondary ordering and before pagination.
@@ -406,8 +406,8 @@ export function sortProviders(items, sort, date) {
     const group = Number(conflicts(a) > 0) - Number(conflicts(b) > 0);
     if (group) return group;
     if (conflicts(a) !== conflicts(b)) return conflicts(a) - conflicts(b);
-    let x = value(a),
-      y = value(b);
+    let x = priorityValue(a,sort,date),
+      y = priorityValue(b,sort,date);
     if (x === -Infinity) x = null;
     if (y === -Infinity) y = null;
     if (x == null && y != null) return 1;
@@ -426,7 +426,27 @@ export function suggestProviders(items, request) {
   const score = p => p.fit.conditions.filter(c => relevant.has(c.id) && c.state === "supported").length;
   // Only suggest centres that can be located on the current result map.
   const ids = [...items].filter(p => p.location && !p.fit.counts.conflict)
-    .sort((a,b) => score(b) - score(a) || a.distanceKm - b.distanceKm || a.id.localeCompare(b.id))
+    .sort((a,b) => {
+      const sort=request.sort;
+      if (["distance","closing","pickup"].includes(sort)) {
+        const x=priorityValue(a,sort,request.date), y=priorityValue(b,sort,request.date);
+        if(x==null && y!=null)return 1;
+        if(y==null && x!=null)return -1;
+        if(x!=null && y!=null && x!==y)return sort==="distance" ? x-y : y-x;
+      }
+      return score(b)-score(a) || a.distanceKm-b.distanceKm || a.id.localeCompare(b.id);
+    })
     .slice(0,3).map(p => p.id);
   return items.map(p => ({ ...p, suggested: ids.includes(p.id) }));
+}
+
+export function bestForPriority(items, sort, date) {
+  const labels={distance:"Nearest option",closing:"Latest care end",pickup:"Offers pickup"};
+  if (!labels[sort]) return {ids:[],message:"Alphabetical order doesn’t select a best match."};
+  const eligible=sortProviders(items.filter(p=>!p.fit?.counts?.conflict && priorityValue(p,sort,date)!=null && (sort!=="pickup" || p.transport?.exists===true)),sort,date);
+  if (!eligible.length) return {ids:[],message:"No centre without a known conflict has details for this priority."};
+  const value=priorityValue(eligible[0],sort,date);
+  // Equal published values are equal winners, not broken by an arbitrary ID.
+  const ids=eligible.filter(p=>Math.abs(priorityValue(p,sort,date)-value)<0.000001).map(p=>p.id);
+  return {ids,label:labels[sort],message:ids.length>1 ? "These centres tie for your priority." : "Highlighted for your priority."};
 }

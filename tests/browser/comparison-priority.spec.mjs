@@ -1,0 +1,36 @@
+import {test,expect} from '@playwright/test';
+import {createAPI} from '../../server/api.mjs';
+import {fixtureCatalog} from '../../server/fixtures.mjs';
+import {mkdirSync} from 'node:fs';
+const dir=process.env.QA_EVIDENCE_DIR || '.build/comparison-qa';mkdirSync(dir,{recursive:true});
+test('restored map points gain a street address and priority highlights switch, tie, and survive removing a centre',async({page})=>{
+  const base=fixtureCatalog.items[0];
+  const catalog={...fixtureCatalog,items:[['near',3.1391,1140,false],['late',3.145,1200,true],['tied',3.15,1200,true]].map(([id,lat,end,pickup])=>({...structuredClone(base),id,name:`Test ${id}`,location:{lat,lng:101.6869},careWindows:[{days:['TUE'],start:420,end}],lateRule:null,transport:{...base.transport,exists:pickup}}))};
+  const api=createAPI({store:{catalog:async()=>catalog},reverseGeocode:async point=>({pickup:{...point,id:null,label:'Jalan Stesen Sentral, Kuala Lumpur'}}),drivingRoutes:async(_,items)=>items.map(p=>({...p,driving:{state:'unavailable'}}))});
+  await page.route('**/api',async route=>route.fulfill({json:{ok:true,...await api(route.request().postDataJSON())}}));
+  await page.addInitScript(()=>{
+    localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
+    localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'Map point · 3.1390, 101.6869',lat:3.139,lng:101.6869}}));
+  });
+  await page.goto('/#discover');await expect(page.locator('#pickup-search')).toHaveValue('Jalan Stesen Sentral, Kuala Lumpur');
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('equalpath:map:v1:live')).pickup.label)).toBe('Jalan Stesen Sentral, Kuala Lumpur');
+  await page.locator('#service-date').fill('2026-09-15');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');
+  await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  for(const id of ['near','late','tied'])await page.getByRole('button',{name:`Compare Test ${id}`,exact:true}).click();
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/COMPARE/}).click();
+  const highlighted=page.locator('th.comparison-best');
+  await expect(page.locator('.dialog-context')).toContainText('Jalan Stesen Sentral');
+  await expect(highlighted).toHaveCount(1);await expect(highlighted).toHaveAttribute('data-provider-id','near');
+  await page.screenshot({path:dir+'/comparison-nearest-desktop.png'});
+  await page.getByLabel('Comparison priority').selectOption('closing');await expect(highlighted).toHaveCount(2);
+  expect(await highlighted.evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort())).toEqual(['late','tied']);
+  await expect(page.locator('.comparison-priority-message')).toContainText('tie');
+  await page.getByLabel('Comparison priority').selectOption('pickup');await expect(highlighted.locator('.comparison-best-tag')).toHaveText(['Offers pickup','Offers pickup']);
+  await page.setViewportSize({width:390,height:844});await page.getByLabel('Comparison priority').scrollIntoViewIfNeeded();
+  await page.screenshot({path:dir+'/comparison-pickup-mobile.png'});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.getByRole('button',{name:'Remove Test tied from comparison',exact:true}).click();
+  await expect(highlighted).toHaveCount(1);await expect(highlighted).toHaveAttribute('data-provider-id','late');
+  await page.getByLabel('Comparison priority').selectOption('name');await expect(highlighted).toHaveCount(0);
+  await expect(page.locator('.comparison-priority-message')).toContainText('Alphabetical');
+});

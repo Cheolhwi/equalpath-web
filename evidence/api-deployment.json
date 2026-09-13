@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-09-13T06:14:36.357Z",
+  "created_at": "2026-09-13T07:09:17.286Z",
   "function": "web-provider-query",
-  "deployment": "6aa63f4be6f680bb89d6",
+  "deployment": "6aa64c1cbdc0d203559d",
   "status": "waiting",
   "execute": [
     "any"

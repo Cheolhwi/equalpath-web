@@ -34,6 +34,26 @@ test("geocoder failures never fabricate places or poison the retry cache", async
   await assert.rejects(search("station"), { code: "PLACE_SEARCH_UNAVAILABLE" });
   assert.deepEqual((await search("station")).items, []); assert.equal(calls,2);
 });
+test("confirmed pickup reverse lookup is bounded, shared, cached, and never moves the pickup to a road centroid", async()=>{
+  let calls=0;
+  const point={lat:3.1624,lng:101.5728};
+  const search=createPlaceSearch({interval:0,fetcher:async url=>{
+    calls++;assert.equal(url.pathname,"/reverse/");assert.equal(url.searchParams.get("layer"),"street");assert.equal(url.searchParams.get("radius"),"1");
+    return {ok:true,json:async()=>({features:[{...feature(2,"Persiaran Sungai Buloh",[101.5736214,3.1638001]),properties:{osm_key:"highway",name:"Persiaran Sungai Buloh",locality:"Taman Industri Sungai Buloh",city:"Petaling Jaya"}}]})};
+  }});
+  const [a,b]=await Promise.all([search.reverse(point),search.reverse(point)]);
+  assert.deepEqual(a,b);assert.match(a.pickup.label,/^Persiaran Sungai Buloh, Taman Industri/);
+  assert.equal(a.pickup.lat,point.lat);assert.equal(a.pickup.lng,point.lng);assert.equal(a.pickup.id,null);
+  const nearbyPoint={lat:3.1624001,lng:101.5728001};const cached=await search.reverse(nearbyPoint);
+  assert.equal(calls,1);assert.equal(cached.pickup.lat,nearbyPoint.lat);
+  await assert.rejects(search.reverse({lat:1,lng:1}),{code:"OUTSIDE_SERVICE_AREA"});assert.equal(calls,1);
+});
+test("reverse is independent of directory health and ignores far-away or unnamed roads",async()=>{
+  const reverse=createPlaceSearch({interval:0,fetcher:async()=>({ok:true,json:async()=>({features:[feature(1,"Another city",[101.8,3.5]),feature(2,"Shop")]})})}).reverse;
+  const api=createAPI({store:{catalog:()=>{throw Error("offline");}},reverseGeocode:reverse});
+  assert.equal((await api({action:"reverse",point:DEFAULT_MAP.center})).pickup,null);
+  await assert.rejects(api({action:"reverse",point:{lat:"3",lng:101}}),{code:"OUTSIDE_SERVICE_AREA"});
+});
 test("nearby discovery works without date/time and returns distance-ordered coordinates without fit claims", async () => {
   const api = createAPI({ store: { catalog: async () => fixtureCatalog } });
   const r = await api({ action: "nearby", center: DEFAULT_MAP.center });

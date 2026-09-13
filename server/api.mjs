@@ -2,6 +2,7 @@ import {
   CONTRACT,
   canonicalRequest,
   requestErrors,
+  needsPickupAddress,
 } from "../shared/request.mjs";
 import {
   assess,
@@ -20,7 +21,7 @@ import { fixtureCatalog, demoPickup } from "./fixtures.mjs";
 import { createStore, ServiceError } from "./appwrite-store.mjs";
 import { createPlaceSearch } from "./places.mjs";
 import { createDrivingRoutes } from "./driving.mjs";
-export function createAPI({ store = createStore(), placeSearch = createPlaceSearch(), drivingRoutes = createDrivingRoutes() } = {}) {
+export function createAPI({ store = createStore(), placeSearch = createPlaceSearch(), reverseGeocode = placeSearch.reverse, drivingRoutes = createDrivingRoutes() } = {}) {
   return async function handle(body) {
     if (!body || typeof body !== "object" || Array.isArray(body))
       throw new ServiceError("INVALID_REQUEST", 400);
@@ -28,7 +29,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
     if (!["live", "demo"].includes(mode))
       throw new ServiceError("INVALID_MODE", 400);
     if (
-      !["health", "places", "nearby", "search", "details", "compare"].includes(
+      !["health", "places", "reverse", "nearby", "search", "details", "compare"].includes(
         body.action,
       )
     )
@@ -36,6 +37,10 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
     // Place lookup is independent of childcare records and directory health.
     if (body.action === "places" && mode === "live")
       return { contract: CONTRACT, mode, regions, ...await placeSearch(body.query) };
+    if (body.action === "reverse") {
+      if (!regions.includes(regionAt(body.point))) throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
+      return {contract:CONTRACT,mode,regions,...(mode === "demo" ? {pickup:null} : await reverseGeocode(body.point))};
+    }
     const catalog = mode === "demo" ? fixtureCatalog : await store.catalog(),
       items = catalog.items;
     const meta = {
@@ -109,6 +114,9 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
     if (Object.keys(errors).length)
       throw new ServiceError("INVALID_REQUEST", 422, errors);
     const request = canonicalRequest(body.request);
+    if (mode === "live" && needsPickupAddress(request.pickup) && reverseGeocode) {
+      try { const r=await reverseGeocode(request.pickup); if (r.pickup) request.pickup=r.pickup; } catch { /* An address outage must not block care search. */ }
+    }
     const withDriving = rows => mode === "demo" ? rows.map(p => ({ ...p, driving: { state: "unavailable", reason: "demo" } })) : drivingRoutes(request.pickup, rows);
     if (!regions.includes(regionAt(request.pickup)))
       throw new ServiceError("OUTSIDE_SERVICE_AREA", 422, {

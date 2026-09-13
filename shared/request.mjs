@@ -75,8 +75,9 @@ export function canonicalRequest(input) {
   };
 }
 export const requestKey = (r) => JSON.stringify(r);
+export const needsPickupAddress = (p) => !!p && /^(Map point\b|Selected location$|My current location$)/i.test(p.label ?? "");
 export function requestCaption(r) {
   return r
-    ? `${r.pickup.label} · ${r.date} · collect by ${r.deadline} · care until ${r.end}`
+    ? `${needsPickupAddress(r.pickup) ? "Selected pickup location" : r.pickup.label} · ${r.date} · collect by ${r.deadline} · care until ${r.end}`
     : "";
 }

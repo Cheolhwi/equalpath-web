@@ -27,7 +27,7 @@ import {
   Status,
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
-import { requestErrors, todayKL, requestCaption } from "../shared/request.mjs";
+import { requestErrors, todayKL, requestCaption, needsPickupAddress } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
@@ -143,6 +143,7 @@ export default function App({
     [preparation, setPreparation] = useState(null);
   const [tourOpen, setTourOpen] = useState(false);
   const [pickupQueryReset, setPickupQueryReset] = useState(null);
+  const [pickupAddress, setPickupAddress] = useState(null), [addressRetry, setAddressRetry] = useState(0);
   const tourOffered = useRef(false), tourSnapshot = useRef(null), tourData = useRef(null), tourSequence = useRef(0), startTourRef = useRef(null);
   const reuseSeq = useRef(0);
   const mapView = useRef(DEFAULT_MAP), rememberedPickup = useRef(null);
@@ -158,6 +159,23 @@ export default function App({
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(""), 4200);
   };
+  useEffect(() => {
+    const point=draft.pickup;
+    if (mode!=="live" || tourOpen || !needsPickupAddress(point)) { setPickupAddress(null); return; }
+    let alive=true;
+    setPickupAddress("loading");
+    requestAPI({action:"reverse",mode,point:{lat:point.lat,lng:point.lng}}).then(r=>{
+      if (!alive) return;
+      if (!r.pickup) { setPickupAddress("unavailable"); return; }
+      const same=p=>needsPickupAddress(p) && p.lat===point.lat && p.lng===point.lng;
+      const rename=value=>value?.request && same(value.request.pickup) ? {...value,request:{...value.request,pickup:r.pickup}} : value;
+      setDraft(d=>same(d.pickup) ? {...d,pickup:r.pickup} : d);
+      setResults(rename);setComparison(rename);setEnquiry(rename);setPreparation(rename);
+      if (same(rememberedPickup.current)) rememberMap(mapView.current,r.pickup);
+      setPickupAddress(null);
+    }).catch(()=>{if(alive)setPickupAddress("unavailable");});
+    return ()=>{alive=false;};
+  },[mode,tourOpen,draft.pickup?.lat,draft.pickup?.lng,draft.pickup?.label,addressRetry]);
   const reloadLibrary = () => {
     try {
       setLibrary(readLibrary(window.localStorage, mode));
@@ -802,6 +820,9 @@ export default function App({
               notify("Choose your pickup place on the map.");
             }}
           />
+          {pickupAddress && <p className="pickup-address-status" role="status">
+            {pickupAddress === "loading" ? "Finding the nearby street…" : <>Street address unavailable. Your selected location is kept. <button type="button" className="text-link" onClick={()=>setAddressRetry(n=>n+1)}>Retry address</button></>}
+          </p>}
           <div data-tour="care-times">
           <div className="field">
             <label htmlFor="service-date">
@@ -1193,7 +1214,7 @@ export default function App({
             setMobilePane("list");
             setFormOpen(true);
             notify(
-              "Map point selected. Its region will be checked with your request.",
+              "Pickup selected. Finding the nearby street address…",
             );
           }}
           choosing={choosing}
@@ -1485,6 +1506,7 @@ export default function App({
                         onRemove={removeCompare}
                         onPrepare={(p) => prepare(p, comparison.request)}
                         sort={compareSort}
+                        date={comparison.request.date}
                         ordering={comparison.ordering}
                         onSort={(v) => {
                           setCompareSort(v);

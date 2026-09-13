@@ -8,8 +8,8 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("equalpath:tour:v1", JSON.stringify({ version: 1, status: "skipped" })));
 });
 const place = { id: "osm:N:1", label: "KL Sentral", address: "Jalan Stesen Sentral, Kuala Lumpur", region: "Kuala Lumpur", lat: 3.1341, lng: 101.6865 };
-async function mockAPI(page, calls) {
-  const api = createAPI({ store: { catalog: async () => fixtureCatalog }, placeSearch: async () => ({ items: [place] }), drivingRoutes: async (_,items) => items.map(p=>({...p,driving:{state:"unavailable"}})) });
+async function mockAPI(page, calls, reverseGeocode=async point=>({pickup:{id:null,label:"Jalan Stesen Sentral, Kuala Lumpur",lat:point.lat,lng:point.lng}})) {
+  const api = createAPI({ store: { catalog: async () => fixtureCatalog }, placeSearch: async () => ({ items: [place] }), reverseGeocode, drivingRoutes: async (_,items) => items.map(p=>({...p,driving:{state:"unavailable"}})) });
   await page.route("**/api", async (route) => {
     const body = route.request().postDataJSON(); calls.push(body);
     try { await route.fulfill({ json: { ok: true, ...await api(body) } }); }
@@ -54,7 +54,7 @@ test("drag map, confirm pickup, reload and keep the same point; cancellation lea
   await expect.poll(async()=>Math.abs(Number(await map.getAttribute("data-map-lng"))-oldLng)).toBeGreaterThan(.001);
   await page.screenshot({path:`${evidence}/map-drag-desktop.png`});
   await page.getByRole("button",{name:"Use this location",exact:true}).click();
-  await expect(page.locator("#pickup-search")).toHaveValue(/^Map point/);
+  await expect(page.locator("#pickup-search")).toHaveValue("Jalan Stesen Sentral, Kuala Lumpur");
   const pickup=await page.locator("#pickup-search").inputValue();
   await page.reload(); await expect(page.locator("#pickup-search")).toHaveValue(pickup);
   await page.getByRole("button",{name:"Choose pickup here"}).click();
@@ -73,7 +73,7 @@ test("mobile pickup confirmation is visible, map stays flat and blocked storage 
   await expect(page.locator(".map-region")).toHaveAttribute("data-map-pitch","0");
   await page.screenshot({path:`${evidence}/map-drag-mobile.png`});
   await page.getByRole("button",{name:"Use this location",exact:true}).click();
-  await expect(page.locator("#pickup-search")).toHaveValue(/^Map point/);
+  await expect(page.locator("#pickup-search")).toHaveValue("Jalan Stesen Sentral, Kuala Lumpur");
   await expect.poll(()=>calls.filter(c=>c.action==="nearby").length).toBeGreaterThan(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
@@ -111,4 +111,28 @@ test("a nearby marker can lead to a dated condition check without pretending dis
   await page.getByRole("button",{name:"Find care options",exact:true}).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   expect(calls.filter(c=>c.action==="details").at(-1).request.end).toBe("17:00");
+});
+test("an address outage keeps the chosen point and can be retried without another nearby search",async({page})=>{
+  let reverseCalls=0;const calls=[];
+  await mockAPI(page,calls,async point=>++reverseCalls===1 ? {pickup:null} : {pickup:{...point,id:null,label:"Jalan Stesen Sentral, Kuala Lumpur"}});
+  await page.goto('/#discover');await expect(page.locator('.nearby-card').first()).toBeVisible();
+  await page.getByRole('button',{name:'Choose pickup here'}).click();await page.getByRole('button',{name:'Use this location',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Retry address',exact:true})).toBeVisible();
+  const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('equalpath:map:v1:live')).pickup);
+  await page.getByRole('button',{name:'Retry address',exact:true}).click();
+  await expect(page.locator('#pickup-search')).toHaveValue('Jalan Stesen Sentral, Kuala Lumpur');
+  const after=await page.evaluate(()=>JSON.parse(localStorage.getItem('equalpath:map:v1:live')).pickup);
+  expect(after.lat).toBe(before.lat);expect(after.lng).toBe(before.lng);expect(reverseCalls).toBe(2);
+  await page.waitForTimeout(400);expect(calls.filter(c=>c.action==='nearby').length).toBeLessThanOrEqual(2);
+});
+test("a late street lookup never overwrites a newly searched place",async({page})=>{
+  let finish;const pending=new Promise(resolve=>finish=resolve);const calls=[];
+  await mockAPI(page,calls,async point=>{await pending;return {pickup:{...point,label:'Old road',id:null}};});
+  await page.goto('/#discover');await expect(page.locator('.nearby-card').first()).toBeVisible();
+  await page.getByRole('button',{name:'Choose pickup here'}).click();await page.getByRole('button',{name:'Use this location',exact:true}).click();
+  await expect.poll(()=>calls.some(c=>c.action==='reverse')).toBe(true);
+  await page.locator('#pickup-search').fill('KL sentrl');await page.locator('#pickup-search').press('Enter');
+  await page.getByRole('button',{name:/KL Sentral Jalan Stesen/}).click();finish();
+  await expect(page.locator('#pickup-search')).toHaveValue('KL Sentral');await page.waitForTimeout(250);
+  await expect(page.locator('#pickup-search')).toHaveValue('KL Sentral');
 });

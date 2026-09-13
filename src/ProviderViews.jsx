@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { requestCaption, todayKL } from "../shared/request.mjs";
 import { drivingLabel, feeSummary } from "../shared/result-summary.mjs";
+import { bestForPriority } from "../shared/conditions.mjs";
 export function SourceLink({ source, children }) {
   if (!source)
     return (
@@ -486,7 +487,9 @@ export function Comparison({
   sort,
   onSort,
   ordering,
+  date,
 }) {
+  const best=bestForPriority(items,sort,date);
   const rows = [
     [
       "Temporary admission",
@@ -544,14 +547,16 @@ export function Comparison({
           </select>
         </label>
         <p>{ordering?.explanation}</p>
+        <p className="comparison-priority-message" role="status">{best.message}</p>
       </div>
       <div className="comparison-scroll">
         <table>
+          <colgroup><col />{items.map(p=><col key={p.id} className={best.ids.includes(p.id) ? "comparison-best-column" : undefined} />)}</colgroup>
           <thead>
             <tr>
               <th>YOUR CARE NEEDS</th>
               {items.map((p) => (
-                <th key={p.id}>
+                <th key={p.id} data-provider-id={p.id} className={best.ids.includes(p.id) ? "comparison-best" : undefined}>
                   <button
                     className="remove-compare"
                     aria-label={"Remove " + p.name + " from comparison"}
@@ -559,6 +564,7 @@ export function Comparison({
                   >
                     Remove
                   </button>
+                  {best.ids.includes(p.id) && <span className="comparison-best-tag"><Star size={12} fill="currentColor" />{best.label}</span>}
                   <h3>{p.name}</h3>
                   <small>
                     {p.district} · {p.region}

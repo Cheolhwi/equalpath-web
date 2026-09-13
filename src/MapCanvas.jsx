@@ -341,7 +341,7 @@ export default function MapCanvas({
           <small>{camera.lat?.toFixed(5)}, {camera.lng?.toFixed(5)}</small>
           <div><button className="secondary" onClick={onCancel}>Cancel</button><button className="primary" onClick={() => {
             const c = map.current?.getCenter();
-            if (c) onPick({ id: null, label: `Map point · ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`, lat: c.lat, lng: c.lng });
+            if (c) onPick({ id: null, label: "Selected location", lat: c.lat, lng: c.lng });
           }}>Use this location</button></div>
         </div>
       </> : <button className="map-choose secondary" onClick={onChoose}><MapPin size={15} />Choose pickup here</button>}
