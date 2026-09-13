@@ -4,6 +4,9 @@ import { fixtureCatalog } from "../../server/fixtures.mjs";
 import { mkdirSync } from "node:fs";
 const evidence = process.env.QA_EVIDENCE_DIR || ".build/map-qa";
 mkdirSync(evidence, { recursive: true });
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("equalpath:tour:v1", JSON.stringify({ version: 1, status: "skipped" })));
+});
 const place = { id: "osm:N:1", label: "KL Sentral", address: "Jalan Stesen Sentral, Kuala Lumpur", region: "Kuala Lumpur", lat: 3.1341, lng: 101.6865 };
 async function mockAPI(page, calls) {
   const api = createAPI({ store: { catalog: async () => fixtureCatalog }, placeSearch: async () => ({ items: [place] }) });

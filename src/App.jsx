@@ -15,6 +15,7 @@ import {
   Sun,
   Moon,
   Info,
+  CircleHelp,
 } from "lucide-react";
 import MapCanvas from "./MapCanvas.jsx";
 import Dialog from "./Dialog.jsx";
@@ -30,6 +31,8 @@ import { requestErrors, todayKL, requestCaption } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
+import GettingStarted from "./GettingStarted.jsx";
+import { tourSeen, saveTour } from "../shared/tour.mjs";
 import {
   SavedLibrary,
   FavouriteEditor,
@@ -136,6 +139,9 @@ export default function App({
     [reopening, setReopening] = useState(null),
     [reusePlace, setReusePlace] = useState(null),
     [preparation, setPreparation] = useState(null);
+  const [tourOpen, setTourOpen] = useState(false);
+  const [pickupQueryReset, setPickupQueryReset] = useState(null);
+  const tourOffered = useRef(false), tourSnapshot = useRef(null), tourData = useRef(null), tourSequence = useRef(0), startTourRef = useRef(null);
   const reuseSeq = useRef(0);
   const mapView = useRef(DEFAULT_MAP), rememberedPickup = useRef(null);
   const requestSeq = useRef(0),
@@ -287,7 +293,7 @@ export default function App({
     };
   }, [mode]);
   useEffect(() => {
-    if (results) return;
+    if (results || tourOpen) return;
     let alive = true;
     setNearby(null);
     setNearbyBusy(true);
@@ -299,7 +305,7 @@ export default function App({
         .finally(() => { if (alive) setNearbyBusy(false); });
     }, 300);
     return () => { alive = false; clearTimeout(timer); };
-  }, [mode, browseCenter, results, nearbyReload]);
+  }, [mode, browseCenter, results, nearbyReload, tourOpen]);
   useEffect(() => {
     const key = (e) => {
       if (
@@ -318,6 +324,7 @@ export default function App({
     return () => window.removeEventListener("keydown", key);
   }, [dialog, introPhase]);
   const rememberMap = (view, pickup = rememberedPickup.current) => {
+    if (tourOpen) return;
     mapView.current = view;
     rememberedPickup.current = pickup;
     try { writeMapMemory(window.localStorage, mode, { ...view, pickup }); } catch { /* Map still works without storage. */ }
@@ -543,6 +550,79 @@ export default function App({
     setDialogError(null);
     setDialog(null);
   };
+  const startTour = () => {
+    if (tourOpen || busy || dialogBusy || reusePlace?.state === "pending") return;
+    tourOffered.current = true;
+    tourSnapshot.current = { draft, results, selected, compareIds, comparison, compareSort, profile, enquiry, questionSelection, formOpen, mobilePane, choosing, errors, failure, reopening, reusePlace, mapTarget: mapView.current, pickupQuery: document.querySelector("#pickup-search")?.value ?? draft.pickup?.label ?? "", panelScroll: document.querySelector(".discovery-panel")?.scrollTop ?? 0 };
+    tourData.current = null;
+    requestSeq.current++; dialogSeq.current++; reuseSeq.current++;
+    setBusy(false); setDialogBusy(false); setDialog(null); setChoosing(false);
+    setTourOpen(true);
+  };
+  startTourRef.current = startTour;
+  const finishTour = (status) => {
+    tourSequence.current++;
+    setBusy(false);
+    try { saveTour(window.localStorage, status); } catch { /* Current-session dismissal still works. */ }
+    const s = tourSnapshot.current;
+    setDialog(null); setDialogBusy(false); setDialogError(null);
+    if (s) {
+      setDraft(s.draft); setResults(s.results); setSelected(s.selected);
+      setCompareIds(s.compareIds); setComparison(s.comparison); setCompareSort(s.compareSort);
+      setProfile(s.profile); setEnquiry(s.enquiry); setQuestionSelection(s.questionSelection);
+      setFormOpen(s.formOpen); setMobilePane(s.mobilePane); setChoosing(s.choosing);
+      setErrors(s.errors); setFailure(s.failure); setReopening(s.reopening); setReusePlace(s.reusePlace);
+      setMapTarget(s.mapTarget);
+      setPickupQueryReset({ value: s.pickupQuery });
+    }
+    setTourOpen(false);
+    requestAnimationFrame(() => {
+      const panel = document.querySelector(".discovery-panel");
+      if (panel && s) panel.scrollTop = s.panelScroll;
+      document.querySelector(status === "completed" ? "#pickup-search" : ".quick-tour-button")?.focus({ preventScroll: true });
+    });
+  };
+  const showTourStep = async (step) => {
+    const seq = ++tourSequence.current;
+    setDialog(null); setFormOpen(true); setErrors({}); setFailure(null); setReopening(null); setReusePlace(null);
+    setMobilePane(step === 3 ? "map" : "list");
+    if (step === 0) return;
+    const example = { ...initial(), pickup: { id: "demo-pickup", label: "KL Sentral · tutorial", lat: 3.1341, lng: 101.6865 }, date: todayKL(), deadline: "13:00", end: "18:00", age: "4", transport: "self" };
+    setDraft({ ...example, ...(step === 1 ? { deadline: "", end: "", age: "", transport: "" } : {}) });
+    setMapTarget({ center: { lat: 3.139, lng: 101.6869 }, zoom: 13 });
+    if (step < 3) { setResults(null); setSelected(null); setCompareIds([]); return; }
+    setBusy(true);
+    try {
+      if (!tourData.current) {
+        const response = await requestAPI({ action: "search", mode: "demo", request: example });
+        if (seq !== tourSequence.current) return;
+        tourData.current = response;
+      }
+      if (seq !== tourSequence.current) return;
+      const r = tourData.current;
+      const garden = r.items.find((p) => p.id === "demo-garden"), river = r.items.find((p) => p.id === "demo-river");
+      setResults(r); setSelected(garden.id); setFormOpen(false);
+      if (step === 3) { setCompareIds([]); return; }
+      if (step === 4) { setProfile({ p: garden, request: r.request }); setDialog("details"); return; }
+      if (step === 5) {
+        setCompareIds([garden.id, river.id]);
+        setComparison({ ...r, items: [garden, river] });
+        setCompareSort("distance"); setDialog("compare"); return;
+      }
+      setEnquiry({ p: garden, request: r.request }); setDialog("enquiry");
+    } finally { if (seq === tourSequence.current) setBusy(false); }
+  };
+  useEffect(() => {
+    if (introPhase !== "ready" || mode !== "live" || dialog || tourOpen || tourOffered.current || busy || reusePlace?.state === "pending") return;
+    let seen = false;
+    try { seen = tourSeen(window.localStorage); } catch { /* A blocked store behaves like a first visit. */ }
+    if (seen) { tourOffered.current = true; return; }
+    const timer = setTimeout(() => startTourRef.current?.(), 400);
+    return () => clearTimeout(timer);
+  }, [introPhase, mode, dialog, tourOpen, busy, reusePlace]);
+  useEffect(() => {
+    if (tourOpen && introPhase !== "ready") finishTour("skipped");
+  }, [introPhase]);
   const requestChanged =
     comparison && scenario(comparison.request) !== scenario(activeRequest);
   const retryDialog = () => loadComparison();
@@ -550,7 +630,7 @@ export default function App({
     <main
       className={`equalpath ${theme} mobile-${mobilePane}`}
       data-reduced={reduced}
-      data-mode={mode}
+      data-mode={tourOpen ? "demo" : mode}
       inert={introPhase !== "ready"}
       aria-hidden={introPhase !== "ready" || undefined}
     >
@@ -583,6 +663,7 @@ export default function App({
             <small>01</small>DISCOVER
           </button>
           <button
+            data-tour="compare"
             className={dialog === "compare" ? "active" : ""}
             onClick={() => loadComparison()}
           >
@@ -609,8 +690,9 @@ export default function App({
           </button>
         </nav>
         <div className="header-end">
+          <button className="quick-tour-button" aria-label="Quick tour" disabled={busy || dialogBusy || reusePlace?.state === "pending"} onClick={startTour}><CircleHelp size={19}/><span>Quick tour</span></button>
           <span className={`data-badge ${mode === "demo" ? "demo" : ""}`}>
-            {mode === "demo" ? "DEMO" : "KL + SELANGOR"}
+            {tourOpen ? "TUTORIAL" : mode === "demo" ? "DEMO" : "KL + SELANGOR"}
           </span>
           <button
             aria-label="Display and data settings"
@@ -631,6 +713,7 @@ export default function App({
           <h1>Find childcare</h1>
           <p>Search by pickup place and care hours.</p>
         </div>
+        {tourOpen && <p className="demo-notice">Tutorial · fictional centres and sample details. Your search will be restored when you finish or skip.</p>}
         {mode === "demo" && (
           <p className="demo-notice">
             Controlled examples — fictional providers, times and prices for
@@ -704,7 +787,8 @@ export default function App({
           className={formOpen ? "request-form" : "request-form collapsed"}
         >
           <PlaceInput
-            active={introPhase === "ready" && !dialog}
+            queryReset={pickupQueryReset}
+            active={introPhase === "ready" && !dialog && !tourOpen}
             mode={mode}
             value={draft.pickup}
             onChange={(p) => setField("pickup", p)}
@@ -715,6 +799,7 @@ export default function App({
               notify("Choose your pickup place on the map.");
             }}
           />
+          <div data-tour="care-times">
           <div className="field">
             <label htmlFor="service-date">
               Date <span>Malaysia time</span>
@@ -760,6 +845,7 @@ export default function App({
                 <small className="field-error">{errors.end}</small>
               )}
             </div>
+          </div>
           </div>
           <div className="field-pair">
             <div className="field">
@@ -1084,6 +1170,7 @@ export default function App({
           viewTarget={mapTarget}
           autoFit={!!results}
           onViewChange={(view) => {
+            if (tourOpen) return;
             rememberMap(view);
             if (!results) { setBrowseCenter(view.center); setSelected(null); }
           }}
@@ -1171,6 +1258,7 @@ export default function App({
       )}
       {dialog && (
         <Dialog
+          tourBehind={tourOpen}
           title={
             dialog === "saved"
               ? "Your saved centres & searches"
@@ -1450,6 +1538,7 @@ export default function App({
           )}
           {dialog === "settings" && (
             <>
+              <div className="setting-line"><span>Getting started</span><button className="secondary" onClick={startTour}>Replay quick tour</button></div>
               <div className="setting-line">
                 <span>Appearance</span>
                 <div className="theme-buttons">
@@ -1565,6 +1654,7 @@ export default function App({
           )}
         </Dialog>
       )}
+      {tourOpen && <GettingStarted onClose={finishTour} onStep={showTourStep} reduced={reduced || introReduced} />}
     </main>
   );
 }

@@ -1,0 +1,79 @@
+{
+  "site": "http://127.0.0.1:4194/",
+  "stepInfo": [
+    {
+      "step": 1,
+      "heading": "Choose a pickup place",
+      "sampleRows": 0,
+      "detail": 0
+    },
+    {
+      "step": 2,
+      "heading": "Set your care hours",
+      "sampleRows": 0,
+      "detail": 0
+    },
+    {
+      "step": 3,
+      "heading": "Explore nearby centres",
+      "sampleRows": 10,
+      "detail": 0
+    },
+    {
+      "step": 4,
+      "heading": "Read the condition checks",
+      "sampleRows": 10,
+      "detail": 1
+    },
+    {
+      "step": 5,
+      "heading": "Compare your options",
+      "sampleRows": 10,
+      "detail": 1
+    },
+    {
+      "step": 6,
+      "heading": "Get ready to contact",
+      "sampleRows": 10,
+      "detail": 1
+    }
+  ],
+  "calls": [
+    {
+      "action": "health",
+      "mode": "live"
+    },
+    {
+      "action": "nearby",
+      "mode": "live"
+    },
+    {
+      "action": "search",
+      "mode": "demo"
+    },
+    {
+      "action": "health",
+      "mode": "live"
+    },
+    {
+      "action": "nearby",
+      "mode": "live"
+    }
+  ],
+  "restored": {
+    "pickup": "",
+    "deadline": "",
+    "end": "",
+    "mode": "live"
+  },
+  "storage": {
+    "tour": {
+      "version": 1,
+      "status": "completed"
+    },
+    "map": null,
+    "saved": null
+  },
+  "errors": [],
+  "at": "2026-09-13T05:40:06.864Z"
+}

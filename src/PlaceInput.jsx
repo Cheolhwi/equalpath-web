@@ -17,6 +17,7 @@ export default function PlaceInput({
   error,
   active = true,
   idPrefix = "pickup",
+  queryReset,
 }) {
   const [query, setQuery] = useState(value?.label ?? ""),
     [options, setOptions] = useState([]),
@@ -31,6 +32,9 @@ export default function PlaceInput({
   useEffect(() => {
     if (value?.label) setQuery(value.label);
   }, [value?.label]);
+  useEffect(() => {
+    if (queryReset) { token.current++; setQuery(queryReset.value); setOptions([]); setOpen(false); setBusy(false); }
+  }, [queryReset]);
   useEffect(
     () => () => {
       token.current++;

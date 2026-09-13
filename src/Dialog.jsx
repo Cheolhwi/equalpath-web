@@ -6,14 +6,17 @@ export default function Dialog({
   children,
   onClose,
   wide = false,
+  tourBehind = false,
 }) {
   const ref = useRef(null),
     titleId = useId();
   useEffect(() => {
     const previous = document.activeElement;
-    ref.current.showModal();
-    return () => previous?.focus?.();
-  }, []);
+    const dialog = ref.current;
+    if (dialog.open) dialog.close();
+    if (tourBehind) dialog.show(); else dialog.showModal();
+    return () => { dialog.close(); if (!tourBehind) previous?.focus?.(); };
+  }, [tourBehind]);
   useEffect(() => {
     if (ref.current) ref.current.scrollTop = 0;
   }, [title, kicker]);
@@ -21,7 +24,7 @@ export default function Dialog({
     <dialog
       aria-labelledby={titleId}
       ref={ref}
-      className={wide ? "wide" : ""}
+      className={`${wide ? "wide" : ""} ${tourBehind ? "tour-behind" : ""}`}
       onCancel={(e) => {
         e.preventDefault();
         onClose();
