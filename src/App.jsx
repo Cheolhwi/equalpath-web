@@ -25,7 +25,6 @@ import {
   ProviderCard,
   Details,
   Comparison,
-  Enquiry,
   Status,
   RegistrationBadge,
   OrderingNote,
@@ -35,6 +34,7 @@ import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
+import Enquiry from "./Enquiry.jsx";
 import GettingStarted from "./GettingStarted.jsx";
 import { tourSeen, saveTour } from "../shared/tour.mjs";
 import { feeSummary, drivingLabel } from "../shared/result-summary.mjs";
@@ -1263,7 +1263,7 @@ export default function App({
       {dialog && (
         <Dialog
           tourBehind={tourOpen}
-          className={dialog === "details" ? "centre-dialog" : dialog === "preparation" ? "preparation-dialog" : ""}
+          className={dialog === "details" ? "centre-dialog" : dialog === "preparation" ? "preparation-dialog" : dialog === "enquiry" ? "enquiry-dialog" : ""}
           titleAccessory={dialog === "details" && profile ? <RegistrationBadge p={profile.p} /> : null}
           title={
             dialog === "saved"
@@ -1299,7 +1299,7 @@ export default function App({
                       ? "YOUR SHORTLIST"
                       : "EQUALPATH / INFORMATION"
           }
-          wide={["compare", "details", "preparation", "saved"].includes(dialog)}
+          wide={["compare", "details", "preparation", "saved", "enquiry"].includes(dialog)}
           onClose={close}
         >
           {dialog === "saved" && (
@@ -1504,12 +1504,6 @@ export default function App({
             )}
           {dialog === "enquiry" && enquiry && (
             <>
-              <button
-                className="secondary enquiry-preparation"
-                onClick={() => startPreparation(enquiry.p, enquiry.request)}
-              >
-                Create checklist <ArrowRight size={16} />
-              </button>
               <Enquiry
                 key={enquiry.p.id + scenario(enquiry.request)}
                 p={enquiry.p}
@@ -1524,6 +1518,7 @@ export default function App({
                   }))
                 }
                 onCompare={() => loadComparison()}
+                onPreparation={() => startPreparation(enquiry.p, enquiry.request)}
               />
             </>
           )}

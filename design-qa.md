@@ -1,5 +1,16 @@
 # Landing page and map entrance QA
 
+## Questions page and linked checks (2026-09-14)
+
+The enquiry page now starts with the selected centre, visit date, collect-by time, care-until time and pickup place. The main column contains selected questions; copy/preview and sourced contacts sit together on the right. Small screens stack the copy controls before the questions, then contacts and the secondary pickup-checklist action. The existing quiet palette, reduced-motion settings and dialog timing remain.
+
+Each condition-derived question names its matching check and state, with a short parent-facing explanation. The expandable link reveals the original assessment and source, including alternate age sources. Conflicting checks come first initially. Availability and final fees are clearly labelled as questions to ask for every visit, not missing-provider-data checks. Fee references retain estimates and billing periods. Friendly display/copy wording is a frontend presentation of the existing API question IDs; this change does not alter fit states or require a query-function deployment.
+
+- 134 unit checks and the production build/asset validation passed. Four new checks verify exact question membership, ID-to-assessment linkage, optional age/pickup handling, conflict ordering, selected-message context and fee distinctions.
+- 16 browser scenarios passed across enquiry, phases 4–5 and guided-tour suites. The three enquiry cases passed again after final copy/style adjustments. They cover linked evidence, excluded matching checks, selection/reordering and reopen persistence, copied order, WhatsApp link scope without opening it, clipboard failure, no-contact fallback, checklist navigation and 320 px dark-mode layout.
+- Desktop (1440 × 1000), mobile (390 × 844) and dark 320 × 700 screenshots in `.build/enquiry-redesign-final/` were visually inspected. Names, date/time fields, check links, expanded evidence and contacts stay within the dialog. These are controlled browser fixtures; they do not verify individual live provider facts or physical-device performance.
+- Release source digest: `72a5d1c19f80b4d998515fbf7f1eb5e403722581087099ca0ed534c4016bc8d9`. Public deployment is checked separately after publication.
+
 Date: 2026-09-12. Scope: the user-requested RhineLab-inspired landing page with Gaussian blur, integrated into the existing EqualPath website. The latest user revision replaces the cinematic transfer with one brief entrance.
 
 ## Current revision: artwork-led entry and slower surfaces (2026-09-14)

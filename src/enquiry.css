@@ -1,0 +1,90 @@
+.enquiry-dialog .dialog-content { padding: 24px 30px 30px; }
+.enquiry-dialog .dialog-top { margin-bottom: 18px; }
+.enquiry-dialog .dialog-content > h2 { margin-bottom: 8px; font-size: 30px; line-height: 1.2; }
+.enquiry-intro { color: var(--muted); margin: 0 0 22px; font-size: 14px; }
+.enquiry-visit.request-context { border-left: 3px solid var(--accent); background: var(--soft); padding: 18px 20px; margin: 0 0 28px; }
+.enquiry-visit .section-kicker { margin: 0 0 5px; font-size: 10px; }
+.enquiry-visit h3 { font-size: 21px; line-height: 1.3; margin: 0 0 16px; overflow-wrap: anywhere; }
+.enquiry-visit dl { display: flex; flex-wrap: wrap; gap: 12px 32px; margin: 0 0 12px; }
+.enquiry-visit dt { font-size: 11px; color: var(--muted); }
+.enquiry-visit dd { margin: 3px 0 0; font-size: 15px; font-weight: 600; }
+.enquiry-visit .enquiry-pickup { display: flex; gap: 7px; align-items: baseline; font-size: 12px; margin-bottom: 5px; }
+.enquiry-pickup svg { flex: 0 0 auto; align-self: flex-start; margin-top: 3px; }
+.enquiry-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .53fr); gap: 32px; align-items: start; }
+.enquiry-layout h3 { font-size: 18px; line-height: 1.35; margin: 0; }
+.enquiry-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.enquiry-section-heading .text-link { font-size: 11px; min-height: 36px; padding: 0; }
+.enquiry-guide { font-size: 11px; color: var(--muted); margin: 3px 0 15px; }
+.enquiry-questions .question-list { border-top: 1px solid var(--rule); border-bottom: 0; margin: 0; }
+.enquiry-question { padding: 20px 0; border-bottom: 1px solid var(--rule); }
+.enquiry-question-main { display: flex; align-items: start; gap: 10px; }
+.enquiry-question-main label { display: flex; align-items: start; flex: 1; gap: 10px; font-size: 14px; line-height: 1.6; cursor: pointer; }
+.enquiry-question-main input { margin: 4px 0 0; width: 16px; height: 16px; flex: 0 0 auto; accent-color: var(--accent); }
+.enquiry-reorder { display: flex; flex-direction: column; flex: 0 0 auto; }
+.enquiry-reorder button { min-height: 28px; min-width: 30px; display: grid; place-items: center; padding: 3px; color: var(--muted); }
+.enquiry-reorder button:hover:not(:disabled) { background: var(--soft); color: var(--ink); }
+.question-connection { margin: 9px 40px 0 26px; font-size: 11px; }
+.question-check > summary { display: flex; align-items: start; gap: 5px; cursor: pointer; color: var(--amber); list-style: none; width: fit-content; line-height: 1.6; }
+.question-check > summary::-webkit-details-marker { display: none; }
+.question-check > summary svg { flex-shrink: 0; margin-top: 3px; }
+.question-check[open] > summary > svg:last-child { transform: rotate(180deg); }
+.enquiry-question.conflict .question-check > summary { color: var(--red); }
+.question-connection > p { margin: 5px 0 0; color: var(--muted); line-height: 1.5; }
+.question-check-content { background: var(--soft); padding: 12px; margin: 8px 0; color: var(--ink); overflow-wrap: anywhere; }
+.question-check-content > strong { font-size: 10px; font-weight: 600; }
+.question-check-content > p { font-size: 12px; margin: 6px 0; line-height: 1.6; }
+.question-check-content .source-link { font-size: 11px; }
+.question-check-content .source-link small { font-size: 10px; }
+.question-routine { color: var(--accent); font-weight: 500; }
+.enquiry-question.not-selected .enquiry-question-main label > span { color: var(--muted); }
+.question-fee { margin-top: 8px; }
+.question-fee > summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.question-fee > strong { display: block; margin-top: 8px; }
+.question-fee > p { color: var(--muted); }
+.question-fee .source-link { margin-top: 8px; }
+.enquiry-tools { position: sticky; top: 18px; }
+.enquiry-send { border: 1px solid var(--rule); border-top: 2px solid var(--accent); background: var(--soft); padding: 18px; }
+.enquiry-send-heading { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; margin-bottom: 14px; }
+.enquiry-send-heading > span { color: var(--muted); font-size: 11px; white-space: nowrap; }
+.enquiry-send > .primary { width: 100%; gap: 9px; justify-content: center; min-height: 44px; padding: 10px 12px; }
+.enquiry-copy-status { font-size: 11px; margin: 10px 0; color: var(--muted); }
+.enquiry-preview > summary { font-size: 11px; cursor: pointer; }
+.enquiry-preview > div { margin-top: 12px; white-space: pre-wrap; max-height: 220px; overflow: auto; font-size: 12px; background: var(--paper); border: 1px solid var(--rule); padding: 12px; }
+.enquiry-manual p { font-size: 12px; }
+.enquiry-manual textarea { width: 100%; height: 220px; padding: 10px; background: var(--paper); color: var(--ink); border: 1px solid var(--rule); font-size: 12px; resize: vertical; }
+.enquiry-contact { padding: 22px 0 20px; border-bottom: 1px solid var(--rule); }
+.enquiry-contact > p, .enquiry-next > p { font-size: 12px; color: var(--muted); margin: 8px 0 15px; }
+.enquiry-contact > .text-link { font-size: 12px; }
+.enquiry-contact .published-contact .call-link { font-size: 14px; }
+.enquiry-contact .source-disclosure { font-size: 11px; }
+.enquiry-contact .notice { margin-bottom: 0; }
+.enquiry-next { padding-top: 20px; }
+.enquiry-next h3 { font-size: 15px; }
+.enquiry-next > .secondary { width: 100%; justify-content: center; gap: 9px; font-size: 12px; }
+.enquiry-next > .text-link { font-size: 12px; margin-top: 14px; }
+@media (max-width: 900px) {
+  .enquiry-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .enquiry-tools { display: contents; }
+  .enquiry-send { order: -1; }
+  .enquiry-send > .primary { width: auto; min-width: 180px; }
+  .enquiry-contact { padding-top: 0; }
+  .enquiry-next { padding-top: 0; }
+  .enquiry-next > .secondary { width: auto; }
+  .enquiry-next > .text-link { display: flex; }
+}
+@media (max-width: 600px) {
+  .enquiry-dialog .dialog-content { padding: 16px 18px 24px; }
+  .enquiry-dialog .dialog-content > h2 { font-size: 25px; }
+  .enquiry-intro { font-size: 13px; margin-bottom: 18px; }
+  .enquiry-visit.request-context { padding: 14px; margin-bottom: 18px; }
+  .enquiry-visit h3 { font-size: 18px; }
+  .enquiry-visit dl { gap: 12px 26px; }
+  .enquiry-visit dl > div:first-child { flex-basis: 100%; }
+  .enquiry-visit dd { font-size: 14px; }
+  .enquiry-send { padding: 14px; }
+  .enquiry-send > .primary { width: 100%; }
+  .enquiry-question-main label { font-size: 14px; }
+  .enquiry-reorder button { min-height: 36px; min-width: 32px; }
+  .question-connection { margin-right: 0; }
+}
+@media (max-height: 850px) and (min-width: 901px) { .enquiry-tools { position: static; } }

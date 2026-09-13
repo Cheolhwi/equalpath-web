@@ -7,7 +7,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   Check,
-  Copy,
   Phone,
   MessageCircle,
   Plus,
@@ -15,7 +14,6 @@ import {
   HelpCircle,
   AlertTriangle,
   Star,
-  ChevronUp,
   ChevronDown,
   BadgeCheck,
   MapPin,
@@ -24,7 +22,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { requestCaption, todayKL } from "../shared/request.mjs";
+import { todayKL } from "../shared/request.mjs";
 import { drivingLabel, feeSummary, formatFee } from "../shared/result-summary.mjs";
 import { bestForPriority } from "../shared/conditions.mjs";
 import { registrationBadge } from "../shared/registration.mjs";
@@ -607,147 +605,6 @@ export function Comparison({
           </tfoot>
         </table>
       </div>
-    </>
-  );
-}
-export function Enquiry({ p, request, selection, onSelection, onCompare }) {
-  const [copyState, setCopyState] = useState(""),
-    q = p.enquiries,
-    ids = selection ?? q.map((x) => x.id),
-    selected = ids.map((id) => q.find((x) => x.id === id)).filter(Boolean);
-  const context = `Questions for ${p.name}\n${requestCaption(request)}\nAge: ${request.age === "" ? "not specified" : request.age === "0" ? "under 1 year" : request.age + " years"} · ${request.transport === "self" ? "I’ll arrange transport" : request.transport === "institution" ? "Centre pickup requested" : "Transport not specified"}`;
-  const text =
-    context +
-    "\n\n" +
-    selected.map((x, i) => `${i + 1}. ${x.text}`).join("\n") +
-    "\n\nCould you let me know whether you can accommodate this? Thank you.";
-  const toggle = (id) => {
-    onSelection(ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]);
-    setCopyState("");
-  };
-  const move = (id, delta) => {
-    const next = [...ids],
-      i = next.indexOf(id),
-      j = i + delta;
-    if (j < 0 || j >= next.length) return;
-    [next[i], next[j]] = [next[j], next[i]];
-    onSelection(next);
-    setCopyState("");
-  };
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopyState("copied");
-    } catch {
-      setCopyState("manual");
-    }
-  };
-  return (
-    <>
-      <p className="dialog-lead">
-        Choose the questions you want to ask, then copy them for your call or message.
-      </p>
-      <div className="request-context">
-        <strong>{p.name}</strong>
-        <p>{requestCaption(request)}</p>
-        <small>
-          Age{" "}
-          {request.age === ""
-            ? "unspecified"
-            : request.age === "0"
-              ? "under 1"
-              : request.age}{" "}
-          ·{" "}
-          {request.transport === "self"
-            ? "I’ll arrange transport"
-            : request.transport === "institution"
-              ? "Centre pickup"
-              : "Pickup not specified"}
-        </small>
-      </div>
-      <div className="question-list">
-        {[...selected, ...q.filter((x) => !ids.includes(x.id))].map((x) => (
-          <div className="question" key={x.id}>
-            <label>
-              <input
-                type="checkbox"
-                checked={ids.includes(x.id)}
-                onChange={() => toggle(x.id)}
-              />
-              <span>{x.text}</span>
-            </label>
-            {ids.includes(x.id) && (
-              <div>
-                <button
-                  aria-label={"Move " + x.id + " question up"}
-                  disabled={ids.indexOf(x.id) === 0}
-                  onClick={() => move(x.id, -1)}
-                >
-                  <ChevronUp size={15} />
-                </button>
-                <button
-                  aria-label={"Move " + x.id + " question down"}
-                  disabled={ids.indexOf(x.id) === ids.length - 1}
-                  onClick={() => move(x.id, 1)}
-                >
-                  <ChevronDown size={15} />
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      <div className="enquiry-actions">
-        <button className="primary" disabled={!selected.length} onClick={copy}>
-          <Copy size={16} />
-          {copyState === "copied" ? "Questions copied" : "Copy questions"}
-        </button>
-        <span role="status">
-          {copyState === "copied"
-            ? "Copied with the centre name, date and times."
-            : !selected.length
-              ? "Select at least one question."
-              : ""}
-        </span>
-      </div>
-      {copyState === "manual" && (
-        <div className="manual-copy">
-          <p>
-            Clipboard access is unavailable. Select and copy the text below.
-          </p>
-          <textarea
-            readOnly
-            aria-label="Questions to copy"
-            value={text}
-            onFocus={(e) => e.target.select()}
-          />
-        </div>
-      )}
-      <section className="contact-panel">
-        <div className="section-kicker">CONTACT WHEN YOU ARE READY</div>
-        <PublishedContacts p={p} />
-        {p.sourcePage && (
-          <a
-            className="text-link"
-            href={p.sourcePage}
-            target="_blank"
-            rel="noreferrer"
-          >
-            View the centre’s listing <ArrowUpRight size={15} />
-          </a>
-        )}
-        {p.mode === "demo" && (
-          <p>Demo centres have no real contact details.</p>
-        )}
-        <p className="notice">
-          Call the number or open WhatsApp when you’re ready. You’ll need
-          to agree the arrangement with the centre directly; this page doesn’t
-          make a booking.
-        </p>
-      </section>
-      <button className="text-link" onClick={onCompare}>
-        Compare childcare <ArrowRight size={16} />
-      </button>
     </>
   );
 }
