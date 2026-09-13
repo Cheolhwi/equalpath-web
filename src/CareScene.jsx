@@ -5,20 +5,30 @@ import { fileAtCell } from "./vendor/rhine/archive-loop";
 import { fileLocation, records } from "./vendor/rhine/data";
 import { careArtworks, nextArtwork, artworkDwell } from "./care-artworks.js";
 
-export default function CareScene({ reduced }) {
+export default function CareScene({ reduced, animateOpening = true }) {
   const host = useRef(null);
   const instance = useRef(null);
   const selected = useRef(0);
   const direction = useRef(1);
   const keyboardInteraction = useRef(false);
-  const mode = useRef("detail");
+  const mode = useRef(animateOpening && !reduced ? "archive" : "detail");
+  const openingRef = useRef(animateOpening && !reduced ? "collection" : "complete");
   const reducedRef = useRef(reduced);
   const [status, setStatus] = useState("loading");
   const [artIndex, setArtIndex] = useState(0);
-  const [overview, setOverview] = useState(false);
+  const [overview, setOverview] = useState(animateOpening && !reduced);
+  const [opening, setOpening] = useState(openingRef.current);
   const [paused, setPaused] = useState(false);
   const [hidden, setHidden] = useState(() => document.hidden);
   const [retry, setRetry] = useState(0);
+  const finishOpening = useCallback(() => {
+    openingRef.current = "complete";
+    setOpening("complete");
+  }, []);
+  const interact = useCallback(() => {
+    finishOpening();
+    setPaused(true);
+  }, [finishOpening]);
   const choose = useCallback((index, navigation) => {
     selected.current = index;
     instance.current?.select(index, navigation);
@@ -27,7 +37,14 @@ export default function CareScene({ reduced }) {
   useEffect(() => {
     reducedRef.current = reduced;
     instance.current?.setReduced(reduced);
-  }, [reduced]);
+    if (reduced && openingRef.current !== "complete") {
+      finishOpening();
+      mode.current = "detail";
+      setOverview(false);
+      instance.current?.setMode("detail");
+      instance.current?.finishDecryption();
+    }
+  }, [reduced, finishOpening]);
   useEffect(() => {
     const changed = () => setHidden(document.hidden);
     const keyboard = (event) => {
@@ -47,7 +64,22 @@ export default function CareScene({ reduced }) {
     };
   }, []);
   const playing =
-    status === "ready" && !paused && !reduced && !overview && !hidden;
+    status === "ready" && opening === "complete" && !paused && !reduced && !overview && !hidden;
+  useEffect(() => {
+    if (status !== "ready" || opening === "complete" || hidden || paused || reduced) return;
+    return artworkDwell(() => {
+      if (openingRef.current === "complete") return;
+      if (opening === "collection") {
+        mode.current = "detail";
+        instance.current?.setMode("detail");
+        // The care illustration is readable as it rises; no decoding interlude.
+        instance.current?.finishDecryption();
+        setOverview(false);
+        openingRef.current = "lifting";
+        setOpening("lifting");
+      } else finishOpening();
+    }, { delay: opening === "collection" ? 300 : 1800 });
+  }, [status, opening, hidden, paused, reduced, finishOpening]);
   useEffect(() => {
     if (!playing) return;
     return artworkDwell(() => {
@@ -76,7 +108,7 @@ export default function CareScene({ reduced }) {
       });
       scene.setArchiveCoverage(true);
       scene.onSelect = (index, cell, intent) => {
-        setPaused(true);
+        interact();
         choose(index, { cell });
         if (intent === "activate") {
           mode.current = "detail";
@@ -92,7 +124,7 @@ export default function CareScene({ reduced }) {
           [axis === "lane" ? "lane" : "row"]:
             location[axis === "lane" ? "lane" : "row"] + direction,
         };
-        setPaused(true);
+        interact();
         choose(fileAtCell(next), { cell: next });
       };
       scene
@@ -102,16 +134,20 @@ export default function CareScene({ reduced }) {
           scene.select(selected.current);
           scene.setMode(mode.current);
           scene.revealImmediately();
-          // Settle the default pop-up before the first visible frame.
+          // First render the settled collection. The short reveal starts only
+          // after that frame is drawn; reduced motion and return visits open raised.
           scene.setReduced(true);
           const now = performance.now() / 1000;
           for (let i = 0; i < 90; i++)
             scene.update(now - 1.5 + i / 60, undefined, false);
           scene.setReduced(reducedRef.current);
-          setStatus("ready");
+          let firstFrame = true;
           const tick = (ms) => {
             if (!alive) return;
-            if (!document.hidden) scene.update(ms / 1000);
+            if (!document.hidden) {
+              scene.update(ms / 1000);
+              if (firstFrame) { firstFrame = false; setStatus("ready"); }
+            }
             frame = requestAnimationFrame(tick);
           };
           frame = requestAnimationFrame(tick);
@@ -131,9 +167,9 @@ export default function CareScene({ reduced }) {
       instance.current = null;
       scene?.dispose();
     };
-  }, [retry, choose]);
+  }, [retry, choose, interact]);
   const navigate = (step) => {
-    setPaused(true);
+    interact();
     direction.current = step;
     choose((selected.current + step * 8 + records.length) % records.length, {
       axis: "lane",
@@ -148,11 +184,14 @@ export default function CareScene({ reduced }) {
       aria-roledescription="carousel"
       data-scene-status={status}
       data-scene-view={overview ? "collection" : "detail"}
+      data-opening={opening}
       data-artwork={artwork.id}
       data-autoplay={playing ? "playing" : "paused"}
       data-pause-reason={
         status !== "ready"
           ? "loading"
+          : opening !== "complete"
+            ? "opening"
           : reduced
             ? "reduced-motion"
             : overview
@@ -167,7 +206,7 @@ export default function CareScene({ reduced }) {
       <div
         ref={host}
         className="care-scene-canvas"
-        onPointerDown={() => setPaused(true)}
+        onPointerDown={interact}
       />
       <div className="care-scene-soften" aria-hidden="true" />
       {status !== "ready" && (
@@ -183,8 +222,9 @@ export default function CareScene({ reduced }) {
       )}
       <div
         className="care-scene-controls"
+        onPointerDownCapture={finishOpening}
         onFocusCapture={(event) => {
-          if (keyboardInteraction.current) setPaused(true);
+          if (keyboardInteraction.current) interact();
         }}
       >
         <div
@@ -206,6 +246,7 @@ export default function CareScene({ reduced }) {
           </button>
           <button
             onClick={() => {
+              finishOpening();
               mode.current = overview ? "detail" : "archive";
               instance.current?.setMode(mode.current);
               setOverview(!overview);
@@ -219,6 +260,7 @@ export default function CareScene({ reduced }) {
           </button>
           <button
             onClick={() => {
+              finishOpening();
               if (overview) {
                 mode.current = "detail";
                 instance.current?.setMode("detail");

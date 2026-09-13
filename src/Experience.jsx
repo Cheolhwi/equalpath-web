@@ -83,7 +83,7 @@ export default function Experience() {
         document
           .getElementById("pickup-search")
           ?.focus({ preventScroll: true });
-      else if (phase === "welcome")
+      else if (phase === "welcome" && hasEntered.current)
         enterButton.current?.focus({ preventScroll: true });
     });
     return () => cancelAnimationFrame(id);
@@ -131,7 +131,7 @@ export default function Experience() {
                     </div>
                   }
                 >
-                  <CareScene reduced={reduced} />
+                  <CareScene reduced={reduced} animateOpening={!hasEntered.current} />
                 </Suspense>
               </SceneBoundary>
             </div>

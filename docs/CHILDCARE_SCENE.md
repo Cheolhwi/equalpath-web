@@ -2,6 +2,8 @@
 
 Five user-supplied Robin childcare images now replace the four anime-v2 covers. The ivory / sage / warm-grey derivatives and unchanged originals are retained in `design-assets/childcare-gallery/robin-v3/`. Active runtime textures: `images/care-gallery/robin-v3/`. Sequence: READ → PLAY → CREATE → GROW → BUILD → GROW → CREATE → PLAY → READ. The displayed counter uses the actual artwork count. Earlier verification below remains historical.
 
+The latest opening starts with the settled collection. After the first rendered frame and a 300 ms pause, the READ case rises automatically with its illustration already clear. The existing extraction/camera motion runs for a short opening, then the normal 6.5-second slideshow dwell begins. There is no decoding interlude. Pointer/keyboard interaction takes control, hidden tabs pause the opening, and unmount cancels it. Reduced motion and returning home in the same session show the raised card directly. The Find Childcare button is no longer automatically focused on a fresh landing entry; keyboard focus outlines remain available. Desktop and mobile coverage lives in `tests/browser/landing.spec.mjs`.
+
 # Childcare landing scene
 
 The 2026-09-13 revision follows the user's explicit request to use the original RhineLabUI 3D scene with childcare elements. The earlier map backdrop, right-hand marketing copy, and picture-book/letter-block arrangement are superseded by a minimal full-screen art collection.
