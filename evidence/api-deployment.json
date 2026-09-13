@@ -1,8 +1,9 @@
 {
-  "created_at": "2026-09-13T07:36:47.149Z",
+  "created_at": "2026-09-13T10:19:48.473Z",
   "function": "web-provider-query",
-  "deployment": "6aa6528e9370aefa0f8a",
-  "status": "waiting",
+  "deployment": "6aa678c4200084e95495",
+  "status": "ready",
+  "verified_at": "2026-09-13T10:20:30Z",
   "execute": [
     "any"
   ],

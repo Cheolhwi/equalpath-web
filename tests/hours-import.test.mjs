@@ -30,9 +30,18 @@ test('schema midnight/overnight and contradictory day statements never become gu
 test('evidence fills gaps but cannot override known hours or admit mismatched, duplicate or tampered facts',()=>{
  assert.equal(applyHoursEvidence([raw],[record],'test-release',hash([record]))[0].operating_hours.weekly_windows[0].end_minute,1110);
  const known={...raw,operating_hours:{weekly_windows:[{weekday:'MON',start_minute:480,end_minute:1020}]}};
- assert.equal(applyHoursEvidence([known],[record],'test-release',hash([record]))[0],known);
+ const updated=applyHoursEvidence([known],[record],'test-release',hash([record]))[0];
+ assert.equal(updated.operating_hours,known.operating_hours);
+ assert.equal(updated.additional_operating_hours.weekly_windows[0].end_minute,1110);
  for(const rows of [[{...record,match:{status:'needs_branch_review'}}],[record,record],[{...record,base_release:'other'}],[{...record,weekly_windows:[{weekday:'MON',start_minute:1000,end_minute:900}]}]])assert.throws(()=>applyHoursEvidence([raw],rows,'test-release',hash(rows)));
  assert.throws(()=>applyHoursEvidence([raw],[record],'test-release','bad'));
+});
+test('official clock ranges without weekdays remain visible evidence without passing a dated check',()=>{
+ const fact={...record,source_kind:'official_operator_schedule',weekly_windows:[],closed_weekdays:[],unscoped_windows:[{start_minute:450,end_minute:750}],notes:'Preschool hours 07:30–12:30; weekdays not specified.'};
+ const value=applyHoursEvidence([raw],[fact],'test-release',hash([fact]))[0];
+ assert.equal(value.published_hours_schedule.windows[0].end_minute,750);
+ assert.equal(value.operating_hours?.weekly_windows?.length??0,0);
+ assert.throws(()=>applyHoursEvidence([raw],[{...fact,unscoped_windows:[{start_minute:800,end_minute:700}]}],'test-release',hash([{...fact,unscoped_windows:[{start_minute:800,end_minute:700}]}])));
 });
 test('Appwrite hours are hash-checked and contribute to the served version and care check',async()=>{
  const s=createStore({fetcher:async url=>response(url.includes('/current')?manifest:url.includes('web_provider_evidence')?{rows:[evidence]}:{rows:[envelope]})});

@@ -1,0 +1,76 @@
+[
+  {
+    "source_url":"https://www.lukidz.com/","text_file":"c91921cf34b895ce09d1.txt",
+    "provider_ids":["provider_cc0c934d389119b358d83d835ea"],"scope":"operator_starting_rates",
+    "match_note":"Imported LU Kidz Seri Kembangan website; official branch list includes Seri Kembangan. Prices explicitly start at these amounts and vary by branch.",
+    "required_text":["Full Day RM 700 /mo","Full Day RM 650 /mo","Full Day RM 600 /mo"],
+    "fees":[
+      {"min":700,"basis":"month","programme":"Infant full day","conditions":"LU Kidz starting rate for infants 3–12 months, 07:00–18:30. Rates vary by branch."},
+      {"min":650,"basis":"month","programme":"Pre-toddler full day","conditions":"LU Kidz starting rate for ages 1–2, 07:00–18:30. Rates vary by branch."},
+      {"min":600,"basis":"month","programme":"Toddler full day","conditions":"LU Kidz starting rate for ages 2–3, 07:00–18:30. Rates vary by branch."}
+    ]
+  },
+  {
+    "source_url":"https://www.alfatihpreschool.com/","text_file":"8636c03ad5436c4bd3c4.txt",
+    "provider_ids":["provider_a375c9e88a4f8f8c08a918f1618"],"scope":"operator_starting_rate",
+    "match_note":"Taska Tunas Al Fatih Zainab Centre links this operator; only the Taska programme is applied.",
+    "required_text":["Taska","RM400","3 Bulan - 4 tahun"],
+    "fees":[{"min":400,"basis":"month","programme":"Taska Tunas Al Fatih","conditions":"Operator's starting monthly fee for Taska, ages 3 months–4 years. Published programme time 07:00–18:00; branch package may vary."}]
+  },
+  {
+    "source_url":"https://www.alfatihpreschool.com/","text_file":"fa2f18fd3d7c650d46ca.txt",
+    "provider_ids":["provider_kpm_b3c1a1004efff0c61c2e55cc"],"scope":"operator_starting_rate",
+    "match_note":"Al Fatih preschool, Jalan Puteri 3A/6; imported official website. Preschool tariff kept separate from Taska.",
+    "required_text":["RM300","4 - 6 tahun"],
+    "fees":[{"min":300,"basis":"month","programme":"Al Fatih Preschool","conditions":"Operator's starting monthly preschool fee for ages 4–6. Published programme time 07:00–18:00; branch package may vary."}]
+  },
+  {
+    "source_url":"https://pinktowerchildcarecentre.com/contact/","text_file":"5039ac9afe175dd7df20.txt",
+    "provider_ids":["provider_679d0fbde4f5a82c05e26d7bde0","provider_fe336ad13f7710141bc218df1a5"],"scope":"operator_fee_guide",
+    "match_note":"Both imported Pink Tower branch records link to this official operator website. This is its operator guide, not a branch-specific quote.",
+    "required_text":["Typically RM 1,300","RM 2,000 per month"],
+    "fees":[{"min":1300,"max":2000,"basis":"month","programme":"Infant care / daycare","conditions":"Pink Tower's published fee guide. Amount varies by branch, age and half-day/full-day schedule. Registration and deposit are separate."}]
+  },
+  {
+    "source_url":"https://www.geniussolihin.com/tadika/","text_file":"f381bed3382362654a3c.txt",
+    "provider_ids":["provider_kpm_7d68d4dc3a5100b5082713a0"],"scope":"operator_programme_prices",
+    "match_note":"Genius Solihin Selayang links this official Tadika page. Source specifies different Maxim/Kepong prices, which are not applied here.",
+    "required_text":["RM 530 / bulan","RM 440 / bulan","RM 320 / bulan"],
+    "fees":[
+      {"amount":530,"basis":"month","programme":"Gold","conditions":"Published Gold programme rate, 07:00–18:00, three meals. Promotional price as displayed; separate Maxim/Kepong tariffs are excluded."},
+      {"amount":440,"basis":"month","programme":"Silver","conditions":"Published Silver programme rate, 07:00–15:00, two meals. Promotional price as displayed; separate Maxim/Kepong tariffs are excluded."},
+      {"amount":320,"basis":"month","programme":"Basic","conditions":"Published Basic programme rate, 07:00–12:00, one meal. Promotional price as displayed."}
+    ]
+  },
+  {
+    "source_url":"https://www.sbckindergarten.com/plans-pricing","text_file":"a7037d32d2afc2300a51.txt",
+    "provider_ids":["provider_kpm_65200b1976b5800523b1d4c3"],"scope":"branch_programmes",
+    "match_note":"SBC Kindergarten / Tadika Sinar Bintang Ceria, Danau Kota; imported website and official site branch identity agree.",
+    "required_text":["KINDERGARTEN","AFTER SCHOOL CARE","RM 350","Every month"],
+    "fees":[
+      {"amount":350,"basis":"month","programme":"Kindergarten","conditions":"Kindergarten, ages 3–6, 08:15–12:15. The published plan is valid for 12 months."},
+      {"amount":350,"basis":"month","programme":"After-school care","conditions":"After-school care, ages 3–6, 12:15–18:30. Separate from kindergarten fees; the published plan is valid for 12 months."}
+    ]
+  },
+  {
+    "source_url":"https://www.tadikabijaksinar.com/yuran","text_file":"e8dc75eefd98b97bc43c.txt",
+    "provider_ids":["provider_kpm_314b4913d35a533df90d3878"],"scope":"preschool_starting_rate",
+    "match_note":"Tadika Bijak Sinar, Cyberjaya, links official TBS website. Only preschool ages 4–6; playschool/transit prices not substituted.",
+    "required_text":["TBS Preschool","Yuran Bulanan bermula RM 550"],
+    "fees":[{"min":550,"basis":"month","programme":"TBS Preschool","conditions":"Starting monthly preschool fee for ages 4–6. Playschool and transit programmes have separate tariffs."}]
+  },
+  {
+    "source_url":"https://klik.vip/TIA","text_file":"44e3196e114faaf676c5.txt",
+    "provider_ids":["provider_kpm_4da00156d4514622e60eac05"],"scope":"branch_starting_rate",
+    "match_note":"Page explicitly identifies Tadika Ilman Al-Amin, Puncak Bestari Meranti, matching the imported branch and website.",
+    "required_text":["Bulanan serendah RM280","Tadika Ilman Al-Amin","Puncak Bestari"],
+    "fees":[{"min":280,"basis":"month","programme":"Tadika Ilman Al-Amin","conditions":"Starting monthly fee at the Puncak Bestari branch. Registration is additional and can be paid in instalments."}]
+  },
+  {
+    "source_url":"https://www.hankidzpreschool.com.my/contact-us","text_file":"bdc5c3257e92077f84aa.txt",
+    "provider_ids":["provider_kpm_343ba9b4689dafd2324f06a7"],"scope":"operator_fee_guide",
+    "match_note":"HANKidz / Tadika Wawasan Melodi Puchong links the official operator website; the FAQ explicitly says fees vary by branch/programme.",
+    "required_text":["RM 780 - RM 1600"],
+    "fees":[{"min":780,"max":1600,"basis":"unspecified","programme":"HANKidz programmes","conditions":"Operator's published range, varying by branch and programme. Billing period is not stated in the FAQ."}]
+  }
+]

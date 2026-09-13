@@ -17,7 +17,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { requestCaption, todayKL } from "../shared/request.mjs";
-import { drivingLabel, feeSummary } from "../shared/result-summary.mjs";
+import { drivingLabel, feeSummary, formatFee } from "../shared/result-summary.mjs";
 import { bestForPriority } from "../shared/conditions.mjs";
 export function SourceLink({ source, children }) {
   if (!source)
@@ -204,6 +204,8 @@ export function Registration({ p }) {
             ? "Branch registration needs checking"
             : r.official
               ? "Listed in the JKM register"
+              : r.authority === "KPM" && r.number
+                ? "KPM code listed"
               : "Registration not yet verified";
   return (
     <section className="detail-section">
@@ -242,7 +244,7 @@ export function Registration({ p }) {
           Contact and address shown here have separate sources.
         </p>
       )}
-      {!r.official && p.mode !== "demo" && (
+      {!r.official && !r.number && p.mode !== "demo" && (
         <p>
           We haven’t verified the official registration. This doesn’t mean
           the centre is unregistered.
@@ -252,8 +254,7 @@ export function Registration({ p }) {
     </section>
   );
 }
-export const feeLabel = (f) =>
-  `${f.currency ?? "MYR"} ${f.amount != null ? f.amount : f.min != null ? `${f.min}${f.max != null && f.max !== f.min ? "–" + f.max : ""}` : "amount unavailable"} / ${f.basis ?? "basis unspecified"}`;
+export const feeLabel = formatFee;
 export function Costs({ p }) {
   const [show, setShow] = useState(false),
     c = p.cost;
@@ -263,6 +264,8 @@ export function Costs({ p }) {
       <h3>
         {c.available
           ? "Estimate your cost"
+          : p.fees.length
+            ? p.fees.every(f=>f.verification==='area_estimate') ? "Estimated budget" : "Published fees"
           : "Ask about the cost for your date"}
       </h3>
       {p.fees.length ? (
@@ -271,6 +274,8 @@ export function Costs({ p }) {
             <strong>{feeLabel(f)}</strong>
             <p>{f.conditions}</p>
             <SourceLink source={f.source} />
+            {f.originalSource && f.originalSource !== f.source?.url && <a className="source-link" href={f.originalSource} target="_blank" rel="noreferrer">Original fee source <ArrowUpRight size={12} /></a>}
+            {f.documentURL && <a className="source-link" href={f.documentURL} target="_blank" rel="noreferrer">Fee document <ArrowUpRight size={12} /></a>}
           </div>
         ))
       ) : (
@@ -397,6 +402,12 @@ export function Details({
           <SourceLink source={p.careEndTimeSource ?? p.businessHours.source}>
             Care schedule source
           </SourceLink>
+          {p.businessHours.publishedSchedule && (
+            <div className="published-schedule">
+              <p>{p.businessHours.publishedSchedule.notes}</p>
+              <SourceLink source={p.businessHours.publishedSchedule.source} />
+            </div>
+          )}
           {p.businessHours.alternative && (
             <div className="notice">
               <p>
@@ -626,6 +637,8 @@ export function Comparison({
                         ? "Demo centre"
                         : p.registration.official
                           ? "Registration record matched"
+                          : p.registration.authority === "KPM" && p.registration.number
+                            ? "KPM code listed by CariSchool"
                           : "Registration not yet verified"}
                   </p>
                   <SourceLink source={p.registration.source} />

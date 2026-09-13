@@ -1,6 +1,7 @@
 import { buildCatalog } from "./providers.mjs";
 import { applyHoursEvidence } from "./hours-overlay.mjs";
 import { applyServicesEvidence } from "./services-overlay.mjs";
+import { applyFeesEvidence } from "./fees-overlay.mjs";
 const endpoint = "https://sgp.cloud.appwrite.io/v1",
   project = "6a916a6c0030a70a9d75";
 export class ServiceError extends Error {
@@ -34,7 +35,8 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
     const summary = JSON.parse(manifest.payload);
     const hoursKey = [summary.hours_release, summary.hours_hash, summary.hours_count].join(":");
     const servicesKey = [summary.services_release, summary.services_hash, summary.services_count].join(":");
-    if (cache?.release === manifest.release_id && cache.hoursKey === hoursKey && cache.servicesKey === servicesKey) {
+    const feesKey = [summary.fees_release, summary.fees_hash, summary.fees_count].join(":");
+    if (cache?.release === manifest.release_id && cache.hoursKey === hoursKey && cache.servicesKey === servicesKey && cache.feesKey === feesKey) {
       checked = now();
       return cache;
     }
@@ -110,6 +112,22 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
       if(evidenceRows.length!==summary.services_count||evidenceRows.some(r=>r.release_id!==summary.services_release))throw new ServiceError('SOURCE_INCOMPLETE');
       try{raw=applyServicesEvidence(raw,evidenceRows.map(r=>{const value=JSON.parse(r.payload);if(value.provider_id!==r.provider_id)throw Error('Identity differs');return value;}),manifest.release_id,summary.services_hash);}catch{throw new ServiceError('SOURCE_INVALID');}
     }
+    if (summary.fees_release) {
+      if (!/^fees_[a-f0-9]{24}$/.test(summary.fees_release) || !/^[a-f0-9]{64}$/.test(summary.fees_hash ?? '') || !Number.isInteger(summary.fees_count) || summary.fees_count < 1 || summary.fees_count > summary.provider_count) throw new ServiceError('SOURCE_INVALID');
+      const evidenceRows=[];
+      for(let first=0;first<summary.fees_count;first+=600){
+        const offsets=Array.from({length:Math.min(6,Math.ceil((summary.fees_count-first)/100))},(_,i)=>first+i*100);
+        const pages=await Promise.all(offsets.map(async offset=>{
+          const params=new URLSearchParams();
+          for(const q of [query('equal','release_id',[summary.fees_release]),query('orderAsc','$id',[]),query('limit',null,[100]),query('offset',null,[offset])])params.append('queries[]',q);
+          params.set('total','false');
+          return get('/tablesdb/equalpath/tables/web_provider_evidence/rows?'+params);
+        }));
+        for(const page of pages)evidenceRows.push(...page.rows);
+      }
+      if(evidenceRows.length!==summary.fees_count||evidenceRows.some(r=>r.release_id!==summary.fees_release))throw new ServiceError('SOURCE_INCOMPLETE');
+      try{raw=applyFeesEvidence(raw,evidenceRows.map(r=>{const value=JSON.parse(r.payload);if(value.provider_id!==r.provider_id)throw Error('Identity differs');return value;}),manifest.release_id,summary.fees_hash);}catch{throw new ServiceError('SOURCE_INVALID');}
+    }
     const after = await get(
       "/tablesdb/equalpath/tables/web_data_releases/rows/current",
     );
@@ -121,12 +139,17 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
     );
     candidate.hoursKey = hoursKey;
     candidate.servicesKey = servicesKey;
+    candidate.feesKey = feesKey;
     if (summary.hours_release) {
       candidate.version += ":" + summary.hours_release;
       for (const p of candidate.items) p.version = candidate.version;
     }
     if (summary.services_release) {
       candidate.version += ':' + summary.services_release;
+      for (const p of candidate.items) p.version=candidate.version;
+    }
+    if (summary.fees_release) {
+      candidate.version += ':' + summary.fees_release;
       for (const p of candidate.items) p.version=candidate.version;
     }
     cache = candidate;

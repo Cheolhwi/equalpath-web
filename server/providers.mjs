@@ -61,7 +61,7 @@ export function normalizeProvider(raw, release) {
     regSource = source(
       r.authority === "JKM"
         ? "JKM imported register"
-        : "CariSchool directory claim",
+        : "KPM code listed by CariSchool",
       r.source_url,
       r.source_retrieved_at,
       r.source_date,
@@ -139,7 +139,7 @@ export function normalizeProvider(raw, release) {
         x?.google?.match_basis ??
         (r.authority === "JKM"
           ? "Stable imported branch record; separate directory facts retain their own sources."
-          : "School code is a directory claim; official KPM verification is outstanding."),
+          : "CariSchool lists this KPM code for the named branch. The current official registration status has not been independently checked."),
       warnings: r.warning_codes ?? [],
     },
     phone: phoneFact(raw.public_phone, contactSource),
@@ -193,6 +193,11 @@ export function normalizeProvider(raw, release) {
     careWindows: [],
     lateRule: null,
     businessHours: {
+      publishedSchedule: raw.published_hours_schedule ? {
+        windows: raw.published_hours_schedule.windows,
+        notes: raw.published_hours_schedule.notes,
+        source: source('Published programme hours',raw.published_hours_schedule.source_url,raw.published_hours_schedule.retrieved_at),
+      } : null,
       windows: (h.weekly_windows ?? [])
         .filter(
           (w) => !(h.excluded_estimated_weekdays ?? []).includes(w.weekday),
@@ -219,12 +224,17 @@ export function normalizeProvider(raw, release) {
       currency: f.currency ?? "MYR",
       basis: f.basis ?? "unspecified",
       kind: f.kind,
+      programme: f.programme ?? null,
+      verification: f.verification ?? null,
+      estimate: f.estimate ?? null,
+      originalSource: safeURL(f.original_fee_source_url),
+      documentURL: safeURL(f.fee_document_url),
       conditions: f.conditions ?? "Published basis only; one-off applicability and extra charges need confirmation.",
       source: source(
-        "Published fees",
+        f.verification === 'area_estimate' ? "Budget reference source" : f.verification === 'school_reported_via_directory' ? "School-reported fees on CariSchool" : f.verification === 'directory_estimate' ? "CariSchool fee estimate" : f.source_kind === 'provider_website' ? "Provider fee schedule" : "Published fees",
         f.source_url,
-        f.source_updated_at,
-        null,
+        f.source_retrieved_at ?? f.source_updated_at,
+        f.source_updated_at ?? null,
         f.source_kind,
       ),
     })),
@@ -315,7 +325,7 @@ export function normalizeProvider(raw, release) {
   p.sources = [...new Map(p.sources.map((s) => [s.url, s])).values()];
   const reviewed = reviewedFees.records.find(row => row.id === p.id);
   if (reviewed) {
-    p.fees.push(...reviewed.fees);
+    p.fees.push(...reviewed.fees.filter(f => !p.fees.some(x => x.source?.url === f.source?.url && x.amount === f.amount && (x.min ?? null) === (f.min ?? null) && (x.max ?? null) === (f.max ?? null) && x.basis === f.basis && x.conditions === f.conditions)));
     if (reviewed.phone) p.phone = phoneFact(reviewed.phone.display, reviewed.phone.source);
     p.sources.push(reviewed.matchSource, ...new Map(reviewed.fees.map(f => [f.source.url,f.source])).values());
   }

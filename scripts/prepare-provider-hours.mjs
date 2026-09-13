@@ -10,14 +10,19 @@ const rows=read(resolve(base,'prepared/catalog.json')).map(r=>JSON.parse(r.paylo
 const raw=new Map(rows.map(r=>[r.id,r])),baseRelease=read(resolve(base,'prepared/summary.json')).release_id;
 const before=buildCatalog(rows,baseRelease),missing=before.items.filter(p=>!p.businessHours.windows.length);
 const search=new Map(read(resolve(base,'source/google-full-search.json')).rows.map(r=>[r.provider_id,r]));
+const priorFile=resolve(out,'before-named-expansion.json');
+const prior=existsSync(priorFile)?new Map(read(priorFile).records.map(r=>[r.provider_id,r])):new Map();
 const waze=new Map();for(const file of readdirSync(resolve(out,'waze'))){const x=read(resolve(out,'waze',file));for(const id of x.providerIds)waze.set(id,x);}
 const records=[],held=[];
 for(const p of missing){
  const r=raw.get(p.id),g=search.get(p.id),file=resolve(base,'crawl/google/search',p.id+'.json');
- const saved=existsSync(file)?read(file):null,observations=[];
- if(g?.status==='matched'&&g.selected?.google_fid===saved?.selected?.google_fid){
+ // Existing reviewed Google observations are immutable; avoid reopening thousands of old cache files.
+ // --refresh-google explicitly rechecks those snapshots when a new Google crawl is available.
+ const saved=(!prior.size||process.argv.includes('--refresh-google'))&&existsSync(file)?read(file):null;
+ const observations=(prior.get(p.id)?.evidence??[]).filter(o=>o.source_kind==='google_maps_public_search');
+ if(saved&&g?.status==='matched'&&g.selected?.google_fid===saved?.selected?.google_fid){
   const parsed=parseGoogleHours(saved.selected.published_hours_snapshot);
-  if(parsed.weekly_windows.length)observations.push({...parsed,source_url:saved.selected.source_url,source_kind:'google_maps_public_search',observed_on:saved.queried_at,match:g.selected.match,raw_hours:saved.selected.published_hours_snapshot});
+  if(parsed.weekly_windows.length){observations.length=0;observations.push({...parsed,source_url:saved.selected.source_url,source_kind:'google_maps_public_search',observed_on:saved.queried_at,match:g.selected.match,raw_hours:saved.selected.published_hours_snapshot});}
  }
  const w=waze.get(p.id);
  if(w?.status==='observed'&&w.place){

@@ -8,6 +8,8 @@ export function translateMalayHours(raw) {
   const abbreviated={Mon:'Monday',Tue:'Tuesday',Tues:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Thur:'Thursday',Thurs:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
   for(const [short,full] of Object.entries(abbreviated))text=text.replace(new RegExp('\\b'+short+'\\b\\.?','gi'),full);
   text=text.replace(/\bClose\b/gi,'Closed').replace(/\ba\.m\./gi,'AM').replace(/\bp\.m\./gi,'PM');
+  text=text.replace(/(\d)\s*PG\b/gi,'$1 AM').replace(/(\d)\s*PTG\b/gi,'$1 PM').replace(/\btengahari\b/gi,'PM');
+  text=text.replace(/\bthrough\b/gi,'to');
   return text;
 }
 export function parsePublishedHours(raw) {

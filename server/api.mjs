@@ -43,7 +43,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       return {contract:CONTRACT,mode,regions,...(mode === "demo" ? {pickup:null} : await reverseGeocode(body.point))};
     }
     const catalog = mode === "demo" ? fixtureCatalog : await store.catalog(),
-      items = catalog.items;
+      items = body.features?.includes?.('area-fees-v1') === true ? catalog.items : catalog.items.map(p=>p.fees?.some(f=>f.verification==='area_estimate') ? {...p,fees:p.fees.filter(f=>f.verification!=='area_estimate')} : p);
     const meta = {
       contract: CONTRACT,
       mode,

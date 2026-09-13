@@ -42,6 +42,10 @@ test('no day or ambiguous overnight range is not converted into invented service
  assert.equal(parsePublishedHours('Isnin: 7 pagi - 6').windows.length,0);
  assert.equal(parsePublishedHours('Isnin: 8 malam - 6 pagi').windows.length,0);
 });
+test('Malay PG/PTG abbreviations and through-week ranges are understood',()=>{
+ assert.deepEqual(parsePublishedHours('Isnin - Jumaat 7:00 PG - 5:00 PTG').windows,[{days:['MON','TUE','WED','THU','FRI'],start:420,end:1020}]);
+ assert.deepEqual(parsePublishedHours('Monday through Friday 08:00–18:00').windows[0].days,['MON','TUE','WED','THU','FRI']);
+});
 test('closed-day notes do not close weekdays and conflicting claims remain unresolved',()=>{
  const h=parsePublishedHours('Monday-Friday 08:00-18:00 (Closed Saturday & Sunday)');
  assert.deepEqual(h.windows[0].days,['MON','TUE','WED','THU','FRI']);

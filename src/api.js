@@ -15,6 +15,7 @@ export async function requestAPI(body) {
   return job;
 }
 async function fetchAPI(body) {
+  body={...body,features:['area-fees-v1']};
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), 75000),
     execution = API_URL.endsWith("/executions");
