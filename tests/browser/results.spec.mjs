@@ -3,9 +3,10 @@ import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog } from "../../server/fixtures.mjs";
 import { mkdirSync } from "node:fs";
 const dir=process.env.QA_EVIDENCE_DIR || ".build/results-qa";mkdirSync(dir,{recursive:true});
-async function setup(page, calls, routing=true){
+async function setup(page, calls, routing=true, coLocated=false){
   await page.addInitScript(()=>localStorage.setItem("equalpath:tour:v1",'{"version":1,"status":"skipped"}'));
-  const api=createAPI({store:{catalog:async()=>fixtureCatalog},drivingRoutes:async(_,items)=>items.map(p=>({...p,driving:routing&&p.location?{state:"available",minutes:8,distanceKm:5.5,traffic:false}:{state:"unavailable"}}))});
+  const catalog=coLocated?{...fixtureCatalog,items:fixtureCatalog.items.map(p=>({...p,location:p.location?{lat:3.139,lng:101.6869}:null}))}:fixtureCatalog;
+  const api=createAPI({store:{catalog:async()=>catalog},drivingRoutes:async(_,items)=>items.map(p=>({...p,driving:routing&&p.location?{state:"available",minutes:8,distanceKm:5.5,traffic:false}:{state:"unavailable"}}))});
   await page.route("**/api",async route=>{const b=route.request().postDataJSON();calls.push(b);await route.fulfill({json:{ok:true,...await api(b)}});});
 }
 test("zooming far out and repeated dragging do not query the backend; zoom-in requires a deliberate refresh",async({page})=>{
@@ -61,4 +62,12 @@ test("route outage keeps results and published prices, without fake drive estima
   await expect(page.locator(".provider-row").first()).toContainText("Driving time unavailable");
   await expect(page.locator(".provider-row").first()).toContainText("Fees");
   await expect(page.locator(".provider-row").first()).not.toContainText("0 min");
+});
+test("co-located suggested centres stay distinct and individually selectable on the mobile map",async({page})=>{
+  await page.setViewportSize({width:390,height:844});await setup(page,[],true,true);await search(page);
+  await page.getByRole("button",{name:"Map",exact:true}).click();
+  const pins=page.locator(".provider-pin.suggested");await expect(pins).toHaveCount(3);
+  await expect.poll(async()=>pins.evaluateAll(xs=>xs.every((x,i)=>xs.slice(i+1).every(y=>{const a=x.getBoundingClientRect(),b=y.getBoundingClientRect();return a.right<b.left||b.right<a.left||a.bottom<b.top||b.bottom<a.top;})))).toBe(true);
+  for(let i=0;i<3;i++){await pins.nth(i).click();await expect(pins.nth(i)).toHaveAttribute("aria-pressed","true");}
+  await page.screenshot({path:dir+"/colocated-mobile.png"});
 });

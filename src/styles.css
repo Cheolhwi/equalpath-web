@@ -1964,3 +1964,6 @@ dialog::backdrop {
 @media (max-width: 760px) { .map-region:has(.map-suggestion-legend) .map-choose { top: 172px; } }
 /* Keep marker emphasis inside the map, below headings and detail controls. */
 .map-canvas { isolation: isolate; }
+.provider-pin.spread-pin::before { content: ''; position: absolute; left: 50%; top: 50%; width: var(--stem-length); height: 1px; background: var(--accent); transform: rotate(var(--stem-angle)); transform-origin: left center; z-index: -1; pointer-events: none; }
+.provider-pin.suggested:not(.selected) { color: #35412c; }
+.pickup-pin { pointer-events: none; }

@@ -34,4 +34,5 @@ The custom-domain TLS issue remains separate. Old Appwrite owner resources, DNS,
 - Function deployment `6aa63f4be6f680bb89d6` was read back as ready. A live KL Sentral request returned 20 road estimates, three conflict-free suggestions and two records with published fees on the first page. The first listed fee was MYR 500–780/month; a monthly tariff remains distinct from a one-off visit quote.
 - Evidence is under `evidence/results-discovery-2026-09-13/`.
 - Mobile map entry now refits the results after resizing. All eight affected result/tutorial browser journeys passed again, including a check that all three suggested pins fit within the mobile viewport. The original 21-test suite and 103 unit tests remain the verified baseline.
-- Frontend source digest: `ecb208c67bfe5a7f7eb814c4681d382301d24faddc918278b0638939f73ca263`.
+- Co-located suggestions now fan out with fine connector lines to their unchanged geographic point. The four result journeys passed, including individual clicks on three co-located mobile suggestions; the other ten map/tutorial journeys passed during the same correction. Pickup markers cannot intercept pointer events. Unit/build checks passed again.
+- Frontend source digest: `627d3cd28a7cd79081236749d51d6b23d953e43de808f48d0a4eb42358fe51a7`.

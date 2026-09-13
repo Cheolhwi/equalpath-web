@@ -36,6 +36,7 @@ export default function MapCanvas({
     lastView = useRef(viewTarget),
     selectionStart = useRef(null),
     markers = useRef([]),
+    suggestedMarkers = useRef([]),
     latest = useRef({
       items,
       pickup,
@@ -61,6 +62,26 @@ export default function MapCanvas({
     onViewChange,
     viewTarget,
     cameraReduced: reduced || introReduced,
+  };
+  const spreadSuggestions = (m) => {
+    const entries = suggestedMarkers.current.map(x => ({ ...x, point: m.project([x.location.lng, x.location.lat]) }));
+    const seen = new Set();
+    for (const first of entries) {
+      if (seen.has(first)) continue;
+      const group = [first]; seen.add(first);
+      for (let i = 0; i < group.length; i++) for (const other of entries) {
+        if (!seen.has(other) && Math.hypot(group[i].point.x-other.point.x, group[i].point.y-other.point.y) < 50) { seen.add(other); group.push(other); }
+      }
+      const center = { x: group.reduce((n,x)=>n+x.point.x,0)/group.length, y: group.reduce((n,x)=>n+x.point.y,0)/group.length };
+      group.forEach((x,i) => {
+        const angle = group.length === 2 ? i*Math.PI : -Math.PI/6+i*2*Math.PI/group.length;
+        const offset = group.length === 1 ? [0,0] : [center.x+Math.cos(angle)*45-x.point.x, center.y+Math.sin(angle)*45-x.point.y];
+        x.marker.setOffset(offset);
+        const el=x.marker.getElement(); el.classList.toggle("spread-pin",group.length>1);
+        el.style.setProperty("--stem-length",`${Math.hypot(...offset)}px`);
+        el.style.setProperty("--stem-angle",`${Math.atan2(-offset[1],-offset[0])}rad`);
+      });
+    }
   };
   const fit = ({ immediate = false } = {}) => {
     const m = map.current;
@@ -132,6 +153,7 @@ export default function MapCanvas({
       if (alive) setStatus((s) => (s === "ready" ? s : "error"));
     }, 22000);
     m.on("move", () => {
+      spreadSuggestions(m);
       if (alive)
         setCamera({
           pitch: m.getPitch(),
@@ -181,6 +203,7 @@ export default function MapCanvas({
       ro.disconnect();
       markers.current.forEach((x) => x.remove());
       markers.current = [];
+      suggestedMarkers.current = [];
       m.remove();
       map.current = null;
     };
@@ -196,6 +219,7 @@ export default function MapCanvas({
     if (!m) return;
     markers.current.forEach((x) => x.remove());
     markers.current = [];
+    suggestedMarkers.current = [];
     items
       .filter((p) => p.location)
       .forEach((p, i) => {
@@ -217,12 +241,13 @@ export default function MapCanvas({
           e.stopPropagation();
           latest.current.onSelect(p.id, true);
         };
-        markers.current.push(
-          new maplibregl.Marker({ element: el })
+        const marker = new maplibregl.Marker({ element: el })
             .setLngLat([p.location.lng, p.location.lat])
-            .addTo(m),
-        );
+            .addTo(m);
+        markers.current.push(marker);
+        if (p.suggested) suggestedMarkers.current.push({ marker, location: p.location });
       });
+    spreadSuggestions(m);
     if (pickup && !choosing) {
       const el = document.createElement("div");
       el.className = "pickup-pin";
