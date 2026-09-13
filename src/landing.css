@@ -33,6 +33,8 @@
   color: var(--landing-ink);
   font-family: MiSans, "DM Sans", sans-serif;
   clip-path: inset(0 0 0 100%);
+}
+.phase-entering .entrance-curtain {
   animation:
     curtain-cover var(--entrance-cover) cubic-bezier(0.22, 1, 0.36, 1) both,
     curtain-reveal var(--entrance-reveal) cubic-bezier(0.22, 1, 0.36, 1)

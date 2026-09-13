@@ -4,6 +4,9 @@ import {ENTRANCE_COVER_MS,ENTRANCE_DURATION_MS} from '../../src/entrance.js';
 const out=process.env.QA_EVIDENCE_DIR || '.build/landing-qa';mkdirSync(out,{recursive:true});
 
 async function captureEntry(page, artwork = 'play', suffix = '') {
+  const print = page.locator('.entrance-art:not([hidden])');
+  await expect(print).toHaveAttribute('data-ready','true');
+  const originalImage = await print.locator('img').elementHandle();
   // Pause JS completion while sampling the actual CSS animations at their key stages.
   await page.clock.install();
   await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
@@ -11,7 +14,7 @@ async function captureEntry(page, artwork = 'play', suffix = '') {
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','entering');
   await expect(page.locator('.equalpath')).toHaveAttribute('inert','');
   await expect(page.locator('.entrance-curtain')).toHaveAttribute('data-artwork',artwork);
-  await expect.poll(()=>page.locator('.entrance-art img').evaluate(el=>el.complete && el.naturalWidth>0)).toBe(true);
+  expect(await originalImage.evaluate(el=>el===document.querySelector('.entrance-art:not([hidden]) img') && el.complete && el.naturalWidth>0)).toBe(true);
   const sample=async(time)=>page.evaluate(time=>{
     for(const animation of document.getAnimations()){
       if(['curtain-cover','curtain-reveal','landing-exit','app-entry'].includes(animation.animationName)){
@@ -29,7 +32,7 @@ async function captureEntry(page, artwork = 'play', suffix = '') {
   expect(cover.landingOpacity).toBe(1);expect(cover.overflow).toBe(false);
   await page.screenshot({path:out+`/entry-cover${suffix}.png`});
   await sample(ENTRANCE_COVER_MS);
-  const composition=await page.locator('.entrance-art').boundingBox();
+  const composition=await print.boundingBox();
   expect(composition.x).toBeGreaterThanOrEqual(0);expect(composition.x+composition.width).toBeLessThanOrEqual(page.viewportSize().width);
   expect(composition.y).toBeGreaterThanOrEqual(0);expect(composition.y+composition.height).toBeLessThanOrEqual(page.viewportSize().height);
   await page.screenshot({path:out+`/entry-composition${suffix}.png`});
@@ -115,6 +118,7 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   // Entry must remain usable even while the optional 3D scene has not loaded.
   await page.route('**/CareScene.jsx',route=>route.abort());
   await page.goto('/');
+  await expect(page.locator('.entrance-art:not([hidden])')).toHaveAttribute('data-ready','true');
   await page.clock.install();await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
   await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','entering');
@@ -131,4 +135,52 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   await expect(page.locator('#pickup-search')).toBeFocused();
   await expect(page.locator('.entrance-curtain')).toHaveCount(0);
   await page.screenshot({path:out+'/entry-mobile-ready.png'});
+});
+
+
+test('a cold landing prepares artwork before entry and needs no image request during the real transition',async({page})=>{
+  test.setTimeout(90000);
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  let entering=false,lateRequests=0;
+  // Routing disables the browser HTTP cache: every new image request needs the network.
+  await page.route('**/images/care-gallery/robin-v3/*.webp',async route=>{
+    if(entering){lateRequests++;await route.abort();return;}
+    await new Promise(resolve=>setTimeout(resolve,350));
+    await route.continue();
+  });
+  await page.goto('/');
+  await expect(page.locator('.care-scene')).toHaveAttribute('data-scene-status','ready',{timeout:60000});
+  await page.getByRole('button',{name:'Pause artwork slideshow'}).click();
+  await page.evaluate(()=>{
+    window.entryImageFrames=[];
+    let started=false;
+    const sample=()=>{
+      const phase=document.querySelector('.experience')?.dataset.introPhase;
+      if(phase==='entering'){
+        started=true;
+        const image=document.querySelector('.entrance-art:not([hidden]) img');
+        window.entryImageFrames.push({complete:image?.complete,width:image?.naturalWidth,visibility:image&&getComputedStyle(image).visibility});
+      }
+      if(!(started&&phase==='ready'))requestAnimationFrame(sample);
+    };
+    requestAnimationFrame(sample);
+  });
+  entering=true;
+  await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
+  await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
+  const frames=await page.evaluate(()=>window.entryImageFrames);
+  expect(frames.length).toBeGreaterThan(2);
+  expect(frames.every(frame=>frame.complete&&frame.width>0&&frame.visibility==='visible')).toBe(true);
+  expect(lateRequests).toBe(0);
+  await expect(page.locator('#pickup-search')).toBeFocused();
+});
+
+test('unavailable artwork never shows an empty frame or blocks entry',async({page})=>{
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.route('**/images/care-gallery/robin-v3/*.webp',route=>route.abort());
+  await page.goto('/');
+  await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
+  await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
+  await expect(page.locator('.entrance-curtain')).toHaveCount(0);
+  await expect(page.locator('#pickup-search')).toBeFocused();
 });

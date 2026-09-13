@@ -44,10 +44,12 @@ export default function Experience() {
   const cancelEntrance = useRef(() => {});
   const [activeArtwork, setActiveArtwork] = useState(0);
   const [entryArtwork, setEntryArtwork] = useState(0);
-  const artwork = careArtworks[entryArtwork];
+  const [readyArtworks, setReadyArtworks] = useState(() => new Set());
   const enterButton = useRef(null);
   const hasEntered = useRef(phase === "ready");
   const moving = phase !== "welcome" && phase !== "ready";
+  const displayedArtwork = moving ? entryArtwork : activeArtwork;
+  const artwork = careArtworks[displayedArtwork];
   const finish = useCallback(() => {
     cancelEntrance.current();
     setPhase("ready");
@@ -62,14 +64,21 @@ export default function Experience() {
     if (phase !== "welcome") return;
     setEntryArtwork(activeArtwork);
     cancelEntrance.current();
+    // The optional decoration must never show an empty frame or hold up entry.
+    if (!readyArtworks.has(activeArtwork)) {
+      finish();
+      return;
+    }
     cancelEntrance.current = startEntrance(
       (next) => (next === "ready" ? finish() : setPhase(next)),
       { reduced },
     );
-  }, [phase, reduced, finish, activeArtwork]);
+  }, [phase, reduced, finish, activeArtwork, readyArtworks]);
   const home = useCallback(() => {
     cancelEntrance.current();
     history.replaceState(null, "", `${location.pathname}${location.search}`);
+    setActiveArtwork(0);
+    setReadyArtworks(new Set());
     setPhase("welcome");
   }, []);
 
@@ -188,7 +197,7 @@ export default function Experience() {
           </div>
         </section>
       )}
-      {moving && (
+      {phase !== "ready" && (
         <div className="entrance-curtain" aria-hidden="true" data-artwork={artwork.id}>
           <div className="entrance-composition">
             <div className="entrance-brand">
@@ -196,14 +205,24 @@ export default function Experience() {
               <div className="entrance-brand-rule" />
               <p>FIND CHILDCARE</p>
             </div>
-            <figure className="entrance-art">
-              <img src={`${import.meta.env.BASE_URL}${artwork.image}`} alt=""
-                onError={event => { event.currentTarget.style.visibility = "hidden"; }} />
-              <figcaption>
-                <span>{String(entryArtwork + 1).padStart(2, "0")} / {String(careArtworks.length).padStart(2, "0")}</span>
-                <span>{artwork.title}</span>
-              </figcaption>
-            </figure>
+            {careArtworks.map((cover, index) => (
+              <figure key={cover.id} className="entrance-art" hidden={index !== displayedArtwork}
+                data-artwork={cover.id} data-ready={readyArtworks.has(index)}>
+                <img src={`${import.meta.env.BASE_URL}${cover.image}`} alt=""
+                  crossOrigin="anonymous" loading="eager" decoding="async"
+                  onLoad={async event => {
+                    const image = event.currentTarget;
+                    try {
+                      await image.decode();
+                      if (image.isConnected) setReadyArtworks(ready => new Set(ready).add(index));
+                    } catch { /* Entry remains available if the optional artwork cannot decode. */ }
+                  }} />
+                <figcaption>
+                  <span>{String(index + 1).padStart(2, "0")} / {String(careArtworks.length).padStart(2, "0")}</span>
+                  <span>{cover.title}</span>
+                </figcaption>
+              </figure>
+            ))}
           </div>
         </div>
       )}

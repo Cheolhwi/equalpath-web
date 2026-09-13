@@ -15,6 +15,15 @@ Result cards now reveal in 480 ms, with a stagger capped at 210 ms; dialogs use 
 - The same App element survives entry. It remains inert until entry completes, then the curtain and scene are removed and pickup-input focus is restored. Escape also completes entry while the optional 3D scene is unavailable. Returning home retains the current request.
 - 130 unit checks and the production build/asset validation pass. Browser checks use Chrome viewport emulation and controlled/empty API responses; they do not establish live catalogue accuracy or physical-device performance. Live deployment is verified separately against the release digest.
 
+### Empty-frame correction (2026-09-14)
+
+The user observed a blank art frame on the live transition. The old implementation only mounted the HTML image after entry started; the live image responses require cache revalidation, so a slow request could outlast the 900 ms transition. Earlier screenshots paused the completion timer and waited for the image, which did not cover this failure.
+
+- All five transition images now mount/decode on the landing and use the same anonymous request mode as the 3D textures. Entry keeps the selected image element instead of creating another request. The curtain stays clipped and inactive until entry starts.
+- No decoded cover means immediate entry, with no empty frame or network wait. Returning home prepares fresh elements and readiness state.
+- Five landing browser scenarios passed: desktop/mobile composition and image identity, reduced motion, Escape/request preservation, a cold cache with delayed images and later image requests blocked after clicking entry, and unavailable images. The real-time transition test observes every animation frame, verifies a loaded visible image throughout, and records zero image requests during entry.
+- Current inspected screenshots: `.build/entry-image-fix/entry-composition.png` and `entry-composition-mobile.png`. The cover and wordmark remain intact on desktop and phone.
+
 ## Previous revision: minimal four-artwork gallery (2026-09-13)
 
 The latest user request removes the entire marketing column and makes the landing a minimal art collection close to the reference. The original scene now fills the viewport. READ is raised by default; READ / PLAY / CREATE / TOGETHER use four distinct illustrated prints. The scene automatically cycles back and forth on a 6.5-second dwell. Branding, tiny regional context, gallery controls, motion toggle and one entry button are the only interface elements.
