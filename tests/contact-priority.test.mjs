@@ -38,7 +38,7 @@ test("comparison winners and ties use the same contact preference; missing price
   const rows = [provider("near-cheap", 1), provider("phone", 3, { phone }), provider("wa", 3, { whatsapp })];
   for (const sort of ["distance", "price"]) assert.deepEqual(bestForPriority(rows, sort, date).ids, ["phone", "wa"]);
   assert.deepEqual(bestForPriority([rows[0]], "price", date).ids, ["near-cheap"]);
-  assert.match(bestForPriority(rows, "price", date).message, /phone or WhatsApp/);
+  assert.doesNotMatch(bestForPriority(rows, "price", date).message, /phone|WhatsApp|contact/i);
   const missing = { ...rows[1], fees: [] };
   assert.deepEqual(bestForPriority([rows[0], missing], "price", date).ids, []);
   assert.ok(suggestProviders([rows[0], missing], { ...request, sort: "price" }).every(p => !p.suggested));
@@ -52,6 +52,7 @@ test("contact ranking preserves the nearest 20, radius and totals, and recalcula
     assert.equal(first.total, 25); assert.equal(first.items.length, 20);
     assert.deepEqual(first.items.map(p => p.id).sort(), items.slice(0, 20).map(p => p.id));
     assert.equal(first.items[0].id, "p-18");
+    assert.doesNotMatch(first.ordering.explanation, /phone|WhatsApp|contact/i);
     assert.deepEqual(first.items.filter(p => p.suggested).map(p => p.id), ["p-18"]);
     const next = await api({ action: "search", request: { ...request, sort }, page: 1 });
     assert.equal(next.items.length, 5); assert.equal(next.items.filter(p => p.suggested).length, 3);

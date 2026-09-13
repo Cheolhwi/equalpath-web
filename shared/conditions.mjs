@@ -462,12 +462,10 @@ export function bestForPriority(items, sort, date) {
   const labels={distance:"Nearest option",price:"Lowest monthly fee",closing:"Latest care end",pickup:"Offers pickup"};
   if (!labels[sort]) return {ids:[],message:"Alphabetical order doesn’t select a best match."};
   const pool=preferContactable(items.filter(p=>!p.fit?.counts?.conflict));
-  const contactable=pool.some(hasContact);
   const eligible=sortProviders(pool.filter(p=>priorityValue(p,sort,date)!=null && (sort!=="pickup" || p.transport?.exists===true)),sort,date);
-  if (!eligible.length) return {ids:[],message:contactable ? "The centres with contact details don’t have enough information for this priority." : "No centre without a known conflict has details for this priority."};
+  if (!eligible.length) return {ids:[],message:"There isn’t enough information to suggest an option for this priority."};
   const value=priorityValue(eligible[0],sort,date);
   // Equal published values are equal winners, not broken by an arbitrary ID.
   const ids=eligible.filter(p=>Math.abs(priorityValue(p,sort,date)-value)<0.000001).map(p=>p.id);
-  const result=ids.length>1 ? "These centres tie for your priority." : "Highlighted for your priority.";
-  return {ids,label:labels[sort],message:contactable ? `${result} We prioritise centres with a phone or WhatsApp number.` : `${result} None of the options without a known conflict list a phone or WhatsApp number.`};
+  return {ids,label:labels[sort],message:ids.length>1 ? "These centres tie for your priority." : "Highlighted for your priority."};
 }

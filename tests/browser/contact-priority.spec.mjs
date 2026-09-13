@@ -34,13 +34,13 @@ test("contact priority stays consistent across results, map and comparison, with
   await page.getByRole("option", { name: "Lowest monthly fee", exact: true }).click();
   await expect(page.locator(".provider-row").first()).toHaveAttribute("data-provider-id", "p-18");
   await page.getByRole("button", { name: "Why this order?", exact: true }).click();
-  await expect(page.getByRole("dialog")).toContainText("phone or WhatsApp");
+  await expect(page.getByRole("dialog")).not.toContainText(/phone|WhatsApp|contact details/i);
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.screenshot({ path: `${out}/contacts-search-desktop.png` });
   for (const i of [1, 18, 19]) await page.getByRole("button", { name: `Compare Test centre ${i}`, exact: true }).click();
   await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /COMPARE/ }).click();
   await expect(page.locator("th.comparison-best")).toHaveAttribute("data-provider-id", "p-18");
-  await expect(page.locator(".comparison-priority-message")).toContainText("phone or WhatsApp");
+  await expect(page.locator(".comparison-priority-message")).not.toContainText(/phone|WhatsApp|contact details/i);
   await page.getByRole("combobox", { name: "Comparison priority", exact: true }).click();
   await page.getByRole("option", { name: "Lowest monthly fee", exact: true }).click();
   await expect(page.locator("th.comparison-best")).toHaveAttribute("data-provider-id", "p-18");

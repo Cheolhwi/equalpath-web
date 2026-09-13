@@ -215,8 +215,8 @@ function ordering(sort, items, date, radius = null) {
     factor: sort,
     ...(radius !== null ? { pageSelection: "nearest" } : {}),
     explanation: (radius !== null
-      ? `Each page shows the next 20 nearest centres within ${radius} km. We put centres with a phone or WhatsApp number first, with conflicting details last. Then we use your chosen order: `
-      : "We put centres with a phone or WhatsApp number first, with conflicting details last. Then we use your chosen order: ") + (
+      ? `Each page shows the next 20 nearest centres within ${radius} km. Your priority sorts that page, with conflicting details last. `
+      : "Compare options for your priority, with conflicting details last. ") + (
       sort === "distance"
         ? "Nearest first; missing locations last."
         : sort === "price"
