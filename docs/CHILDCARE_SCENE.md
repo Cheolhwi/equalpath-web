@@ -43,7 +43,7 @@ The page has one brand, a small region label, artwork controls, motion toggle, a
 ## Runtime behavior
 
 - The scene is a separate lazy-loaded chunk and mounts only on the landing. The search map remains flat and mounted in the existing app.
-- Entry remains one 420 ms transition; reduced motion enters immediately. It does not wait for the model or a backend response.
+- Entry uses a 560 ms right-to-left ivory curtain: 220 ms to cover the landing, then 340 ms to reveal the same mounted search interface with a small horizontal settle. This follows the sidebar-navigation direction/easing from the user’s [ignoredone.space reference](https://www.ignoredone.space/index.php/graphic-design-arknights/), without its central slogan or navigation delay. Reduced motion enters immediately and Escape completes entry. It does not wait for the model or a backend response.
 - Leaving the landing cancels rendering and disposes scene resources, including if model loading is still pending. Returning home creates a new scene while retaining the existing app state.
 - The four artworks move 1 → 2 → 3 → 4 → 3 → 2 → 1 on a 6.5-second dwell. Manual selection, pointer interaction or keyboard focus pauses; Play resumes. Hidden tabs, collection mode and reduced motion suspend autoplay. Returning to visibility starts a full new dwell. A mount-time visibility refresh prevents a hidden-to-visible race during initialization.
 - Textures load once before the first scene render, returning cases keep their own images, and every cached texture is disposed on exit.

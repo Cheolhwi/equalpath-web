@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { entranceCamera, startEntrance } from "../src/entrance.js";
+import { ENTRANCE_COVER_MS, ENTRANCE_DURATION_MS, entranceCamera, startEntrance } from "../src/entrance.js";
 
 function scheduler() {
   const jobs = new Map();
@@ -48,7 +48,8 @@ test("entrance always completes without waiting for map tiles or a backend respo
     job.fn();
   assert.deepEqual(phases, ["entering", "ready"]);
   assert.equal(phases.filter((phase) => phase === "ready").length, 1);
-  assert.ok(Math.max(...[...clock.jobs.values()].map((job) => job.at)) <= 450);
+  assert.ok(ENTRANCE_COVER_MS < ENTRANCE_DURATION_MS);
+  assert.ok(Math.max(...[...clock.jobs.values()].map((job) => job.at)) <= 600);
 });
 
 test("city previews stay flat and entrance adds no intermediate camera destination", () => {

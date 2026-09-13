@@ -2,7 +2,17 @@
 
 Date: 2026-09-12. Scope: the user-requested RhineLab-inspired landing page with Gaussian blur, integrated into the existing EqualPath website. The latest user revision replaces the cinematic transfer with one brief entrance.
 
-## Current revision: minimal four-artwork gallery (2026-09-13)
+## Current revision: brief sidebar-style entry (2026-09-14)
+
+The user requested the sidebar-navigation motion from [ignoredone.space](https://www.ignoredone.space/index.php/graphic-design-arknights/). Its desktop transition covers from the right and reveals toward the left with a quick ease-out. EqualPath adapts that direction to a quiet ivory curtain: 220 ms cover, 340 ms reveal, and a 16 px settle of the existing search interface. No transition copy or intermediate destination is added. The five-cover gallery and collection-to-raised opening remain unchanged.
+
+- 130 unit tests and production build/asset validation pass. All three landing browser scenarios pass (desktop opening/entry; reduced-motion phone; phone Escape and returning request).
+- Desktop 1440 × 1000 keyframes were inspected at 80 ms and 300 ms: the original landing stays visible before coverage, the search interface appears during reveal, and no horizontal overflow is introduced. Screenshots: `.build/entry-curtain-qa/entry-cover.png`, `entry-reveal.png`, `entry-ready.png`.
+- At 390 × 844, reduced motion enters directly and Escape clears the curtain even when the optional 3D scene is unavailable. Returning home and re-entering retains the typed pickup place and restores input focus. Screenshot: `.build/entry-curtain-qa/entry-mobile-ready.png`.
+- The same App element survives entry. It stays inert until entry finishes, the scene is then unmounted, and the decorative curtain is removed. The timer remains independent of scene, map tiles and API completion.
+- Checks use Chrome viewport emulation and an empty API response for the visual transition; these do not verify live catalogue data or physical-device performance.
+
+## Previous revision: minimal four-artwork gallery (2026-09-13)
 
 The latest user request removes the entire marketing column and makes the landing a minimal art collection close to the reference. The original scene now fills the viewport. READ is raised by default; READ / PLAY / CREATE / TOGETHER use four distinct illustrated prints. The scene automatically cycles back and forth on a 6.5-second dwell. Branding, tiny regional context, gallery controls, motion toggle and one entry button are the only interface elements.
 

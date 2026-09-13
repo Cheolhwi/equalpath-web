@@ -14,9 +14,13 @@ export const INTRO_AREAS = [
   },
 ];
 
+export const ENTRANCE_COVER_MS = 220;
+export const ENTRANCE_REVEAL_MS = 340;
+export const ENTRANCE_DURATION_MS = ENTRANCE_COVER_MS + ENTRANCE_REVEAL_MS;
+
 export const ENTRANCE_STAGES = [
   { phase: "entering", at: 0 },
-  { phase: "ready", at: 420 },
+  { phase: "ready", at: ENTRANCE_DURATION_MS },
 ];
 
 // A single cancellation handle owns every pending frame of the transition.

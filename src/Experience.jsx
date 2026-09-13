@@ -9,7 +9,7 @@ import {
 } from "react";
 import { ArrowRight, Minus, Plus } from "lucide-react";
 import App from "./App.jsx";
-import { startEntrance } from "./entrance.js";
+import { ENTRANCE_COVER_MS, ENTRANCE_REVEAL_MS, startEntrance } from "./entrance.js";
 import "./landing.css";
 
 const CareScene = lazy(() => import("./CareScene.jsx"));
@@ -109,6 +109,10 @@ export default function Experience() {
       className={`experience phase-${phase}`}
       data-intro-phase={phase}
       data-intro-reduced={reduced}
+      style={{
+        "--entrance-cover": `${ENTRANCE_COVER_MS}ms`,
+        "--entrance-reveal": `${ENTRANCE_REVEAL_MS}ms`,
+      }}
     >
       <App introPhase={phase} introReduced={reduced} onHome={home} />
       {phase !== "ready" && (
@@ -176,6 +180,7 @@ export default function Experience() {
           </div>
         </section>
       )}
+      {moving && <div className="entrance-curtain" aria-hidden="true" />}
     </div>
   );
 }
