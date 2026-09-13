@@ -68,11 +68,12 @@
   margin: 0;
   padding: clamp(12px, 1.4vw, 24px);
   border: 1px solid #a6ab9870;
-  background: #f5f3eb;
+  background: #fff;
   box-shadow: 0 24px 80px #30362c0d;
   transform: translateY(-50%);
 }
-.entrance-art img { display: block; width: 100%; aspect-ratio: 1.514; object-fit: contain; mix-blend-mode: multiply; }
+.entrance-image-filters { position: absolute; pointer-events: none; }
+.entrance-art img { display: block; width: 100%; aspect-ratio: 1.514; object-fit: contain; background: #fff; filter: url(#entrance-white-paper); }
 .entrance-art figcaption { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid #a6ab9870; color: var(--landing-muted); font-size: 10px; letter-spacing: .15em; }
 @media (max-width: 650px) {
   .entrance-composition { display: flex; flex-direction: column; justify-content: center; gap: clamp(38px, 8dvh, 72px); padding: 0 7vw; }

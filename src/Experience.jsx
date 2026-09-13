@@ -199,6 +199,23 @@ export default function Experience() {
       )}
       {phase !== "ready" && (
         <div className="entrance-curtain" aria-hidden="true" data-artwork={artwork.id}>
+          <svg width="0" height="0" className="entrance-image-filters" focusable="false">
+            <defs>
+              <filter id="entrance-white-paper" colorInterpolationFilters="sRGB">
+                {/* Whiten only near-white paper, leaving coloured subjects and shadows intact. */}
+                <feColorMatrix in="SourceGraphic" values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 1 0" result="red" />
+                <feColorMatrix in="SourceGraphic" values="0 1 0 0 0  0 1 0 0 0  0 1 0 0 0  0 0 0 1 0" result="green" />
+                <feColorMatrix in="SourceGraphic" values="0 0 1 0 0  0 0 1 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
+                <feBlend in="red" in2="green" mode="darken" result="redGreen" />
+                <feBlend in="redGreen" in2="blue" mode="darken" result="lightestPaper" />
+                <feColorMatrix in="lightestPaper" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1 0 0 0 0" />
+                <feComponentTransfer result="whitePaper">
+                  <feFuncA type="linear" slope="28.3333" intercept="-24.4444" />
+                </feComponentTransfer>
+                <feComposite in="whitePaper" in2="SourceGraphic" operator="over" />
+              </filter>
+            </defs>
+          </svg>
           <div className="entrance-composition">
             <div className="entrance-brand">
               <div className="entrance-wordmark">EQUALPATH<span>／</span></div>

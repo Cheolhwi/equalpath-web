@@ -24,6 +24,12 @@ The user observed a blank art frame on the live transition. The old implementati
 - Five landing browser scenarios passed: desktop/mobile composition and image identity, reduced motion, Escape/request preservation, a cold cache with delayed images and later image requests blocked after clicking entry, and unavailable images. The real-time transition test observes every animation frame, verifies a loaded visible image throughout, and records zero image requests during entry.
 - Current inspected screenshots: `.build/entry-image-fix/entry-composition.png` and `entry-composition-mobile.png`. The cover and wordmark remain intact on desktop and phone.
 
+### White illustration paper (2026-09-14)
+
+The user requested white image backgrounds instead of the yellow cast. Transition frames now use white, and the image no longer multiplies with the warm page. A display-only SVG filter selects near-white pixels using the minimum RGB channel and smoothly overlays white from 220 to 229; coloured subjects and darker pixels are retained. Runtime artwork files and the 3D landing textures are untouched.
+
+The existing desktop/mobile landing scenario passed, including prepared-image identity and successful entry. `.build/entry-white-paper-final/entry-composition.png` and `entry-composition-mobile.png` were visually inspected: white paper, sage clothing, readable details, no wordmark overlap. The warm surrounding page remains consistent with the site's palette.
+
 ## Previous revision: minimal four-artwork gallery (2026-09-13)
 
 The latest user request removes the entire marketing column and makes the landing a minimal art collection close to the reference. The original scene now fills the viewport. READ is raised by default; READ / PLAY / CREATE / TOGETHER use four distinct illustrated prints. The scene automatically cycles back and forth on a 6.5-second dwell. Branding, tiny regional context, gallery controls, motion toggle and one entry button are the only interface elements.
