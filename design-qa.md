@@ -4,13 +4,13 @@ Date: 2026-09-12. Scope: the user-requested RhineLab-inspired landing page with 
 
 ## Current revision: artwork-led entry and slower surfaces (2026-09-14)
 
-The user requested a slightly slower landing entrance filled by its current artwork and EQUALPATH branding. The right-to-left ivory curtain now takes 900 ms: 360 ms cover, 540 ms reveal. A stationary composition is revealed by a clip, with the large wordmark on the left and the selected childcare print in a fine paper frame on the right. Phones stack them as a centred group. The artwork is frozen when entering, and scene autoplay pauses. This is a decorative transition into the same mounted app, not another destination.
+The user requested a slightly slower landing entrance filled by its current artwork and EQUALPATH branding. The right-to-left ivory curtain now takes 1200 ms: 480 ms cover, 720 ms reveal. A stationary composition is revealed by a clip, with the large wordmark on the left and the selected childcare print in a fine paper frame on the right. Phones stack them as a centred group. The artwork is frozen when entering, and scene autoplay pauses. This is a decorative transition into the same mounted app, not another destination.
 
 Result cards now reveal in 480 ms, with a stagger capped at 210 ms; dialogs use 440 ms, backdrops 300 ms, and select menus/registration popovers 240 ms. These changes slow the recently added motion by roughly one third. Pointer feedback remains responsive. Native cursors and immediate entry remain available for reduced motion; input, map dragging, touch and keyboard behavior are preserved.
 
 - Six relevant browser scenarios passed across landing and interaction suites, including card reveals without duplicate queries, pointer/dialog controls, reduced-motion/touch fallback, first-load collection-to-raised behavior, Escape and request preservation. After the final spacing adjustment, all three landing scenarios passed again.
 - Final screenshots were visually inspected at `.build/entry-art-final/entry-composition.png` (1440 × 1000, PLAY) and `entry-composition-mobile.png` (390 × 844, GROW). Wordmark, slash and artwork do not overlap. The print stays within the viewport and no horizontal overflow occurs.
-- Cover/reveal samples are captured at 120 ms and 470 ms, with the full composition at 360 ms. The original landing stays visible before coverage and the existing search interface appears during reveal. Samples pause the real CSS animations; they are not frame-rate measurements.
+- Current cover/reveal samples are captured at 120 ms and 590 ms, with the full composition at 480 ms. The original landing stays visible before coverage and the existing search interface appears during reveal. Samples pause the real CSS animations; they are not frame-rate measurements.
 - The artwork assertion checks both selection and successful image load. Selecting PLAY before desktop entry uses PLAY; selecting GROW before phone entry uses GROW.
 - The same App element survives entry. It remains inert until entry completes, then the curtain and scene are removed and pickup-input focus is restored. Escape also completes entry while the optional 3D scene is unavailable. Returning home retains the current request.
 - 130 unit checks and the production build/asset validation pass. Browser checks use Chrome viewport emulation and controlled/empty API responses; they do not establish live catalogue accuracy or physical-device performance. Live deployment is verified separately against the release digest.
@@ -29,6 +29,10 @@ The user observed a blank art frame on the live transition. The old implementati
 The user requested white image backgrounds instead of the yellow cast. Transition frames now use white, and the image no longer multiplies with the warm page. A display-only SVG filter selects near-white pixels using the minimum RGB channel and smoothly overlays white from 220 to 229; coloured subjects and darker pixels are retained. Runtime artwork files and the 3D landing textures are untouched.
 
 The existing desktop/mobile landing scenario passed, including prepared-image identity and successful entry. `.build/entry-white-paper-final/entry-composition.png` and `entry-composition-mobile.png` were visually inspected: white paper, sage clothing, readable details, no wordmark overlap. The warm surrounding page remains consistent with the site's palette.
+
+### Entrance timing only (2026-09-14)
+
+The user requested a slightly longer landing-to-search transition only. Cover/reveal timings changed from 360/540 ms to 480/720 ms (1.2 seconds total). Card, dialog, popover and pointer timings are unchanged. The preloaded current artwork, white paper, Escape and reduced-motion behavior remain intact. The existing landing browser scenario checks desktop and phone entry using the shared timing constants; evidence is in `.build/entry-timing-1200/`.
 
 ## Previous revision: minimal four-artwork gallery (2026-09-13)
 

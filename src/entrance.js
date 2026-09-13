@@ -14,8 +14,8 @@ export const INTRO_AREAS = [
   },
 ];
 
-export const ENTRANCE_COVER_MS = 360;
-export const ENTRANCE_REVEAL_MS = 540;
+export const ENTRANCE_COVER_MS = 480;
+export const ENTRANCE_REVEAL_MS = 720;
 export const ENTRANCE_DURATION_MS = ENTRANCE_COVER_MS + ENTRANCE_REVEAL_MS;
 
 export const ENTRANCE_STAGES = [
