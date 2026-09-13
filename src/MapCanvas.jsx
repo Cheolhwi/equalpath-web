@@ -70,7 +70,7 @@ export default function MapCanvas({
       if (seen.has(first)) continue;
       const group = [first]; seen.add(first);
       for (let i = 0; i < group.length; i++) for (const other of entries) {
-        if (!seen.has(other) && Math.hypot(group[i].point.x-other.point.x, group[i].point.y-other.point.y) < 50) { seen.add(other); group.push(other); }
+        if (!seen.has(other) && Math.hypot(group[i].point.x-other.point.x, group[i].point.y-other.point.y) < 120) { seen.add(other); group.push(other); }
       }
       const center = { x: group.reduce((n,x)=>n+x.point.x,0)/group.length, y: group.reduce((n,x)=>n+x.point.y,0)/group.length };
       group.forEach((x,i) => {

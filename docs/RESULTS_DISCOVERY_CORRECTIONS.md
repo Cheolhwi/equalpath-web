@@ -35,4 +35,4 @@ The custom-domain TLS issue remains separate. Old Appwrite owner resources, DNS,
 - Evidence is under `evidence/results-discovery-2026-09-13/`.
 - Mobile map entry now refits the results after resizing. All eight affected result/tutorial browser journeys passed again, including a check that all three suggested pins fit within the mobile viewport. The original 21-test suite and 103 unit tests remain the verified baseline.
 - Co-located suggestions now fan out with fine connector lines to their unchanged geographic point. The four result journeys passed, including individual clicks on three co-located mobile suggestions; the other ten map/tutorial journeys passed during the same correction. Pickup markers cannot intercept pointer events. Unit/build checks passed again.
-- Frontend source digest: `627d3cd28a7cd79081236749d51d6b23d953e43de808f48d0a4eb42358fe51a7`.
+- Frontend source digest: `9c81102583aa978d57cef92859720e33ff68c76ce52775ce85339aa96f6b0bd4`.
