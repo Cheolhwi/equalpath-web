@@ -21,12 +21,22 @@ export function applicableWindows(windows, date) {
   );
 }
 export function checkAge(age, r) {
-  if (age?.basis === 'type_reference') return result(
-    'age', 'Admission age', 'unknown',
-    `${age.wording} · Type reference. Confirm this branch’s admission ages.`,
-    age.source,
-    r.age === '' ? 'What ages do you accept for temporary care?' : `Do you accept children ${r.age === '0' ? 'under 1 year' : `aged ${r.age}`} for temporary care?`,
-  );
+  if (age?.basis === 'type_reference') {
+    const selected = r.age !== '', lo = Number(r.age) * 12, hi = lo + 12;
+    const matches = lo >= age.min && hi <= age.max;
+    // Confirm the official range separately from a child's request match.
+    // An optional, unselected age is not a provider question or a passed fit.
+    return {
+      ...result('age', 'Admission age', selected ? (matches ? 'supported' : 'conflict') : 'reference',
+        `${age.wording} · Official type age range. ${selected ? (matches ? 'The selected age is within this range.' : 'The selected age is outside this range.') : 'Select an age to check whether it falls within this range.'}`,
+        age.source,
+        selected && !matches ? 'Is there a separate programme covering this age group?' : null,
+      ),
+      statusLabel: selected && !matches ? 'Outside type range' : 'Confirmed range',
+      basis: 'type_reference',
+      requestMatch: selected ? (matches ? 'within_type_range' : 'outside_type_range') : 'not_selected',
+    };
+  }
   if (age?.alternative) return result(
     'age', 'Admission age', 'unknown',
     `${age.wording}; another source lists ${age.alternative.wording}. Confirm the applicable age range with this branch.`,
@@ -250,7 +260,7 @@ export function assess(p, r) {
         : "What transfer duration and arrival time should we allow?",
     ),
   );
-  const counts = { supported: 0, conflict: 0, unknown: 0 };
+  const counts = { supported: 0, conflict: 0, unknown: 0, reference: 0 };
   for (const c of states) counts[c.state]++;
   return {
     conditions: states,

@@ -8,7 +8,7 @@ const index = JSON.parse(
   readFileSync(new URL("./data/provenance-index.json", import.meta.url)),
 );
 const reviewedFees = JSON.parse(readFileSync(new URL('./data/reviewed-fees.json', import.meta.url)));
-export const supplementVersion = "service-review-2026-09-13-v6";
+export const supplementVersion = "service-review-2026-09-13-v7";
 export function safeURL(value) {
   try {
     const u = new URL(value);

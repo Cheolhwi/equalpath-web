@@ -52,17 +52,18 @@ function PublishedContacts({p}) {
   </>;
 }
 export function Status({ state, children }) {
+  const confirmedRange = state === 'reference';
   const Icon =
-    state === "supported"
+    state === "supported" || confirmedRange
       ? CheckCircle2
       : state === "conflict"
         ? AlertTriangle
         : HelpCircle;
   return (
-    <span className={`state-pill ${state}`}>
+    <span className={`state-pill ${confirmedRange ? 'supported' : state}`}>
       <Icon size={12} />
       {children ??
-        (state === "supported"
+        (confirmedRange ? 'Confirmed range' : state === "supported"
           ? "Supported"
           : state === "conflict"
             ? "Conflict"
@@ -304,7 +305,7 @@ export function Details({ p, onPrepare, onCompare, compared }) {
             <div key={c.id} className="condition">
               <div>
                 <h4>{c.label}</h4>
-                <Status state={c.state} />
+                <Status state={c.state}>{c.statusLabel}</Status>
               </div>
               <p>{c.reason}</p>
               <SourceLink source={c.source} />
@@ -448,7 +449,7 @@ export function Comparison({
                   const c = get(p);
                   return (
                     <td key={p.id}>
-                      <Status state={c.state} />
+                      <Status state={c.state}>{c.statusLabel}</Status>
                       <p>{c.reason}</p>
                       <SourceLink source={c.source} />
                     </td>

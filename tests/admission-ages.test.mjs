@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {parsePublishedAge,referenceAgeFor} from '../shared/published-ages.mjs';
-import {checkAge} from '../shared/conditions.mjs';
+import {checkAge,assess,enquiries} from '../shared/conditions.mjs';
+import {demoPickup} from '../server/fixtures.mjs';
 import {normalizeProvider} from '../server/providers.mjs';
 import {applyServicesEvidence} from '../server/services-overlay.mjs';
 const raw={id:'age-test',display_name:'Test',official_name:'Test',state:'Selangor',district:'Petaling',registration:{authority:'KPM',source_url:'https://example.com/branch'},operating_hours:{},fees:[]};
@@ -15,13 +16,27 @@ test('Malay and English admission fields convert years and months without confus
  assert.equal(parsePublishedAge('di bawah umur 4 tahun').maxInclusive,false);
  for(const text of ['RM 300 - 600','2020 - 2026','6 - 2 tahun','2 - 30 tahun','3 tahun; 7 tahun','ages unknown','phone 0123456789'])assert.equal(parsePublishedAge(text),null,text);
 });
-test('type references fill missing display ranges but never claim branch age acceptance or rejection',()=>{
- for(const category of ['TASKA','TADIKA'])for(const age of ['', '0', '3','4','6','12']){
-  const p=referenceAgeFor(category),c=checkAge(p,{age});
-  assert.equal(c.state,'unknown');assert.match(c.reason,/Type reference/);assert.equal(c.source.kind,'type_reference');
+test('official age ranges are confirmed without counting an unselected child age as a passed fit',()=>{
+ for(const category of ['TASKA','TADIKA']){
+  const c=checkAge(referenceAgeFor(category),{age:''});
+  assert.equal(c.state,'reference');assert.equal(c.statusLabel,'Confirmed range');assert.equal(c.requestMatch,'not_selected');assert.equal(c.question,null);
+  assert.match(c.reason,/Official type age range/);assert.equal(c.source.kind,'type_reference');
  }
  const p=normalizeProvider(raw,'test').provider;
  assert.equal(p.age.rangeLabel,'4–6 years');assert.equal(p.age.basis,'type_reference');
+ const request={pickup:demoPickup,date:'2026-09-14',deadline:'13:00',end:'17:00',age:'',transport:'self'};
+ const fit=assess(p,request);
+ assert.equal(fit.counts.reference,1);assert.equal(fit.counts.supported,3);assert.equal(fit.counts.unknown,3);
+ assert.equal(enquiries(p,request,fit).some(q=>q.id==='age'),false);
+ assert.equal(fit.conditions.find(c=>c.id==='admission').state,'unknown');
+});
+test('a selected age matches the official type range with correct TASKA and TADIKA boundaries',()=>{
+ for(const [category,age,expected] of [['TASKA','0',true],['TASKA','3',true],['TASKA','4',false],['TADIKA','3',false],['TADIKA','4',true],['TADIKA','6',true],['TADIKA','7',false]]){
+  const c=checkAge(referenceAgeFor(category),{age});
+  assert.equal(c.state,expected?'supported':'conflict',`${category}/${age}`);
+  assert.equal(c.statusLabel,expected?'Confirmed range':'Outside type range');assert.equal(c.basis,'type_reference');
+  assert.equal(c.requestMatch,expected?'within_type_range':'outside_type_range');
+ }
 });
 test('matched admission evidence takes precedence over type defaults and retains its original source',()=>{
  const updated=applyServicesEvidence([raw],[record],'test',hash([record]))[0];

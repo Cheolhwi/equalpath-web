@@ -63,6 +63,8 @@ Each fact has a source object with label, URL, retrieval date, source date where
 
 Condition states are `supported`, `conflict`, `unknown`, each with a reason and source where applicable. Transfer/arrival remains unknown: this requirements baseline has no route-time calculation. Revision 2.1 uses published opening hours for care-end timing, with specific care schedules, closed days and date exceptions taking precedence. Contact displays a sourced phone number without invoking a device dialler. Monthly charges cannot produce an hourly total. A tariff total is available only for a complete validated fee rule; current real records have none.
 
+The 2026-09-13 age revision adds `reference` for a confirmed official type range when the optional child age is unselected. It displays `Confirmed range`, has `requestMatch: not_selected`, and is counted separately from passed fit checks and questions to confirm. With an age selected, type-range comparison returns `supported` / `conflict` with `within_type_range` / `outside_type_range`; `basis: type_reference` and the official source remain explicit. The display honours a condition's optional `statusLabel`. Temporary admission and availability are separate checks; no provider confirmation is recorded by this range calculation.
+
 Requests and comparisons carry canonical request and fact version. A supplied obsolete fact version returns `FACTS_CHANGED`; partial refreshes never replace a complete cached release. Retrieval success is not a provider update timestamp.
 
 ## Boundaries and errors
