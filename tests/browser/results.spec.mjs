@@ -49,7 +49,9 @@ test("result cards show drive time and fee basis, while conflicts stay below oth
   await page.setViewportSize({width:390,height:844});await row.scrollIntoViewIfNeeded();
   await page.screenshot({path:dir+"/results-mobile.png"});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await page.getByRole("button",{name:"Map",exact:true}).click();await page.screenshot({path:dir+"/suggestions-mobile.png"});
+  await page.getByRole("button",{name:"Map",exact:true}).click();
+  await expect.poll(async()=>page.locator(".provider-pin.suggested").evaluateAll(pins=>pins.every(pin=>{const r=pin.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=105&&r.bottom<innerHeight-65;}))).toBe(true);
+  await page.screenshot({path:dir+"/suggestions-mobile.png"});
   await page.getByRole("button",{name:"Search & results",exact:true}).click();
   await page.locator(".provider-row").filter({hasText:"Demo · Cloud Care"}).getByRole("button",{name:/View details/}).click();
   await expect(page.getByRole("dialog")).toContainText("Driving time unavailable");

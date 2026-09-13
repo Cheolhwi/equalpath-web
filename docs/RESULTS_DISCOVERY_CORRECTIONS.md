@@ -33,4 +33,5 @@ The custom-domain TLS issue remains separate. Old Appwrite owner resources, DNS,
 - 103 unit tests and 21 browser journeys passed. After the final marker-layer adjustment, all three affected browser journeys and the full unit/build release check passed again.
 - Function deployment `6aa63f4be6f680bb89d6` was read back as ready. A live KL Sentral request returned 20 road estimates, three conflict-free suggestions and two records with published fees on the first page. The first listed fee was MYR 500–780/month; a monthly tariff remains distinct from a one-off visit quote.
 - Evidence is under `evidence/results-discovery-2026-09-13/`.
-- Frontend source digest: `f8b633312025d09134b141e52d4e3e0446a598b57e0bc9f35bcc2826697fe92d`.
+- Mobile map entry now refits the results after resizing. All eight affected result/tutorial browser journeys passed again, including a check that all three suggested pins fit within the mobile viewport. The original 21-test suite and 103 unit tests remain the verified baseline.
+- Frontend source digest: `ecb208c67bfe5a7f7eb814c4681d382301d24faddc918278b0638939f73ca263`.

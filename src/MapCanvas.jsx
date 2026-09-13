@@ -261,7 +261,10 @@ export default function MapCanvas({
     }
   }, [choosing]);
   useEffect(() => {
-    if (visible) requestAnimationFrame(() => map.current?.resize());
+    if (visible) requestAnimationFrame(() => {
+      map.current?.resize();
+      if (latest.current.autoFit) fit({ immediate: true });
+    });
   }, [visible]);
   useEffect(() => {
     const m = map.current;
