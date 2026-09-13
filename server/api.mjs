@@ -215,10 +215,10 @@ function ordering(sort, items, date, radius = null) {
     factor: sort,
     ...(radius !== null ? { pageSelection: "nearest" } : {}),
     explanation: (radius !== null
-      ? `Each page shows the next 20 nearest centres within ${radius} km. Your priority sorts that page, with conflicting details last. Within each group: `
-      : "Centres without known conflicts first; conflicting details go last. Within each group: ") + (
+      ? `Each page shows the next 20 nearest centres within ${radius} km. We put centres with a phone or WhatsApp number first, with conflicting details last. Then we use your chosen order: `
+      : "We put centres with a phone or WhatsApp number first, with conflicting details last. Then we use your chosen order: ") + (
       sort === "distance"
-        ? "Nearest straight-line distance first; missing coordinates last. This is not a travel-time estimate."
+        ? "Nearest first; missing locations last."
         : sort === "price"
           ? "Lowest monthly care fee first, using the starting amount for ranges. Estimated budgets are included and labelled. Other billing periods and missing monthly fees go last; extras are excluded."
         : sort === "closing"

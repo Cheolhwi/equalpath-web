@@ -401,6 +401,16 @@ export const priorityValue = (p, sort, date) =>
         : sort === "closing"
           ? careEndScheduleFor(p,date).end
           : p.name.toLocaleLowerCase("en");
+// Use the same published contact fields that the user can actually see/open.
+// A website URL alone is not a phone or an explicit WhatsApp destination.
+export const hasContact = p => Boolean(
+  (typeof p.phone?.display === "string" && p.phone.display.trim()) ||
+  p.whatsapp?.some(contact => typeof contact.href === "string" && contact.href.trim()),
+);
+const preferContactable = items => {
+  const contactable = items.filter(hasContact);
+  return contactable.length ? contactable : items;
+};
 export function sortProviders(items, sort, date) {
   return [...items].sort((a, b) => {
     // Conflicts always rank below every result without a known conflict,
@@ -409,6 +419,8 @@ export function sortProviders(items, sort, date) {
     const group = Number(conflicts(a) > 0) - Number(conflicts(b) > 0);
     if (group) return group;
     if (conflicts(a) !== conflicts(b)) return conflicts(a) - conflicts(b);
+    const contact = Number(hasContact(b)) - Number(hasContact(a));
+    if (contact) return contact;
     let x = priorityValue(a,sort,date),
       y = priorityValue(b,sort,date);
     if (x === -Infinity) x = null;
@@ -428,7 +440,10 @@ export function suggestProviders(items, request) {
   const relevant = new Set(["admission", "care", ...(request.age !== "" ? ["age"] : []), ...(request.transport === "institution" ? ["transport", "coverage", "pickup"] : [])]);
   const score = p => p.fit.conditions.filter(c => relevant.has(c.id) && c.state === "supported").length;
   // Only suggest centres that can be located on the current result map.
-  const ids = [...items].filter(p => p.location && !p.fit.counts.conflict && (request.sort !== "price" || monthlyFeeFrom(p) != null))
+  // Never fill the remaining suggestion slots with unreachable centres while
+  // a contactable, conflict-free option exists on this nearest-results page.
+  const pool = preferContactable(items.filter(p => p.location && !p.fit.counts.conflict));
+  const ids = pool.filter(p => request.sort !== "price" || monthlyFeeFrom(p) != null)
     .sort((a,b) => {
       const sort=request.sort;
       if (["distance","price","closing","pickup"].includes(sort)) {
@@ -446,10 +461,13 @@ export function suggestProviders(items, request) {
 export function bestForPriority(items, sort, date) {
   const labels={distance:"Nearest option",price:"Lowest monthly fee",closing:"Latest care end",pickup:"Offers pickup"};
   if (!labels[sort]) return {ids:[],message:"Alphabetical order doesn’t select a best match."};
-  const eligible=sortProviders(items.filter(p=>!p.fit?.counts?.conflict && priorityValue(p,sort,date)!=null && (sort!=="pickup" || p.transport?.exists===true)),sort,date);
-  if (!eligible.length) return {ids:[],message:"No centre without a known conflict has details for this priority."};
+  const pool=preferContactable(items.filter(p=>!p.fit?.counts?.conflict));
+  const contactable=pool.some(hasContact);
+  const eligible=sortProviders(pool.filter(p=>priorityValue(p,sort,date)!=null && (sort!=="pickup" || p.transport?.exists===true)),sort,date);
+  if (!eligible.length) return {ids:[],message:contactable ? "The centres with contact details don’t have enough information for this priority." : "No centre without a known conflict has details for this priority."};
   const value=priorityValue(eligible[0],sort,date);
   // Equal published values are equal winners, not broken by an arbitrary ID.
   const ids=eligible.filter(p=>Math.abs(priorityValue(p,sort,date)-value)<0.000001).map(p=>p.id);
-  return {ids,label:labels[sort],message:ids.length>1 ? "These centres tie for your priority." : "Highlighted for your priority."};
+  const result=ids.length>1 ? "These centres tie for your priority." : "Highlighted for your priority.";
+  return {ids,label:labels[sort],message:contactable ? `${result} We prioritise centres with a phone or WhatsApp number.` : `${result} None of the options without a known conflict list a phone or WhatsApp number.`};
 }

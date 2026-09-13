@@ -30,8 +30,8 @@ export function OrderingNote({ ordering, radius }) {
   if (!ordering) return null;
   const text = ordering.factor === "distance"
     ? ordering.pageSelection === "nearest"
-      ? `Each page shows the next 20 nearest centres${radius ? ` within ${radius} km` : ""}. Centres with conflicting details appear last.`
-      : "Nearest centres first, with conflicting details last."
+      ? `Each page shows the next 20 nearest centres${radius ? ` within ${radius} km` : ""}. Centres with a phone or WhatsApp number come first, then nearest first. Conflicting details stay last.`
+      : "Centres with a phone or WhatsApp number come first, then nearest first. Conflicting details stay last."
     : ordering.explanation;
   return <p>{text}</p>;
 }

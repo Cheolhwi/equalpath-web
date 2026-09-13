@@ -1,5 +1,14 @@
 # Landing page and map entrance QA
 
+## Contact-first recommendations (2026-09-14)
+
+Search still selects each nearest-20 page inside the 10 km radius before ranking. Within the existing conflict groups, a published phone or explicit WhatsApp contact now takes priority over distance, fee, closing time, pickup or name. Known conflicts remain last. Search/map suggestions and comparison winners use contactable, conflict-free candidates first; a website alone does not qualify. If there are only one or two contactable candidates, spare suggestion slots remain empty. No-contact candidates become the fallback only when that eligible page/shortlist has no contactable option. Existing requirements for comparable monthly prices remain.
+
+- 139 unit checks, the isolated function-package import, production build and asset validation passed. Five new checks cover contact classification, conflict precedence, no filler, fallback, comparison ties/missing prices and stable radius/page membership.
+- Nine browser scenarios passed across contact priority, results, price/registration and comparison. The contact-priority scenario passed again after the final explanation copy was shortened. Desktop search/comparison and 390 px mobile-map screenshots in `.build/contact-priority/` were visually inspected; two contactable candidates produce exactly two highlighted cards/pins, while the no-contact second page uses the fallback. These browser data are controlled fixtures.
+- Public query deployment `6aa734fad5d9fe79916d` is ready. Live distance and price requests for KL Sentral on 2026-09-14, 13:00–18:00, each returned the same 20 of 394 candidates within 10 km. Each page contained 10 contactable candidates without known conflicts; all three suggestions had contact details. Live comparison also put the contactable candidate first. Aggregate evidence: `.build/contact-priority/live-api.json` and `evidence/api-deployment.json`. No provider data or contact actions were changed.
+- Frontend release source digest: `fc19d113aec2e6015b76bbc5826db247f87f7beb402285b67da267edf986f602`. Public site publication is verified separately below when complete.
+
 ## Questions page and linked checks (2026-09-14)
 
 The enquiry page now starts with the selected centre, visit date, collect-by time, care-until time and pickup place. The main column contains selected questions; copy/preview and sourced contacts sit together on the right. Small screens stack the copy controls before the questions, then contacts and the secondary pickup-checklist action. The existing quiet palette, reduced-motion settings and dialog timing remain.
