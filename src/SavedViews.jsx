@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Bookmark, ArrowRight, Trash2, Pencil, Save } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
+import TimeInput from "./TimeInput.jsx";
 import {
   template,
   favourite,
@@ -13,19 +14,31 @@ import { requestErrors } from "../shared/request.mjs";
 export function SaveExplanation() {
   return (
     <details className="save-explanation">
-      <summary>What stays in this browser?</summary>
+      <summary>About your saved items</summary>
       <p>
-        We save only what you choose: centres, their listed details, your
-        notes and search templates with a public pickup place, times and
-        transport preferences.
+        Your saved childcare, notes and searches stay in this browser.
+        Searches keep your public pickup place, care times and pickup preference.
+        Dates and child ages aren’t saved.
       </p>
       <p>
-        Dates, child ages and personal or health details are not saved.
-        Clearing browser data can remove these items. Saved items are only
-        available in this browser, not on your other devices.
+        Clearing browser data can remove these items. They won’t appear on
+        your other devices.
       </p>
     </details>
   );
+}
+export function SavedSearchReminder({ templates, onReuse, onChoose, disabled }) {
+  if (!templates.length) return null;
+  const single = templates.length === 1;
+  return <section className="saved-search-reminder" aria-label="Saved search reminder">
+    <div className="saved-search-reminder-heading"><Bookmark size={17} aria-hidden="true" />
+      <strong>{single ? "Your saved search" : `${templates.length} saved searches`}</strong>
+    </div>
+    <p>{single ? <>Use <strong>{templates[0].name}</strong> with a new date.</> : "Reuse your pickup place and care times with a new date."}</p>
+    <button type="button" className="text-link" disabled={disabled} onClick={() => single ? onReuse(templates[0]) : onChoose()}>
+      {single ? "Use this search" : "Choose a saved search"}<ArrowRight size={15} aria-hidden="true" />
+    </button>
+  </section>;
 }
 export function SavedLibrary({
   library,
@@ -44,14 +57,14 @@ export function SavedLibrary({
   return (
     <div className="saved-library">
       <p className="dialog-lead">
-        Pick up where you left off. Choose a new date when you reuse a
-        saved centre or search.
+        {tab === "favourites"
+          ? "Your favourite childcare, ready to check for a new date."
+          : "Your pickup place and care times, ready to use again. Just choose a new date."}
       </p>
-      <SaveExplanation />
       {failure && (
         <div className="error-box" role="alert">
           <p>{failure}</p>
-          <button onClick={onRetry}>Retry saved items</button>
+          <button onClick={onRetry}>Try again</button>
         </div>
       )}
       <div className="saved-tabs" role="group" aria-label="Saved item type">
@@ -59,13 +72,13 @@ export function SavedLibrary({
           aria-pressed={tab === "favourites"}
           onClick={() => setTab("favourites")}
         >
-          Centres <em>{library.favourites.length}</em>
+          Childcare <em>{library.favourites.length}</em>
         </button>
         <button
           aria-pressed={tab === "templates"}
           onClick={() => setTab("templates")}
         >
-          Saved searches <em>{library.templates.length}</em>
+          Searches <em>{library.templates.length}</em>
         </button>
       </div>
       {!entries.length && (
@@ -73,13 +86,13 @@ export function SavedLibrary({
           <Bookmark size={30} />
           <h3>
             {tab === "favourites"
-              ? "No saved centres yet"
+              ? "Save childcare you like"
               : "No saved searches yet"}
           </h3>
           <p>
             {tab === "favourites"
-              ? "Tap Save on a centre to find it here next time."
-              : "Use Save request template below the search form. You’ll choose a new date each time."}
+              ? "Tap Save on any childcare option to keep it here."
+              : "Choose Save this search on Find childcare to keep your pickup place and care times."}
           </p>
           <button className="primary" onClick={onDiscover}>
             Find childcare <ArrowRight size={16} />
@@ -88,33 +101,31 @@ export function SavedLibrary({
       )}
       {entries.map((item) => (
         <article className="saved-row" key={item.id}>
-          <div className="section-kicker">
-            {tab === "favourites"
-              ? `${item.category} · ${item.region}`
-              : "SAVED SEARCH"}
-          </div>
+          {tab === "favourites" && <div className="section-kicker">{item.category} · {item.region}</div>}
           <h3>{item.name}</h3>
           {tab === "favourites" ? (
             <>
-              <p>{item.reason || "No note added."}</p>
+              {item.reason && <p>{item.reason}</p>}
               <small>
-                Saved {item.savedAt?.slice(0, 10)} · Details saved{" "}
-                {item.snapshot?.capturedAt?.slice(0, 10) ?? "unavailable"}
+                Saved {item.savedAt?.slice(0, 10)}
               </small>
-              <small>{factDates(item.snapshot?.facts)}</small>
+              <details className="saved-source-dates"><summary>When were these details checked?</summary>
+                <small>Details saved {item.snapshot?.capturedAt?.slice(0, 10) ?? "date unavailable"}</small>
+                <small>{factDates(item.snapshot?.facts)}</small>
+              </details>
             </>
           ) : (
             <>
-              <p>{item.pickup?.label}</p>
-              <small>
-                Collect by {item.deadline || "not set"} · care until{" "}
-                {item.end || "not set"} ·{" "}
-                {item.transport === "institution"
+              <p className="saved-pickup"><span>Pickup place</span>{item.pickup?.label}</p>
+              <dl className="saved-search-times">
+                <div><dt>Collect by</dt><dd>{item.deadline || "Not set"}</dd></div>
+                <div><dt>Care until</dt><dd>{item.end || "Not set"}</dd></div>
+                <div><dt>Pickup option</dt><dd>{item.transport === "institution"
                   ? "Centre pickup"
                   : item.transport === "self"
                     ? "I’ll arrange transport"
-                    : "Pickup not specified"}
-              </small>
+                    : "Not specified"}</dd></div>
+              </dl>
             </>
           )}
           <div className="saved-actions">
@@ -126,7 +137,7 @@ export function SavedLibrary({
             >
               {tab === "favourites"
                 ? "Check for a new date"
-                : "Use template"}{" "}
+                : "Use this search"}{" "}
               <ArrowRight size={15} />
             </button>
             <button
@@ -148,6 +159,7 @@ export function SavedLibrary({
           </div>
         </article>
       ))}
+      <SaveExplanation />
     </div>
   );
 }
@@ -226,7 +238,7 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
     <form className="template-editor" onSubmit={submit} noValidate>
       <SaveExplanation />
       <label className="field">
-        Template name{" "}
+        Search name{" "}
         <input
           value={name}
           maxLength={60}
@@ -242,30 +254,32 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
         error={errors.pickup}
       />
       <div className="field-pair">
-        <label className="field">
-          Collect by
-          <input
-            type="time"
-            aria-label="Template collect by"
+        <div className="field">
+          <label htmlFor="template-deadline">Collect by</label>
+          <TimeInput
+            id="template-deadline"
+            label="Template collect by"
             value={draft.deadline}
-            onChange={(e) => field("deadline", e.target.value)}
-            aria-invalid={!!errors.deadline}
+            onChange={(value) => field("deadline", value)}
+            invalid={!!errors.deadline}
+            describedBy={errors.deadline ? "template-deadline-error" : undefined}
           />
           {errors.deadline && (
-            <small className="field-error">{errors.deadline}</small>
+            <small id="template-deadline-error" className="field-error">{errors.deadline}</small>
           )}
-        </label>
-        <label className="field">
-          Care until
-          <input
-            type="time"
-            aria-label="Template care until"
+        </div>
+        <div className="field">
+          <label htmlFor="template-care-end">Care until</label>
+          <TimeInput
+            id="template-care-end"
+            label="Template care until"
             value={draft.end}
-            onChange={(e) => field("end", e.target.value)}
-            aria-invalid={!!errors.end}
+            onChange={(value) => field("end", value)}
+            invalid={!!errors.end}
+            describedBy={errors.end ? "template-care-end-error" : undefined}
           />
-          {errors.end && <small className="field-error">{errors.end}</small>}
-        </label>
+          {errors.end && <small id="template-care-end-error" className="field-error">{errors.end}</small>}
+        </div>
       </div>
       <label className="field">
         Pickup preference
@@ -279,8 +293,8 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
         </select>
       </label>
       <p className="notice">
-        Public pickup and preferences only. Choose the service date and optional
-        age again when you use this template.
+        Next time, your pickup place and times will be ready. Choose a new date
+        and add your child’s age if needed.
       </p>
       {failure && (
         <p className="error-box" role="alert">
@@ -290,7 +304,7 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
       <div className="saved-actions">
         <button type="submit" className="primary">
           <Save size={16} />
-          Save template
+          Save search
         </button>
         <button type="button" onClick={onCancel}>
           Back

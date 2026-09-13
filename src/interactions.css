@@ -15,7 +15,7 @@
   animation: care-surface-appear 480ms cubic-bezier(.22, .61, .36, 1) backwards;
   animation-delay: var(--card-delay, 0ms);
 }
-.select-menu-popup, .registration-popover {
+.select-menu-popup, .registration-popover, .time-picker {
   animation: care-surface-appear 240ms cubic-bezier(.22, .61, .36, 1) backwards;
 }
 
@@ -58,6 +58,6 @@
 @media (prefers-reduced-motion: reduce) {
   .provider-row[data-reveal] { opacity: 1; }
   .equalpath dialog[open], .equalpath dialog[open]::backdrop,
-  .provider-row, .select-menu-popup, .registration-popover { animation: none !important; }
+  .provider-row, .select-menu-popup, .registration-popover, .time-picker { animation: none !important; }
 }
 @media print { .care-pointer { display: none !important; } }

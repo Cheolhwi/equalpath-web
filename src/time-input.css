@@ -1,0 +1,22 @@
+.time-input { position: relative; min-width: 0; }
+.field .time-input input { padding-right: 43px; font-variant-numeric: tabular-nums; }
+.time-input input::selection { background: var(--accent); color: var(--paper); }
+.time-input-trigger { position: absolute; right: 1px; top: 1px; bottom: 1px; width: 40px; min-height: 0; display: grid; place-items: center; color: var(--ink); }
+.time-input-trigger:hover, .time-input-trigger[aria-expanded="true"] { color: var(--accent); background: var(--soft); }
+.time-input-trigger:focus-visible { outline-offset: -3px; }
+.time-picker { position: fixed; z-index: 100; display: flex; flex-direction: column; padding: 12px; background: var(--paper); color: var(--ink); border: 1px solid var(--rule); box-shadow: 0 10px 30px #30382f24; font-variant-numeric: tabular-nums; }
+.time-picker header { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+.time-picker header span:first-child { color: var(--muted); font-size: 11px; }
+.time-picker header span:last-child { font-size: 20px; font-weight: 550; }
+.time-picker-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; min-height: 0; padding-top: 8px; }
+.time-picker-column { display: flex; flex-direction: column; min-height: 0; }
+.time-picker-column > span { font-size: 10px; color: var(--muted); padding: 0 6px 6px; }
+.time-picker [role="listbox"] { position: relative; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--rule) transparent; flex: 1; min-height: 0; padding: 3px; }
+.time-picker [role="listbox"]:focus-visible { outline: 1px solid var(--accent); outline-offset: 0; }
+.time-picker-option { position: relative; display: flex; align-items: center; justify-content: center; height: 40px; flex-shrink: 0; cursor: pointer; border: 1px solid transparent; font-size: 17px; }
+.time-picker-option:hover { background: var(--soft); }
+.time-picker-option[aria-selected="true"] { background: var(--soft); color: var(--accent); border-color: var(--accent); font-weight: 650; }
+.time-picker-option svg { position: absolute; right: 5px; }
+.time-picker footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; border-top: 1px solid var(--rule); padding-top: 9px; margin-top: 10px; }
+.time-picker footer button { padding: 6px 12px; font-size: 12px; min-height: 36px; }
+.time-picker footer .time-picker-done { display: flex; align-items: center; gap: 10px; background: var(--ink); color: var(--paper); }

@@ -41,7 +41,7 @@ const close = async (page) =>
   page.getByRole("button", { name: "Close dialog", exact: true }).click();
 const saved = async (page) => {
   await page.getByRole("button", { name: /SAVED/ }).click();
-  await page.getByRole("button", { name: /^Centres / }).click();
+  await page.getByRole("button", { name: /^Childcare / }).click();
 };
 const preparation = async (page) => {
   await details(page);
@@ -82,13 +82,13 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
   await start(page);
   await save(page);
   await page
-    .getByRole("button", { name: "Save request template", exact: true })
+    .getByRole("button", { name: "Save this search", exact: true })
     .click();
-  await page.getByText("What stays in this browser?", { exact: true }).click();
+  await page.getByText("About your saved items", { exact: true }).click();
   await expect(page.getByText(/Clearing browser data can remove these items/)).toBeVisible();
-  await page.getByLabel("Template name").fill("Weekday pickup");
+  await page.getByLabel("Search name").fill("Weekday pickup");
   await page
-    .getByRole("button", { name: "Save template", exact: true })
+    .getByRole("button", { name: "Save search", exact: true })
     .click();
   await page.reload({ waitUntil: "domcontentloaded" });
   await saved(page);
@@ -109,9 +109,9 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
   ).toBeVisible();
   await page.screenshot({ path: `${evidenceDir}/saved-desktop.png` });
   await page
-    .getByRole("button", { name: "Saved searches 1", exact: true })
+    .getByRole("button", { name: "Searches 1", exact: true })
     .click();
-  await page.getByRole("button", { name: "Use template", exact: true }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Use this search", exact: true }).click();
   await expect(page.locator("#service-date")).toHaveValue("");
   await expect(page.locator("#age")).toHaveValue("");
   await expect(page.locator("#care-end")).toHaveValue("18:00");
@@ -197,21 +197,21 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "No saved centres yet",
+      name: "Save childcare you like",
       exact: true,
     }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Saved searches 1", exact: true })
+    .getByRole("button", { name: "Searches 1", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Edit Weekday pickup", exact: true })
     .click();
   await page.getByLabel("Template care until", { exact: true }).fill("19:00");
   await page
-    .getByRole("button", { name: "Save template", exact: true })
+    .getByRole("button", { name: "Save search", exact: true })
     .click();
-  await expect(page.getByText(/care until 19:00/)).toBeVisible();
+  await expect(page.locator(".saved-search-times > div").filter({ hasText: "Care until" }).locator("dd")).toHaveText("19:00");
   await page
     .getByRole("button", { name: "Remove Weekday pickup", exact: true })
     .click();
@@ -267,10 +267,10 @@ test("unmatched saved place and conflicting times require correction, not silent
 }) => {
   await start(page);
   await page
-    .getByRole("button", { name: "Save request template", exact: true })
+    .getByRole("button", { name: "Save this search", exact: true })
     .click();
   await page
-    .getByRole("button", { name: "Save template", exact: true })
+    .getByRole("button", { name: "Save search", exact: true })
     .click();
   await page.route("**/api", async (route) => {
     const b = route.request().postDataJSON();
@@ -280,9 +280,9 @@ test("unmatched saved place and conflicting times require correction, not silent
   });
   await saved(page);
   await page
-    .getByRole("button", { name: "Saved searches 1", exact: true })
+    .getByRole("button", { name: "Searches 1", exact: true })
     .click();
-  await page.getByRole("button", { name: "Use template", exact: true }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Use this search", exact: true }).click();
   await expect(
     page.getByText(/This saved pickup place could not be matched/).first(),
   ).toBeVisible();
@@ -491,7 +491,7 @@ test("print action creates the standalone sheet and compact zoom keeps controls 
   await page.screenshot({ path: `${evidenceDir}/navigation-320.png` });
   await page.getByRole("button", { name: /SAVED/ }).focus();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("heading", { name: "Your saved centres & searches", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Saved for later", exact: true })).toBeVisible();
   await page.keyboard.press("Tab");
   expect(await page.locator("dialog").evaluate(el => el.contains(document.activeElement))).toBe(true);
   await page.screenshot({ path: `${evidenceDir}/keyboard-saved.png` });

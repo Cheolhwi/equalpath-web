@@ -452,7 +452,7 @@ export function Comparison({
   const best=bestForPriority(items,sort,date);
   const rows = [
     [
-      "Temporary admission",
+      "One-off care",
       (p) => p.fit.conditions.find((c) => c.id === "admission"),
     ],
     ["Age", (p) => p.fit.conditions.find((c) => c.id === "age")],
@@ -465,19 +465,19 @@ export function Comparison({
       (p) => p.fit.conditions.find((c) => c.id === "coverage"),
     ],
     [
-      "Collection deadline",
+      "Collect by",
       (p) => p.fit.conditions.find((c) => c.id === "pickup"),
     ],
-    ["Care end", (p) => p.fit.conditions.find((c) => c.id === "care")],
+    ["Care until", (p) => p.fit.conditions.find((c) => c.id === "care")],
     [
-      "Transfer / arrival",
+      "Arrival time",
       (p) => p.fit.conditions.find((c) => c.id === "transfer"),
     ],
   ];
   return (
     <>
       <p className="dialog-lead">
-        Compare care hours, pickup options and fees for the date you chose.
+        Compare fees, care hours and pickup options side by side.
       </p>
       <div className="compare-sort">
         <div className="compare-sort-control">
@@ -493,7 +493,7 @@ export function Comparison({
           <colgroup><col />{items.map(p=><col key={p.id} className={best.ids.includes(p.id) ? "comparison-best-column" : undefined} />)}</colgroup>
           <thead>
             <tr>
-              <th>YOUR CARE NEEDS</th>
+              <th>CARE DETAILS</th>
               {items.map((p) => (
                 <th key={p.id} data-provider-id={p.id} className={best.ids.includes(p.id) ? "comparison-best" : undefined}>
                   <button
@@ -541,11 +541,10 @@ export function Comparison({
               ))}
             </tr>
             <tr>
-              <th>Care end time</th>
+              <th>Care hours</th>
               {items.map((p) => (
                 <td key={p.id}>
                   {p.careEndTimeLabel ?? p.businessHoursLabel}
-                  <p>Used for the care end check.</p>
                 </td>
               ))}
             </tr>
@@ -571,7 +570,7 @@ export function Comparison({
               ))}
             </tr>
             <tr>
-              <th>Published fees</th>
+              <th>Fees</th>
               {items.map((p) => (
                 <td key={p.id}>
                   {p.fees.length
@@ -582,7 +581,7 @@ export function Comparison({
                           <SourceLink source={f.source} />
                         </div>
                       ))
-                    : "No published rate"}
+                    : "Ask the centre for a price"}
                   <p>
                     {p.cost.available
                       ? "View details for a cost estimate."
@@ -747,7 +746,7 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
         </p>
       </section>
       <button className="text-link" onClick={onCompare}>
-        Compare centres <ArrowRight size={16} />
+        Compare childcare <ArrowRight size={16} />
       </button>
     </>
   );

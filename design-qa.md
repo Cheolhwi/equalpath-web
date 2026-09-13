@@ -34,6 +34,24 @@ The existing desktop/mobile landing scenario passed, including prepared-image id
 
 The user requested a slightly longer landing-to-search transition only. Cover/reveal timings changed from 360/540 ms to 480/720 ms (1.2 seconds total). Card, dialog, popover and pointer timings are unchanged. The preloaded current artwork, white paper, Escape and reduced-motion behavior remain intact. The existing landing browser scenario checks desktop and phone entry using the shared timing constants; evidence is in `.build/entry-timing-1200/`.
 
+### Time selection and comparison language (2026-09-14)
+
+Search and saved-template time fields now share a themed hour/minute chooser. Sage checks and quiet paper backgrounds replace native blue selection. Users can type a time or choose exact hours/minutes, then apply with Done. Clear empties the field; Escape/outside dismissal cancels the draft. Existing same-day request validation and HH:mm API values are preserved.
+
+Two focused browser scenarios passed for minute precision, explicit commit/cancel, keyboard navigation, field normalization, invalid/valid submissions, no picker-triggered searches, 320 px viewport placement, nested-dialog Escape, dark theme and reduced motion. Desktop, small-phone, template and dark screenshots in `.build/time-picker/` were visually inspected. These are Chrome viewport checks, not physical-device certification.
+
+Comparison now uses “Compare childcare” and “Your shortlist”. Empty states tell users how to add options and return through “Find childcare”; one selected option gets a specific “Add one more option” prompt. Table labels and loading/update copy are shorter. Registration, fee attribution, condition results and sorting are retained.
+
+The complete 13-scenario regression run also passed, covering comparison priorities, themed sorting, saved-template reuse, failed writes, preparation, phone layouts and printing. Final evidence is in `.build/time-compare-final/`.
+
+### Saved items and a reusable-search reminder (2026-09-14)
+
+“Saved for later” has Childcare and Searches tabs, plain “Use this search” actions, labelled pickup/collect/care details, folded source dates and storage guidance at the bottom. Find childcare shows a sage saved-search reminder before its form. One saved search loads on request; multiple searches open the Searches tab. The navigation count includes both types. Existing date/age reset and public-place validation are reused; ordinary discovery never applies a saved search automatically.
+
+The new reminder scenarios verify reload persistence without automatic application, exact saved times, a fresh date/age, no automatic search, phone placement, multiple-choice routing, mode isolation and removal of the last reminder after deletion. Desktop reminder, 320 px reminder/library and saved-childcare screenshots in `.build/saved-language-final/` were visually inspected.
+
+All 15 relevant browser scenarios passed across the initial run and focused reruns after updating assertions for the new labels/layout. The final saved edit/reuse/delete journey is recorded in `.build/saved-language-recheck/`. The 130 unit checks passed as well.
+
 ## Previous revision: minimal four-artwork gallery (2026-09-13)
 
 The latest user request removes the entire marketing column and makes the landing a minimal art collection close to the reference. The original scene now fills the viewport. READ is raised by default; READ / PLAY / CREATE / TOGETHER use four distinct illustrated prints. The scene automatically cycles back and forth on a 6.5-second dwell. Branding, tiny regional context, gallery controls, motion toggle and one entry button are the only interface elements.

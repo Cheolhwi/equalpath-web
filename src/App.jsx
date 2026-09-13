@@ -20,6 +20,7 @@ import {
 import MapCanvas from "./MapCanvas.jsx";
 import Dialog from "./Dialog.jsx";
 import SelectMenu, { SORT_OPTIONS } from "./SelectMenu.jsx";
+import TimeInput from "./TimeInput.jsx";
 import {
   ProviderCard,
   Details,
@@ -39,6 +40,7 @@ import { tourSeen, saveTour } from "../shared/tour.mjs";
 import { feeSummary, drivingLabel } from "../shared/result-summary.mjs";
 import {
   SavedLibrary,
+  SavedSearchReminder,
   FavouriteEditor,
   TemplateEditor,
   SavedChanges,
@@ -229,11 +231,12 @@ export default function App({
     requestSeq.current++;
     setBusy(false);
     setDraft(next);
+    setReopening(null);
     setErrors({ date: "Choose a new service date." });
     setFailure(null);
     setReusePlace({
       state: "pending",
-      message: "Checking the saved public pickup place…",
+      message: "Loading your saved pickup place…",
     });
     setFormOpen(true);
     setMobilePane("list");
@@ -262,7 +265,7 @@ export default function App({
         setReusePlace({
           state: "invalid",
           message:
-            "The saved pickup place could not be checked. Retry this template or select the place again.",
+            "We couldn’t check your saved pickup place. Try loading this search again or choose the place on the map.",
         });
     }
   };
@@ -699,7 +702,7 @@ export default function App({
               setDialog("saved");
             }}
           >
-            <small>03</small>SAVED <em>{library.favourites.length}</em>
+            <small>03</small>SAVED <em>{library.favourites.length + library.templates.length}</em>
           </button>
           <button
             className={dialog === "preparation" ? "active" : ""}
@@ -745,6 +748,9 @@ export default function App({
             </button>
           </p>
         )}
+        {!tourOpen && <SavedSearchReminder templates={library.templates} onReuse={useTemplate}
+          onChoose={() => { setSavedTab("templates"); setDialog("saved"); }}
+          disabled={busy || reusePlace?.state === "pending"} />}
         <div className="request-heading">
           <strong>YOUR PICKUP & CARE DETAILS</strong>
           {results && (
@@ -846,28 +852,30 @@ export default function App({
           <div className="field-pair">
             <div className="field">
               <label htmlFor="deadline">Collect by</label>
-              <input
+              <TimeInput
                 id="deadline"
-                type="time"
+                label="Collect by"
                 value={draft.deadline}
-                onInput={(e) => setField("deadline", e.target.value)}
-                aria-invalid={!!errors.deadline}
+                onChange={(value) => setField("deadline", value)}
+                invalid={!!errors.deadline}
+                describedBy={errors.deadline ? "deadline-error" : undefined}
               />
               {errors.deadline && (
-                <small className="field-error">{errors.deadline}</small>
+                <small id="deadline-error" className="field-error">{errors.deadline}</small>
               )}
             </div>
             <div className="field">
               <label htmlFor="care-end">Care until</label>
-              <input
+              <TimeInput
                 id="care-end"
-                type="time"
+                label="Care until"
                 value={draft.end}
-                onInput={(e) => setField("end", e.target.value)}
-                aria-invalid={!!errors.end}
+                onChange={(value) => setField("end", value)}
+                invalid={!!errors.end}
+                describedBy={errors.end ? "care-end-error" : undefined}
               />
               {errors.end && (
-                <small className="field-error">{errors.end}</small>
+                <small id="care-end-error" className="field-error">{errors.end}</small>
               )}
             </div>
           </div>
@@ -987,10 +995,10 @@ export default function App({
             className="text-link"
             onClick={() => editTemplate({ ...draft }, null)}
           >
-            Save request template
+            Save this search
           </button>
-          <button className="text-link" onClick={() => setDialog("saved")}>
-            Use saved details
+          <button className="text-link" onClick={() => { setSavedTab("templates"); setDialog("saved"); }}>
+            Saved searches
           </button>
         </div>
         {failure && (
@@ -1234,7 +1242,7 @@ export default function App({
         <div className="compare-tray">
           <span>{compareIds.length} / 3 selected</span>
           <button onClick={() => loadComparison()}>
-            Compare centres <ArrowRight size={16} />
+            Compare childcare <ArrowRight size={16} />
           </button>
           <button
             aria-label="Clear comparison"
@@ -1259,17 +1267,17 @@ export default function App({
           titleAccessory={dialog === "details" && profile ? <RegistrationBadge p={profile.p} /> : null}
           title={
             dialog === "saved"
-              ? "Your saved centres & searches"
+              ? "Saved for later"
               : dialog === "save-favourite"
                 ? "Save this centre"
                 : dialog === "save-template"
-                  ? "Save your search details"
+                  ? "Save this search"
                   : dialog === "preparation"
                     ? "Get ready for care"
                     : dialog === "details"
                       ? profile?.p.name
                       : dialog === "compare"
-                        ? "Compare centres"
+                        ? "Compare childcare"
                         : dialog === "enquiry"
                           ? "Questions for the centre"
                           : dialog === "settings"
@@ -1282,13 +1290,13 @@ export default function App({
             dialog === "preparation"
               ? "YOUR VISIT"
               : ["saved", "save-template", "save-favourite"].includes(dialog)
-                ? "SAVED / THIS BROWSER"
+                ? "YOUR SAVED ITEMS"
                 : dialog === "details"
                   ? "CENTRE DETAILS"
                   : dialog === "enquiry"
                     ? "BEFORE YOU GET IN TOUCH"
                     : dialog === "compare"
-                      ? "YOUR SELECTED CENTRES"
+                      ? "YOUR SHORTLIST"
                       : "EQUALPATH / INFORMATION"
           }
           wide={["compare", "details", "preparation", "saved"].includes(dialog)}
@@ -1424,13 +1432,14 @@ export default function App({
             (compareIds.length < 2 ? (
               <div className="empty-state">
                 <Scale size={31} />
-                <h3>Choose two or three centres to compare</h3>
+                <h3>{compareIds.length === 1 ? "Add one more option" : "Find a few options first"}</h3>
                 <p>
-                  Add up to three from the results. They will be checked against
-                  the same request.
+                  {compareIds.length === 1
+                    ? "You’ve selected one childcare option. Choose another to compare fees, care hours and pickup."
+                    : "Tap Compare on two or three childcare options to see them side by side."}
                 </p>
                 <button className="primary" onClick={close}>
-                  Back to results <ArrowRight size={16} />
+                  Find childcare <ArrowRight size={16} />
                 </button>
               </div>
             ) : (
@@ -1438,14 +1447,14 @@ export default function App({
                 {dialogBusy && (
                   <p className="loading-line" role="status">
                     <span className="spinner" />
-                    Checking the selected centres…
+                    Loading your comparison…
                   </p>
                 )}
                 {dialogError && (
                   <div className="error-box" role="alert">
                     <p>{errorMessage(dialogError)}</p>
                     <button className="text-link" onClick={retryDialog}>
-                      Retry comparison
+                      Try again
                     </button>
                   </div>
                 )}
@@ -1456,7 +1465,7 @@ export default function App({
                     </p>
                     {requestChanged && (
                       <p className="notice">
-                        This comparison still belongs to the earlier request.
+                        Your search details have changed. Update your search to compare options for your new plans.
                       </p>
                     )}
                     <div
