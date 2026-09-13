@@ -1,3 +1,4 @@
+import { searchRadius } from "./request.mjs";
 export const MIN_SEARCH_ZOOM = 12;
 export function areaMoved(a, b) {
   if (!a || !b) return false;
@@ -6,5 +7,5 @@ export function areaMoved(a, b) {
   return Math.hypot(dx, dy) >= 0.5;
 }
 export function nearbyCacheKey(body) {
-  return JSON.stringify([body.mode ?? "live", body.radius ?? 5, Number(body.center?.lat).toFixed(3), Number(body.center?.lng).toFixed(3)]);
+  return JSON.stringify([body.mode ?? "live", searchRadius(body.radius), Number(body.center?.lat).toFixed(3), Number(body.center?.lng).toFixed(3)]);
 }

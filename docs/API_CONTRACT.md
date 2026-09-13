@@ -40,7 +40,7 @@ The Appwrite response envelope is parsed from `responseBody`. Application errors
 | `health` | mode | contract, mode, version, release, accepted / withheld counts, regions, distance basis |
 | `places` | mode, query | up to 10 OSM/Photon address/place candidates with coordinates; partial names, typo tolerance and Malay road abbreviations; independent of the childcare catalog |
 | `reverse` | mode, point `{lat,lng}` | nearest named OSM street within 1 km, or null; returns the original pickup coordinates with a street/locality label; independent of the catalog |
-| `nearby` | mode, center `{lat,lng}`, optional radius 5/10/25/50 | nearest 20 public childcare records within radius (default 5 km), total count and catalog version; no date/time/fit required or inferred |
+| `nearby` | mode, center `{lat,lng}`, optional radius 5/10 | nearest 20 located public childcare records within radius (default and maximum 10 km), total count and catalog version; no date/time/fit required or inferred |
 | `search` | mode, request, page | 20 candidates per page, applied request, counts, condition checks, cost availability, ordering explanation |
 | `details` | mode, request, id, optional version | one branch, source facts, registration, conditions and questions |
 | `compare` | mode, request, 1–3 unique ids, optional version | independent branch facts assessed under the same request, ordered by the selected factor |
@@ -57,7 +57,7 @@ UI comparison requires at least two candidates. `mode` is exactly `live` or `dem
 }
 ```
 
-Times are on one day in Asia/Kuala_Lumpur. Age is completed age 0–6 or empty; no birth date is collected. `transport` is `institution`, `self` or empty. `radius` is 5, 10, 25, 50 km or null. Radius and distance sorting use straight-line distance; `driving` is a separate road-network estimate. A location without coordinates is retained with an explicit limitation, even under a radius filter, and sorts after located candidates within its conflict group. All known conflicts rank below non-conflicts before pagination. Pickup coordinates are checked against KL and Selangor polygons; Putrajaya is excluded before the Selangor test. Province/coordinate disagreements and unresolved linked JKM branches are withheld.
+Times are on one day in Asia/Kuala_Lumpur. Age is completed age 0–6 or empty; no birth date is collected. `transport` is `institution`, `self` or empty. `radius` is 5 or 10 km; it defaults to 10 km. Both `search` and `nearby` enforce a maximum of 10 km. Legacy null, omitted, invalid and larger radius values normalize to 10 km, never unlimited. Radius and distance sorting use straight-line distance; `driving` is a separate road-network estimate and road distance can exceed the search radius. Records without usable coordinates and records outside the radius are excluded before counts, ordering, pagination, suggestions and routing. `missingLocations` remains zero for search responses for compatibility. An empty neighbourhood stays empty; there is no automatic radius expansion. Explicit saved-provider detail and comparison lookups remain available by ID. All known conflicts rank below non-conflicts before pagination. Pickup coordinates are checked against KL and Selangor polygons; Putrajaya is excluded before the Selangor test. Province/coordinate disagreements and unresolved linked JKM branches are withheld.
 
 ## Evidence model
 

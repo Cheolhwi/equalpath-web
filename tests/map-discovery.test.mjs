@@ -59,7 +59,7 @@ test("nearby discovery works without date/time and returns distance-ordered coor
   const r = await api({ action: "nearby", center: DEFAULT_MAP.center });
   assert.ok(r.items.length > 0); assert.ok(r.items.length <= 20);
   for (const [i,p] of r.items.entries()) {
-    assert.ok(p.location); assert.ok(p.distanceKm <= 5); assert.equal(p.fit,undefined); assert.equal(p.enquiries,undefined);
+    assert.ok(p.location); assert.ok(p.distanceKm <= 10); assert.equal(p.fit,undefined); assert.equal(p.enquiries,undefined);
     if(i) assert.ok(r.items[i-1].distanceKm <= p.distanceKm);
   }
   await assert.rejects(api({ action: "nearby", center: {lat:2.9264,lng:101.6964} }), { code:"OUTSIDE_SERVICE_AREA" });

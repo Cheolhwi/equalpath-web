@@ -3,6 +3,7 @@ import {
   canonicalRequest,
   requestErrors,
   needsPickupAddress,
+  searchRadius,
 } from "../shared/request.mjs";
 import {
   assess,
@@ -59,8 +60,8 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       const center = { lat: body.center?.lat, lng: body.center?.lng };
       if (!regions.includes(regionAt(center)))
         throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
-      const radius = [5, 10, 25, 50].includes(body.radius) ? body.radius : 5;
-      const candidates = items.filter((p) => p.location && distanceKm(center, p.location) <= radius)
+      const radius = searchRadius(body.radius);
+      const candidates = items.filter((p) => withinRadius(center, p.location, radius))
         .map((p) => ({ id: p.id, name: p.name, category: p.category, address: p.address, district: p.district, region: p.region, location: p.location, fees: p.fees, distanceKm: distanceKm(center, p.location) }))
         .sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
       return { ...meta, center, radius, total: candidates.length, items: candidates.slice(0, 20) };
@@ -150,9 +151,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
                 .join(" ")
                 .toLowerCase()
                 .includes(q)) &&
-            (!request.radius ||
-              !p.location ||
-              distanceKm(request.pickup, p.location) <= request.radius),
+            withinRadius(request.pickup, p.location, request.radius),
         )
         .map(hydrate);
       if (!request.includeUnknown)
@@ -202,6 +201,10 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       ordering: ordering(request.sort, hydrated, request.date),
     };
   };
+}
+function withinRadius(center, location, radius) {
+  const distance = distanceKm(center, location);
+  return Number.isFinite(distance) && distance <= radius;
 }
 function ordering(sort, items, date) {
   return {

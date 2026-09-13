@@ -3,10 +3,10 @@ import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog } from "../../server/fixtures.mjs";
 import { mkdirSync } from "node:fs";
 const dir=process.env.QA_EVIDENCE_DIR || ".build/results-qa";mkdirSync(dir,{recursive:true});
-async function setup(page, calls, routing=true, coLocated=false){
+async function setup(page, calls, routing=true, coLocated=false, extraItems=[]){
   await page.addInitScript(()=>localStorage.setItem("equalpath:tour:v1",'{"version":1,"status":"skipped"}'));
   const catalog=coLocated?{...fixtureCatalog,items:fixtureCatalog.items.map(p=>({...p,location:p.location?{lat:3.139,lng:101.6869}:null}))}:fixtureCatalog;
-  const api=createAPI({store:{catalog:async()=>catalog},drivingRoutes:async(_,items)=>items.map(p=>({...p,driving:routing&&p.location?{state:"available",minutes:8,distanceKm:5.5,traffic:false}:{state:"unavailable"}}))});
+  const api=createAPI({store:{catalog:async()=>({...catalog,items:[...catalog.items,...extraItems]})},drivingRoutes:async(_,items)=>items.map(p=>({...p,driving:routing&&p.location?{state:"available",minutes:8,distanceKm:5.5,traffic:false}:{state:"unavailable"}}))});
   await page.route("**/api",async route=>{const b=route.request().postDataJSON();calls.push(b);await route.fulfill({json:{ok:true,...await api(b)}});});
 }
 test("zooming far out and repeated dragging do not query the backend; zoom-in requires a deliberate refresh",async({page})=>{
@@ -35,6 +35,31 @@ async function search(page){
   await page.goto("/#discover");await page.locator("#service-date").fill("2026-09-22");await page.locator("#deadline").fill("16:00");await page.locator("#care-end").fill("18:00");await page.locator("#age").selectOption("4");await page.locator("#transport").selectOption("institution");await page.getByRole("button",{name:"Find care options",exact:true}).click();
   await expect(page.locator(".provider-row").first()).toBeVisible();
 }
+test("search offers only 5 or 10 km and the map and count exclude distant or unlocated centres",async({page})=>{
+  const base=fixtureCatalog.items[0];
+  const at=(id,km)=>({...base,id,name:id,location:{lat:3.139+km/6371*180/Math.PI,lng:101.6869}});
+  const calls=[];await setup(page,calls,true,false,[at("Inside radius",9.99),at("Outside radius",10.01)]);await search(page);
+  expect(calls.find(c=>c.action==="search").request.radius).toBe(10);
+  await expect(page.locator(".results-toolbar strong")).toHaveText("10");
+  await expect(page.locator(".results-toolbar > div > span")).toHaveText("centres within 10 km");
+  await expect(page.locator(".provider-row")).toHaveCount(10);
+  await expect(page.locator(".provider-pin")).toHaveCount(10);
+  await expect(page.locator(".provider-row").filter({hasText:"Outside radius"})).toHaveCount(0);
+  await expect(page.locator(".provider-row").filter({hasText:"Cloud Care"})).toHaveCount(0);
+  await page.screenshot({path:dir+"/radius-desktop.png"});
+  await page.setViewportSize({width:390,height:844});await page.locator(".results-toolbar").scrollIntoViewIfNeeded();
+  await page.screenshot({path:dir+"/radius-mobile.png"});
+  await page.getByRole("button",{name:/Edit request/}).click();
+  await page.locator(".search-refinements summary").click();
+  await expect(page.locator("#radius option")).toHaveText(["Within 5 km (straight-line)","Within 10 km (straight-line)"]);
+  await page.locator("#radius").selectOption("5");
+  await page.getByRole("button",{name:/Update results/}).click();
+  await expect(page.locator(".results-toolbar strong")).toHaveText("9");
+  await expect(page.locator(".results-toolbar > div > span")).toHaveText("centres within 5 km");
+  await expect(page.locator(".provider-row")).toHaveCount(9);
+  await expect(page.locator(".provider-pin")).toHaveCount(9);
+  await expect(page.locator(".provider-row").filter({hasText:"Inside radius"})).toHaveCount(0);
+});
 test("result cards show drive time and fee basis, while conflicts stay below other results on desktop and mobile",async({page})=>{
   const calls=[];await setup(page,calls);await search(page);
   const row=page.locator(".provider-row").first();await expect(row).toContainText("About 8 min by car");await expect(row).toContainText("estimated total");
@@ -62,8 +87,7 @@ test("result cards show drive time and fee basis, while conflicts stay below oth
   await expect.poll(async()=>page.locator(".provider-pin.suggested").evaluateAll(pins=>pins.every(pin=>{const r=pin.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=105&&r.bottom<innerHeight-65;}))).toBe(true);
   await page.screenshot({path:dir+"/suggestions-mobile.png"});
   await page.getByRole("button",{name:"Search & results",exact:true}).click();
-  await page.locator(".provider-row").filter({hasText:"Demo · Cloud Care"}).getByRole("button",{name:/View details/}).click();
-  await expect(page.getByRole("dialog")).toContainText("Driving time unavailable");
+  await expect(page.locator(".provider-row").filter({hasText:"Demo · Cloud Care"})).toHaveCount(0);
 });
 test("route outage keeps results and published prices, without fake drive estimates",async({page})=>{
   const calls=[];await setup(page,calls,false);await search(page);

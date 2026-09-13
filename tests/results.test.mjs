@@ -6,9 +6,48 @@ import { fixtureCatalog, demoPickup } from "../server/fixtures.mjs";
 import { sortProviders, suggestProviders, bestForPriority } from "../shared/conditions.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { areaMoved, nearbyCacheKey } from "../shared/map-search.mjs";
+import { canonicalRequest } from "../shared/request.mjs";
 const origin = { lat: 3.139, lng: 101.6869 };
 const places = [{ id:"a", location:{lat:3.15,lng:101.7} },{ id:"b",location:{lat:3.16,lng:101.72} }];
 const response = { ok:true, json:async()=>({code:"Ok",durations:[[433, null]],distances:[[5485.2,null]],sources:[{distance:10}],destinations:[{distance:10},{distance:10}]}) };
+test("10 km cap applies before counts, pagination and routing, including legacy unlimited requests", async()=>{
+  const base = fixtureCatalog.items[0];
+  const north = km => ({ lat: origin.lat + km / 6371 * 180 / Math.PI, lng: origin.lng });
+  const items = [
+    ...Array.from({length:22},(_,i)=>({...base,id:`near-${i}`,location:north(4)})),
+    {...base,id:"edge-inside",location:north(9.999)},
+    {...base,id:"edge-outside",location:north(10.001)},
+    {...base,id:"far",location:north(30)},
+    {...base,id:"unlocated",location:null},
+    {...base,id:"invalid",location:{lat:NaN,lng:origin.lng}},
+  ];
+  const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(_,rows)=>{
+    assert.ok(rows.every(p=>Number.isFinite(p.distanceKm)&&p.distanceKm<=10));return rows;
+  }});
+  const request={pickup:demoPickup,date:"2026-09-14",deadline:"13:00",end:"18:00",age:"",transport:"self"};
+  for(const radius of [undefined,null,"",25,50,100000,"50",-1,"invalid"]){
+    const r=await api({action:"search",request:{...request,radius}});
+    assert.equal(r.request.radius,10);assert.equal(r.total,23);assert.equal(r.items.length,20);assert.equal(r.missingLocations,0);
+    const last=await api({action:"search",request:{...request,radius},page:1});
+    assert.equal(last.items.length,3);
+    assert.ok([...r.items,...last.items].every(p=>p.distanceKm<=10));
+    const nearby=await api({action:"nearby",center:origin,radius});
+    assert.equal(nearby.radius,10);assert.equal(nearby.total,23);assert.equal(nearby.items.length,20);
+    assert.ok(nearby.items.every(p=>p.distanceKm<=10));
+  }
+  const r=await api({action:"search",request:{...request,radius:5}});
+  assert.equal(r.request.radius,5);assert.equal(r.total,22);
+  assert.equal((await api({action:"nearby",center:origin,radius:5})).total,22);
+  assert.equal(canonicalRequest({...request,radius:"5"}).radius,5);
+});
+test("no located centres within range returns an empty result without expanding the search",async()=>{
+  const base=fixtureCatalog.items[0];
+  const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items:[{...base,id:"unknown",location:null},{...base,id:"far",location:{lat:3.5,lng:101.7}}]})},drivingRoutes:async(_,rows)=>rows});
+  const request={pickup:demoPickup,date:"2026-09-14",deadline:"13:00",end:"18:00"};
+  for(const body of [{action:"search",request},{action:"nearby",center:origin}]){
+    const r=await api(body);assert.equal(r.total,0);assert.deepEqual(r.items,[]);
+  }
+});
 test("driving uses one bounded table, caches pairs across search/compare and coalesces concurrent requests", async()=>{
   let calls=0;
   const routes=createDrivingRoutes({interval:0,fetcher:async url=>{

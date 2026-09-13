@@ -27,7 +27,7 @@ import {
   Status,
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
-import { requestErrors, todayKL, requestCaption, needsPickupAddress } from "../shared/request.mjs";
+import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
@@ -58,7 +58,7 @@ const initial = () => ({
   end: "",
   age: "",
   transport: "",
-  radius: 5,
+  radius: MAX_SEARCH_RADIUS_KM,
   query: "",
   includeUnknown: true,
   includeConflicts: true,
@@ -923,20 +923,19 @@ export default function App({
               <label htmlFor="radius">Distance from pickup</label>
               <select
                 id="radius"
-                value={draft.radius ?? ""}
+                value={draft.radius}
                 onChange={(e) =>
                   setField(
                     "radius",
-                    e.target.value === "" ? null : Number(e.target.value),
+                    Number(e.target.value),
                   )
                 }
               >
-                {[5, 10, 25, 50].map((n) => (
+                {[5, MAX_SEARCH_RADIUS_KM].map((n) => (
                   <option key={n} value={n}>
                     Within {n} km (straight-line)
                   </option>
                 ))}
-                <option value="">All KL + Selangor</option>
               </select>
             </div>
             <label className="checkbox">
@@ -1020,7 +1019,7 @@ export default function App({
             <div className="results-toolbar">
               <div>
                 <strong>{results.total.toLocaleString()}</strong>
-                <span>centres found</span>
+                <span>centres within {results.request.radius} km</span>
               </div>
               <label>
                 <span className="sr-only">Order search results</span>
@@ -1062,13 +1061,6 @@ export default function App({
                 Page {results.page + 1} · {items.length} shown
               </span>
             </div>
-            {results.missingLocations > 0 && (
-              <p className="location-limit">
-                {results.total - results.missingLocations} centres mapped +{" "}
-                {results.missingLocations} without coordinates. Their distance
-                cannot be checked.
-              </p>
-            )}
             <div
               className="provider-list"
               ref={listRef}
@@ -1095,9 +1087,7 @@ export default function App({
                   <h2>No centres found</h2>
                   <p>
                     Area:{" "}
-                    {results.request.radius
-                      ? `${results.request.radius} km from pickup`
-                      : "all KL and Selangor"}
+                    {results.request.radius} km from pickup
                     .{" "}
                     {results.request.query &&
                       `Name / area: “${results.request.query}”. `}

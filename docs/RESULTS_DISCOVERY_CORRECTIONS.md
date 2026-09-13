@@ -2,6 +2,7 @@
 
 ## User-visible changes
 
+- Search and neighbourhood discovery now default to a maximum 10 km straight-line radius, with an optional 5 km search. Missing/invalid coordinates and more distant centres are excluded before totals, pagination, suggestions and routing. Old unlimited/25/50 km requests normalize to 10 km at the API boundary. Empty results never expand automatically. The result count displays the applied radius; road-distance labels still describe the separate driving route.
 - Panning/zooming saves the viewport without querying nearby childcare. **Search this area** requires zoom 12 or closer and movement of at least 500 m from the loaded area. A previously saved wide map also waits for zoom-in and explicit refresh. Selecting a pickup place and first loading a neighbourhood remain automatic. The browse button is disabled during an active request.
 - Nearby calls share pending requests and a 60-second, 32-entry browser-memory cache keyed by mode/radius and approximately 100 m cells. No new persistent search history is written.
 - Search and comparison put known conflicts below all results without a known conflict, before pagination. Fewer conflicts rank ahead of more conflicts; the chosen sort applies within that group. Lower-priority cards explain their status.
