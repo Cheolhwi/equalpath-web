@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import SelectMenu, { SORT_OPTIONS } from "./SelectMenu.jsx";
 import {
   Bookmark,
   ClipboardList,
@@ -475,33 +476,11 @@ export function Comparison({
         Compare care hours, pickup options and fees for the date you chose.
       </p>
       <div className="compare-sort">
-        <label>
-          Sort by{" "}
-          <select
-            aria-label="Comparison priority"
-            value={sort}
-            onChange={(e) => onSort(e.target.value)}
-          >
-            {[
-              ["distance", "Nearest first"],
-              ["price", "Lowest monthly fee"],
-              ["closing", "Later care end time"],
-              ["pickup", "Centres with pickup"],
-              ["name", "Centre name"],
-            ].map(([id, label]) => (
-              <option
-                value={id}
-                key={id}
-                disabled={ordering?.available[id] === false}
-              >
-                {label}
-                {ordering?.available[id] === false
-                  ? " — facts unavailable"
-                  : ""}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="compare-sort-control">
+          <span>Sort by</span>
+          <SelectMenu label="Comparison priority" value={sort} options={SORT_OPTIONS}
+            available={ordering?.available} onChange={onSort} />
+        </div>
         <OrderingNote ordering={ordering} />
         <p className="comparison-priority-message" role="status">{best.message}</p>
       </div>

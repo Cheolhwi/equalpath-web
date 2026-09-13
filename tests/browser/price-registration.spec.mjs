@@ -16,7 +16,7 @@ test('monthly price changes result/map/comparison priority and registration icon
   });
   await page.goto('/#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','higher');
-  await page.getByLabel('Order search results').selectOption('price');
+  await page.getByRole('combobox',{name:'Order search results',exact:true}).click();await page.getByRole('option',{name:'Lowest monthly fee',exact:true}).click();
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','lowest');
   expect(await page.locator('.provider-row').evaluateAll(xs=>xs.map(x=>x.dataset.providerId))).toEqual(['lowest','budget','higher','unknown','conflict']);
   await expect(page.locator('#card-budget')).toContainText('Estimated MYR 400 / month');
@@ -43,13 +43,13 @@ test('monthly price changes result/map/comparison priority and registration icon
   await page.keyboard.press('Escape');
   for(const id of ['higher','budget','lowest'])await page.getByRole('button',{name:`Compare Test ${id}`,exact:true}).click();
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/COMPARE/}).click();
-  await expect(page.getByLabel('Comparison priority').locator('option[value="distance"]')).toHaveText('Nearest first');
+  await expect(page.getByRole('combobox',{name:'Comparison priority'})).toHaveText('Nearest first');
   await expect(page.getByRole('dialog')).not.toContainText(/straight.line/i);
   const locations=page.locator('.comparison-scroll tr').filter({has:page.getByText('Location',{exact:true})});
   await expect(locations).toHaveCount(1);
   await expect(locations).not.toContainText(/\bkm\b/);
   await expect(page.locator('.comparison-scroll')).toContainText('3 km by road');
-  await page.getByLabel('Comparison priority').selectOption('price');
+  await page.getByRole('combobox',{name:'Comparison priority',exact:true}).click();await page.getByRole('option',{name:'Lowest monthly fee',exact:true}).click();
   await expect(page.locator('th.comparison-best')).toHaveCount(1);await expect(page.locator('th.comparison-best')).toHaveAttribute('data-provider-id','lowest');
   await expect(page.locator('.comparison-best-tag')).toHaveText('Lowest monthly fee');
 });
@@ -71,7 +71,7 @@ test('nearby conflicts stay in a full 20-centre page and remain selectable on th
   const conflictPin=page.locator('.provider-pin.conflict');await expect(conflictPin).toHaveCount(1);
   await conflictPin.click();await expect(conflictPin).toHaveAttribute('aria-pressed','true');
   await expect(page.getByRole('button',{name:'Select Nearby 0',exact:true})).toHaveAttribute('aria-pressed','true');
-  await page.getByLabel('Order search results').selectOption('price');
+  await page.getByRole('combobox',{name:'Order search results',exact:true}).click();await page.getByRole('option',{name:'Lowest monthly fee',exact:true}).click();
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','near-19');
   expect(await page.locator('.provider-row').evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort())).toEqual(firstIds);
   await expect(page.locator('.provider-row').last()).toHaveAttribute('data-provider-id','near-0');

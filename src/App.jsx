@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import MapCanvas from "./MapCanvas.jsx";
 import Dialog from "./Dialog.jsx";
+import SelectMenu, { SORT_OPTIONS } from "./SelectMenu.jsx";
 import {
   ProviderCard,
   Details,
@@ -1021,38 +1022,18 @@ export default function App({
                 <strong>{results.total.toLocaleString()}</strong>
                 <span>centres within {results.request.radius} km</span>
               </div>
-              <label>
-                <span className="sr-only">Order search results</span>
-                <select
-                  aria-label="Order search results"
-                  value={results.request.sort}
-                  disabled={busy}
-                  onChange={(e) => {
-                    const r = { ...draft, sort: e.target.value };
-                    setDraft(r);
-                    search(null, 0, r);
-                  }}
-                >
-                  {[
-                    ["distance", "Nearest first"],
-                    ["price", "Lowest monthly fee"],
-                    ["closing", "Later care end time"],
-                    ["pickup", "Centres with pickup first"],
-                    ["name", "By name"],
-                  ].map(([id, label]) => (
-                    <option
-                      key={id}
-                      value={id}
-                      disabled={results.ordering?.available[id] === false}
-                    >
-                      {label}
-                      {results.ordering?.available[id] === false
-                        ? " — unavailable"
-                        : ""}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <SelectMenu
+                label="Order search results"
+                value={results.request.sort}
+                disabled={busy}
+                options={SORT_OPTIONS}
+                available={results.ordering?.available}
+                onChange={(sort) => {
+                  const r = { ...draft, sort };
+                  setDraft(r);
+                  search(null, 0, r);
+                }}
+              />
             </div>
             <div className="results-note">
               <button onClick={() => setDialog("ordering")}>

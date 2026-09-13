@@ -22,15 +22,15 @@ test('restored map points gain a street address and priority highlights switch, 
   await expect(page.locator('.dialog-context')).toContainText('Jalan Stesen Sentral');
   await expect(highlighted).toHaveCount(1);await expect(highlighted).toHaveAttribute('data-provider-id','near');
   await page.screenshot({path:dir+'/comparison-nearest-desktop.png'});
-  await page.getByLabel('Comparison priority').selectOption('closing');await expect(highlighted).toHaveCount(2);
+  await page.getByRole('combobox',{name:'Comparison priority',exact:true}).click();await page.getByRole('option',{name:'Later care end time',exact:true}).click();await expect(highlighted).toHaveCount(2);
   expect(await highlighted.evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort())).toEqual(['late','tied']);
   await expect(page.locator('.comparison-priority-message')).toContainText('tie');
-  await page.getByLabel('Comparison priority').selectOption('pickup');await expect(highlighted.locator('.comparison-best-tag')).toHaveText(['Offers pickup','Offers pickup']);
+  await page.getByRole('combobox',{name:'Comparison priority',exact:true}).click();await page.getByRole('option',{name:'Centres with pickup first',exact:true}).click();await expect(highlighted.locator('.comparison-best-tag')).toHaveText(['Offers pickup','Offers pickup']);
   await page.setViewportSize({width:390,height:844});await page.getByLabel('Comparison priority').scrollIntoViewIfNeeded();
   await page.screenshot({path:dir+'/comparison-pickup-mobile.png'});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByRole('button',{name:'Remove Test tied from comparison',exact:true}).click();
   await expect(highlighted).toHaveCount(1);await expect(highlighted).toHaveAttribute('data-provider-id','late');
-  await page.getByLabel('Comparison priority').selectOption('name');await expect(highlighted).toHaveCount(0);
+  await page.getByRole('combobox',{name:'Comparison priority',exact:true}).click();await page.getByRole('option',{name:'By name',exact:true}).click();await expect(highlighted).toHaveCount(0);
   await expect(page.locator('.comparison-priority-message')).toContainText('Alphabetical');
 });
