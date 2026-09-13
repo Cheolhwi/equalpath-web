@@ -47,3 +47,37 @@ test('monthly price changes result/map/comparison priority and registration icon
   await expect(page.locator('th.comparison-best')).toHaveCount(1);await expect(page.locator('th.comparison-best')).toHaveAttribute('data-provider-id','lowest');
   await expect(page.locator('.comparison-best-tag')).toHaveText('Lowest monthly fee');
 });
+
+test('nearby conflicts stay in a full 20-centre page and remain selectable on the map',async({page})=>{
+  const base=fixtureCatalog.items[0],items=Array.from({length:26},(_,i)=>({...structuredClone(base),id:`near-${i}`,name:`Nearby ${i}`,location:{lat:3.139+i*.001,lng:101.6869+(i%3)*.001},feeRule:null,fees:[{amount:1000-i*10,currency:'MYR',basis:'month',kind:'programme'}],admission:{...base.admission,value:i!==0}}));
+  const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(_,rows)=>rows.map(p=>({...p,driving:{state:'available',minutes:8,distanceKm:3}}))});
+  await page.route('**/api',async route=>route.fulfill({json:{ok:true,...await api(route.request().postDataJSON())}}));
+  await page.addInitScript(()=>{
+    localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
+    localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
+  });
+  await page.goto('/#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await expect(page.locator('.provider-row')).toHaveCount(20);
+  await expect(page.locator('.provider-row').last()).toHaveAttribute('data-provider-id','near-0');
+  const firstIds=await page.locator('.provider-row').evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort());
+  expect(firstIds).toEqual(items.slice(0,20).map(p=>p.id).sort());
+  await expect(page.locator('.provider-pin')).toHaveCount(20);
+  const conflictPin=page.locator('.provider-pin.conflict');await expect(conflictPin).toHaveCount(1);
+  await conflictPin.click();await expect(conflictPin).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('button',{name:'Select Nearby 0',exact:true})).toHaveAttribute('aria-pressed','true');
+  await page.getByLabel('Order search results').selectOption('price');
+  await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','near-19');
+  expect(await page.locator('.provider-row').evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort())).toEqual(firstIds);
+  await expect(page.locator('.provider-row').last()).toHaveAttribute('data-provider-id','near-0');
+  await page.getByRole('button',{name:'Why this order?',exact:true}).click();
+  await expect(page.getByRole('dialog')).toContainText('next 20 nearest centres');
+  await page.getByRole('button',{name:'Close dialog',exact:true}).click();
+  await page.locator('#card-near-0').scrollIntoViewIfNeeded();await page.screenshot({path:out+'/nearest-page-conflict-desktop.png'});
+  await page.getByRole('button',{name:'Next',exact:true}).click();
+  await expect(page.locator('.provider-row')).toHaveCount(6);
+  expect(await page.locator('.provider-row').evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort())).toEqual(items.slice(20).map(p=>p.id).sort());
+  await page.getByRole('button',{name:'Previous',exact:true}).click();await expect(page.locator('.provider-row')).toHaveCount(20);
+  await page.setViewportSize({width:390,height:844});await page.getByRole('button',{name:'Map',exact:true}).click();
+  await expect(page.locator('.provider-pin.conflict')).toHaveCount(1);
+  await page.screenshot({path:out+'/nearest-page-conflict-mobile.png'});
+});

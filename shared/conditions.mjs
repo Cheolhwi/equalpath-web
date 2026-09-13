@@ -404,7 +404,7 @@ export const priorityValue = (p, sort, date) =>
 export function sortProviders(items, sort, date) {
   return [...items].sort((a, b) => {
     // Conflicts always rank below every result without a known conflict,
-    // regardless of the selected secondary ordering and before pagination.
+    // within the supplied page or comparison, regardless of secondary ordering.
     const conflicts = p => p.fit?.counts?.conflict ?? 0;
     const group = Number(conflicts(a) > 0) - Number(conflicts(b) > 0);
     if (group) return group;

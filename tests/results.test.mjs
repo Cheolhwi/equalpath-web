@@ -69,21 +69,41 @@ test("remote road snaps and null route values are not represented as zero-minute
   const out=await routes(origin,[...places,{id:"c",location:null}]);
   assert.equal(out[0].driving.reason,"location_too_far_from_road");assert.equal(out[1].driving.reason,"no_route");assert.equal(out[2].driving.reason,"missing_location");
 });
-test("all secondary sorts place known conflicts below non-conflicts before pagination",async()=>{
-  for(const sort of ["name","distance","closing","pickup"]){
-    const rows=[{id:"a",name:"A",distanceKm:.1,fit:{counts:{conflict:1}}},{id:"b",name:"B",distanceKm:40,fit:{counts:{conflict:0}}},{id:"c",name:"C",distanceKm:.01,fit:{counts:{conflict:2}}}];
-    assert.deepEqual(sortProviders(rows,sort,"2026-09-14").map(p=>p.id),["b","a","c"]);
-  }
+test("each nearest page retains close conflicts, ranks them last and stays stable across strategies",async()=>{
   const base=fixtureCatalog.items[0];
-  const items=Array.from({length:45},(_,i)=>({...base,id:String(i).padStart(2,"0"),location:origin,admission:{value:i>=22}}));
+  const items=Array.from({length:45},(_,i)=>({...base,id:String(i).padStart(2,"0"),name:`Centre ${44-i}`,location:{lat:origin.lat+(i+1)*.0009,lng:origin.lng},admission:{value:i%7!==0}})).reverse();
   const batches=[];
-  const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(o,rows)=>{batches.push(rows);return rows;}});
-  const request={pickup:demoPickup,date:"2026-09-14",deadline:"13:00",end:"18:00",age:"4",transport:"self",radius:5,sort:"distance"};
-  const first=await api({action:"search",request});
-  assert.equal(first.items.length,20);assert.ok(first.items.every(p=>p.fit.counts.conflict===0));assert.equal(batches[0].length,20);
-  const second=await api({action:"search",request,page:1});
-  assert.ok(second.items.slice(0,3).every(p=>p.fit.counts.conflict===0));assert.ok(second.items.slice(3).every(p=>p.fit.counts.conflict>0));
-  await api({action:"nearby",center:origin});assert.equal(batches.length,2);
+  const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(o,rows)=>{batches.push(rows);assert.ok(rows.length<=20);return rows;}});
+  const request={pickup:demoPickup,date:"2026-09-14",deadline:"13:00",end:"18:00",age:"4",transport:"self",radius:5};
+  for(const sort of ["distance","price","closing","pickup","name"]){
+    const pages=[];
+    for(let page=0;page<3;page++){
+      const result=await api({action:"search",request:{...request,sort},page});
+      pages.push(...result.items);
+      const expected=Array.from({length:Math.min(20,45-page*20)},(_,i)=>String(i+page*20).padStart(2,"0"));
+      assert.deepEqual(result.items.map(p=>p.id).sort(),expected);
+      assert.equal(result.total,45);assert.equal(result.ordering.pageSelection,"nearest");
+      const firstConflict=result.items.findIndex(p=>p.fit.counts.conflict>0);
+      assert.ok(firstConflict>0);assert.ok(result.items.slice(firstConflict).every(p=>p.fit.counts.conflict>0));
+      assert.ok(result.items.filter(p=>p.fit.counts.conflict>0).every(p=>!p.suggested));
+      if(page===0)assert.ok(result.items.some(p=>p.id==="00"&&p.fit.counts.conflict>0));
+    }
+    assert.equal(new Set(pages.map(p=>p.id)).size,45);
+  }
+  const without=await api({action:"search",request:{...request,includeConflicts:false}});
+  assert.equal(without.total,38);assert.equal(without.items.length,20);assert.ok(without.items.every(p=>!p.fit.counts.conflict));
+  const before=batches.length;
+  await api({action:"nearby",center:origin});assert.equal(batches.length,before);
+});
+test("a neighbourhood of conflicting centres still returns the nearest 20 without suggesting them",async()=>{
+  const base=fixtureCatalog.items[0];
+  const items=Array.from({length:25},(_,i)=>({...base,id:String(i).padStart(2,"0"),location:origin,admission:{value:false}})).reverse();
+  const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(_,rows)=>rows});
+  const request={pickup:demoPickup,date:"2026-09-14",deadline:"13:00",end:"18:00",transport:"self"};
+  const result=await api({action:"search",request});
+  assert.equal(result.total,25);assert.equal(result.items.length,20);
+  assert.deepEqual(result.items.map(p=>p.id),Array.from({length:20},(_,i)=>String(i).padStart(2,"0")));
+  assert.ok(result.items.every(p=>p.fit.counts.conflict>0&&!p.suggested));
 });
 test("fee summaries keep hourly/monthly ranges separate and only show totals with a complete rule",()=>{
   assert.equal(feeSummary({fees:[]}).label,"Ask the centre");

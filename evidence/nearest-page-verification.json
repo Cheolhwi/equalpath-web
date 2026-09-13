@@ -1,0 +1,162 @@
+{
+  "checkedAt": "2026-09-13T12:22:19.568Z",
+  "deployments": [
+    "6aa6953195fa7a510e89"
+  ],
+  "total": 394,
+  "pageSize": 20,
+  "firstPageConflicts": 16,
+  "nearestMembershipConfirmed": true,
+  "sameMembersAfterPriceSort": true,
+  "secondPageDistinct": true,
+  "maxFirstPageDistanceKm": 2.6842651832545754,
+  "first": [
+    {
+      "id": "provider_451c7afdc200be429ebbded6c69",
+      "distanceKm": 1.0594063896355064,
+      "conflicts": 0,
+      "suggested": true
+    },
+    {
+      "id": "provider_kpm_bf63c3e760f452536a30d2aa",
+      "distanceKm": 1.2705143902702505,
+      "conflicts": 0,
+      "suggested": true
+    },
+    {
+      "id": "provider_kpm_aa7f1e101c606f46d474c1f1",
+      "distanceKm": 1.7976560516589233,
+      "conflicts": 0,
+      "suggested": true
+    },
+    {
+      "id": "provider_55c6b149b7966601ec0b411474b",
+      "distanceKm": 1.8060261250866905,
+      "conflicts": 0,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_bfdc218f0320ac7961e47a87",
+      "distanceKm": 0.6760805869314142,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_d473b86c69991058be2ffed4",
+      "distanceKm": 0.7720545711962287,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_03a43761ebb7f959df806c8c",
+      "distanceKm": 0.8673604250056229,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_de855b53d1650bb134265b9006b",
+      "distanceKm": 0.8946758409992492,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_b787f4989e5316a820073063",
+      "distanceKm": 1.0840856660404032,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_ca7fea13920a6847ceda1e07",
+      "distanceKm": 1.6100045754724246,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_d7562bf5466898dd221b2152",
+      "distanceKm": 1.692640504639381,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_d5de9dbb887f5592fa7fbfb1070",
+      "distanceKm": 1.7150713564790872,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_dc170a2ccdaba7bb00a8923e73a",
+      "distanceKm": 1.8572351191974237,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_f4a985fd61a2a458bf9dbd4c22e",
+      "distanceKm": 1.9627245971236635,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_663bafaf78bf9fc46b758c19",
+      "distanceKm": 2.089614773091457,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_828b9dbe0c76f7cf2bb3a293",
+      "distanceKm": 2.1711045990974323,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_20ed0d1ee2778f7b998a54cd236",
+      "distanceKm": 2.2294894989487917,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_b87daa856ca62187df4624f6",
+      "distanceKm": 2.442830876516187,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_2039337958b0556584594ee7",
+      "distanceKm": 2.4710118675613537,
+      "conflicts": 1,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_afee97033483c3e2a6f32fd3",
+      "distanceKm": 2.6842651832545754,
+      "conflicts": 1,
+      "suggested": false
+    }
+  ],
+  "nextPage": [
+    "provider_193b316038c5bc2d8723f107a91",
+    "provider_4ddae9f84cd882f9e63e2ee9453",
+    "provider_646748de13bb259cef95819a041",
+    "provider_65acf86f51845f18b54ca2c0033",
+    "provider_728203e1ad5abcf3ba0762bb2a2",
+    "provider_7e237d38b576ee6802bb4d7a88b",
+    "provider_8d55f375b4bd9f9c97697b8768e",
+    "provider_a1a1ddb295b15a33f5ce13c76d9",
+    "provider_c7e6d6ab470ec3e30eea4948cf3",
+    "provider_f8b29fa7eea85fd6f9b08bb5565",
+    "provider_kpm_00fc4619bc3efd69fde4c0af",
+    "provider_kpm_04696aedbe4e5c9c7429dc88",
+    "provider_kpm_2baeb8257e9258c2d97f4abe",
+    "provider_kpm_2cdbf632917e1235c5f9cb1a",
+    "provider_kpm_3f01c6746335ba4a296bec61",
+    "provider_kpm_54881ab87a9a670e60298b5c",
+    "provider_kpm_979083baf446fd9f369a0119",
+    "provider_kpm_a5880a4bc3eaf220cc34b163",
+    "provider_kpm_bdcb63b1c525ba500f5bb774",
+    "provider_kpm_cecc6c0e9f6e9413dfe5820b"
+  ],
+  "verification": {
+    "unitTests": 130,
+    "browserTests": 7,
+    "scope": "Nearest 20, then per-page strategy and conflicts; existing 10 km cap and explicit filters retained."
+  }
+}

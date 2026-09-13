@@ -163,19 +163,22 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
         );
       if (!request.includeConflicts)
         candidates = candidates.filter((p) => !p.fit.counts.conflict);
-      candidates = sortProviders(candidates, request.sort, request.date);
+      // Page membership follows proximity, regardless of fit or priority.
+      // Otherwise a nearby conflict can be displaced by hundreds of farther centres.
+      candidates.sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
       const page = Number(body.page ?? 0);
       if (!Number.isInteger(page) || page < 0 || page > 1000)
         throw new ServiceError("INVALID_PAGE", 400);
+      const pageItems = sortProviders(candidates.slice(page * 20, page * 20 + 20), request.sort, request.date);
       return {
         ...meta,
         request,
-        items: await withDriving(suggestProviders(candidates.slice(page * 20, page * 20 + 20), request)),
+        items: await withDriving(suggestProviders(pageItems, request)),
         total: candidates.length,
         page,
         pageSize: 20,
         missingLocations: candidates.filter((p) => !p.location).length,
-        ordering: ordering(request.sort, candidates, request.date),
+        ordering: ordering(request.sort, candidates, request.date, request.radius),
       };
     }
     const ids = body.action === "details" ? [body.id] : body.ids;
@@ -207,10 +210,13 @@ function withinRadius(center, location, radius) {
   const distance = distanceKm(center, location);
   return Number.isFinite(distance) && distance <= radius;
 }
-function ordering(sort, items, date) {
+function ordering(sort, items, date, radius = null) {
   return {
     factor: sort,
-    explanation: "Centres without known conflicts first; conflicting details go last. Within each group: " + (
+    ...(radius !== null ? { pageSelection: "nearest" } : {}),
+    explanation: (radius !== null
+      ? `Each page shows the next 20 nearest centres within ${radius} km. Your priority sorts that page, with conflicting details last. Within each group: `
+      : "Centres without known conflicts first; conflicting details go last. Within each group: ") + (
       sort === "distance"
         ? "Nearest straight-line distance first; missing coordinates last. This is not a travel-time estimate."
         : sort === "price"

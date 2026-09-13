@@ -21,16 +21,17 @@ test('price priority keeps conflicts last, includes labelled budgets and exclude
   assert.deepEqual(suggestProviders(rows,{sort:'price',age:'',transport:'self'}).filter(p=>p.suggested).map(p=>p.id),['high','budget','tie']);
   assert.equal(suggestProviders([rows[3]],{sort:'price',age:'',transport:'self'})[0].suggested,false);
 });
-test('price sorting runs before pagination and the API explains which rates are comparable',async()=>{
-  const base=fixtureCatalog.items[0],items=Array.from({length:25},(_,i)=>({...base,id:`price-${i}`,name:`Price ${i}`,location:demoPickup,fees:[fee(1000-i*10)],feeRule:null}));
-  items.push({...base,id:'unknown',location:demoPickup,fees:[fee(1,{basis:'unspecified'})]});
+test('price sorts each nearest page without replacing nearby centres with farther cheaper ones',async()=>{
+  const base=fixtureCatalog.items[0],items=Array.from({length:25},(_,i)=>({...base,id:`price-${i}`,name:`Price ${i}`,location:{lat:demoPickup.lat+i*.001,lng:demoPickup.lng},fees:[fee(1000-i*10)],feeRule:null}));
+  items.push({...base,id:'unknown',location:{lat:demoPickup.lat+.03,lng:demoPickup.lng},fees:[fee(1,{basis:'unspecified'})]});
   items.push({...base,id:'outside-cheapest',location:{lat:3.5,lng:101.6869},fees:[fee(1)]}, {...base,id:'unlocated-cheapest',location:null,fees:[fee(0)]});
   const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(_,rows)=>rows});
   const request={pickup:demoPickup,date:'2026-09-14',deadline:'16:00',end:'17:00',transport:'self',sort:'price'};
   const first=await api({action:'search',request}),second=await api({action:'search',request,page:1});
   assert.equal(first.request.sort,'price');assert.equal(first.ordering.available.price,true);assert.match(first.ordering.explanation,/monthly.*Estimated/s);
   assert.equal(first.total,26);assert.equal(first.items.length,20);assert.equal(second.items.length,6);
-  assert.equal(first.items[0].id,'price-24');assert.equal(first.items.at(-1).id,'price-5');assert.equal(second.items.at(-1).id,'unknown');
+  assert.equal(first.items[0].id,'price-19');assert.equal(first.items.at(-1).id,'price-0');assert.equal(second.items[0].id,'price-24');assert.equal(second.items.at(-1).id,'unknown');
+  assert.equal(first.ordering.pageSelection,'nearest');assert.match(first.ordering.explanation,/next 20 nearest.*within 10 km/);
 });
 test('registration badges distinguish imported government records, listed codes and inactive registrations',()=>{
   const today='2026-09-14',p={mode:'live',registration:{authority:'JKM',number:'A123',official:true,match:'existing_registered_record',until:'2027-01-01',source:{url:'https://www.jkm.gov.my/main/taska'}}};
