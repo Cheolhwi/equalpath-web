@@ -9,6 +9,7 @@ import {
 } from "react";
 import { ArrowRight, Minus, Plus } from "lucide-react";
 import App from "./App.jsx";
+import Pointer from "./Pointer.jsx";
 import { ENTRANCE_COVER_MS, ENTRANCE_REVEAL_MS, startEntrance } from "./entrance.js";
 import "./landing.css";
 
@@ -115,6 +116,7 @@ export default function Experience() {
       }}
     >
       <App introPhase={phase} introReduced={reduced} onHome={home} />
+      <Pointer reduced={reduced} />
       {phase !== "ready" && (
         <section
           className="landing"

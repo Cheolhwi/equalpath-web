@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import useCardReveal from "./useCardReveal.js";
 import SelectMenu, { SORT_OPTIONS } from "./SelectMenu.jsx";
 import {
   Bookmark,
@@ -161,8 +162,11 @@ export function ProviderCard({
   onSave,
 }) {
   const fees = feeSummary(p);
+  const revealRef = useCardReveal();
   return (
     <article
+      ref={revealRef}
+      style={{ "--card-delay": `${Math.min(index, 3) * 55}ms` }}
       className={`provider-row ${selected ? "selected" : ""} ${p.fit.counts.conflict ? "lower-priority" : ""} ${p.suggested ? "suggested" : ""}`}
       id={"card-" + p.id}
       data-provider-id={p.id}

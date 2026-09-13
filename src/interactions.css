@@ -1,0 +1,63 @@
+/* The reference's gentle upward reveal, shortened for a task-focused interface. */
+@keyframes care-surface-appear {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes care-backdrop-appear { from { opacity: 0; } to { opacity: 1; } }
+.equalpath dialog[open]:not(.tour-dialog) {
+  animation: care-surface-appear 320ms cubic-bezier(.22, .61, .36, 1) backwards;
+}
+.equalpath dialog[open]:not(.tour-dialog)::backdrop {
+  animation: care-backdrop-appear 220ms ease-out;
+}
+.provider-row[data-reveal="waiting"] { opacity: 0; }
+.provider-row[data-reveal="visible"] {
+  animation: care-surface-appear 360ms cubic-bezier(.22, .61, .36, 1) backwards;
+  animation-delay: var(--card-delay, 0ms);
+}
+.select-menu-popup, .registration-popover {
+  animation: care-surface-appear 180ms cubic-bezier(.22, .61, .36, 1) backwards;
+}
+
+.care-pointer {
+  display: none;
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+  pointer-events: none;
+}
+.care-pointer:popover-open { display: block; }
+.care-pointer::backdrop { display: none; }
+.care-pointer::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px solid #65734e;
+  background: #8b98749e;
+  box-shadow: 0 0 0 1px #f5f3eb80;
+  transition: transform 150ms ease-out, background-color 150ms ease-out;
+}
+.care-pointer[data-interactive="true"]::before { transform: scale(1.5); background: #8b987440; }
+.care-pointer[data-pressed="true"]::before { transform: scale(.7); background: #65734eba; }
+.care-pointer[data-dark="true"]::before { border-color: #d3ddbd; background: #c3d0a780; box-shadow: none; }
+@media (hover: hover) and (pointer: fine) and (forced-colors: none) {
+  html[data-equalpath-cursor="true"] .experience,
+  html[data-equalpath-cursor="true"] .experience * { cursor: none !important; }
+}
+.equalpath[data-reduced="true"] .provider-row,
+.experience[data-intro-reduced="true"] .provider-row { opacity: 1; animation: none !important; }
+.equalpath[data-reduced="true"] dialog::backdrop,
+.experience[data-intro-reduced="true"] dialog::backdrop { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .provider-row[data-reveal] { opacity: 1; }
+  .equalpath dialog[open], .equalpath dialog[open]::backdrop,
+  .provider-row, .select-menu-popup, .registration-popover { animation: none !important; }
+}
+@media print { .care-pointer { display: none !important; } }

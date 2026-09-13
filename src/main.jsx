@@ -5,4 +5,5 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import "./fonts.css";
 import "./styles.css";
 import "./preparation.css";
+import "./interactions.css";
 createRoot(document.getElementById("root")).render(<Experience />);
