@@ -77,24 +77,31 @@ test("mobile pickup confirmation is visible, map stays flat and blocked storage 
   await expect.poll(()=>calls.filter(c=>c.action==="nearby").length).toBeGreaterThan(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
-test("dragging remembers the viewport but only an explicit area search refreshes nearby centres", async ({page})=>{
+test("pan and zoom do not query; choosing a pickup updates nearby centres", async ({page})=>{
   const calls=[];await mockAPI(page,calls);await page.goto("/#discover");
   await expect(page.locator(".provider-pin").first()).toBeVisible();
   const before=calls.filter(c=>c.action==="nearby").length;
   const box=await page.locator(".map-canvas").boundingBox();
   await page.mouse.move(box.x+box.width*.7,box.y+box.height*.4);await page.mouse.down();
   await page.mouse.move(box.x+box.width*.7-180,box.y+box.height*.4+50,{steps:20});await page.mouse.up();
-  await expect(page.getByRole("button",{name:"Search this area",exact:true})).toBeEnabled();
+  await expect(page.getByRole("button",{name:"Search this area",exact:true})).toHaveCount(0);
+  await page.getByRole("button",{name:"Zoom out",exact:true}).click();
   await page.waitForTimeout(700);
   expect(calls.filter(c=>c.action==="nearby").length).toBe(before);
-  await page.getByRole("button",{name:"Search this area",exact:true}).click();
-  await expect.poll(()=>calls.filter(c=>c.action==="nearby").length).toBe(before+1);
-  await expect(page.getByRole("button",{name:"Search this area",exact:true})).toBeDisabled();
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:map:v1:live")));
   expect(saved.pickup).toBeNull();expect(saved.center.lng).not.toBe(101.6869);
   await page.reload();await expect(page.locator(".provider-pin").first()).toBeVisible();
   await expect.poll(async()=>Number(await page.locator(".map-region").getAttribute("data-map-lng"))).toBeCloseTo(saved.center.lng,4);
   await expect(page.locator("#pickup-search")).toHaveValue("");
+  const beforePickup=calls.filter(c=>c.action==="nearby").length;
+  await page.getByRole("button",{name:"Choose pickup here",exact:true}).click();
+  const pickBox=await page.locator(".map-canvas").boundingBox();
+  await page.mouse.move(pickBox.x+pickBox.width*.55,pickBox.y+pickBox.height*.52);
+  await page.mouse.down();await page.mouse.move(pickBox.x+pickBox.width*.55+70,pickBox.y+pickBox.height*.52,{steps:18});await page.mouse.up();
+  expect(calls.filter(c=>c.action==="nearby").length).toBe(beforePickup);
+  await page.getByRole("button",{name:"Use this location",exact:true}).click();
+  await expect(page.locator("#pickup-search")).toHaveValue("Jalan Stesen Sentral, Kuala Lumpur");
+  await expect.poll(()=>calls.filter(c=>c.action==="nearby").length).toBe(beforePickup+1);
 });
 test("a nearby marker can lead to a dated condition check without pretending discovery was assessed",async({page})=>{
   const calls=[]; await mockAPI(page,calls); await page.goto("/#discover");

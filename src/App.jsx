@@ -34,7 +34,6 @@ import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory
 import Preparation from "./Preparation.jsx";
 import GettingStarted from "./GettingStarted.jsx";
 import { tourSeen, saveTour } from "../shared/tour.mjs";
-import { MIN_SEARCH_ZOOM } from "../shared/map-search.mjs";
 import { feeSummary, drivingLabel } from "../shared/result-summary.mjs";
 import {
   SavedLibrary,
@@ -315,7 +314,6 @@ export default function App({
   }, [mode]);
   useEffect(() => {
     if (results || tourOpen) return;
-    if (mapView.current.zoom < MIN_SEARCH_ZOOM) { setNearbyBusy(false); return; }
     let alive = true;
     setNearby(null);
     setNearbyBusy(true);
@@ -1163,7 +1161,7 @@ export default function App({
             {nearbyBusy && <p role="status">Finding nearby centres…</p>}
             {nearbyError && <p role="status">{errorMessage(nearbyError)} <button className="text-link" onClick={() => setNearbyReload((v) => v + 1)}>Retry nearby centres</button></p>}
             {!nearbyBusy && nearby && <p>{nearby.total} centres within {nearby.radius} km · showing {nearby.items.length}</p>}
-            {!nearbyBusy && nearby?.total === 0 && <p>Move the map and select Search this area, or choose another pickup place.</p>}
+            {!nearbyBusy && nearby?.total === 0 && <p>No centres nearby. Choose another pickup place.</p>}
             {items.map((p) => <button key={p.id} id={"card-" + p.id} className={`nearby-card ${selected === p.id ? "selected" : ""}`} onClick={() => select(p.id)} aria-label={`Select ${p.name}`} aria-pressed={selected === p.id}>
               <strong>{p.name}</strong><span>{p.district} · {p.distanceKm.toFixed(1)} km</span><span>Fees · {feeSummary(p).label}</span>
             </button>)}
@@ -1185,10 +1183,6 @@ export default function App({
           items={items}
           viewTarget={mapTarget}
           autoFit={!!results}
-          browseEnabled={!results && !tourOpen}
-          browseCenter={nearby?.center}
-          browseBusy={nearbyBusy}
-          onSearchArea={(center) => { if (!nearbyBusy) { setNearbyBusy(true); setBrowseCenter(center); setSelected(null); setMapRestored(false); } }}
           onViewChange={(view) => {
             if (tourOpen) return;
             rememberMap(view);

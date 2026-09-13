@@ -1910,8 +1910,7 @@ dialog::backdrop {
  .map-pick-confirm { bottom: 95px; }
 }
 
-/* Map browsing is explicit; pan/zoom never starts a directory query. */
-.map-area-search > span { display: block; padding: 10px 12px; border: 1px solid var(--rule); background: var(--paper); font-size: 12px; }
+/* Map browsing never starts a directory query; choose a pickup to update nearby centres. */
 .provider-row.lower-priority:not(.selected) { border-left: 2px solid var(--rule); }
 .provider-pin.suggested { border: 2px solid var(--accent); background: #dfe6cf; box-shadow: 0 0 0 5px #6e7c4c30, 0 3px 10px #0002; z-index: 2; }
 .provider-pin.suggested.selected { background: var(--ink); color: var(--bg); border-color: var(--ink); z-index: 3; }

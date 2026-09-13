@@ -4,7 +4,6 @@ import { LocateFixed, Plus, Minus, RotateCcw, MapPin } from "lucide-react";
 import { DEFAULT_MAP } from "../shared/map-memory.mjs";
 import { makeStyle } from "./map-style.js";
 import { entranceCamera } from "./entrance.js";
-import { areaMoved, MIN_SEARCH_ZOOM } from "../shared/map-search.mjs";
 export default function MapCanvas({
   items = [],
   pickup,
@@ -22,10 +21,6 @@ export default function MapCanvas({
   onViewChange,
   onChoose,
   onCancel,
-  browseEnabled = false,
-  browseCenter,
-  browseBusy = false,
-  onSearchArea,
   introPhase = "ready",
   introArea = 0,
   introReduced = false,
@@ -331,15 +326,6 @@ export default function MapCanvas({
           </div>
           <div className="map-actions">
             <button className="map-choose secondary" onClick={onChoose}><MapPin size={15} />Choose pickup here</button>
-            {browseEnabled && <div className="map-area-search">
-              {camera.zoom < MIN_SEARCH_ZOOM ? <span>Zoom in to search this area</span> :
-                <button className="secondary" disabled={browseBusy || (browseCenter && !areaMoved(camera, browseCenter))} onClick={() => {
-                  const m = map.current;
-                  if (!m || m.getZoom() < MIN_SEARCH_ZOOM || browseBusy) return;
-                  const c = m.getCenter();
-                  if (!browseCenter || areaMoved(c, browseCenter)) onSearchArea?.({ lat: c.lat, lng: c.lng });
-                }}>{browseBusy ? "Finding centres…" : "Search this area"}</button>}
-            </div>}
           </div>
         </>}
       </div>
