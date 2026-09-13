@@ -46,7 +46,7 @@ const saved = async (page) => {
 const preparation = async (page) => {
   await details(page);
   await page
-    .getByRole("button", { name: "Create preparation sheet", exact: true })
+    .getByRole("button", { name: "Create checklist", exact: true })
     .click();
 };
 
@@ -141,37 +141,44 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
     .getByRole("button", { name: "Update saved details", exact: true })
     .click();
   await page
-    .getByRole("button", { name: "Create preparation sheet", exact: true })
+    .getByRole("button", { name: "Create checklist", exact: true })
     .click();
   await expect(
-    page.getByText(/Travel time hasn’t been calculated/),
+    page.getByText(/Confirm the arrival time with the centre/),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Usual centre", exact: true }),
+    page.getByRole("heading", { name: "At the pickup place", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Receiving centre", exact: true }),
+    page.getByRole("heading", { name: "With the childcare centre", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Person collecting your child", exact: true }),
+    page.getByRole("heading", { name: "With the person driving", exact: true }),
   ).toBeVisible();
+  await page.getByText("At the pickup place", { exact: true }).click();
+  await expect(page.getByText("What ID and permission does the collector need?", { exact: true })).toBeVisible();
+  await page.getByText("At the pickup place", { exact: true }).click();
+  await page.getByText("With the person driving", { exact: true }).click();
+  await expect(page.getByText("Who will collect my child, and in which vehicle?", { exact: true })).toBeVisible();
+  await page.getByText("With the person driving", { exact: true }).click();
   await page.locator("dialog").evaluate((el) => (el.scrollTop = 0));
   await page.screenshot({ path: `${evidenceDir}/preparation-desktop.png` });
   await page
     .getByRole("checkbox", {
-      name: "A labelled bag, spare clothes and a water bottle.",
+      name: "Pack a labelled bag, spare clothes and a water bottle.",
       exact: true,
     })
     .check();
+  await expect(page.getByRole("progressbar", { name: "Packing checklist progress" })).toHaveAttribute("value", "1");
   const downloadPromise = page.waitForEvent("download");
   await page
-    .getByRole("button", { name: "Download sheet", exact: true })
+    .getByRole("button", { name: "Download checklist", exact: true })
     .first()
     .click();
   const download = await downloadPromise;
   await download.saveAs(`${evidenceDir}/preparation-demo.html`);
   const html = readFileSync(`${evidenceDir}/preparation-demo.html`, "utf8");
-  expect(html).toContain("☑ A labelled bag");
+  expect(html).toContain("☑ Pack a labelled bag");
   expect(html).toContain("2026-09-19");
   expect(html).not.toContain("Near the usual centre");
   expect(html).not.toContain("<input");
@@ -379,16 +386,18 @@ test("preparation remains dated until explicitly regenerated for new times and t
   ).toBeVisible();
   await page.getByRole("button", { name: /PREPARE/ }).click();
   await expect(
-    page.getByText(/This sheet still uses the earlier request/),
+    page.getByText(/This checklist still uses your earlier date and times/),
   ).toBeVisible();
-  await expect(page.locator(".dialog-context")).toContainText("18:00");
+  await expect(page.locator(".preparation-sequence")).toContainText("18:00");
   await page
-    .getByRole("button", { name: "Recheck & regenerate", exact: true })
+    .getByRole("button", { name: "Update checklist", exact: true })
     .click();
-  await expect(page.locator(".dialog-context")).toContainText("21:00");
+  await expect(page.locator(".preparation-sequence")).toContainText("21:00");
+  await expect(page.getByRole("heading", { name: "Resolve before you go", exact: true })).toBeVisible();
+  await expect(page.locator(".preparation-conflicts details[open]")).not.toHaveCount(0);
   await expect(
     page.getByRole("checkbox", {
-      name: "Check dinner and the evening collection routine.",
+      name: "Agree dinner and evening pickup arrangements.",
       exact: true,
     }),
   ).toBeVisible();
@@ -408,14 +417,14 @@ test("mobile navigation, modal layout, checkboxes and keyboard close remain usab
   await page.keyboard.press("Escape");
   await details(page);
   await page
-    .getByRole("button", { name: "Create preparation sheet", exact: true })
+    .getByRole("button", { name: "Create checklist", exact: true })
     .click();
   await page.screenshot({ path: `${evidenceDir}/preparation-mobile.png` });
   const box = await page.locator("dialog").boundingBox();
   expect(box.x).toBeGreaterThanOrEqual(0);
   expect(box.x + box.width).toBeLessThanOrEqual(391);
   const check = page.getByRole("checkbox", {
-    name: "A labelled bag, spare clothes and a water bottle.",
+    name: "Pack a labelled bag, spare clothes and a water bottle.",
     exact: true,
   });
   await check.check();

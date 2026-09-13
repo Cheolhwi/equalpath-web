@@ -214,7 +214,9 @@ test("5.3 sequence distinguishes requests and published facts; coordinates never
   assert.equal(sheet.sequence.length, 3);
   assert.equal(sheet.sequence[0].basis, "Your request");
   assert.match(sheet.sequence[1].detail, /Confirm the arrival time/);
-  assert.match(sheet.sequence[1].detail, /Travel time hasn’t been calculated/);
+  assert.equal(sheet.sequence[1].time, null);
+  assert.equal(sheet.sequence[0].time, r.deadline);
+  assert.equal(sheet.sequence[2].time, r.end);
   assert.equal(sheet.sequence[1].basis, "Centre address");
 });
 test("5.5 provider requirements need their own source and stay separate from general prompts", async () => {
@@ -239,7 +241,7 @@ test("5.6 standalone export preserves dates, contacts, draft, blank offline spac
     "03 1234 5678",
     "2026-09-14",
     "2026-09-13T10:00:00Z",
-    "Usual centre",
+    "At the pickup place",
     "Collector identification",
     "Health, allergy",
     "pickup permission",

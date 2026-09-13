@@ -1274,7 +1274,7 @@ export default function App({
       {dialog && (
         <Dialog
           tourBehind={tourOpen}
-          className={dialog === "details" ? "centre-dialog" : ""}
+          className={dialog === "details" ? "centre-dialog" : dialog === "preparation" ? "preparation-dialog" : ""}
           titleAccessory={dialog === "details" && profile ? <RegistrationBadge p={profile.p} /> : null}
           title={
             dialog === "saved"
@@ -1284,7 +1284,7 @@ export default function App({
                 : dialog === "save-template"
                   ? "Save your search details"
                   : dialog === "preparation"
-                    ? "Pickup & handover checklist"
+                    ? "Get ready for care"
                     : dialog === "details"
                       ? profile?.p.name
                       : dialog === "compare"
@@ -1299,7 +1299,7 @@ export default function App({
           }
           kicker={
             dialog === "preparation"
-              ? "CARE PREPARATION / DRAFT"
+              ? "YOUR VISIT"
               : ["saved", "save-template", "save-favourite"].includes(dialog)
                 ? "SAVED / THIS BROWSER"
                 : dialog === "details"
@@ -1360,9 +1360,8 @@ export default function App({
                 )}
                 {dialogError && (
                   <div className="error-box" role="alert">
-                    {errorMessage(dialogError)} The previous preparation sheet
-                    is retained.
-                    <button onClick={refreshPreparation}>Retry recheck</button>
+                    {errorMessage(dialogError)} Your earlier checklist is still here.
+                    <button onClick={refreshPreparation}>Try again</button>
                   </div>
                 )}
                 <div inert={dialogBusy || undefined}>
@@ -1382,7 +1381,7 @@ export default function App({
               <div className="empty-state">
                 <h3>Choose a centre first</h3>
                 <p>
-                  Open a centre’s details, then choose Create preparation sheet.
+                  Choose a centre to make a checklist for your visit.
                 </p>
                 <button className="primary" onClick={close}>
                   Find childcare <ArrowRight size={16} />
@@ -1519,7 +1518,7 @@ export default function App({
                 className="secondary enquiry-preparation"
                 onClick={() => startPreparation(enquiry.p, enquiry.request)}
               >
-                Create preparation sheet <ArrowRight size={16} />
+                Create checklist <ArrowRight size={16} />
               </button>
               <Enquiry
                 key={enquiry.p.id + scenario(enquiry.request)}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Download, Printer, ArrowRight } from "lucide-react";
+import { Download, Printer, ArrowRight, CalendarDays, ChevronDown, AlertTriangle } from "lucide-react";
 import { preparationFor, preparationHTML } from "../shared/preparation.mjs";
 import { PublishedContacts, SourceLink } from "./ProviderViews.jsx";
 
@@ -61,160 +61,131 @@ export default function Preparation({
       );
     }
   };
+  const packingItems = [...sheet.packing, ...sheet.published];
+  const completed = packingItems.filter((item) => checked.includes(item.id)).length;
+  const questions = ["receiving", "usual", "transport"].map((id) =>
+    sheet.groups.find((group) => group.id === id),
+  );
+  const renderItem = (item) => (
+    <div className="preparation-pack-item" key={item.id}>
+      <label className="checkbox">
+        <input type="checkbox" checked={checked.includes(item.id)} onChange={() => toggle(item.id)} />
+        <span>{item.text}</span>
+      </label>
+      {item.source && <details className="source-disclosure"><summary>View source</summary><SourceLink source={item.source} /></details>}
+    </div>
+  );
   return (
     <div className="preparation">
-      <div className="preparation-head">
+      <header className="preparation-overview">
         <div>
-          <div className="section-kicker">YOUR CHOSEN CENTRE</div>
+          <span className="section-kicker">CARE AT</span>
           <h3>{p.name}</h3>
         </div>
-        <div className="saved-actions">
-          <button className="primary" onClick={() => exportSheet(true)}>
-            <Printer size={16} />
-            Print / Save PDF
-          </button>
-          <button className="secondary" onClick={() => exportSheet(false)}>
-            <Download size={16} />
-            Download sheet
-          </button>
+        <div className="preparation-date">
+          <CalendarDays size={18} aria-hidden="true" />
+          <time dateTime={sheet.date}>{sheet.dateLabel}</time>
+          <span>Malaysia time</span>
         </div>
-      </div>
-      {p.mode === "demo" && (
-        <p className="demo-notice">
-          Demo centre — fictional details.
-        </p>
-      )}
-      <p className="dialog-context">{sheet.request}</p>
-      <p className="draft-notice">{sheet.notice}</p>
-      <p className="notice">
-        Prepared {sheet.preparationDate} · Malaysia time · {sheet.interval}
-      </p>
+      </header>
+      <p className="preparation-draft">Draft · Confirm these arrangements with the centre.</p>
+      {p.mode === "demo" && <p className="demo-notice">Demo centre — fictional details.</p>}
       {changed && (
-        <div className="notice-panel">
-          <p>
-            This sheet still uses the earlier request above. Regenerate it to
-            use your updated search.
-          </p>
-          <button className="secondary" onClick={onRefresh}>
-            Recheck & regenerate <ArrowRight size={15} />
-          </button>
+        <div className="notice-panel" role="status">
+          <strong>Your search has changed</strong>
+          <p>This checklist still uses your earlier date and times. Update it when you’re ready.</p>
+          <button className="secondary" onClick={onRefresh}>Update checklist <ArrowRight size={15} /></button>
         </div>
       )}
-      {failure && (
-        <p className="error-box" role="alert">
-          {failure}
-        </p>
-      )}
+      {failure && <p className="error-box" role="alert">{failure}</p>}
       {!!sheet.conflicts.length && (
-        <div className="error-box">
-          <strong>Check these details before arranging care</strong>
+        <section className="preparation-conflicts" aria-label="Arrangements to resolve">
+          <h3><AlertTriangle size={18} aria-hidden="true" />Resolve before you go</h3>
           {sheet.conflicts.map((c) => (
-            <p key={c.id}>
-              {c.label}: {c.reason}
-            </p>
+            <details key={c.id} open>
+              <summary>{c.label}<ChevronDown size={16} aria-hidden="true" /></summary>
+              <p>{c.reason}</p>
+              {c.source && <SourceLink source={c.source} />}
+            </details>
           ))}
-        </div>
+        </section>
       )}
-      <section className="detail-section">
-        <div className="section-kicker">01 / PICKUP PLAN</div>
-        <h3>Pickup, drop-off and collection</h3>
-        <div className="preparation-sequence">
-          {sheet.sequence.map((step) => (
-            <article key={step.title}>
-              <h4>{step.title}</h4>
-              <small className="basis-label">{step.basis}</small>
-              <p>{step.text}</p>
-              <p className="notice">{step.detail}</p>
-              {step.source && <SourceLink source={step.source} />}
-            </article>
-          ))}
-        </div>
-      </section>
-      <section className="detail-section">
-        <div className="section-kicker">02 / HANDOVER QUESTIONS</div>
-        <h3>Who to ask</h3>
-        <p className="notice">
-          Use these questions to agree the handover with each person involved.
-        </p>
-        <div className="preparation-parties">
-          {sheet.groups.map((g) => (
-            <article key={g.id}>
-              <h4>{g.name}</h4>
-              <p>{g.party}</p>
-              <small>{g.contact}</small>
-              <ul>
-                {g.questions.map((q) => (
-                  <li key={q.id}>{q.text}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-        <button className="text-link" onClick={onEnquiry}>
-          Questions for this centre <ArrowRight size={14} />
-        </button>
-      </section>
-      <section className="detail-section">
-        <div className="section-kicker">03 / PACKING LIST</div>
-        <h3>What to bring</h3>
-        <p className="notice">
-          Tick off items as you pack. Your ticks stay while this checklist
-          is open and are included when you download it.
-        </p>
-        <div className="packing-list">
-          {sheet.packing.map((x) => (
-            <label className="checkbox" key={x.id}>
-              <input
-                type="checkbox"
-                checked={checked.includes(x.id)}
-                onChange={() => toggle(x.id)}
-              />
-              {x.text}
-            </label>
-          ))}
-        </div>
-        <h4>What the centre asks you to bring</h4>
-        {sheet.published.length ? (
-          sheet.published.map((x) => (
-            <div key={x.id}>
-              <label className="checkbox">
-                <input
-                  type="checkbox"
-                  checked={checked.includes(x.id)}
-                  onChange={() => toggle(x.id)}
-                />
-                {x.text}
-              </label>
-              <SourceLink source={x.source} />
+      <div className="preparation-layout">
+        <section className="preparation-plan" aria-labelledby="pickup-plan-title">
+          <h3 id="pickup-plan-title">Your pickup plan</h3>
+          <ol className="preparation-sequence">
+            {sheet.sequence.map((step, i) => (
+              <li key={step.title}>
+                <div className="preparation-step-title"><span>{i + 1}</span><h4>{step.title}</h4></div>
+                <div className={`preparation-step-time${step.time ? "" : " needs-time"}`}>
+                  {step.time ? <><span>{step.timeLabel}</span><strong>{step.time}</strong></> : <strong>Agree a time</strong>}
+                </div>
+                <p className="preparation-step-place">{step.place}</p>
+                {step.address && <p className="preparation-step-address">{step.address}</p>}
+                <p className="preparation-step-detail">{step.detail}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="preparation-transport">{sheet.transport}</p>
+        </section>
+        <div className="preparation-main">
+          <section className="preparation-section" aria-labelledby="handover-title">
+            <div className="preparation-section-heading"><span>01</span><h3 id="handover-title">Confirm the arrangements</h3></div>
+            <p className="preparation-hint">A few questions for the people helping with care.</p>
+            <div className="preparation-parties">
+              {questions.map((group) => (
+                <details key={group.id} open={group.id === "receiving"}>
+                  <summary><h4>{group.name}</h4><ChevronDown size={18} aria-hidden="true" /></summary>
+                  <div className="preparation-party-content">
+                    <p className="preparation-party-name">{group.party}</p>
+                    <ul>{group.questions.map((q) => <li key={q.id}>{q.text}</li>)}</ul>
+                  </div>
+                </details>
+              ))}
             </div>
-          ))
-        ) : (
-          <p className="notice">
-            We haven’t found a packing list for this centre. Ask them what
-            to bring.
-          </p>
-        )}
-        <p className="private-info">
-          Provide identity, emergency and health information privately to the
-          institution. Your printed sheet has blank spaces to complete offline.
-        </p>
-      </section>
-      <section className="detail-section">
-        <div className="section-kicker">04 / CONTACTS TO KEEP HANDY</div>
-        <h3>{p.name}</h3>
-        <PublishedContacts p={p} />
-        <p className="notice">
-          Also keep the usual centre’s number and the collector’s number handy.
-        </p>
-      </section>
-      <div className="saved-actions preparation-footer">
-        <button className="primary" onClick={() => exportSheet(true)}>
-          <Printer size={16} />
-          Print / Save PDF
-        </button>
-        <button className="secondary" onClick={() => exportSheet(false)}>
-          Download sheet <Download size={16} />
-        </button>
+          </section>
+          <section className="preparation-section" aria-labelledby="packing-title">
+            <div className="preparation-section-heading"><span>02</span><h3 id="packing-title">Before you leave</h3></div>
+            <div className="preparation-packing-progress">
+              <span aria-live="polite">{completed} of {packingItems.length} done</span>
+              <progress value={completed} max={packingItems.length} aria-label="Packing checklist progress" />
+            </div>
+            <p className="preparation-hint">Tick off what’s ready. Print or download to keep your ticks.</p>
+            <div className="packing-list">{sheet.packing.map(renderItem)}</div>
+            {!!sheet.published.length && (
+              <div className="preparation-published">
+                <h4>The centre also asks for</h4>
+                <div className="packing-list">{sheet.published.map(renderItem)}</div>
+              </div>
+            )}
+            {!sheet.published.length && <p className="preparation-hint">Ask the centre if they need anything else.</p>}
+          </section>
+        </div>
+        <aside className="preparation-tools" aria-label="Centre contact and checklist tools">
+          <section className="preparation-contact">
+            <h3>Contact the centre</h3>
+            <PublishedContacts p={p} compact />
+            <button className="text-link" onClick={onEnquiry}>More questions for the centre <ArrowRight size={15} /></button>
+          </section>
+          <section className="preparation-takeaway">
+            <h3>Take this with you</h3>
+            <p>Keep the plan, phone numbers and your ticked items together.</p>
+            <div className="saved-actions">
+              <button className="primary" onClick={() => exportSheet(true)}><Printer size={16} />Print / Save PDF</button>
+              <button className="secondary" onClick={() => exportSheet(false)}><Download size={16} />Download checklist</button>
+            </div>
+            <p className="preparation-private">The printed checklist has space for emergency contacts and care notes. Fill these in privately.</p>
+          </section>
+          <details className="preparation-about">
+            <summary>About this checklist<ChevronDown size={16} aria-hidden="true" /></summary>
+            <p>{sheet.notice}</p>
+            <p>Your ticks stay while this checklist is open. Download or print it before closing.</p>
+            <p>Prepared {sheet.preparationDate}. Times and pickup choices come from your request; arrival still needs to be agreed.</p>
+            {sheet.sequence.filter((step) => step.source).map((step) => (
+              <div key={step.title}><strong>{step.title === "Drop off" ? "Centre address" : "Care hours"}</strong><SourceLink source={step.source} /></div>
+            ))}
+          </details>
+        </aside>
       </div>
     </div>
   );

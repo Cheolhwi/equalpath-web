@@ -61,7 +61,7 @@ try {
     })
     .waitFor({ timeout: 90000 });
   await page
-    .getByRole("button", { name: "Create preparation sheet", exact: true })
+    .getByRole("button", { name: "Create checklist", exact: true })
     .click();
   await page
     .getByRole("heading", {
@@ -72,7 +72,7 @@ try {
   await page.screenshot({ path: "evidence/phase4-5/preparation-live.png" });
   const downloadPromise = page.waitForEvent("download");
   await page
-    .getByRole("button", { name: "Download sheet", exact: true })
+    .getByRole("button", { name: "Download checklist", exact: true })
     .first()
     .click();
   const download = await downloadPromise;

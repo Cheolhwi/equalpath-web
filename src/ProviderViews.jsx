@@ -421,7 +421,7 @@ export function Details({ p, request, onPrepare, onCompare, compared, onSave, sa
           <button className="primary" onClick={onPrepare}>Prepare questions <ArrowRight size={16} /></button>
           <div className="centre-shortlist"><button className="secondary" aria-pressed={compared} onClick={onCompare}>{compared ? <Check size={15} /> : <Plus size={15} />}Compare</button><button className="secondary" aria-pressed={saved} onClick={onSave}><Bookmark size={15} />{saved ? "Saved centre" : "Save centre"}</button></div>
           <div className="centre-contact"><h4>Contact the centre</h4><PublishedContacts p={p} compact />{p.sourcePage && <a className="centre-listing" href={p.sourcePage} target="_blank" rel="noreferrer">View centre listing <ArrowUpRight size={13} /></a>}</div>
-          <div className="centre-preparation"><h4>After you’ve spoken</h4><p>Get your pickup and handover checklist ready.</p><button onClick={onPreparation}><ClipboardList size={15} />Create preparation sheet<ArrowRight size={14} /></button></div>
+          <div className="centre-preparation"><h4>After you’ve spoken</h4><p>Plan pickup and what to bring.</p><button onClick={onPreparation}><ClipboardList size={15} />Create checklist<ArrowRight size={14} /></button></div>
         </div>
       </aside>
       <div className="centre-fees"><Costs p={p} /></div>

@@ -64,3 +64,11 @@ npm run test:browser
 ```
 
 On a developer Mac with installed Chrome, use `PW_CHANNEL=chrome npm run test:browser`. For the optional real read-only smoke, run a production preview and set `QA_SITE_URL` before `node scripts/qa-live-phase45.mjs`. It creates a temporary browser context and closes it afterwards; never run it against a shared personal browser profile.
+
+## Preparation layout and copy revision — 13 September 2026
+
+The preparation dialog is now **Get ready for care**, reached through **Create checklist**. Centre/date and the three-stop pickup plan come first, with explicit requested pickup and final-collection times and an unagreed arrival time. Desktop contact and export tools sit alongside the plan. Handover questions are grouped into the childcare centre, pickup place and driver; the latter two groups are folded by default. Packing items show checkbox progress, with sourced centre requirements separate from general prompts. Supporting provenance and the full draft explanation sit under About this checklist.
+
+This is a presentation revision, with no backend or storage changes. The old assumption that every pickup place is a “usual centre” is removed. A changed search still requires explicit **Update checklist** before replacing the dated draft. Confirmed care and pickup authority are not inferred from ticking packing items. No online identity or health fields are added.
+
+Validation: 130 unit tests and 10 relevant browser journeys pass, covering updated entry points, question disclosures, checkbox progress, explicit refresh with a conflict, desktop/mobile/320px layouts, print invocation and standalone HTML/PDF export. Local artifacts are in `.build/checklist-layout/`; the two-page A4 example was inspected on both pages. The print-dialog test invokes a stub; the actual downloadable document is separately rendered to PDF.
