@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {
+  Bookmark,
+  ClipboardList,
   ArrowRight,
   ArrowUpRight,
   Check,
@@ -40,19 +42,50 @@ export function SourceLink({ source, children }) {
     </span>
   );
 }
-function PublishedContacts({p}) {
-  return <>
-    {p.phone && <div className="published-contact"><div className="call-link" aria-label="Institution phone"><Phone size={19}/>{p.phone.display}</div><SourceLink source={p.phone.source}/></div>}
-    {(p.whatsapp??[]).map(contact=><div className="published-contact" key={contact.href}>
-      <a className="call-link" href={contact.href} target="_blank" rel="noreferrer" aria-label={`Open WhatsApp for ${p.name}`}><MessageCircle size={19}/>WhatsApp · {contact.display}<ArrowUpRight size={15}/></a>
-      <SourceLink source={contact.source}/>
-      {contact.scope==='website'&&<small className="notice">Website enquiry number — may serve multiple branches.</small>}
-    </div>)}
-    {!p.phone&&!p.whatsapp?.length&&<p>No published contact number is available for this branch. Check the institution source page.</p>}
-  </>;
+export function PublishedContacts({ p }) {
+  return (
+    <>
+      {p.phone && (
+        <div className="published-contact">
+          <div className="call-link" aria-label="Institution phone">
+            <Phone size={19} />
+            {p.phone.display}
+          </div>
+          <SourceLink source={p.phone.source} />
+        </div>
+      )}
+      {(p.whatsapp ?? []).map((contact) => (
+        <div className="published-contact" key={contact.href}>
+          <a
+            className="call-link"
+            href={contact.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Open WhatsApp for ${p.name}`}
+          >
+            <MessageCircle size={19} />
+            WhatsApp · {contact.display}
+            <ArrowUpRight size={15} />
+          </a>
+          <SourceLink source={contact.source} />
+          {contact.scope === "website" && (
+            <small className="notice">
+              Website enquiry number — may serve multiple branches.
+            </small>
+          )}
+        </div>
+      ))}
+      {!p.phone && !p.whatsapp?.length && (
+        <p>
+          No published contact number is available for this branch. Check the
+          institution source page.
+        </p>
+      )}
+    </>
+  );
 }
 export function Status({ state, children }) {
-  const confirmedRange = state === 'reference';
+  const confirmedRange = state === "reference";
   const Icon =
     state === "supported" || confirmedRange
       ? CheckCircle2
@@ -60,14 +93,16 @@ export function Status({ state, children }) {
         ? AlertTriangle
         : HelpCircle;
   return (
-    <span className={`state-pill ${confirmedRange ? 'supported' : state}`}>
+    <span className={`state-pill ${confirmedRange ? "supported" : state}`}>
       <Icon size={12} />
       {children ??
-        (confirmedRange ? 'Confirmed range' : state === "supported"
-          ? "Supported"
-          : state === "conflict"
-            ? "Conflict"
-            : "Needs confirmation")}
+        (confirmedRange
+          ? "Confirmed range"
+          : state === "supported"
+            ? "Supported"
+            : state === "conflict"
+              ? "Conflict"
+              : "Needs confirmation")}
     </span>
   );
 }
@@ -79,6 +114,8 @@ export function ProviderCard({
   onSelect,
   onDetail,
   onCompare,
+  saved,
+  onSave,
 }) {
   return (
     <article
@@ -107,13 +144,23 @@ export function ProviderCard({
           {p.district} · {p.region}
         </p>
         <div className="row-facts">
-          <span>{p.businessHoursDay ? `Care end time · ${p.businessHoursDay}` : "Care end time"}</span>
+          <span>
+            {p.businessHoursDay
+              ? `Care end time · ${p.businessHoursDay}`
+              : "Care end time"}
+          </span>
           <strong>{p.careEndTimeLabel ?? p.businessHoursLabel}</strong>
         </div>
-        {p.age && <div className="row-facts">
-          <span>{p.age.basis === 'type_reference' ? 'Age · type reference' : 'Admission age'}</span>
-          <strong>{p.age.rangeLabel ?? p.age.wording}</strong>
-        </div>}
+        {p.age && (
+          <div className="row-facts">
+            <span>
+              {p.age.basis === "type_reference"
+                ? "Age · type reference"
+                : "Admission age"}
+            </span>
+            <strong>{p.age.rangeLabel ?? p.age.wording}</strong>
+          </div>
+        )}
         <div className="row-status">
           <Status state={p.fit.counts.conflict ? "conflict" : "unknown"}>
             {p.fit.counts.conflict
@@ -126,6 +173,14 @@ export function ProviderCard({
         </div>
       </button>
       <div className="row-actions">
+        <button
+          aria-label={`Save ${p.name}`}
+          aria-pressed={saved}
+          onClick={onSave}
+        >
+          <Bookmark size={14} />
+          {saved ? "Saved" : "Save"}
+        </button>
         <button
           aria-label={"Compare " + p.name}
           aria-pressed={compared}
@@ -262,7 +317,15 @@ export function Costs({ p }) {
     </section>
   );
 }
-export function Details({ p, onPrepare, onCompare, compared }) {
+export function Details({
+  p,
+  onPrepare,
+  onCompare,
+  compared,
+  onSave,
+  saved,
+  onPreparation,
+}) {
   return (
     <>
       <div className="profile-location">
@@ -284,6 +347,10 @@ export function Details({ p, onPrepare, onCompare, compared }) {
         )}
       </div>
       <div className="profile-actions">
+        <button className="secondary" aria-pressed={saved} onClick={onSave}>
+          <Bookmark size={16} />
+          {saved ? "Saved institution" : "Save institution"}
+        </button>
         <button className="primary" onClick={onPrepare}>
           Prepare questions <ArrowRight size={16} />
         </button>
@@ -295,7 +362,12 @@ export function Details({ p, onPrepare, onCompare, compared }) {
           {compared ? <Check size={16} /> : <Plus size={16} />}Compare
         </button>
       </div>
-      {(p.phone||p.whatsapp?.length>0)&&<section className="detail-section"><div className="section-kicker">PUBLISHED CONTACTS</div><PublishedContacts p={p}/></section>}
+      {(p.phone || p.whatsapp?.length > 0) && (
+        <section className="detail-section">
+          <div className="section-kicker">PUBLISHED CONTACTS</div>
+          <PublishedContacts p={p} />
+        </section>
+      )}
       <section className="detail-section">
         <div className="section-kicker">01 / THIS REQUEST</div>
         <h3>{p.fit.summary}</h3>
@@ -309,30 +381,73 @@ export function Details({ p, onPrepare, onCompare, compared }) {
               </div>
               <p>{c.reason}</p>
               <SourceLink source={c.source} />
-              {c.id==='age'&&p.age?.alternative&&<SourceLink source={p.age.alternative.source}/>}
+              {c.id === "age" && p.age?.alternative && (
+                <SourceLink source={p.age.alternative.source} />
+              )}
             </div>
           ))}
         </div>
         <div className="business-note">
-          <strong>Care end time{p.businessHoursDay ? ` · ${p.businessHoursDay}` : ""}: {p.careEndTimeLabel ?? p.businessHoursLabel}</strong>
-          <p>
-            Published care end time for your selected day.
-          </p>
-          <SourceLink source={p.careEndTimeSource ?? p.businessHours.source}>Care schedule source</SourceLink>
-          {p.businessHours.alternative&&<div className="notice"><p>Additional care schedule: {p.businessHours.alternative.notes}</p><SourceLink source={p.businessHours.alternative.source}>Additional care schedule source</SourceLink></div>}
+          <strong>
+            Care end time{p.businessHoursDay ? ` · ${p.businessHoursDay}` : ""}:{" "}
+            {p.careEndTimeLabel ?? p.businessHoursLabel}
+          </strong>
+          <p>Published care end time for your selected day.</p>
+          <SourceLink source={p.careEndTimeSource ?? p.businessHours.source}>
+            Care schedule source
+          </SourceLink>
+          {p.businessHours.alternative && (
+            <div className="notice">
+              <p>
+                Additional care schedule: {p.businessHours.alternative.notes}
+              </p>
+              <SourceLink source={p.businessHours.alternative.source}>
+                Additional care schedule source
+              </SourceLink>
+            </div>
+          )}
           <details className="weekly-hours">
             <summary>View weekly care end times</summary>
             <dl>
-              {(p.weeklyCareEndTimes ?? []).map(({day,label,source}) => {
-                return <div key={day} className={day===p.businessHoursDay?'requested-day':''}><dt>{day}{day===p.businessHoursDay?' · requested':''}</dt><dd>{label}{source?.url&&source.url!==p.businessHours.source?.url&&<SourceLink source={source}/>}</dd></div>;
+              {(p.weeklyCareEndTimes ?? []).map(({ day, label, source }) => {
+                return (
+                  <div
+                    key={day}
+                    className={
+                      day === p.businessHoursDay ? "requested-day" : ""
+                    }
+                  >
+                    <dt>
+                      {day}
+                      {day === p.businessHoursDay ? " · requested" : ""}
+                    </dt>
+                    <dd>
+                      {label}
+                      {source?.url &&
+                        source.url !== p.businessHours.source?.url && (
+                          <SourceLink source={source} />
+                        )}
+                    </dd>
+                  </div>
+                );
               })}
             </dl>
           </details>
         </div>
-        {p.transport?.source && <div className="business-note">
-          <strong>Transport: {p.transport.exists===true?'Advertised':p.transport.exists===false?'Listed as unavailable':'Enquire with institution'}</strong>
-          <p>{p.transport.wording}</p><SourceLink source={p.transport.source}/>
-        </div>}
+        {p.transport?.source && (
+          <div className="business-note">
+            <strong>
+              Transport:{" "}
+              {p.transport.exists === true
+                ? "Advertised"
+                : p.transport.exists === false
+                  ? "Listed as unavailable"
+                  : "Enquire with institution"}
+            </strong>
+            <p>{p.transport.wording}</p>
+            <SourceLink source={p.transport.source} />
+          </div>
+        )}
         {p.notes.map((n, i) => (
           <p className="notice" key={i}>
             {n}
@@ -341,6 +456,17 @@ export function Details({ p, onPrepare, onCompare, compared }) {
       </section>
       <Registration p={p} />
       <Costs p={p} />
+      <section className="detail-section">
+        <h3>Get ready for this occasion.</h3>
+        <p>
+          Organise handover questions, collection steps and a packing list for
+          this request.
+        </p>
+        <button className="primary" onClick={onPreparation}>
+          <ClipboardList size={16} />
+          Create preparation sheet
+        </button>
+      </section>
       <section className="detail-section">
         <h3>Keep the important questions together.</h3>
         <p>
@@ -652,7 +778,7 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
       )}
       <section className="contact-panel">
         <div className="section-kicker">CONTACT WHEN YOU ARE READY</div>
-        <PublishedContacts p={p}/>
+        <PublishedContacts p={p} />
         {p.sourcePage && (
           <a
             className="text-link"
@@ -667,8 +793,8 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
           <p>Controlled examples have no real contact action.</p>
         )}
         <p className="notice">
-          Contact the institution using the displayed number or WhatsApp link. This page does
-          not record contact, acceptance or a booking.
+          Contact the institution using the displayed number or WhatsApp link.
+          This page does not record contact, acceptance or a booking.
         </p>
       </section>
       <button className="text-link" onClick={onCompare}>

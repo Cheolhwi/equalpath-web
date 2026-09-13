@@ -23,6 +23,7 @@ export function sourceDigest(root) {
     "tests",
     "index.html",
     "vite.config.js",
+    "playwright.config.mjs",
     "package.json",
     "package-lock.json",
   ])

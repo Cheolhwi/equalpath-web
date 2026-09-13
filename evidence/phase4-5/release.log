@@ -1,0 +1,124 @@
+
+> equalpath-web@0.0.0 release
+> npm test && npm run build && node scripts/check-build.mjs
+
+
+> equalpath-web@0.0.0 test
+> node --test tests/*.test.mjs
+
+✔ Malay and English admission fields convert years and months without confusing mixed units (1.683291ms)
+✔ official age ranges are confirmed without counting an unselected child age as a passed fit (1.874584ms)
+✔ a selected age matches the official type range with correct TASKA and TADIKA boundaries (0.101917ms)
+✔ matched admission evidence takes precedence over type defaults and retains its original source (0.905833ms)
+✔ different branch age sources are preserved and cannot silently replace one another (0.173417ms)
+✔ gallery visits every artwork and reverses at each end without duplicates (1.435541ms)
+✔ single-art fallback never produces an out-of-bounds index (0.083458ms)
+✔ pausing or unmounting cancels a dwell including an already queued callback (0.078208ms)
+✔ a resumed gallery gets a full dwell before advancing (0.070042ms)
+✔ care-end display and sorting use the same specific schedule, exceptions and late rules as the check (1.9445ms)
+✔ opening-hour closing boundary, closed day and missing day are distinct (0.417708ms)
+✔ specific care schedule and unresolved exceptions override general opening hours (0.105542ms)
+✔ Malay weekday and AM/PM phrases translate into the right day and clock (1.851292ms)
+✔ no day or ambiguous overnight range is not converted into invented service dates (0.351375ms)
+✔ closed-day notes do not close weekdays and conflicting claims remain unresolved (0.185125ms)
+✔ missing selected-day hours are distinguished from an entirely empty weekly schedule (0.071875ms)
+✔ essential fields, impossible dates and same-day time ordering fail without changing valid values (1.911667ms)
+✔ omitted age and transport are accepted and visibly unspecified (12.263708ms)
+✔ age four is a full [48,60) month interval, with partial and ambiguous overlap unknown (0.074042ms)
+✔ regular enrolment does not become one-off admission (0.079542ms)
+✔ pickup window wholly before, wholly after and spanning the deadline produce three different states (0.083209ms)
+✔ transport existence does not supply missing pickup coverage or an arrival estimate (0.058208ms)
+✔ self delivery removes institutional transport requirement, preserving other request conditions (0.059709ms)
+✔ opening hours supply care timing while unresolved holiday exceptions stay unknown (0.081958ms)
+✔ care end and applicable latest collection restrictions preserve conflicts (0.06ms)
+✔ monthly fees and missing extras do not generate fabricated hourly prices (0.076125ms)
+✔ controlled complete tariff explains duration, minimum, rounding and extras (0.057125ms)
+✔ one deduplicated enquiry list carries unknown service conditions without any reviews (0.098833ms)
+✔ missing coordinates stay in list and sort after known straight-line distances (1.606333ms)
+✔ comparison uses separate branch facts and deterministic unknown-last priorities (0.590083ms)
+✔ no result is distinct from source failure (0.465709ms)
+✔ request revisions update evaluations and stale facts cannot be presented as current (1.358667ms)
+✔ KL, Selangor, Putrajaya and other states are enforced on server requests (0.263667ms)
+✔ source-region disagreement is held, while sourced regional records without coordinates remain usable (0.235375ms)
+✔ imported links and phone actions cannot inject executable schemes (0.142917ms)
+✔ representative public source import is deterministic and real contact facts retain separate provenance (4.148291ms)
+✔ Malay notes fallback never restores weekdays excluded as estimates (0.451833ms)
+✔ skipping cancels pending entrance phases and ignores already queued callbacks (1.662667ms)
+✔ reduced motion enters immediately without scheduling camera animation (0.185541ms)
+✔ entrance always completes without waiting for map tiles or a backend response (0.166916ms)
+✔ city previews stay flat and entrance adds no intermediate camera destination (0.106125ms)
+✔ public function handles preflight and disallows unsupported methods without touching the store (1.031292ms)
+✔ invalid JSON and oversized requests return bounded private errors (0.708583ms)
+✔ entry returns controlled examples only when demo mode is requested explicitly (0.192125ms)
+✔ age lower-exclusive endpoint cannot fully support a completed age interval (0.103041ms)
+✔ first available location includes accuracy and immediately stops observation (1.988875ms)
+✔ error 2 gets one longer fresh high-accuracy attempt (0.282708ms)
+✔ error 3 gets one longer fresh high-accuracy attempt (0.111833ms)
+✔ permission denial stops immediately and explains site/device access and manual recovery (0.294625ms)
+✔ two failures end the operation without endless retry or fabricated coordinates (0.145417ms)
+✔ a browser that never calls back is bounded to 40 seconds and both watches are cleared (0.462958ms)
+✔ cancelling stops the device request and discards late callbacks without retry (0.229125ms)
+✔ cancellation during the retry clears its watch too (0.255708ms)
+✔ an already-cancelled request never asks for device location (0.165542ms)
+✔ unsupported and insecure browsers explain the cause and allow manual selection (0.248292ms)
+✔ invalid or missing coordinates are rejected and the watch is released (0.233875ms)
+✔ synchronous browser callbacks still release the returned watch ID (0.095666ms)
+✔ Google hours preserve closed and unknown days, Unicode clocks, split shifts and explicit 24 hours (2.9405ms)
+✔ schema midnight/overnight and contradictory day statements never become guessed hours (1.245042ms)
+✔ evidence fills gaps but cannot override known hours or admit mismatched, duplicate or tampered facts (6.41925ms)
+✔ Appwrite hours are hash-checked and contribute to the served version and care check (2.571292ms)
+✔ same catalogue release refreshes when hours change; incomplete or tampered snapshots are rejected (0.977667ms)
+✔ evening scenarios are identifiable fictional entries and do not imply a national default (0.10225ms)
+✔ 4.1 saved branch and reason survive reload without a request or previous fit (14.03675ms)
+✔ 4.1.2 reopening re-evaluates different dates and time windows via the actual API (1.378584ms)
+✔ 4.1.3 / 4.4.2 quota and denied storage preserve the previous saved version (0.3035ms)
+✔ unreadable / unsupported storage never gets silently replaced (0.070083ms)
+✔ 4.2 reuse allows only public preferences and forces fresh date / age (1.026667ms)
+✔ 4.2.2 unavailable or moved branch cannot count as a matched saved place; times must be corrected (0.250208ms)
+✔ 4.3 fact differences show specific changes; retrieval alone does not mean updated provider facts (0.664667ms)
+✔ 4.4 editing and deleting one saved item preserves provider facts and other saved items (0.30175ms)
+✔ 5.1 / 5.5 duration, age and transport alter relevant prompts without history (0.984334ms)
+✔ 5.2 / 5.4 handover questions belong to three parties and do not assert assignment or authority (0.350125ms)
+✔ 5.3 sequence distinguishes requests and published facts; coordinates never generate an ETA (0.328792ms)
+✔ 5.5 provider requirements need their own source and stay separate from general prompts (0.326417ms)
+✔ 5.6 standalone export preserves dates, contacts, draft, blank offline spaces and ticks (0.48075ms)
+✔ Q2/Q6 exports escape hostile markup, reject active URL schemes, and exclude private notes (0.601083ms)
+✔ WhatsApp requires an explicit approved public link and strips text, tracking and executable URLs (1.817334ms)
+✔ Malay compact clocks, weekday abbreviations and adjacent day headings preserve the published days (1.977042ms)
+✔ service overlay preserves sourced hours and phone; invalid branch, dates, links and duplicates are rejected (6.318833ms)
+✔ published transport passes the service check but does not invent route coverage, collection or admission (2.389792ms)
+✔ service-only manifest changes invalidate cache; missing or modified snapshot evidence fails closed (1.047542ms)
+✔ website contact provenance and scope remain separate from a branch service source (0.3235ms)
+✔ conflicting hours remain visible; shared times pass, disputed times need confirmation, and both closed times conflict (0.391792ms)
+✔ newly sourced weekdays fill unknown days with their own source; explicit care schedules still take precedence (0.23575ms)
+✔ cold requests coalesce, public-only table reads are bounded, and failed refresh does not renew the cache (3.658708ms)
+✔ partial source pages never become a new complete directory (0.22025ms)
+✔ release changes during collection are rejected and a later retry can recover (0.544916ms)
+ℹ tests 88
+ℹ suites 0
+ℹ pass 88
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 127.735708
+
+> equalpath-web@0.0.0 build
+> vite build
+
+vite v6.4.2 building for production...
+transforming...
+✓ 1651 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                        0.64 kB │ gzip:   0.40 kB
+dist/assets/index-BNFry33u.css       689.45 kB │ gzip: 207.72 kB
+dist/assets/CareScene-D3eLb6aF.js    768.29 kB │ gzip: 223.79 kB
+dist/assets/index-0PgSeHGd.js      1,275.45 kB │ gzip: 352.84 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 2.41s
+Validated 3 entry assets for source 71ea3bd89bf8ad9565b44e0b671666b62ba6924b534fb99904f875100130e61e

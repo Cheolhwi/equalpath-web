@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-09-13T03:13:18.997Z",
+  "url": "http://127.0.0.1:4192/#discover",
+  "provider": {
+    "id": "provider_kpm_bc1c3b85817bbf2fcef1d6a4",
+    "name": "Tadika Islam Maiwp Kasyiful Ulum"
+  },
+  "publicQueryCalls": 5,
+  "actions": [
+    "public-place search",
+    "search",
+    "save locally",
+    "fresh date",
+    "recheck public facts",
+    "prepare",
+    "download"
+  ],
+  "ownerWrites": 0,
+  "externalMessages": 0,
+  "errors": []
+}

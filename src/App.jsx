@@ -27,7 +27,23 @@ import {
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
 import { requestErrors, todayKL, requestCaption } from "../shared/request.mjs";
-import { currentLocation } from "./geolocation.js";
+import PlaceInput from "./PlaceInput.jsx";
+import Preparation from "./Preparation.jsx";
+import {
+  SavedLibrary,
+  FavouriteEditor,
+  TemplateEditor,
+  SavedChanges,
+} from "./SavedViews.jsx";
+import {
+  emptyLibrary,
+  readLibrary,
+  updateLibrary,
+  storageKey,
+  factSnapshot,
+  reuseTemplate,
+  matchedSavedPlace,
+} from "../shared/saved.mjs";
 const EMPTY = [];
 const initial = () => ({
   pickup: null,
@@ -66,245 +82,6 @@ const fingerprint = (r) =>
         r.sort,
       ])
     : "";
-function PlaceInput({ mode, value, onChange, onMap, error, active = true }) {
-  const [query, setQuery] = useState(value?.label ?? ""),
-    [options, setOptions] = useState([]),
-    [busy, setBusy] = useState(false),
-    [message, setMessage] = useState(""),
-    [open, setOpen] = useState(false),
-    [geoBusy, setGeoBusy] = useState(false),
-    [geoMessage, setGeoMessage] = useState(""),
-    [geoFailed, setGeoFailed] = useState(false),
-    geoController = useRef(null),
-    token = useRef(0);
-  useEffect(() => {
-    if (value) setQuery(value.label);
-  }, [value?.label]);
-  useEffect(
-    () => () => {
-      token.current++;
-      geoController.current?.abort();
-    },
-    [],
-  );
-  const stopLocating = () => {
-    geoController.current?.abort();
-    geoController.current = null;
-    setGeoBusy(false);
-    setGeoFailed(false);
-    setGeoMessage("");
-  };
-  useEffect(() => {
-    if (!active) {
-      token.current++;
-      stopLocating();
-      setBusy(false);
-      setOpen(false);
-    }
-  }, [active]);
-  const locate = async () => {
-    stopLocating();
-    const seq = ++token.current;
-    const controller = new AbortController();
-    geoController.current = controller;
-    setBusy(false);
-    setGeoBusy(true);
-    setGeoMessage("");
-    setOpen(false);
-    try {
-      const p = await currentLocation(undefined, {
-        signal: controller.signal,
-        onProgress: (text) => {
-          if (seq === token.current) setGeoMessage(text);
-        },
-      });
-      if (seq === token.current) {
-        onChange(p);
-        setQuery(p.label);
-        setGeoMessage(
-          `Location found${p.accuracy ? " · approximately " + p.accuracy + " m accuracy" : ""}. Use this only if it is the intended pickup place. KL / Selangor is checked on search.`,
-        );
-      }
-    } catch (e) {
-      if (seq === token.current && e.name !== "AbortError") {
-        setGeoFailed(true);
-        setGeoMessage(e.message);
-      }
-    } finally {
-      if (seq === token.current) {
-        geoController.current = null;
-        setGeoBusy(false);
-      }
-    }
-  };
-  const find = async (q) => {
-    stopLocating();
-    const seq = ++token.current;
-    setBusy(true);
-    setMessage("");
-    setOpen(true);
-    try {
-      const r = await requestAPI({ action: "places", mode, query: q });
-      if (seq === token.current) {
-        setOptions(r.items);
-        if (!r.items.length)
-          setMessage(
-            "No matching public centre found. Try another name or select a public place on the map.",
-          );
-      }
-    } catch {
-      if (seq === token.current)
-        setMessage(
-          "Place search is unavailable. Retry, or select a public pickup point on the map.",
-        );
-    } finally {
-      if (seq === token.current) setBusy(false);
-    }
-  };
-  useEffect(() => {
-    token.current++;
-    stopLocating();
-    setBusy(false);
-    setGeoMessage("");
-    setQuery(value?.label ?? "");
-    setOptions([]);
-    setOpen(false);
-  }, [mode]);
-  return (
-    <div className="field pickup-field">
-      <label htmlFor="pickup-search">
-        Public pickup place <span>Required</span>
-      </label>
-      <div className={`location-search ${error ? "invalid" : ""}`}>
-        <MapPin size={17} />
-        <input
-          id="pickup-search"
-          aria-invalid={!!error}
-          aria-describedby={error ? "pickup-error" : "pickup-help"}
-          placeholder="Your usual childcare centre"
-          value={query}
-          onChange={(e) => {
-            stopLocating();
-            setQuery(e.target.value);
-            onChange(null);
-            setOptions([]);
-            setOpen(false);
-            token.current++;
-            setBusy(false);
-            setGeoMessage("");
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              find(query);
-            }
-            if (e.key === "Escape") setOpen(false);
-          }}
-        />
-        <button
-          type="button"
-          aria-label="Find pickup place"
-          onClick={() => find(query)}
-          disabled={busy}
-        >
-          {busy ? <span className="spinner" /> : <Search size={17} />}
-        </button>
-      </div>
-      {error && (
-        <small className="field-error" id="pickup-error">
-          {error}
-        </small>
-      )}
-      {value && (
-        <div className="chosen-place">
-          <Check size={13} />
-          <span>
-            {value.label}
-            <small>{value.region ?? "Region checked when you search"}</small>
-          </span>
-        </div>
-      )}
-      <div className="geolocation-control">
-        <button type="button" onClick={locate} disabled={geoBusy}>
-          <LocateFixed size={14} />
-          {geoBusy
-            ? "Locating…"
-            : geoFailed
-              ? "Retry my location"
-              : "Use my location"}
-        </button>
-        {geoBusy ? (
-          <button
-            type="button"
-            onClick={() => {
-              token.current++;
-              stopLocating();
-              setGeoMessage(
-                "Location cancelled. Search a place or choose on the map.",
-              );
-            }}
-          >
-            Cancel location
-          </button>
-        ) : (
-          <span>Only after your permission</span>
-        )}
-      </div>
-      {geoMessage && (
-        <p className="location-feedback" role="status">
-          {geoMessage}
-        </p>
-      )}
-      <div className="location-help" id="pickup-help">
-        <span>Institution names in KL / Selangor</span>
-        <button
-          type="button"
-          onClick={() => {
-            token.current++;
-            stopLocating();
-            setBusy(false);
-            onMap();
-          }}
-        >
-          Choose on map <ArrowUpRight size={12} />
-        </button>
-      </div>
-      {open && (
-        <div className="place-results" aria-label="Pickup search results">
-          {busy && <p role="status">Finding public places…</p>}
-          {!busy &&
-            options.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => {
-                  token.current++;
-                  stopLocating();
-                  onChange(p);
-                  setQuery(p.label);
-                  setOpen(false);
-                }}
-              >
-                <strong>{p.label}</strong>
-                <span>{p.address ?? p.region}</span>
-                <ArrowUpRight size={14} />
-              </button>
-            ))}
-          {message && <p role="status">{message}</p>}
-          {!busy && (
-            <button
-              type="button"
-              className="close-options"
-              onClick={() => setOpen(false)}
-            >
-              Close place results
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
 export default function App({
   introPhase = "ready",
   introArea = 0,
@@ -341,7 +118,16 @@ export default function App({
     ),
     [health, setHealth] = useState(null),
     [toast, setToast] = useState(""),
-    [mapStatus, setMapStatus] = useState("loading");
+    [mapStatus, setMapStatus] = useState("loading"),
+    [library, setLibrary] = useState(emptyLibrary),
+    [savedTab, setSavedTab] = useState("favourites"),
+    [saveFailure, setSaveFailure] = useState(""),
+    [saveEditor, setSaveEditor] = useState(null),
+    [templateEditor, setTemplateEditor] = useState(null),
+    [reopening, setReopening] = useState(null),
+    [reusePlace, setReusePlace] = useState(null),
+    [preparation, setPreparation] = useState(null);
+  const reuseSeq = useRef(0);
   const requestSeq = useRef(0),
     dialogSeq = useRef(0),
     listRef = useRef(null),
@@ -353,6 +139,102 @@ export default function App({
     setToast(text);
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(""), 4200);
+  };
+  const reloadLibrary = () => {
+    try {
+      setLibrary(readLibrary(window.localStorage, mode));
+      setSaveFailure("");
+    } catch (e) {
+      setSaveFailure(e.message);
+    }
+  };
+  useEffect(() => {
+    setLibrary(emptyLibrary());
+    reloadLibrary();
+    const changed = (e) => {
+      if (!e.key || e.key === storageKey(mode)) reloadLibrary();
+    };
+    window.addEventListener("storage", changed);
+    return () => window.removeEventListener("storage", changed);
+  }, [mode]);
+  const changeLibrary = (change) => {
+    try {
+      setLibrary(updateLibrary(window.localStorage, mode, change));
+      setSaveFailure("");
+      return true;
+    } catch (e) {
+      setSaveFailure(e.message);
+      return false;
+    }
+  };
+  const saveFavourite = (item) =>
+    changeLibrary((x) => ({
+      ...x,
+      favourites: [...x.favourites.filter((p) => p.id !== item.id), item],
+    }));
+  const saveTemplate = (item) =>
+    changeLibrary((x) => ({
+      ...x,
+      templates: [...x.templates.filter((p) => p.id !== item.id), item],
+    }));
+  const editFavourite = (p, from = dialog) => {
+    setSaveEditor({ p, from });
+    setDialog("save-favourite");
+  };
+  const editTemplate = (value, from = dialog) => {
+    setTemplateEditor({ value, from });
+    setDialog("save-template");
+  };
+  const useTemplate = async (item) => {
+    const next = reuseTemplate(item, initial());
+    const seq = ++reuseSeq.current;
+    requestSeq.current++;
+    setBusy(false);
+    setDraft(next);
+    setErrors({ date: "Choose a new service date." });
+    setFailure(null);
+    setReusePlace({
+      state: "pending",
+      message: "Checking the saved public pickup place…",
+    });
+    setFormOpen(true);
+    setMobilePane("list");
+    close();
+    try {
+      const response = await requestAPI({
+        action: "places",
+        mode,
+        query: item.pickup.label,
+      });
+      if (seq !== reuseSeq.current) return;
+      if (matchedSavedPlace(item.pickup, response.items)) setReusePlace(null);
+      else
+        setReusePlace({
+          state: "invalid",
+          message:
+            "This saved pickup place could not be matched to the current directory. Select the public place again; its saved value has not been replaced.",
+        });
+    } catch {
+      if (seq === reuseSeq.current)
+        setReusePlace({
+          state: "invalid",
+          message:
+            "The saved pickup place could not be checked. Retry this template or select the place again.",
+        });
+    }
+  };
+  const reopenFavourite = (saved) => {
+    requestSeq.current++;
+    setBusy(false);
+    setReopening(saved);
+    setDraft((x) => ({ ...x, date: "" }));
+    setErrors({
+      date: "Choose a new service date to recheck this institution.",
+    });
+    setFailure(null);
+    setFormOpen(true);
+    setMobilePane("list");
+    close();
   };
   useEffect(() => {
     let alive = true;
@@ -397,6 +279,10 @@ export default function App({
     return () => window.removeEventListener("keydown", key);
   }, [dialog, introPhase]);
   const setField = (field, value) => {
+    if (field === "pickup") {
+      reuseSeq.current++;
+      setReusePlace(null);
+    }
     setDraft((x) => ({ ...x, [field]: value }));
     setErrors((x) => ({ ...x, [field]: null }));
   };
@@ -407,6 +293,10 @@ export default function App({
   const switchMode = (next) => {
     requestSeq.current++;
     dialogSeq.current++;
+    reuseSeq.current++;
+    setReusePlace(null);
+    setReopening(null);
+    setPreparation(null);
     setMode(next);
     setDraft(initial());
     setResults(null);
@@ -431,6 +321,7 @@ export default function App({
     e?.preventDefault?.();
     const request = override ?? draft,
       issues = requestErrors(request);
+    if (reusePlace) issues.pickup = reusePlace.message;
     setErrors(issues);
     if (Object.keys(issues).length) {
       setFormOpen(true);
@@ -447,6 +338,17 @@ export default function App({
     try {
       const r = await requestAPI({ action: "search", mode, request, page });
       if (seq !== requestSeq.current) return;
+      let savedResult = null;
+      if (reopening) {
+        savedResult = await requestAPI({
+          action: "details",
+          mode,
+          id: reopening.id,
+          request: r.request,
+          version: r.version,
+        });
+        if (seq !== requestSeq.current) return;
+      }
       setResults(r);
       const editedWhilePending =
         fingerprint(draftRef.current) !== fingerprint(request);
@@ -456,6 +358,17 @@ export default function App({
       setHealth(r);
       setMobilePane("list");
       listRef.current?.scrollTo({ top: 0 });
+      if (savedResult) {
+        setProfile({
+          p: savedResult.items[0],
+          request: savedResult.request,
+          saved: reopening,
+          current: factSnapshot(savedResult.items[0]),
+        });
+        setReopening(null);
+        setDialog("details");
+        setDialogError(null);
+      }
     } catch (e) {
       if (seq !== requestSeq.current) return;
       setFailure(e);
@@ -520,6 +433,31 @@ export default function App({
     setDialogError(null);
     setDialog("enquiry");
   };
+  const startPreparation = (p, request = activeRequest) => {
+    setPreparation({ p, request });
+    setDialogError(null);
+    setDialog("preparation");
+  };
+  const refreshPreparation = async () => {
+    if (!activeRequest || !preparation) return;
+    const seq = ++dialogSeq.current;
+    setDialogBusy(true);
+    setDialogError(null);
+    try {
+      const r = await requestAPI({
+        action: "details",
+        mode,
+        id: preparation.p.id,
+        request: activeRequest,
+      });
+      if (seq === dialogSeq.current)
+        setPreparation({ p: r.items[0], request: r.request });
+    } catch (e) {
+      if (seq === dialogSeq.current) setDialogError(e);
+    } finally {
+      if (seq === dialogSeq.current) setDialogBusy(false);
+    }
+  };
   const close = () => {
     dialogSeq.current++;
     setDialogBusy(false);
@@ -576,6 +514,25 @@ export default function App({
             onClick={() => setDialog("enquiry")}
           >
             <small>03</small>ENQUIRY
+          </button>
+          <button
+            className={dialog === "saved" ? "active" : ""}
+            onClick={() => {
+              close();
+              reloadLibrary();
+              setDialog("saved");
+            }}
+          >
+            <small>04</small>SAVED <em>{library.favourites.length}</em>
+          </button>
+          <button
+            className={dialog === "preparation" ? "active" : ""}
+            onClick={() => {
+              close();
+              setDialog("preparation");
+            }}
+          >
+            <small>05</small>PREPARE
           </button>
         </nav>
         <div className="header-end">
@@ -654,6 +611,26 @@ export default function App({
             </small>
           </div>
         )}
+        {reopening && (
+          <div className="notice-panel">
+            <strong>Rechecking {reopening.name}</strong>
+            <p>
+              Choose the service date and check the current request. Saved fit
+              decisions are not reused.
+            </p>
+            <button className="text-link" onClick={() => setReopening(null)}>
+              Cancel saved-institution check
+            </button>
+            {failure && (
+              <SavedChanges saved={reopening} failure={errorMessage(failure)} />
+            )}
+          </div>
+        )}
+        {reusePlace && (
+          <p className="notice-panel" role="status">
+            {reusePlace.message}
+          </p>
+        )}
         <form
           id="request-form"
           onSubmit={search}
@@ -661,7 +638,7 @@ export default function App({
           className={formOpen ? "request-form" : "request-form collapsed"}
         >
           <PlaceInput
-            active={introPhase === "ready"}
+            active={introPhase === "ready" && !dialog}
             mode={mode}
             value={draft.pickup}
             onChange={(p) => setField("pickup", p)}
@@ -816,7 +793,11 @@ export default function App({
               </>
             ) : (
               <>
-                {results ? "Update results" : "Find care options"}
+                {reopening
+                  ? "Check saved institution"
+                  : results
+                    ? "Update results"
+                    : "Find care options"}
                 <ArrowRight size={18} />
               </>
             )}
@@ -825,6 +806,17 @@ export default function App({
             One date, one care gap. No account or child profile.
           </p>
         </form>
+        <div className="request-save-actions">
+          <button
+            className="text-link"
+            onClick={() => editTemplate({ ...draft }, null)}
+          >
+            Save request template
+          </button>
+          <button className="text-link" onClick={() => setDialog("saved")}>
+            Use saved details
+          </button>
+        </div>
         {failure && (
           <div className="error-box" role="alert">
             <strong>Search unavailable</strong>
@@ -917,6 +909,8 @@ export default function App({
                   onSelect={() => select(p.id)}
                   onDetail={() => openDetails(p)}
                   onCompare={() => toggleCompare(p.id)}
+                  saved={library.favourites.some((x) => x.id === p.id)}
+                  onSave={() => editFavourite(p)}
                 />
               ))}
               {!items.length && (
@@ -1117,37 +1111,166 @@ export default function App({
       {dialog && (
         <Dialog
           title={
-            dialog === "details"
-              ? profile?.p.name
-              : dialog === "compare"
-                ? "A clearer comparison."
-                : dialog === "enquiry"
-                  ? "Know what to ask."
-                  : dialog === "settings"
-                    ? "Make it comfortable."
-                    : dialog === "ordering"
-                      ? "Why this order?"
-                      : "Where the facts come from."
+            dialog === "saved"
+              ? "Keep a useful starting point."
+              : dialog === "save-favourite"
+                ? "Save this institution."
+                : dialog === "save-template"
+                  ? "Your reusable request."
+                  : dialog === "preparation"
+                    ? "Ready for the handover."
+                    : dialog === "details"
+                      ? profile?.p.name
+                      : dialog === "compare"
+                        ? "A clearer comparison."
+                        : dialog === "enquiry"
+                          ? "Know what to ask."
+                          : dialog === "settings"
+                            ? "Make it comfortable."
+                            : dialog === "ordering"
+                              ? "Why this order?"
+                              : "Where the facts come from."
           }
           kicker={
-            dialog === "details"
-              ? "CONDITIONS & EVIDENCE"
-              : dialog === "enquiry"
-                ? "PREPARE TO CONTACT"
-                : dialog === "compare"
-                  ? "COMPARE FOR THIS REQUEST"
-                  : "EQUALPATH / INFORMATION"
+            dialog === "preparation"
+              ? "CARE PREPARATION / DRAFT"
+              : ["saved", "save-template", "save-favourite"].includes(dialog)
+                ? "SAVED / THIS BROWSER"
+                : dialog === "details"
+                  ? "CONDITIONS & EVIDENCE"
+                  : dialog === "enquiry"
+                    ? "PREPARE TO CONTACT"
+                    : dialog === "compare"
+                      ? "COMPARE FOR THIS REQUEST"
+                      : "EQUALPATH / INFORMATION"
           }
-          wide={dialog === "compare" || dialog === "details"}
+          wide={["compare", "details", "preparation", "saved"].includes(dialog)}
           onClose={close}
         >
+          {dialog === "saved" && (
+            <SavedLibrary
+              tab={savedTab}
+              setTab={setSavedTab}
+              library={library}
+              failure={saveFailure}
+              onRetry={reloadLibrary}
+              onReuse={useTemplate}
+              onReopen={reopenFavourite}
+              onEditFavourite={(p) => editFavourite(p, "saved")}
+              onEditTemplate={(t) => editTemplate(t, "saved")}
+              onDelete={(type, id) =>
+                changeLibrary((x) => ({
+                  ...x,
+                  [type]: x[type].filter((p) => p.id !== id),
+                }))
+              }
+              onDiscover={close}
+            />
+          )}
+          {dialog === "save-favourite" && saveEditor && (
+            <FavouriteEditor
+              key={saveEditor.p.id}
+              p={saveEditor.p}
+              existing={library.favourites.find(
+                (x) => x.id === saveEditor.p.id,
+              )}
+              onSave={saveFavourite}
+              onCancel={() => setDialog(saveEditor.from)}
+            />
+          )}
+          {dialog === "save-template" && templateEditor && (
+            <TemplateEditor
+              mode={mode}
+              value={templateEditor.value}
+              onSave={saveTemplate}
+              onCancel={() => setDialog(templateEditor.from)}
+            />
+          )}
+          {dialog === "preparation" &&
+            (preparation ? (
+              <>
+                {dialogBusy && (
+                  <p role="status">Rechecking current conditions…</p>
+                )}
+                {dialogError && (
+                  <div className="error-box" role="alert">
+                    {errorMessage(dialogError)} The previous preparation sheet
+                    is retained.
+                    <button onClick={refreshPreparation}>Retry recheck</button>
+                  </div>
+                )}
+                <div inert={dialogBusy || undefined}>
+                  <Preparation
+                    key={preparation.p.id + scenario(preparation.request)}
+                    p={preparation.p}
+                    request={preparation.request}
+                    currentRequest={activeRequest}
+                    onEnquiry={() =>
+                      prepare(preparation.p, preparation.request)
+                    }
+                    onRefresh={refreshPreparation}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="empty-state">
+                <h3>Choose a candidate for this occasion.</h3>
+                <p>
+                  Open an institution’s details, then choose Create preparation
+                  sheet.
+                </p>
+                <button className="primary" onClick={close}>
+                  Go to discovery <ArrowRight size={16} />
+                </button>
+              </div>
+            ))}
           {dialog === "details" && profile && (
             <>
               <p className="dialog-context">
                 {requestCaption(profile.request)}
               </p>
+              {profile.saved && (
+                <SavedChanges
+                  saved={profile.saved}
+                  current={profile.current}
+                  onUpdate={() => {
+                    if (
+                      changeLibrary((x) => ({
+                        ...x,
+                        favourites: x.favourites.map((f) =>
+                          f.id === profile.p.id
+                            ? {
+                                ...f,
+                                name: profile.p.name,
+                                category: profile.p.category,
+                                region: profile.p.region,
+                                snapshot: profile.current,
+                              }
+                            : f,
+                        ),
+                      }))
+                    ) {
+                      setProfile((x) => ({
+                        ...x,
+                        saved: { ...x.saved, snapshot: x.current },
+                      }));
+                      notify("Reviewed snapshot saved in this browser.");
+                    }
+                  }}
+                />
+              )}
+              {saveFailure && profile.saved && (
+                <p className="error-box" role="alert">
+                  {saveFailure}
+                </p>
+              )}
               <Details
                 p={profile.p}
+                saved={library.favourites.some((x) => x.id === profile.p.id)}
+                onSave={() => editFavourite(profile.p, "details")}
+                onPreparation={() =>
+                  startPreparation(profile.p, profile.request)
+                }
                 onPrepare={() => prepare(profile.p, profile.request)}
                 onCompare={() => toggleCompare(profile.p.id)}
                 compared={compareIds.includes(profile.p.id)}
@@ -1229,21 +1352,29 @@ export default function App({
             )}
           {dialog === "enquiry" &&
             (enquiry ? (
-              <Enquiry
-                key={enquiry.p.id + scenario(enquiry.request)}
-                p={enquiry.p}
-                request={enquiry.request}
-                selection={
-                  questionSelection[enquiry.p.id + scenario(enquiry.request)]
-                }
-                onSelection={(ids) =>
-                  setQuestionSelection((x) => ({
-                    ...x,
-                    [enquiry.p.id + scenario(enquiry.request)]: ids,
-                  }))
-                }
-                onCompare={() => loadComparison()}
-              />
+              <>
+                <button
+                  className="secondary enquiry-preparation"
+                  onClick={() => startPreparation(enquiry.p, enquiry.request)}
+                >
+                  Create preparation sheet <ArrowRight size={16} />
+                </button>
+                <Enquiry
+                  key={enquiry.p.id + scenario(enquiry.request)}
+                  p={enquiry.p}
+                  request={enquiry.request}
+                  selection={
+                    questionSelection[enquiry.p.id + scenario(enquiry.request)]
+                  }
+                  onSelection={(ids) =>
+                    setQuestionSelection((x) => ({
+                      ...x,
+                      [enquiry.p.id + scenario(enquiry.request)]: ids,
+                    }))
+                  }
+                  onCompare={() => loadComparison()}
+                />
+              </>
             ) : (
               <div className="empty-state">
                 <h3>Start with a candidate.</h3>
@@ -1311,8 +1442,8 @@ export default function App({
                 <h3>Explore with real facts or controlled examples.</h3>
                 <p>
                   Ten fictional examples include daytime care, two evening-care
-                  schedules, and supported, conflicting and unknown conditions. Changing mode clears the current search and
-                  selection.
+                  schedules, and supported, conflicting and unknown conditions.
+                  Changing mode clears the current search and selection.
                 </p>
                 <button
                   className="secondary"
@@ -1343,10 +1474,10 @@ export default function App({
                 own source links and retrieval dates.
               </p>
               <p>
-                Published care end times are used for this check.
-                Specific care schedules and date exceptions take precedence.
-                Transport coverage and actual acceptance are checked separately.
-                No route duration or live vacancy is inferred.
+                Published care end times are used for this check. Specific care
+                schedules and date exceptions take precedence. Transport
+                coverage and actual acceptance are checked separately. No route
+                duration or live vacancy is inferred.
               </p>
               <p>
                 Geographic checks use a versioned{" "}
@@ -1363,8 +1494,10 @@ export default function App({
               <p>
                 Your current request stays in this browser’s active page and is
                 sent only for the current query. There is no parent account,
-                child identity form, automatic contact or saved search history.
-                Public map tiles are fetched from the map provider.
+                child identity form or automatic contact. Only explicit
+                favourites and request templates are stored locally in this
+                browser; there is no automatic search history. Public map tiles
+                are fetched from the map provider.
               </p>
               <p>
                 Registration and historical listings do not prove present
