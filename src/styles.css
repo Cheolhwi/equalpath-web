@@ -787,33 +787,6 @@ select {
   position: absolute;
   inset: 0;
 }
-.map-heading {
-  position: absolute;
-  top: 30px;
-  left: 35px;
-  pointer-events: none;
-  text-shadow: 0 1px 5px var(--bg);
-}
-.map-heading .eyebrow {
-  font-size: 9px;
-  letter-spacing: 0.16em;
-}
-.map-heading h2 {
-  font-family: "Barlow Condensed", sans-serif;
-  font-size: 38px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  margin: 4px 0;
-}
-.map-heading h2 span {
-  font-weight: 400;
-  font-size: 25px;
-}
-.map-heading p {
-  font-size: 11px;
-  color: var(--ink);
-  margin: 0;
-}
 .map-tools {
   display: flex;
   flex-direction: column;
@@ -1501,10 +1474,6 @@ dialog::backdrop {
   .discovery-panel {
     padding: 32px 34px;
   }
-  .map-heading {
-    left: 42px;
-    top: 38px;
-  }
   .intro h1 {
     font-size: 37px;
   }
@@ -1531,19 +1500,6 @@ dialog::backdrop {
   }
   .discovery-panel {
     padding: 25px 23px;
-  }
-  .map-heading {
-    left: 24px;
-  }
-  .map-heading h2 {
-    font-size: 29px;
-  }
-  .map-heading h2 span {
-    font-size: 19px;
-    display: block;
-  }
-  .map-heading .eyebrow {
-    font-size: 8px;
   }
   .map-tools {
     right: 18px;
@@ -1678,23 +1634,6 @@ dialog::backdrop {
   .mobile-view-switch button[aria-pressed="true"] {
     background: var(--ink);
     color: var(--bg);
-  }
-  .map-heading {
-    top: 23px;
-    left: 21px;
-  }
-  .map-heading h2 {
-    font-size: 31px;
-  }
-  .map-heading h2 span {
-    font-size: 21px;
-  }
-  .map-heading p {
-    font-size: 10px;
-    max-width: 235px;
-  }
-  .map-heading .eyebrow {
-    font-size: 8px;
   }
   .map-tools {
     top: 22px;
@@ -1949,7 +1888,14 @@ dialog::backdrop {
 .nearby-card strong { font-size: 14px; font-weight: 600; }
 .nearby-card span { font-size: 12px; color: var(--muted); }
 .nearby-card:hover, .nearby-card.selected { background: color-mix(in srgb, var(--ink) 6%, var(--bg)); }
-.map-choose { position: absolute; top: 145px; left: 30px; background: var(--bg); font-size: 12px; padding: 9px 12px; min-height: 40px; }
+.map-controls { position: absolute; z-index: 4; top: 18px; left: 18px; max-width: calc(100% - 90px); display: flex; flex-direction: column; align-items: flex-start; gap: 8px; pointer-events: none; }
+.map-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 8px 10px; background: var(--paper); border: 1px solid var(--rule); font-size: 11px; line-height: 1.4; }
+.map-legend > span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.map-legend-pickup { display: inline-grid; place-items: center; width: 17px; height: 17px; background: var(--accent); color: var(--paper); font-size: 10px; }
+.map-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.map-actions button { pointer-events: auto; }
+.map-actions .secondary { background: var(--paper); font-size: 12px; padding: 9px 12px; min-height: 40px; }
+.map-pick-hint { margin: 0; padding: 10px 12px; border: 1px solid var(--rule); background: var(--paper); font-size: 12px; }
 .map-center-pin { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%); color: var(--ink); pointer-events: none; filter: drop-shadow(0 3px 2px #0003); }
 .map-center-pin svg { stroke: var(--bg); stroke-width: 1.3px; }
 .map-pick-confirm { position: absolute; bottom: 65px; left: 50%; transform: translateX(-50%); width: min(320px, calc(100% - 32px)); background: var(--bg); border: 1px solid var(--rule); padding: 16px; box-shadow: 0 5px 24px #0001; }
@@ -1960,25 +1906,19 @@ dialog::backdrop {
 .map-pick-confirm .primary { flex: 1; }
 .place-attribution a { text-decoration: underline; }
 @media (max-width: 760px) {
- .map-choose { top: 130px; left: 20px; }
+ .map-controls { top: 16px; left: 16px; max-width: calc(100% - 84px); }
  .map-pick-confirm { bottom: 95px; }
 }
 
 /* Map browsing is explicit; pan/zoom never starts a directory query. */
-.map-area-search { position: absolute; z-index: 4; left: 50%; top: 154px; transform: translateX(-50%); max-width: calc(100% - 130px); }
-.map-area-search button, .map-area-search > span { background: var(--paper); box-shadow: 0 3px 14px #0001; font-size: 12px; white-space: nowrap; }
-.map-area-search > span { display: block; padding: 12px 16px; border: 1px solid var(--rule); }
+.map-area-search > span { display: block; padding: 10px 12px; border: 1px solid var(--rule); background: var(--paper); font-size: 12px; }
 .provider-row.lower-priority:not(.selected) { border-left: 2px solid var(--rule); }
-@media (max-width: 760px) { .map-area-search { top: 185px; max-width: calc(100% - 32px); } }
 .provider-pin.suggested { border: 2px solid var(--accent); background: #dfe6cf; box-shadow: 0 0 0 5px #6e7c4c30, 0 3px 10px #0002; z-index: 2; }
 .provider-pin.suggested.selected { background: var(--ink); color: var(--bg); border-color: var(--ink); z-index: 3; }
 .pin-star { position: absolute; top: -8px; right: -8px; display: grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: var(--accent); color: var(--paper); font: 11px/1 sans-serif; border: 1px solid var(--paper); }
-.map-suggestion-legend { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 11px; padding: 5px 8px; background: var(--paper); color: var(--ink); border: 1px solid var(--rule); }
 .map-suggestion-legend b { color: var(--accent); }
 .suggestion-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--accent); border: 1px solid var(--accent); padding: 5px 7px; }
 .provider-row.suggested:not(.selected) { border-left: 2px solid var(--accent); }
-.map-region:has(.map-suggestion-legend) .map-choose { top: 185px; }
-@media (max-width: 760px) { .map-region:has(.map-suggestion-legend) .map-choose { top: 172px; } }
 /* Keep marker emphasis inside the map, below headings and detail controls. */
 .map-canvas { isolation: isolate; }
 .provider-pin.spread-pin::before { content: ''; position: absolute; left: 50%; top: 50%; width: var(--stem-length); height: 1px; background: var(--accent); transform: rotate(var(--stem-angle)); transform-origin: left center; z-index: -1; pointer-events: none; }
