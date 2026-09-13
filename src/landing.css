@@ -28,12 +28,64 @@
   inset: 0;
   z-index: 30;
   pointer-events: none;
+  overflow: hidden;
   background: linear-gradient(115deg, #f2f0e6, #e7e9db);
-  transform: translateX(100%);
+  color: var(--landing-ink);
+  font-family: MiSans, "DM Sans", sans-serif;
+  clip-path: inset(0 0 0 100%);
   animation:
     curtain-cover var(--entrance-cover) cubic-bezier(0.22, 1, 0.36, 1) both,
     curtain-reveal var(--entrance-reveal) cubic-bezier(0.22, 1, 0.36, 1)
       var(--entrance-cover) forwards;
+}
+.entrance-composition { position: absolute; inset: 0; }
+.entrance-brand {
+  position: absolute;
+  left: 6vw;
+  top: 50%;
+  width: 39vw;
+  transform: translateY(-50%);
+}
+.entrance-wordmark {
+  display: flex;
+  align-items: baseline;
+  font-size: clamp(40px, 5.8vw, 116px);
+  line-height: 1;
+  font-weight: 750;
+  letter-spacing: -.075em;
+  white-space: nowrap;
+}
+.entrance-wordmark span { color: #7c8568; font-weight: 300; margin-left: .15em; }
+.entrance-brand-rule { height: 1px; width: 100%; background: #a6ab98; margin-top: 30px; }
+.entrance-brand p { font-size: clamp(9px, .8vw, 13px); letter-spacing: .2em; margin: 15px 0 0; }
+.entrance-art {
+  position: absolute;
+  top: 50%;
+  right: 4vw;
+  width: 48vw;
+  margin: 0;
+  padding: clamp(12px, 1.4vw, 24px);
+  border: 1px solid #a6ab9870;
+  background: #f5f3eb;
+  box-shadow: 0 24px 80px #30362c0d;
+  transform: translateY(-50%);
+}
+.entrance-art img { display: block; width: 100%; aspect-ratio: 1.514; object-fit: contain; mix-blend-mode: multiply; }
+.entrance-art figcaption { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid #a6ab9870; color: var(--landing-muted); font-size: 10px; letter-spacing: .15em; }
+@media (max-width: 650px) {
+  .entrance-composition { display: flex; flex-direction: column; justify-content: center; gap: clamp(38px, 8dvh, 72px); padding: 0 7vw; }
+  .entrance-brand { position: static; width: 100%; transform: none; }
+  .entrance-wordmark { font-size: 12.7vw; }
+  .entrance-brand-rule { margin-top: 18px; }
+  .entrance-brand p { margin-top: 11px; }
+  .entrance-art { position: static; width: 100%; transform: none; padding: 12px; }
+  .entrance-art figcaption { font-size: 9px; padding-top: 10px; }
+}
+@media (max-width: 650px) and (max-height: 500px) {
+  .entrance-composition { flex-direction: row; align-items: center; gap: 5vw; padding: 0 6vw; }
+  .entrance-brand { width: 42%; }
+  .entrance-wordmark { font-size: 5.8vw; }
+  .entrance-art { width: 53%; padding: 8px; }
 }
 @keyframes app-entry {
   from {
@@ -45,18 +97,18 @@
 }
 @keyframes curtain-cover {
   from {
-    transform: translateX(100%);
+    clip-path: inset(0 0 0 100%);
   }
   to {
-    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
   }
 }
 @keyframes curtain-reveal {
   from {
-    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
   }
   to {
-    transform: translateX(-100%);
+    clip-path: inset(0 100% 0 0);
   }
 }
 @keyframes landing-exit {

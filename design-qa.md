@@ -2,20 +2,18 @@
 
 Date: 2026-09-12. Scope: the user-requested RhineLab-inspired landing page with Gaussian blur, integrated into the existing EqualPath website. The latest user revision replaces the cinematic transfer with one brief entrance.
 
-## Current revision: brief sidebar-style entry (2026-09-14)
+## Current revision: artwork-led entry and slower surfaces (2026-09-14)
 
-The user requested the sidebar-navigation motion from [ignoredone.space](https://www.ignoredone.space/index.php/graphic-design-arknights/). Its desktop transition covers from the right and reveals toward the left with a quick ease-out. EqualPath adapts that direction to a quiet ivory curtain: 220 ms cover, 340 ms reveal, and a 16 px settle of the existing search interface. No transition copy or intermediate destination is added. The five-cover gallery and collection-to-raised opening remain unchanged.
+The user requested a slightly slower landing entrance filled by its current artwork and EQUALPATH branding. The right-to-left ivory curtain now takes 900 ms: 360 ms cover, 540 ms reveal. A stationary composition is revealed by a clip, with the large wordmark on the left and the selected childcare print in a fine paper frame on the right. Phones stack them as a centred group. The artwork is frozen when entering, and scene autoplay pauses. This is a decorative transition into the same mounted app, not another destination.
 
-The subsequent request extends this motion to result cards and popups, and adds a circular pointer. Result cards reveal upward once on entering view (360 ms, stagger capped at 165 ms), dialogs appear in 320 ms, and small popovers in 180 ms. The sage pointer enlarges on controls and shrinks on press; it restores native cursors for inputs, map dragging, touch, keyboard use and reduced motion. A noninteractive manual popover keeps it visible above modal dialogs, with native fallback when unsupported.
+Result cards now reveal in 480 ms, with a stagger capped at 210 ms; dialogs use 440 ms, backdrops 300 ms, and select menus/registration popovers 240 ms. These changes slow the recently added motion by roughly one third. Pointer feedback remains responsive. Native cursors and immediate entry remain available for reduced motion; input, map dragging, touch and keyboard behavior are preserved.
 
-- Seven relevant browser scenarios passed across the interaction, centre-details and sorting suites, plus 130 unit checks and the production build. The pointer does not intercept clicks, Escape still closes dialogs and restores focus, and scrolling card reveals do not submit extra searches.
-- Desktop pointer and settled popup screenshots were visually checked at `.build/interaction-qa/dialog-pointer.png` and `details-settled.png`; phone reduced-motion layout is in `details-mobile.png`. The animation checks use controlled test centres, not live provider claims.
-
-- 130 unit tests and production build/asset validation pass. All three landing browser scenarios pass (desktop opening/entry; reduced-motion phone; phone Escape and returning request).
-- Desktop 1440 × 1000 keyframes were inspected at 80 ms and 300 ms: the original landing stays visible before coverage, the search interface appears during reveal, and no horizontal overflow is introduced. Screenshots: `.build/entry-curtain-qa/entry-cover.png`, `entry-reveal.png`, `entry-ready.png`.
-- At 390 × 844, reduced motion enters directly and Escape clears the curtain even when the optional 3D scene is unavailable. Returning home and re-entering retains the typed pickup place and restores input focus. Screenshot: `.build/entry-curtain-qa/entry-mobile-ready.png`.
-- The same App element survives entry. It stays inert until entry finishes, the scene is then unmounted, and the decorative curtain is removed. The timer remains independent of scene, map tiles and API completion.
-- Checks use Chrome viewport emulation and an empty API response for the visual transition; these do not verify live catalogue data or physical-device performance.
+- Six relevant browser scenarios passed across landing and interaction suites, including card reveals without duplicate queries, pointer/dialog controls, reduced-motion/touch fallback, first-load collection-to-raised behavior, Escape and request preservation. After the final spacing adjustment, all three landing scenarios passed again.
+- Final screenshots were visually inspected at `.build/entry-art-final/entry-composition.png` (1440 × 1000, PLAY) and `entry-composition-mobile.png` (390 × 844, GROW). Wordmark, slash and artwork do not overlap. The print stays within the viewport and no horizontal overflow occurs.
+- Cover/reveal samples are captured at 120 ms and 470 ms, with the full composition at 360 ms. The original landing stays visible before coverage and the existing search interface appears during reveal. Samples pause the real CSS animations; they are not frame-rate measurements.
+- The artwork assertion checks both selection and successful image load. Selecting PLAY before desktop entry uses PLAY; selecting GROW before phone entry uses GROW.
+- The same App element survives entry. It remains inert until entry completes, then the curtain and scene are removed and pickup-input focus is restored. Escape also completes entry while the optional 3D scene is unavailable. Returning home retains the current request.
+- 130 unit checks and the production build/asset validation pass. Browser checks use Chrome viewport emulation and controlled/empty API responses; they do not establish live catalogue accuracy or physical-device performance. Live deployment is verified separately against the release digest.
 
 ## Previous revision: minimal four-artwork gallery (2026-09-13)
 

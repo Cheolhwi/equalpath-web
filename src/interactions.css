@@ -5,18 +5,18 @@
 }
 @keyframes care-backdrop-appear { from { opacity: 0; } to { opacity: 1; } }
 .equalpath dialog[open]:not(.tour-dialog) {
-  animation: care-surface-appear 320ms cubic-bezier(.22, .61, .36, 1) backwards;
+  animation: care-surface-appear 440ms cubic-bezier(.22, .61, .36, 1) backwards;
 }
 .equalpath dialog[open]:not(.tour-dialog)::backdrop {
-  animation: care-backdrop-appear 220ms ease-out;
+  animation: care-backdrop-appear 300ms ease-out;
 }
 .provider-row[data-reveal="waiting"] { opacity: 0; }
 .provider-row[data-reveal="visible"] {
-  animation: care-surface-appear 360ms cubic-bezier(.22, .61, .36, 1) backwards;
+  animation: care-surface-appear 480ms cubic-bezier(.22, .61, .36, 1) backwards;
   animation-delay: var(--card-delay, 0ms);
 }
 .select-menu-popup, .registration-popover {
-  animation: care-surface-appear 180ms cubic-bezier(.22, .61, .36, 1) backwards;
+  animation: care-surface-appear 240ms cubic-bezier(.22, .61, .36, 1) backwards;
 }
 
 .care-pointer {

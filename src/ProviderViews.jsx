@@ -166,7 +166,7 @@ export function ProviderCard({
   return (
     <article
       ref={revealRef}
-      style={{ "--card-delay": `${Math.min(index, 3) * 55}ms` }}
+      style={{ "--card-delay": `${Math.min(index, 3) * 70}ms` }}
       className={`provider-row ${selected ? "selected" : ""} ${p.fit.counts.conflict ? "lower-priority" : ""} ${p.suggested ? "suggested" : ""}`}
       id={"card-" + p.id}
       data-provider-id={p.id}

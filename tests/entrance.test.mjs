@@ -49,7 +49,7 @@ test("entrance always completes without waiting for map tiles or a backend respo
   assert.deepEqual(phases, ["entering", "ready"]);
   assert.equal(phases.filter((phase) => phase === "ready").length, 1);
   assert.ok(ENTRANCE_COVER_MS < ENTRANCE_DURATION_MS);
-  assert.ok(Math.max(...[...clock.jobs.values()].map((job) => job.at)) <= 600);
+  assert.ok(Math.max(...[...clock.jobs.values()].map((job) => job.at)) <= 1000);
 });
 
 test("city previews stay flat and entrance adds no intermediate camera destination", () => {

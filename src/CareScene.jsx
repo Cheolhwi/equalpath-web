@@ -5,7 +5,7 @@ import { fileAtCell } from "./vendor/rhine/archive-loop";
 import { fileLocation, records } from "./vendor/rhine/data";
 import { careArtworks, nextArtwork, artworkDwell } from "./care-artworks.js";
 
-export default function CareScene({ reduced, animateOpening = true }) {
+export default function CareScene({ reduced, animateOpening = true, leaving = false, onArtworkChange }) {
   const host = useRef(null);
   const instance = useRef(null);
   const selected = useRef(0);
@@ -21,6 +21,7 @@ export default function CareScene({ reduced, animateOpening = true }) {
   const [paused, setPaused] = useState(false);
   const [hidden, setHidden] = useState(() => document.hidden);
   const [retry, setRetry] = useState(0);
+  useEffect(() => { onArtworkChange?.(artIndex); }, [artIndex, onArtworkChange]);
   const finishOpening = useCallback(() => {
     openingRef.current = "complete";
     setOpening("complete");
@@ -64,9 +65,9 @@ export default function CareScene({ reduced, animateOpening = true }) {
     };
   }, []);
   const playing =
-    status === "ready" && opening === "complete" && !paused && !reduced && !overview && !hidden;
+    status === "ready" && opening === "complete" && !paused && !reduced && !overview && !hidden && !leaving;
   useEffect(() => {
-    if (status !== "ready" || opening === "complete" || hidden || paused || reduced) return;
+    if (status !== "ready" || opening === "complete" || hidden || paused || reduced || leaving) return;
     return artworkDwell(() => {
       if (openingRef.current === "complete") return;
       if (opening === "collection") {
@@ -79,7 +80,7 @@ export default function CareScene({ reduced, animateOpening = true }) {
         setOpening("lifting");
       } else finishOpening();
     }, { delay: opening === "collection" ? 300 : 1800 });
-  }, [status, opening, hidden, paused, reduced, finishOpening]);
+  }, [status, opening, hidden, paused, reduced, leaving, finishOpening]);
   useEffect(() => {
     if (!playing) return;
     return artworkDwell(() => {

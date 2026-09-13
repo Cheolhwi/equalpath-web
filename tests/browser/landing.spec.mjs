@@ -1,15 +1,17 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync} from 'node:fs';
-import {ENTRANCE_DURATION_MS} from '../../src/entrance.js';
+import {ENTRANCE_COVER_MS,ENTRANCE_DURATION_MS} from '../../src/entrance.js';
 const out=process.env.QA_EVIDENCE_DIR || '.build/landing-qa';mkdirSync(out,{recursive:true});
 
-async function captureEntry(page) {
+async function captureEntry(page, artwork = 'play', suffix = '') {
   // Pause JS completion while sampling the actual CSS animations at their key stages.
   await page.clock.install();
-  await page.clock.pauseAt(new Date());
+  await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
   await page.getByRole('button',{name:/^(FIND CHILDCARE|BACK TO YOUR OPTIONS)$/}).click();
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','entering');
   await expect(page.locator('.equalpath')).toHaveAttribute('inert','');
+  await expect(page.locator('.entrance-curtain')).toHaveAttribute('data-artwork',artwork);
+  await expect.poll(()=>page.locator('.entrance-art img').evaluate(el=>el.complete && el.naturalWidth>0)).toBe(true);
   const sample=async(time)=>page.evaluate(time=>{
     for(const animation of document.getAnimations()){
       if(['curtain-cover','curtain-reveal','landing-exit','app-entry'].includes(animation.animationName)){
@@ -17,23 +19,29 @@ async function captureEntry(page) {
       }
     }
     const curtain=document.querySelector('.entrance-curtain');
-    return {x:curtain.getBoundingClientRect().x,
+    const insets=getComputedStyle(curtain).clipPath.match(/[\d.]+/g).map(Number);
+    return {left:insets[3]??insets[1]??insets[0],right:insets[1]??insets[0],
       landingOpacity:Number(getComputedStyle(document.querySelector('.landing')).opacity),
       overflow:document.documentElement.scrollWidth>innerWidth};
   },time);
-  const cover=await sample(80);
-  expect(cover.x).toBeGreaterThan(0);expect(cover.x).toBeLessThan(page.viewportSize().width);
+  const cover=await sample(120);
+  expect(cover.left).toBeGreaterThan(0);expect(cover.left).toBeLessThan(100);
   expect(cover.landingOpacity).toBe(1);expect(cover.overflow).toBe(false);
-  await page.screenshot({path:out+'/entry-cover.png'});
-  const reveal=await sample(300);
-  expect(reveal.x).toBeLessThan(0);expect(reveal.x).toBeGreaterThan(-page.viewportSize().width);
+  await page.screenshot({path:out+`/entry-cover${suffix}.png`});
+  await sample(ENTRANCE_COVER_MS);
+  const composition=await page.locator('.entrance-art').boundingBox();
+  expect(composition.x).toBeGreaterThanOrEqual(0);expect(composition.x+composition.width).toBeLessThanOrEqual(page.viewportSize().width);
+  expect(composition.y).toBeGreaterThanOrEqual(0);expect(composition.y+composition.height).toBeLessThanOrEqual(page.viewportSize().height);
+  await page.screenshot({path:out+`/entry-composition${suffix}.png`});
+  const reveal=await sample(ENTRANCE_COVER_MS+110);
+  expect(reveal.right).toBeGreaterThan(0);expect(reveal.right).toBeLessThan(100);
   expect(reveal.landingOpacity).toBe(0);expect(reveal.overflow).toBe(false);
-  await page.screenshot({path:out+'/entry-reveal.png'});
+  await page.screenshot({path:out+`/entry-reveal${suffix}.png`});
   await page.clock.runFor(ENTRANCE_DURATION_MS+32);
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
   await expect(page.locator('.entrance-curtain')).toHaveCount(0);
   await expect(page.locator('.equalpath')).not.toHaveAttribute('inert','');
-  await page.screenshot({path:out+'/entry-ready.png'});
+  await page.screenshot({path:out+`/entry-ready${suffix}.png`});
   await page.clock.resume();
 }
 test.beforeEach(async({page})=>{
@@ -77,6 +85,12 @@ test('landing starts as a collection, automatically raises a care card, and neve
   await page.getByRole('button',{name:'EqualPath home',exact:true}).click();
   await expect(scene).toHaveAttribute('data-opening','complete');
   await expect(scene).toHaveAttribute('data-scene-view','detail');
+  await page.getByRole('button',{name:'Next artwork'}).click();
+  await page.getByRole('button',{name:'Next artwork'}).click();
+  await page.getByRole('button',{name:'Next artwork'}).click();
+  await expect(scene).toHaveAttribute('data-artwork','grow');
+  await page.setViewportSize({width:390,height:844});
+  await captureEntry(page,'grow','-mobile');
 });
 test('reduced-motion mobile landing opens raised, with visible controls and keyboard focus preserved',async({page})=>{
   test.setTimeout(90000);await page.setViewportSize({width:390,height:844});
@@ -101,7 +115,7 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   // Entry must remain usable even while the optional 3D scene has not loaded.
   await page.route('**/CareScene.jsx',route=>route.abort());
   await page.goto('/');
-  await page.clock.install();await page.clock.pauseAt(new Date());
+  await page.clock.install();await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
   await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','entering');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);

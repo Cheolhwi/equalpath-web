@@ -10,6 +10,7 @@ import {
 import { ArrowRight, Minus, Plus } from "lucide-react";
 import App from "./App.jsx";
 import Pointer from "./Pointer.jsx";
+import { careArtworks } from "./care-artworks.js";
 import { ENTRANCE_COVER_MS, ENTRANCE_REVEAL_MS, startEntrance } from "./entrance.js";
 import "./landing.css";
 
@@ -41,6 +42,9 @@ export default function Experience() {
     () => matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
   const cancelEntrance = useRef(() => {});
+  const [activeArtwork, setActiveArtwork] = useState(0);
+  const [entryArtwork, setEntryArtwork] = useState(0);
+  const artwork = careArtworks[entryArtwork];
   const enterButton = useRef(null);
   const hasEntered = useRef(phase === "ready");
   const moving = phase !== "welcome" && phase !== "ready";
@@ -56,12 +60,13 @@ export default function Experience() {
   }, []);
   const enter = useCallback(() => {
     if (phase !== "welcome") return;
+    setEntryArtwork(activeArtwork);
     cancelEntrance.current();
     cancelEntrance.current = startEntrance(
       (next) => (next === "ready" ? finish() : setPhase(next)),
       { reduced },
     );
-  }, [phase, reduced, finish]);
+  }, [phase, reduced, finish, activeArtwork]);
   const home = useCallback(() => {
     cancelEntrance.current();
     history.replaceState(null, "", `${location.pathname}${location.search}`);
@@ -137,7 +142,8 @@ export default function Experience() {
                     </div>
                   }
                 >
-                  <CareScene reduced={reduced} animateOpening={!hasEntered.current} />
+                  <CareScene reduced={reduced} animateOpening={!hasEntered.current}
+                    leaving={moving} onArtworkChange={setActiveArtwork} />
                 </Suspense>
               </SceneBoundary>
             </div>
@@ -182,7 +188,25 @@ export default function Experience() {
           </div>
         </section>
       )}
-      {moving && <div className="entrance-curtain" aria-hidden="true" />}
+      {moving && (
+        <div className="entrance-curtain" aria-hidden="true" data-artwork={artwork.id}>
+          <div className="entrance-composition">
+            <div className="entrance-brand">
+              <div className="entrance-wordmark">EQUALPATH<span>／</span></div>
+              <div className="entrance-brand-rule" />
+              <p>FIND CHILDCARE</p>
+            </div>
+            <figure className="entrance-art">
+              <img src={`${import.meta.env.BASE_URL}${artwork.image}`} alt=""
+                onError={event => { event.currentTarget.style.visibility = "hidden"; }} />
+              <figcaption>
+                <span>{String(entryArtwork + 1).padStart(2, "0")} / {String(careArtworks.length).padStart(2, "0")}</span>
+                <span>{artwork.title}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
