@@ -620,10 +620,13 @@ select {
 .row-kicker span:first-child {
   max-width: 45%;
 }
+.row-kicker span:last-child {
+  text-align: right;
+}
 .provider-main h3 {
   font-size: 15px;
   line-height: 1.35;
-  margin: 9px 0 5px;
+  margin: 9px 0 14px;
 }
 .provider-main > p {
   font-size: 11px;
@@ -1949,8 +1952,6 @@ dialog::backdrop {
 .map-area-search { position: absolute; z-index: 4; left: 50%; top: 154px; transform: translateX(-50%); max-width: calc(100% - 130px); }
 .map-area-search button, .map-area-search > span { background: var(--paper); box-shadow: 0 3px 14px #0001; font-size: 12px; white-space: nowrap; }
 .map-area-search > span { display: block; padding: 12px 16px; border: 1px solid var(--rule); }
-.provider-row .row-note { font-size: 11px; line-height: 1.45; margin: 2px 0 12px; color: var(--muted); }
-.priority-note { color: var(--muted); font-size: 11px; }
 .provider-row.lower-priority:not(.selected) { border-left: 2px solid var(--rule); }
 @media (max-width: 760px) { .map-area-search { top: 185px; max-width: calc(100% - 32px); } }
 .provider-pin.suggested { border: 2px solid var(--accent); background: #dfe6cf; box-shadow: 0 0 0 5px #6e7c4c30, 0 3px 10px #0002; z-index: 2; }

@@ -137,37 +137,24 @@ export function ProviderCard({
             {String(index + 1).padStart(2, "0")} / {p.category}
           </span>
           <span>
-            {p.distanceKm == null
-              ? "Map location unavailable"
-              : `${p.distanceKm.toFixed(1)} km · straight-line`}
+            {p.driving?.state === "available"
+              ? `${p.driving.distanceKm} km by road`
+              : "Distance unavailable"}
           </span>
         </div>
         <h3>{p.name}</h3>
-        <p>
-          {p.district} · {p.region}
-        </p>
         <div className="row-facts">
-          <span>
-            {p.businessHoursDay
-              ? `Care end time · ${p.businessHoursDay}`
-              : "Care end time"}
-          </span>
-          <strong>{p.careEndTimeLabel ?? p.businessHoursLabel}</strong>
+          <span>Age</span>
+          <strong>{p.age?.rangeLabel ?? p.age?.wording ?? "Not listed"}</strong>
         </div>
-        {p.age && (
-          <div className="row-facts">
-            <span>
-              {p.age.basis === "type_reference"
-                ? "Age · official type range"
-                : "Admission age"}
-            </span>
-            <strong>{p.age.rangeLabel ?? p.age.wording}</strong>
-          </div>
-        )}
-        <div className="row-facts"><span>Drive from pickup</span><strong>{drivingLabel(p.driving)}</strong></div>
-        {p.driving?.state === "available" && <p className="row-note">{p.driving.distanceKm} km by road · without live traffic</p>}
-        <div className="row-facts"><span>Fees</span><strong>{fees.label}</strong></div>
-        <p className="row-note">{fees.note}</p>
+        <div className="row-facts">
+          <span>Drive from pickup</span>
+          <strong>{drivingLabel(p.driving)}</strong>
+        </div>
+        <div className="row-facts">
+          <span>Fee</span>
+          <strong>{fees.label}</strong>
+        </div>
         <div className="row-status">
           {p.suggested && <span className="suggestion-tag"><Star size={12} fill="currentColor" />Suggested first</span>}
           <Status state={p.fit.counts.conflict ? "conflict" : "unknown"}>
@@ -175,10 +162,6 @@ export function ProviderCard({
               ? `${p.fit.counts.conflict} ${p.fit.counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match`
               : `${p.fit.counts.unknown} ${p.fit.counts.unknown === 1 ? "detail" : "details"} to confirm`}
           </Status>
-          {!!p.fit.counts.conflict && <span className="priority-note">Lower priority</span>}
-          {p.admission.value === true && (
-            <span className="published-tag">Hourly / one-off care listed</span>
-          )}
         </div>
       </button>
       <div className="row-actions">

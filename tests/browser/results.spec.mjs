@@ -38,6 +38,14 @@ async function search(page){
 test("result cards show drive time and fee basis, while conflicts stay below other results on desktop and mobile",async({page})=>{
   const calls=[];await setup(page,calls);await search(page);
   const row=page.locator(".provider-row").first();await expect(row).toContainText("About 8 min by car");await expect(row).toContainText("estimated total");
+  await expect(row.locator(".row-facts > span")).toHaveText(["Age","Drive from pickup","Fee"]);
+  await expect(row.locator(".row-kicker > span").last()).toHaveText("5.5 km by road");
+  await expect(row.locator(".suggestion-tag")).toHaveText("Suggested first");
+  await expect(row.locator(".state-pill")).toBeVisible();
+  await expect(row).not.toContainText("Care end time");
+  await expect(row).not.toContainText("straight-line");
+  await expect(row).not.toContainText("without live traffic");
+  await expect(row.locator(".row-note")).toHaveCount(0);
   const priorities=await page.locator(".provider-row").evaluateAll(rows=>rows.map(r=>r.classList.contains("lower-priority")));
   expect(priorities.indexOf(true)).toBeGreaterThan(0);expect(priorities.slice(priorities.indexOf(true)).every(Boolean)).toBe(true);
   await expect(page.locator(".provider-pin.suggested")).toHaveCount(3);
@@ -60,7 +68,8 @@ test("result cards show drive time and fee basis, while conflicts stay below oth
 test("route outage keeps results and published prices, without fake drive estimates",async({page})=>{
   const calls=[];await setup(page,calls,false);await search(page);
   await expect(page.locator(".provider-row").first()).toContainText("Driving time unavailable");
-  await expect(page.locator(".provider-row").first()).toContainText("Fees");
+  await expect(page.locator(".provider-row").first().locator(".row-facts > span")).toHaveText(["Age","Drive from pickup","Fee"]);
+  await expect(page.locator(".provider-row").first().locator(".row-kicker > span").last()).toHaveText("Distance unavailable");
   await expect(page.locator(".provider-row").first()).not.toContainText("0 min");
 });
 test("co-located suggested centres stay distinct and individually selectable on the mobile map",async({page})=>{
