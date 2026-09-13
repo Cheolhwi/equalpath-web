@@ -57,7 +57,7 @@ export default function Preparation({
       }
     } catch {
       setFailure(
-        "The preparation sheet could not be exported. Your draft remains here. Please retry.",
+        "We couldn’t export your checklist. It’s still here — please try again.",
       );
     }
   };
@@ -65,7 +65,7 @@ export default function Preparation({
     <div className="preparation">
       <div className="preparation-head">
         <div>
-          <div className="section-kicker">FOR THIS OCCASION</div>
+          <div className="section-kicker">YOUR CHOSEN CENTRE</div>
           <h3>{p.name}</h3>
         </div>
         <div className="saved-actions">
@@ -81,7 +81,7 @@ export default function Preparation({
       </div>
       {p.mode === "demo" && (
         <p className="demo-notice">
-          Controlled example — fictional institution and service facts.
+          Demo centre — fictional details.
         </p>
       )}
       <p className="dialog-context">{sheet.request}</p>
@@ -107,7 +107,7 @@ export default function Preparation({
       )}
       {!!sheet.conflicts.length && (
         <div className="error-box">
-          <strong>Conditions to resolve before arranging care</strong>
+          <strong>Check these details before arranging care</strong>
           {sheet.conflicts.map((c) => (
             <p key={c.id}>
               {c.label}: {c.reason}
@@ -116,8 +116,8 @@ export default function Preparation({
         </div>
       )}
       <section className="detail-section">
-        <div className="section-kicker">01 / THE SEQUENCE</div>
-        <h3>From pickup to final collection.</h3>
+        <div className="section-kicker">01 / PICKUP PLAN</div>
+        <h3>Pickup, drop-off and collection</h3>
         <div className="preparation-sequence">
           {sheet.sequence.map((step) => (
             <article key={step.title}>
@@ -132,10 +132,9 @@ export default function Preparation({
       </section>
       <section className="detail-section">
         <div className="section-kicker">02 / HANDOVER QUESTIONS</div>
-        <h3>Ask the right person.</h3>
+        <h3>Who to ask</h3>
         <p className="notice">
-          General handover prompts. Discuss these directly; this page does not
-          record anyone’s agreement.
+          Use these questions to agree the handover with each person involved.
         </p>
         <div className="preparation-parties">
           {sheet.groups.map((g) => (
@@ -152,16 +151,15 @@ export default function Preparation({
           ))}
         </div>
         <button className="text-link" onClick={onEnquiry}>
-          Return to provider-selection enquiries <ArrowRight size={14} />
+          Questions for this centre <ArrowRight size={14} />
         </button>
       </section>
       <section className="detail-section">
-        <div className="section-kicker">03 / PACKING & INFORMATION</div>
-        <h3>A few things to have ready.</h3>
+        <div className="section-kicker">03 / PACKING LIST</div>
+        <h3>What to bring</h3>
         <p className="notice">
-          General packing prompts for this request. Tick items as you prepare
-          them; ticks stay on this page and are included in your downloaded
-          sheet.
+          Tick off items as you pack. Your ticks stay while this checklist
+          is open and are included when you download it.
         </p>
         <div className="packing-list">
           {sheet.packing.map((x) => (
@@ -175,7 +173,7 @@ export default function Preparation({
             </label>
           ))}
         </div>
-        <h4>Provider-sourced requirements</h4>
+        <h4>What the centre asks you to bring</h4>
         {sheet.published.length ? (
           sheet.published.map((x) => (
             <div key={x.id}>
@@ -192,8 +190,8 @@ export default function Preparation({
           ))
         ) : (
           <p className="notice">
-            No specific packing or handover requirements are published in this
-            record. Ask the receiving centre.
+            We haven’t found a packing list for this centre. Ask them what
+            to bring.
           </p>
         )}
         <p className="private-info">
@@ -206,8 +204,7 @@ export default function Preparation({
         <h3>{p.name}</h3>
         <PublishedContacts p={p} />
         <p className="notice">
-          Usual centre release contact and collector / transport contact: to be
-          confirmed.
+          Also keep the usual centre’s number and the collector’s number handy.
         </p>
       </section>
       <div className="saved-actions preparation-footer">

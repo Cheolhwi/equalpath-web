@@ -7,7 +7,7 @@ export default defineConfig({
   outputDir: ".build/browser-results",
   reporter: [
     ["list"],
-    ["json", { outputFile: "evidence/phase4-5/browser-results.json" }],
+    ["json", { outputFile: `${process.env.QA_EVIDENCE_DIR || "evidence/phase4-5"}/browser-results.json` }],
   ],
   use: {
     baseURL: "http://127.0.0.1:4191",

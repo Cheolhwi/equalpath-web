@@ -229,7 +229,7 @@ export default function App({
     setReopening(saved);
     setDraft((x) => ({ ...x, date: "" }));
     setErrors({
-      date: "Choose a new service date to recheck this institution.",
+      date: "Choose a new date to check this centre.",
     });
     setFailure(null);
     setFormOpen(true);
@@ -393,7 +393,7 @@ export default function App({
     if (compareIds.includes(id))
       setCompareIds((x) => x.filter((v) => v !== id));
     else if (compareIds.length < 3) setCompareIds((x) => [...x, id]);
-    else notify("Compare up to three institutions. Remove one to add another.");
+    else notify("Compare up to three centres. Remove one to add another.");
   };
   const openDetails = (p) => {
     setProfile({ p, request: activeRequest });
@@ -429,6 +429,7 @@ export default function App({
     else setComparison(null);
   };
   const prepare = (p, request = activeRequest) => {
+    if (!p || !request) return;
     setEnquiry({ p, request });
     setDialogError(null);
     setDialog("enquiry");
@@ -491,7 +492,7 @@ export default function App({
           <strong>
             EQUALPATH<span>／</span>
           </strong>
-          <small>CARE FOR THIS OCCASION</small>
+          <small>CHILDCARE IN KL & SELANGOR</small>
         </button>
         <nav aria-label="Main navigation">
           <button
@@ -510,12 +511,6 @@ export default function App({
             <small>02</small>COMPARE <em>{compareIds.length}</em>
           </button>
           <button
-            className={dialog === "enquiry" ? "active" : ""}
-            onClick={() => setDialog("enquiry")}
-          >
-            <small>03</small>ENQUIRY
-          </button>
-          <button
             className={dialog === "saved" ? "active" : ""}
             onClick={() => {
               close();
@@ -523,7 +518,7 @@ export default function App({
               setDialog("saved");
             }}
           >
-            <small>04</small>SAVED <em>{library.favourites.length}</em>
+            <small>03</small>SAVED <em>{library.favourites.length}</em>
           </button>
           <button
             className={dialog === "preparation" ? "active" : ""}
@@ -532,12 +527,12 @@ export default function App({
               setDialog("preparation");
             }}
           >
-            <small>05</small>PREPARE
+            <small>04</small>PREPARE
           </button>
         </nav>
         <div className="header-end">
           <span className={`data-badge ${mode === "demo" ? "demo" : ""}`}>
-            {mode === "demo" ? "CONTROLLED DEMO" : "KL + SELANGOR"}
+            {mode === "demo" ? "DEMO" : "KL + SELANGOR"}
           </span>
           <button
             aria-label="Display and data settings"
@@ -553,30 +548,22 @@ export default function App({
       >
         <div className="intro">
           <div className="eyebrow">
-            FOR THE DAY THAT CHANGED <span>／ 01</span>
+            KL + SELANGOR <span>／ 01</span>
           </div>
-          <h1>
-            A little more time.
-            <br />
-            <span>A clearer next step.</span>
-          </h1>
-          <p>
-            Find institutional care. Check the conditions.
-            <br />
-            Know what to ask before you call.
-          </p>
+          <h1>Find childcare</h1>
+          <p>Search by pickup place and care hours.</p>
         </div>
         {mode === "demo" && (
           <p className="demo-notice">
             Controlled examples — fictional providers, times and prices for
             trying daytime and evening care.{" "}
             <button onClick={() => switchMode("live")}>
-              Use real directory
+              Back to real centres
             </button>
           </p>
         )}
         <div className="request-heading">
-          <strong>YOUR CURRENT OCCASION</strong>
+          <strong>YOUR PICKUP & CARE DETAILS</strong>
           {results && (
             <button onClick={() => setFormOpen((v) => !v)}>
               {formOpen ? "Hide form" : "Edit request"}{" "}
@@ -604,10 +591,10 @@ export default function App({
                   : `Age ${activeRequest.age}`}{" "}
               ·{" "}
               {activeRequest.transport === "self"
-                ? "Self-arranged delivery"
+                ? "I’ll arrange transport"
                 : activeRequest.transport === "institution"
-                  ? "Institutional pickup"
-                  : "Transport unspecified"}
+                  ? "Centre pickup"
+                  : "Pickup not specified"}
             </small>
           </div>
         )}
@@ -615,11 +602,11 @@ export default function App({
           <div className="notice-panel">
             <strong>Rechecking {reopening.name}</strong>
             <p>
-              Choose the service date and check the current request. Saved fit
-              decisions are not reused.
+              Choose a new date to see whether this centre meets your needs.
+              We’ll check its latest details.
             </p>
             <button className="text-link" onClick={() => setReopening(null)}>
-              Cancel saved-institution check
+              Back to a new search
             </button>
             {failure && (
               <SavedChanges saved={reopening} failure={errorMessage(failure)} />
@@ -646,12 +633,12 @@ export default function App({
             onMap={() => {
               setChoosing(true);
               setMobilePane("map");
-              notify("Select a public pickup place on the flat map.");
+              notify("Choose your pickup place on the map.");
             }}
           />
           <div className="field">
             <label htmlFor="service-date">
-              Service date <span>Malaysia time</span>
+              Date <span>Malaysia time</span>
             </label>
             <input
               id="service-date"
@@ -698,7 +685,7 @@ export default function App({
           <div className="field-pair">
             <div className="field">
               <label htmlFor="age">
-                Age on this date <span>Optional</span>
+                Child’s age <span>Optional</span>
               </label>
               <select
                 id="age"
@@ -725,7 +712,7 @@ export default function App({
                 onChange={(e) => setField("transport", e.target.value)}
               >
                 <option value="">Not specified</option>
-                <option value="institution">Institutional pickup</option>
+                <option value="institution">Centre pickup</option>
                 <option value="self">I'll arrange delivery</option>
               </select>
             </div>
@@ -735,7 +722,7 @@ export default function App({
               Refine the search <PlusIcon />
             </summary>
             <div className="field">
-              <label htmlFor="provider-query">Institution name or area</label>
+              <label htmlFor="provider-query">Centre name or area</label>
               <input
                 id="provider-query"
                 value={draft.query}
@@ -769,7 +756,7 @@ export default function App({
                 checked={draft.includeUnknown}
                 onChange={(e) => setField("includeUnknown", e.target.checked)}
               />
-              Include conditions needing confirmation
+              Include centres with details to confirm
             </label>
             <label className="checkbox">
               <input
@@ -777,7 +764,7 @@ export default function App({
                 checked={draft.includeConflicts}
                 onChange={(e) => setField("includeConflicts", e.target.checked)}
               />
-              Include known condition conflicts
+              Include centres that don’t meet all my needs
             </label>
           </details>
           <button
@@ -789,12 +776,12 @@ export default function App({
             {busy ? (
               <>
                 <span className="spinner" />
-                Checking this request…
+                Finding care options…
               </>
             ) : (
               <>
                 {reopening
-                  ? "Check saved institution"
+                  ? "Check saved centre"
                   : results
                     ? "Update results"
                     : "Find care options"}
@@ -803,7 +790,7 @@ export default function App({
             )}
           </button>
           <p className="form-foot">
-            One date, one care gap. No account or child profile.
+            No account needed. Just tell us where and when.
           </p>
         </form>
         <div className="request-save-actions">
@@ -844,7 +831,7 @@ export default function App({
             <div className="results-toolbar">
               <div>
                 <strong>{results.total.toLocaleString()}</strong>
-                <span>institutions to explore</span>
+                <span>centres found</span>
               </div>
               <label>
                 <span className="sr-only">Order search results</span>
@@ -861,7 +848,7 @@ export default function App({
                   {[
                     ["distance", "Nearest first"],
                     ["closing", "Later care end time"],
-                    ["pickup", "Published pickup first"],
+                    ["pickup", "Centres with pickup first"],
                     ["name", "By name"],
                   ].map(([id, label]) => (
                     <option
@@ -888,7 +875,7 @@ export default function App({
             </div>
             {results.missingLocations > 0 && (
               <p className="location-limit">
-                {results.total - results.missingLocations} located candidates +{" "}
+                {results.total - results.missingLocations} centres mapped +{" "}
                 {results.missingLocations} without coordinates. Their distance
                 cannot be checked.
               </p>
@@ -916,7 +903,7 @@ export default function App({
               {!items.length && (
                 <div className="empty-state">
                   <Search size={29} />
-                  <h2>No candidates in this search.</h2>
+                  <h2>No centres found</h2>
                   <p>
                     Area:{" "}
                     {results.request.radius
@@ -937,7 +924,7 @@ export default function App({
                       setMobilePane("list");
                     }}
                   >
-                    Change search restrictions <ArrowRight size={15} />
+                    Adjust your search <ArrowRight size={15} />
                   </button>
                   {!draft.includeUnknown && (
                     <button
@@ -948,7 +935,7 @@ export default function App({
                         search(null, 0, r);
                       }}
                     >
-                      Include conditions needing confirmation
+                      Include centres with details to confirm
                     </button>
                   )}
                 </div>
@@ -992,9 +979,9 @@ export default function App({
           <div className="before-results">
             <span>01 — DISCOVER</span>
             <p>
-              Your request becomes a shortlist of possibilities.
+              Choose a pickup place and the hours you need.
               <br />
-              Published facts help you decide what to ask.
+              We’ll show you centres to explore.
             </p>
             {health?.unavailable && (
               <p className="notice">
@@ -1009,8 +996,8 @@ export default function App({
           {mode === "demo"
             ? "Fictional examples"
             : health && !health.unavailable
-              ? `${health.available.toLocaleString()} regional records connected`
-              : "Connecting public directory"}
+              ? `${health.available.toLocaleString()} centres in the directory`
+              : "Loading the directory…"}
           <button onClick={() => setDialog("sources")}>Data & sources</button>
         </footer>
       </aside>
@@ -1054,7 +1041,7 @@ export default function App({
         )}
         {active && !choosing && (
           <div className="map-preview">
-            <span className="eyebrow">SELECTED INSTITUTION</span>
+            <span className="eyebrow">SELECTED CENTRE</span>
             <h3>{active.name}</h3>
             <p>
               {active.district} · {active.region}
@@ -1076,7 +1063,7 @@ export default function App({
           onClick={() => setMobilePane("list")}
         >
           <List size={17} />
-          List / request
+          Search & results
         </button>
         <button
           aria-pressed={mobilePane === "map"}
@@ -1090,7 +1077,7 @@ export default function App({
         <div className="compare-tray">
           <span>{compareIds.length} / 3 selected</span>
           <button onClick={() => loadComparison()}>
-            Compare institutions <ArrowRight size={16} />
+            Compare centres <ArrowRight size={16} />
           </button>
           <button
             aria-label="Clear comparison"
@@ -1112,24 +1099,24 @@ export default function App({
         <Dialog
           title={
             dialog === "saved"
-              ? "Keep a useful starting point."
+              ? "Your saved centres & searches"
               : dialog === "save-favourite"
-                ? "Save this institution."
+                ? "Save this centre"
                 : dialog === "save-template"
-                  ? "Your reusable request."
+                  ? "Save your search details"
                   : dialog === "preparation"
-                    ? "Ready for the handover."
+                    ? "Pickup & handover checklist"
                     : dialog === "details"
                       ? profile?.p.name
                       : dialog === "compare"
-                        ? "A clearer comparison."
+                        ? "Compare centres"
                         : dialog === "enquiry"
-                          ? "Know what to ask."
+                          ? "Questions for the centre"
                           : dialog === "settings"
-                            ? "Make it comfortable."
+                            ? "Display settings"
                             : dialog === "ordering"
                               ? "Why this order?"
-                              : "Where the facts come from."
+                              : "About our information"
           }
           kicker={
             dialog === "preparation"
@@ -1137,11 +1124,11 @@ export default function App({
               : ["saved", "save-template", "save-favourite"].includes(dialog)
                 ? "SAVED / THIS BROWSER"
                 : dialog === "details"
-                  ? "CONDITIONS & EVIDENCE"
+                  ? "CENTRE DETAILS"
                   : dialog === "enquiry"
-                    ? "PREPARE TO CONTACT"
+                    ? "BEFORE YOU GET IN TOUCH"
                     : dialog === "compare"
-                      ? "COMPARE FOR THIS REQUEST"
+                      ? "YOUR SELECTED CENTRES"
                       : "EQUALPATH / INFORMATION"
           }
           wide={["compare", "details", "preparation", "saved"].includes(dialog)}
@@ -1214,13 +1201,12 @@ export default function App({
               </>
             ) : (
               <div className="empty-state">
-                <h3>Choose a candidate for this occasion.</h3>
+                <h3>Choose a centre first</h3>
                 <p>
-                  Open an institution’s details, then choose Create preparation
-                  sheet.
+                  Open a centre’s details, then choose Create preparation sheet.
                 </p>
                 <button className="primary" onClick={close}>
-                  Go to discovery <ArrowRight size={16} />
+                  Find childcare <ArrowRight size={16} />
                 </button>
               </div>
             ))}
@@ -1254,7 +1240,7 @@ export default function App({
                         ...x,
                         saved: { ...x.saved, snapshot: x.current },
                       }));
-                      notify("Reviewed snapshot saved in this browser.");
+                      notify("Saved details updated.");
                     }
                   }}
                 />
@@ -1281,13 +1267,13 @@ export default function App({
             (compareIds.length < 2 ? (
               <div className="empty-state">
                 <Scale size={31} />
-                <h3>Choose at least two institutions.</h3>
+                <h3>Choose two or three centres to compare</h3>
                 <p>
                   Add up to three from the results. They will be checked against
                   the same request.
                 </p>
                 <button className="primary" onClick={close}>
-                  Back to discovery <ArrowRight size={16} />
+                  Back to results <ArrowRight size={16} />
                 </button>
               </div>
             ) : (
@@ -1295,7 +1281,7 @@ export default function App({
                 {dialogBusy && (
                   <p className="loading-line" role="status">
                     <span className="spinner" />
-                    Checking the selected institutions…
+                    Checking the selected centres…
                   </p>
                 )}
                 {dialogError && (
@@ -1345,59 +1331,46 @@ export default function App({
             enquiry &&
             scenario(enquiry.request) !== scenario(activeRequest) && (
               <p className="notice">
-                These questions belong to the earlier request shown below.
-                Prepare a new enquiry from the updated results to use the new
-                conditions.
+                These questions use your earlier search details. Open a centre
+                from the updated results to prepare a new list.
               </p>
             )}
-          {dialog === "enquiry" &&
-            (enquiry ? (
-              <>
-                <button
-                  className="secondary enquiry-preparation"
-                  onClick={() => startPreparation(enquiry.p, enquiry.request)}
-                >
-                  Create preparation sheet <ArrowRight size={16} />
-                </button>
-                <Enquiry
-                  key={enquiry.p.id + scenario(enquiry.request)}
-                  p={enquiry.p}
-                  request={enquiry.request}
-                  selection={
-                    questionSelection[enquiry.p.id + scenario(enquiry.request)]
-                  }
-                  onSelection={(ids) =>
-                    setQuestionSelection((x) => ({
-                      ...x,
-                      [enquiry.p.id + scenario(enquiry.request)]: ids,
-                    }))
-                  }
-                  onCompare={() => loadComparison()}
-                />
-              </>
-            ) : (
-              <div className="empty-state">
-                <h3>Start with a candidate.</h3>
-                <p>
-                  Open an institution’s conditions or comparison, then choose
-                  Prepare questions.
-                </p>
-                <button className="primary" onClick={close}>
-                  Find care options <ArrowRight size={16} />
-                </button>
-              </div>
-            ))}
+          {dialog === "enquiry" && enquiry && (
+            <>
+              <button
+                className="secondary enquiry-preparation"
+                onClick={() => startPreparation(enquiry.p, enquiry.request)}
+              >
+                Create preparation sheet <ArrowRight size={16} />
+              </button>
+              <Enquiry
+                key={enquiry.p.id + scenario(enquiry.request)}
+                p={enquiry.p}
+                request={enquiry.request}
+                selection={
+                  questionSelection[enquiry.p.id + scenario(enquiry.request)]
+                }
+                onSelection={(ids) =>
+                  setQuestionSelection((x) => ({
+                    ...x,
+                    [enquiry.p.id + scenario(enquiry.request)]: ids,
+                  }))
+                }
+                onCompare={() => loadComparison()}
+              />
+            </>
+          )}
           {dialog === "ordering" && (
             <div className="prose">
               <p>{results?.ordering.explanation}</p>
               <p>
-                Unknown factors remain visible and sort after comparable
-                published values. Results have no hidden quality score or
-                guaranteed-availability ranking.
+                When a detail is missing, that centre appears after those with
+                information we can compare. This order doesn’t rate care quality
+                or guarantee a place.
               </p>
               <p>
-                List and map use the same page of candidates. Records without
-                coordinates stay in the list.
+                The list and map show the same results. Centres we can’t locate
+                on the map still appear in the list.
               </p>
             </div>
           )}
@@ -1439,19 +1412,19 @@ export default function App({
                 />
               </label>
               <div className="data-mode">
-                <h3>Explore with real facts or controlled examples.</h3>
+                <h3>Try the demo</h3>
                 <p>
-                  Ten fictional examples include daytime care, two evening-care
-                  schedules, and supported, conflicting and unknown conditions.
-                  Changing mode clears the current search and selection.
+                  Explore fictional centres with different care hours and pickup
+                  options. Switching between the demo and real centres clears
+                  your current search and selection.
                 </p>
                 <button
                   className="secondary"
                   onClick={() => switchMode(mode === "live" ? "demo" : "live")}
                 >
                   {mode === "live"
-                    ? "Try controlled examples"
-                    : "Use real Appwrite directory"}
+                    ? "Try demo centres"
+                    : "Back to real centres"}
                   <ArrowRight size={16} />
                 </button>
               </div>
@@ -1509,7 +1482,7 @@ export default function App({
                 onClick={() => switchMode(mode === "live" ? "demo" : "live")}
               >
                 {mode === "live"
-                  ? "Try controlled examples"
+                  ? "Try demo centres"
                   : "Return to real directory"}
                 <ArrowRight size={15} />
               </button>

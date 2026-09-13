@@ -45,9 +45,9 @@ export async function requestAPI(body) {
 }
 export const errorMessage = (e) =>
   e?.code === "FACTS_CHANGED"
-    ? "Published facts have changed. Run the search again to check this request against the new version."
+    ? "Centre details have changed. Search again to see the latest information."
     : e?.code === "OUTSIDE_SERVICE_AREA"
       ? "Choose a pickup place in Kuala Lumpur or Selangor. Putrajaya and other states are outside our service area."
       : e?.code === "PLACE_UNAVAILABLE"
-        ? "This branch is unavailable in the current regional directory. Return to the results and choose another."
-        : "The search service is temporarily unavailable. Your entries and earlier results are still here. Please retry.";
+        ? "This centre is no longer in the directory. Go back to the results to choose another."
+        : "Search isn’t available right now. Your details and previous results are still here. Please try again.";

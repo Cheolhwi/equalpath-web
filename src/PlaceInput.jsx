@@ -100,7 +100,7 @@ export default function PlaceInput({
         setOptions(r.items);
         if (!r.items.length)
           setMessage(
-            "No matching public centre found. Try another name or select a public place on the map.",
+            "We couldn’t find that centre. Try another name or choose a public place on the map.",
           );
       }
     } catch {
@@ -124,7 +124,7 @@ export default function PlaceInput({
   return (
     <div className="field pickup-field">
       <label htmlFor={idPrefix + "-search"}>
-        Public pickup place <span>Required</span>
+        Pickup place <span>Required</span>
       </label>
       <div className={`location-search ${error ? "invalid" : ""}`}>
         <MapPin size={17} />
@@ -198,7 +198,7 @@ export default function PlaceInput({
             Cancel location
           </button>
         ) : (
-          <span>Only after your permission</span>
+          <span>With your permission</span>
         )}
       </div>
       {geoMessage && (
@@ -207,7 +207,7 @@ export default function PlaceInput({
         </p>
       )}
       <div className="location-help" id={idPrefix + "-help"}>
-        <span>Institution names in KL / Selangor</span>
+        <span>Choose a public place in KL or Selangor</span>
         <button
           disabled={!onMap}
           type="button"
@@ -224,7 +224,7 @@ export default function PlaceInput({
       </div>
       {open && (
         <div className="place-results" aria-label="Pickup search results">
-          {busy && <p role="status">Finding public places…</p>}
+          {busy && <p role="status">Finding places…</p>}
           {!busy &&
             options.map((p) => (
               <button

@@ -245,7 +245,7 @@ export default function MapCanvas({
     >
       <div ref={host} className="map-canvas" />
       <div className="map-heading">
-        <span className="eyebrow">ONE OCCASION. A FEW POSSIBILITIES.</span>
+        <span className="eyebrow">CHILDCARE NEAR YOU</span>
         <h2>
           KUALA LUMPUR <span>+ SELANGOR</span>
         </h2>
@@ -254,7 +254,7 @@ export default function MapCanvas({
             ? "Click a public pickup place on the map."
             : items.length
               ? `${items.filter((p) => p.location).length} mapped on this page · P marks the pickup place`
-              : "Your pickup place and care options, together."}
+              : "Find your pickup place and nearby centres here."}
         </p>
       </div>
       <div className="map-tools">
@@ -272,10 +272,10 @@ export default function MapCanvas({
         <span className="map-state">
           <i className={status} />
           {status === "ready"
-            ? "MAP CONNECTED"
+            ? "MAP READY"
             : status === "error"
               ? "MAP UNAVAILABLE"
-              : "CONNECTING MAP"}{" "}
+              : "LOADING MAP"}{" "}
           · 2D
         </span>
         <span>
@@ -298,10 +298,9 @@ export default function MapCanvas({
       </div>
       {status === "error" && (
         <div className="map-error" role="status">
-          <h3>The list is still available.</h3>
+          <h3>The map couldn’t load</h3>
           <p>
-            The map could not connect. Browse the same institutions from the
-            list.
+            You can still browse centres in the results list.
           </p>
           <button className="secondary" onClick={() => setRetry((x) => x + 1)}>
             <RotateCcw size={15} />

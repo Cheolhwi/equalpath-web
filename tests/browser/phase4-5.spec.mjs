@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdirSync } from "node:fs";
+const evidenceDir = process.env.QA_EVIDENCE_DIR || "evidence/phase4-5";
+mkdirSync(evidenceDir, { recursive: true });
 test.beforeEach(async ({ page }) => {
   await page.route(
     /https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com)\//,
@@ -25,13 +27,13 @@ const save = async (page) => {
     .getByPlaceholder("For example: convenient location")
     .fill("Convenient public pickup");
   await page
-    .getByRole("button", { name: "Save institution", exact: true })
+    .getByRole("button", { name: "Save centre", exact: true })
     .click();
 };
 const details = async (page) =>
   page
     .getByRole("button", {
-      name: `Check conditions for ${institution}`,
+      name: `View details for ${institution}`,
       exact: true,
     })
     .click();
@@ -39,7 +41,7 @@ const close = async (page) =>
   page.getByRole("button", { name: "Close dialog", exact: true }).click();
 const saved = async (page) => {
   await page.getByRole("button", { name: /SAVED/ }).click();
-  await page.getByRole("button", { name: /^Institutions / }).click();
+  await page.getByRole("button", { name: /^Centres / }).click();
 };
 const preparation = async (page) => {
   await details(page);
@@ -47,6 +49,30 @@ const preparation = async (page) => {
     .getByRole("button", { name: "Create preparation sheet", exact: true })
     .click();
 };
+
+test("questions belong to a selected centre and never appear in main navigation", async ({ page }) => {
+  await page.goto("/?mode=demo#discover", { waitUntil: "domcontentloaded" });
+  const nav = page.getByRole("navigation", { name: "Main navigation" });
+  await expect(nav.getByRole("button")).toHaveCount(4);
+  await expect(nav.getByRole("button", { name: /enquir|questions/i })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Find childcare", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Prepare questions", exact: true })).toHaveCount(0);
+  await page.screenshot({ path: `${evidenceDir}/discovery-copy.png` });
+  await page.getByRole("button", { name: "Find care options", exact: true }).click();
+  await details(page);
+  await page.getByRole("button", { name: "Prepare questions", exact: true }).first().click();
+  await expect(page.getByRole("heading", { name: "Questions for the centre", exact: true })).toBeVisible();
+  await expect(page.locator(".request-context")).toContainText(institution);
+  const question = page.locator(".question-list input").first();
+  await question.uncheck();
+  await page.screenshot({ path: `${evidenceDir}/centre-questions-copy.png` });
+  await close(page);
+  await details(page);
+  await page.getByRole("button", { name: "Prepare questions", exact: true }).first().click();
+  await expect(page.locator(".question-list input:not(:checked)")).toHaveCount(1);
+  await close(page);
+  await expect(nav.getByRole("button", { name: /enquir|questions/i })).toHaveCount(0);
+});
 
 test("save, reload, edit, reuse fresh request, inspect preparation, download, and remove", async ({
   page,
@@ -76,14 +102,14 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
     .getByPlaceholder("For example: convenient location")
     .fill("Near the usual centre");
   await page
-    .getByRole("button", { name: "Update saved reason", exact: true })
+    .getByRole("button", { name: "Save note", exact: true })
     .click();
   await expect(
     page.getByText("Near the usual centre", { exact: true }),
   ).toBeVisible();
-  await page.screenshot({ path: "evidence/phase4-5/saved-desktop.png" });
+  await page.screenshot({ path: `${evidenceDir}/saved-desktop.png` });
   await page
-    .getByRole("button", { name: "Request templates 1", exact: true })
+    .getByRole("button", { name: "Saved searches 1", exact: true })
     .click();
   await page.getByRole("button", { name: "Use template", exact: true }).click();
   await expect(page.locator("#service-date")).toHaveValue("");
@@ -98,27 +124,27 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
   ).toBeVisible();
   await saved(page);
   await page
-    .getByRole("button", { name: "Reopen & check new date", exact: true })
+    .getByRole("button", { name: "Check for a new date", exact: true })
     .click();
   await expect(page.locator("#service-date")).toHaveValue("");
   await page.locator("#service-date").fill("2026-09-19");
   await page
-    .getByRole("button", { name: "Check saved institution", exact: true })
+    .getByRole("button", { name: "Check saved centre", exact: true })
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "No material differences in the compared facts",
+      name: "The details we checked haven’t changed",
       exact: true,
     }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Keep this reviewed snapshot", exact: true })
+    .getByRole("button", { name: "Update saved details", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Create preparation sheet", exact: true })
     .click();
   await expect(
-    page.getByText(/Arrival to be confirmed — no journey time/),
+    page.getByText(/Travel time hasn’t been calculated/),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Usual centre", exact: true }),
@@ -127,10 +153,10 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
     page.getByRole("heading", { name: "Receiving centre", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Transport / collector", exact: true }),
+    page.getByRole("heading", { name: "Person collecting your child", exact: true }),
   ).toBeVisible();
   await page.locator("dialog").evaluate((el) => (el.scrollTop = 0));
-  await page.screenshot({ path: "evidence/phase4-5/preparation-desktop.png" });
+  await page.screenshot({ path: `${evidenceDir}/preparation-desktop.png` });
   await page
     .getByRole("checkbox", {
       name: "A labelled bag, spare clothes and a water bottle.",
@@ -143,8 +169,8 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
     .first()
     .click();
   const download = await downloadPromise;
-  await download.saveAs("evidence/phase4-5/preparation-demo.html");
-  const html = readFileSync("evidence/phase4-5/preparation-demo.html", "utf8");
+  await download.saveAs(`${evidenceDir}/preparation-demo.html`);
+  const html = readFileSync(`${evidenceDir}/preparation-demo.html`, "utf8");
   expect(html).toContain("☑ A labelled bag");
   expect(html).toContain("2026-09-19");
   expect(html).not.toContain("Near the usual centre");
@@ -152,7 +178,7 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
   const exportPage = await page.context().newPage();
   await exportPage.setContent(html);
   await exportPage.pdf({
-    path: "evidence/phase4-5/preparation-demo.pdf",
+    path: `${evidenceDir}/preparation-demo.pdf`,
     format: "A4",
     printBackground: true,
   });
@@ -164,12 +190,12 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "Keep a promising option.",
+      name: "No saved centres yet",
       exact: true,
     }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Request templates 1", exact: true })
+    .getByRole("button", { name: "Saved searches 1", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Edit Weekday pickup", exact: true })
@@ -184,7 +210,7 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "Save your usual starting point.",
+      name: "No saved searches yet",
       exact: true,
     }),
   ).toBeVisible();
@@ -209,10 +235,10 @@ test("failed local writes preserve candidate, previous reason and saved list", a
     .getByPlaceholder("For example: convenient location")
     .fill("Unsaved reason");
   await page
-    .getByRole("button", { name: "Update saved reason", exact: true })
+    .getByRole("button", { name: "Save note", exact: true })
     .click();
   await expect(page.getByRole("alert")).toContainText(
-    "previous saved version is unchanged",
+    "previous saved details are unchanged",
   );
   await page.getByRole("button", { name: "Back", exact: true }).click();
   await expect(
@@ -222,7 +248,7 @@ test("failed local writes preserve candidate, previous reason and saved list", a
     .getByRole("button", { name: `Remove ${institution}`, exact: true })
     .click();
   await expect(page.locator(".saved-row")).toHaveCount(1);
-  await page.screenshot({ path: "evidence/phase4-5/storage-failure.png" });
+  await page.screenshot({ path: `${evidenceDir}/storage-failure.png` });
   await close(page);
   await expect(
     page.getByRole("button", { name: `Select ${institution}`, exact: true }),
@@ -247,7 +273,7 @@ test("unmatched saved place and conflicting times require correction, not silent
   });
   await saved(page);
   await page
-    .getByRole("button", { name: "Request templates 1", exact: true })
+    .getByRole("button", { name: "Saved searches 1", exact: true })
     .click();
   await page.getByRole("button", { name: "Use template", exact: true }).click();
   await expect(
@@ -279,7 +305,7 @@ test("unmatched saved place and conflicting times require correction, not silent
       exact: true,
     }),
   ).toBeVisible();
-  await page.screenshot({ path: "evidence/phase4-5/template-correction.png" });
+  await page.screenshot({ path: `${evidenceDir}/template-correction.png` });
 });
 
 test("reopened favourite reports changed source facts and preserves snapshot after refresh failure", async ({
@@ -299,34 +325,34 @@ test("reopened favourite reports changed source facts and preserves snapshot aft
   });
   await saved(page);
   await page
-    .getByRole("button", { name: "Reopen & check new date", exact: true })
+    .getByRole("button", { name: "Check for a new date", exact: true })
     .click();
   await page.locator("#service-date").fill("2026-09-18");
   await page
-    .getByRole("button", { name: "Check saved institution", exact: true })
+    .getByRole("button", { name: "Check saved centre", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: /published fact group.*changed/ }),
+    page.getByRole("heading", { name: /detail.*changed/ }),
   ).toBeVisible();
   await expect(
     page.locator(".fact-change").getByText("Opening hours", { exact: true }),
   ).toBeVisible();
-  await page.screenshot({ path: "evidence/phase4-5/changed-facts.png" });
+  await page.screenshot({ path: `${evidenceDir}/changed-facts.png` });
   await close(page);
   await page.unroute("**/api");
   await saved(page);
   await page
-    .getByRole("button", { name: "Reopen & check new date", exact: true })
+    .getByRole("button", { name: "Check for a new date", exact: true })
     .click();
   await page.locator("#service-date").fill("2026-09-20");
   await page.route("**/api", (route) => route.abort());
   await page
-    .getByRole("button", { name: "Check saved institution", exact: true })
+    .getByRole("button", { name: "Check saved centre", exact: true })
     .click();
   await expect(
-    page.getByText("Current facts could not be refreshed", { exact: true }),
+    page.getByText("We couldn’t check the latest details", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByText(/no unchanged claim is made/)).toBeVisible();
+  await expect(page.getByText(/we can’t tell whether they’ve changed/)).toBeVisible();
   const data = await page.evaluate(
     (k) => JSON.parse(localStorage.getItem(k)),
     key,
@@ -367,7 +393,7 @@ test("preparation remains dated until explicitly regenerated for new times and t
     }),
   ).toBeVisible();
   await expect(
-    page.getByText("Self-arranged delivery requested", { exact: true }),
+    page.getByText("I’ll arrange transport", { exact: true }),
   ).toBeVisible();
 });
 
@@ -378,13 +404,13 @@ test("mobile navigation, modal layout, checkboxes and keyboard close remain usab
   await start(page);
   await save(page);
   await saved(page);
-  await page.screenshot({ path: "evidence/phase4-5/saved-mobile.png" });
+  await page.screenshot({ path: `${evidenceDir}/saved-mobile.png` });
   await page.keyboard.press("Escape");
   await details(page);
   await page
     .getByRole("button", { name: "Create preparation sheet", exact: true })
     .click();
-  await page.screenshot({ path: "evidence/phase4-5/preparation-mobile.png" });
+  await page.screenshot({ path: `${evidenceDir}/preparation-mobile.png` });
   const box = await page.locator("dialog").boundingBox();
   expect(box.x).toBeGreaterThanOrEqual(0);
   expect(box.x + box.width).toBeLessThanOrEqual(391);
@@ -396,14 +422,14 @@ test("mobile navigation, modal layout, checkboxes and keyboard close remain usab
   await check.uncheck();
   await expect(check).not.toBeChecked();
   await check.scrollIntoViewIfNeeded();
-  await page.screenshot({ path: "evidence/phase4-5/packing-mobile.png" });
+  await page.screenshot({ path: `${evidenceDir}/packing-mobile.png` });
   await page.setViewportSize({ width: 320, height: 700 });
   expect(
     await page
       .locator("dialog")
       .evaluate((el) => el.scrollWidth <= el.clientWidth + 1),
   ).toBe(true);
-  await page.screenshot({ path: "evidence/phase4-5/preparation-320.png" });
+  await page.screenshot({ path: `${evidenceDir}/preparation-320.png` });
   await page.keyboard.press("Escape");
   await expect(page.locator("dialog")).toHaveCount(0);
 });
@@ -444,7 +470,7 @@ test("print action creates the standalone sheet and compact zoom keeps controls 
       .evaluate((el) => el.scrollWidth <= el.clientWidth + 1),
   ).toBe(true);
   await page.screenshot({
-    path: "evidence/phase4-5/preparation-200-percent-equivalent.png",
+    path: `${evidenceDir}/preparation-200-percent-equivalent.png`,
   });
   await close(page);
   await page.setViewportSize({ width: 320, height: 700 });
@@ -453,11 +479,11 @@ test("print action creates the standalone sheet and compact zoom keeps controls 
     const b = await button.boundingBox();
     expect(b.x + b.width).toBeLessThanOrEqual(321);
   }
-  await page.screenshot({ path: "evidence/phase4-5/navigation-320.png" });
+  await page.screenshot({ path: `${evidenceDir}/navigation-320.png` });
   await page.getByRole("button", { name: /SAVED/ }).focus();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("heading", { name: "Keep a useful starting point.", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your saved centres & searches", exact: true })).toBeVisible();
   await page.keyboard.press("Tab");
   expect(await page.locator("dialog").evaluate(el => el.contains(document.activeElement))).toBe(true);
-  await page.screenshot({ path: "evidence/phase4-5/keyboard-saved.png" });
+  await page.screenshot({ path: `${evidenceDir}/keyboard-saved.png` });
 });

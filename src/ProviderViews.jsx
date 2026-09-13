@@ -19,7 +19,7 @@ import { requestCaption, todayKL } from "../shared/request.mjs";
 export function SourceLink({ source, children }) {
   if (!source)
     return (
-      <span className="source-missing">No applicable published source</span>
+      <span className="source-missing">No source listed</span>
     );
   return (
     <span className="source-link">
@@ -35,8 +35,8 @@ export function SourceLink({ source, children }) {
         <small>
           Retrieved {source.retrievedAt.slice(0, 10)}
           {source.sourceDate
-            ? ` · Source date ${source.sourceDate}`
-            : " · Source date unavailable"}
+            ? ` · Published ${source.sourceDate}`
+            : " · Publication date not listed"}
         </small>
       )}
     </span>
@@ -70,15 +70,15 @@ export function PublishedContacts({ p }) {
           <SourceLink source={contact.source} />
           {contact.scope === "website" && (
             <small className="notice">
-              Website enquiry number — may serve multiple branches.
+              General enquiry number; may cover more than one branch.
             </small>
           )}
         </div>
       ))}
       {!p.phone && !p.whatsapp?.length && (
         <p>
-          No published contact number is available for this branch. Check the
-          institution source page.
+          We couldn’t find a contact number for this branch. Check its
+          listing for other ways to get in touch.
         </p>
       )}
     </>
@@ -99,10 +99,10 @@ export function Status({ state, children }) {
         (confirmedRange
           ? "Confirmed range"
           : state === "supported"
-            ? "Supported"
+            ? "Matches"
             : state === "conflict"
-              ? "Conflict"
-              : "Needs confirmation")}
+              ? "Doesn’t match"
+              : "Ask the centre")}
     </span>
   );
 }
@@ -135,7 +135,7 @@ export function ProviderCard({
           </span>
           <span>
             {p.distanceKm == null
-              ? "Location incomplete"
+              ? "Map location unavailable"
               : `${p.distanceKm.toFixed(1)} km · straight-line`}
           </span>
         </div>
@@ -155,7 +155,7 @@ export function ProviderCard({
           <div className="row-facts">
             <span>
               {p.age.basis === "type_reference"
-                ? "Age · type reference"
+                ? "Age · official type range"
                 : "Admission age"}
             </span>
             <strong>{p.age.rangeLabel ?? p.age.wording}</strong>
@@ -164,8 +164,8 @@ export function ProviderCard({
         <div className="row-status">
           <Status state={p.fit.counts.conflict ? "conflict" : "unknown"}>
             {p.fit.counts.conflict
-              ? `${p.fit.counts.conflict} conflicting condition${p.fit.counts.conflict === 1 ? "" : "s"}`
-              : `${p.fit.counts.unknown} condition${p.fit.counts.unknown === 1 ? "" : "s"} to confirm`}
+              ? `${p.fit.counts.conflict} ${p.fit.counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match`
+              : `${p.fit.counts.unknown} ${p.fit.counts.unknown === 1 ? "detail" : "details"} to confirm`}
           </Status>
           {p.admission.value === true && (
             <span className="published-tag">Hourly / one-off care listed</span>
@@ -190,9 +190,9 @@ export function ProviderCard({
         </button>
         <button
           onClick={onDetail}
-          aria-label={"Check conditions for " + p.name}
+          aria-label={"View details for " + p.name}
         >
-          Check conditions <ArrowUpRight size={16} />
+          View details <ArrowUpRight size={16} />
         </button>
       </div>
     </article>
@@ -204,17 +204,17 @@ export function Registration({ p }) {
     unresolved = r.match === "unresolved",
     status =
       p.mode === "demo"
-        ? "Controlled example"
+        ? "Demo centre"
         : expired
-          ? "Recorded term has ended"
+          ? "Registration period has ended"
           : unresolved
-            ? "Branch match unresolved"
+            ? "Branch registration needs checking"
             : r.official
-              ? "Matched imported JKM record"
-              : "Official registration not verified";
+              ? "Listed in the JKM register"
+              : "Registration not yet verified";
   return (
     <section className="detail-section">
-      <div className="section-kicker">02 / REGISTRATION EVIDENCE</div>
+      <div className="section-kicker">02 / REGISTRATION</div>
       <h3>{status}</h3>
       <dl className="facts-grid">
         <div>
@@ -240,7 +240,7 @@ export function Registration({ p }) {
       </dl>
       <p>
         {expired
-          ? "The recorded validity term has ended. Renewal is unknown until separately evidenced."
+          ? "This registration period has ended. Check with the centre whether it has been renewed."
           : r.matchBasis}
       </p>
       {r.missingImportedFields?.length > 0 && (
@@ -251,8 +251,8 @@ export function Registration({ p }) {
       )}
       {!r.official && p.mode !== "demo" && (
         <p>
-          Missing official verification does not prove that the institution is
-          unregistered.
+          We haven’t verified the official registration. This doesn’t mean
+          the centre is unregistered.
         </p>
       )}
       <SourceLink source={r.source} />
@@ -266,11 +266,11 @@ export function Costs({ p }) {
     c = p.cost;
   return (
     <section className="detail-section">
-      <div className="section-kicker">03 / COST BASIS</div>
+      <div className="section-kicker">03 / FEES</div>
       <h3>
         {c.available
-          ? "A reference estimate is available"
-          : "One-off total unavailable"}
+          ? "Estimate your cost"
+          : "Ask about the cost for your date"}
       </h3>
       {p.fees.length ? (
         p.fees.map((f, i) => (
@@ -281,7 +281,7 @@ export function Costs({ p }) {
           </div>
         ))
       ) : (
-        <p>No applicable fee has been published in the current sources.</p>
+        <p>We couldn’t find a published fee for this service.</p>
       )}
       {!c.available ? (
         <p className="notice">
@@ -291,7 +291,7 @@ export function Costs({ p }) {
       ) : (
         <>
           <button className="secondary" onClick={() => setShow((x) => !x)}>
-            {show ? "Hide calculation" : "Calculate reference total"}
+            {show ? "Hide calculation" : "Show estimated total"}
           </button>
           {show && (
             <div className="cost-calculation">
@@ -333,23 +333,23 @@ export function Details({
       </div>
       {p.mode === "demo" && (
         <p className="demo-notice">
-          Controlled example — fictional institution and service facts.
+          Demo centre — fictional details.
         </p>
       )}
       <div className="profile-address">
-        <p>{p.address ?? "Exact address not included in current sources."}</p>
+        <p>{p.address ?? "Exact address not listed."}</p>
         <SourceLink source={p.addressSource} />
         {!p.location && (
           <p className="notice">
-            Coordinates unavailable. This institution remains in the list
-            without a map marker.
+            We can’t place this centre on the map yet. You can still review
+            its details here.
           </p>
         )}
       </div>
       <div className="profile-actions">
         <button className="secondary" aria-pressed={saved} onClick={onSave}>
           <Bookmark size={16} />
-          {saved ? "Saved institution" : "Save institution"}
+          {saved ? "Saved centre" : "Save centre"}
         </button>
         <button className="primary" onClick={onPrepare}>
           Prepare questions <ArrowRight size={16} />
@@ -364,14 +364,20 @@ export function Details({
       </div>
       {(p.phone || p.whatsapp?.length > 0) && (
         <section className="detail-section">
-          <div className="section-kicker">PUBLISHED CONTACTS</div>
+          <div className="section-kicker">CONTACT DETAILS</div>
           <PublishedContacts p={p} />
         </section>
       )}
       <section className="detail-section">
-        <div className="section-kicker">01 / THIS REQUEST</div>
-        <h3>{p.fit.summary}</h3>
-        <p className="notice">{p.fit.acceptance}</p>
+        <div className="section-kicker">01 / YOUR CARE NEEDS</div>
+        <h3>
+          {p.fit.counts.conflict
+            ? "Some details don’t match"
+            : p.fit.counts.unknown
+              ? "A few details to confirm"
+              : "Matches your care needs"}
+        </h3>
+        <p className="notice">Contact the centre to confirm a place for your date.</p>
         <div className="condition-list">
           {p.fit.conditions.map((c) => (
             <div key={c.id} className="condition">
@@ -442,7 +448,7 @@ export function Details({
                 ? "Advertised"
                 : p.transport.exists === false
                   ? "Listed as unavailable"
-                  : "Enquire with institution"}
+                  : "Ask the centre"}
             </strong>
             <p>{p.transport.wording}</p>
             <SourceLink source={p.transport.source} />
@@ -457,10 +463,10 @@ export function Details({
       <Registration p={p} />
       <Costs p={p} />
       <section className="detail-section">
-        <h3>Get ready for this occasion.</h3>
+        <h3>Plan the pickup and handover</h3>
         <p>
-          Organise handover questions, collection steps and a packing list for
-          this request.
+          Make a checklist of pickup arrangements, questions and things to
+          bring.
         </p>
         <button className="primary" onClick={onPreparation}>
           <ClipboardList size={16} />
@@ -468,9 +474,9 @@ export function Details({
         </button>
       </section>
       <section className="detail-section">
-        <h3>Keep the important questions together.</h3>
+        <h3>Questions before you decide</h3>
         <p>
-          Use these conditions to prepare a focused enquiry for this branch.
+          Choose what you’d like to ask this centre before arranging care.
         </p>
         <button className="primary" onClick={onPrepare}>
           Prepare questions <ArrowRight size={16} />
@@ -494,7 +500,7 @@ export function Comparison({
     ],
     ["Age", (p) => p.fit.conditions.find((c) => c.id === "age")],
     [
-      "Institutional transport",
+      "Centre pickup",
       (p) => p.fit.conditions.find((c) => c.id === "transport"),
     ],
     [
@@ -514,11 +520,11 @@ export function Comparison({
   return (
     <>
       <p className="dialog-lead">
-        The same request. The same factors. Different questions to resolve.
+        Compare care hours, pickup options and fees for the date you chose.
       </p>
       <div className="compare-sort">
         <label>
-          Investigate first{" "}
+          Sort by{" "}
           <select
             aria-label="Comparison priority"
             value={sort}
@@ -527,8 +533,8 @@ export function Comparison({
             {[
               ["distance", "Nearest (straight-line)"],
               ["closing", "Later care end time"],
-              ["pickup", "Published institutional pickup"],
-              ["name", "Institution name"],
+              ["pickup", "Centres with pickup"],
+              ["name", "Centre name"],
             ].map(([id, label]) => (
               <option
                 value={id}
@@ -549,7 +555,7 @@ export function Comparison({
         <table>
           <thead>
             <tr>
-              <th>FOR THIS OCCASION</th>
+              <th>YOUR CARE NEEDS</th>
               {items.map((p) => (
                 <th key={p.id}>
                   <button
@@ -613,10 +619,10 @@ export function Comparison({
                     {p.registration.until && p.registration.until < todayKL()
                       ? "Recorded term ended; renewal unknown"
                       : p.mode === "demo"
-                        ? "Controlled example"
+                        ? "Demo centre"
                         : p.registration.official
-                          ? "Imported record matched"
-                          : "Official verification outstanding"}
+                          ? "Registration record matched"
+                          : "Registration not yet verified"}
                   </p>
                   <SourceLink source={p.registration.source} />
                 </td>
@@ -637,8 +643,8 @@ export function Comparison({
                     : "No published rate"}
                   <p>
                     {p.cost.available
-                      ? "Reference calculation available in conditions."
-                      : "One-off total unavailable. Confirm: " +
+                      ? "View details for a cost estimate."
+                      : "Ask the centre about: " +
                         p.cost.missing.join("; ") +
                         "."}
                   </p>
@@ -668,12 +674,12 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
     q = p.enquiries,
     ids = selection ?? q.map((x) => x.id),
     selected = ids.map((id) => q.find((x) => x.id === id)).filter(Boolean);
-  const context = `Enquiry for ${p.name}\n${requestCaption(request)}\nAge: ${request.age === "" ? "not specified" : request.age === "0" ? "under 1 year" : request.age + " years"} · ${request.transport === "self" ? "Self-arranged delivery" : request.transport === "institution" ? "Institutional pickup requested" : "Transport not specified"}`;
+  const context = `Questions for ${p.name}\n${requestCaption(request)}\nAge: ${request.age === "" ? "not specified" : request.age === "0" ? "under 1 year" : request.age + " years"} · ${request.transport === "self" ? "I’ll arrange transport" : request.transport === "institution" ? "Centre pickup requested" : "Transport not specified"}`;
   const text =
     context +
     "\n\n" +
     selected.map((x, i) => `${i + 1}. ${x.text}`).join("\n") +
-    "\n\nPlease confirm the actual arrangement directly. No place or pickup has been booked.";
+    "\n\nCould you let me know whether you can accommodate this? Thank you.";
   const toggle = (id) => {
     onSelection(ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]);
     setCopyState("");
@@ -698,7 +704,7 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
   return (
     <>
       <p className="dialog-lead">
-        A short enquiry for this branch and this occasion.
+        Choose the questions you want to ask, then copy them for your call or message.
       </p>
       <div className="request-context">
         <strong>{p.name}</strong>
@@ -712,10 +718,10 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
               : request.age}{" "}
           ·{" "}
           {request.transport === "self"
-            ? "Self-arranged delivery"
+            ? "I’ll arrange transport"
             : request.transport === "institution"
-              ? "Institutional pickup"
-              : "Transport unspecified"}
+              ? "Centre pickup"
+              : "Pickup not specified"}
         </small>
       </div>
       <div className="question-list">
@@ -757,7 +763,7 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
         </button>
         <span role="status">
           {copyState === "copied"
-            ? "Copied with the institution and request details."
+            ? "Copied with the centre name, date and times."
             : !selected.length
               ? "Select at least one question."
               : ""}
@@ -786,19 +792,20 @@ export function Enquiry({ p, request, selection, onSelection, onCompare }) {
             target="_blank"
             rel="noreferrer"
           >
-            Open institution source page <ArrowUpRight size={15} />
+            View the centre’s listing <ArrowUpRight size={15} />
           </a>
         )}
         {p.mode === "demo" && (
-          <p>Controlled examples have no real contact action.</p>
+          <p>Demo centres have no real contact details.</p>
         )}
         <p className="notice">
-          Contact the institution using the displayed number or WhatsApp link.
-          This page does not record contact, acceptance or a booking.
+          Call the number or open WhatsApp when you’re ready. You’ll need
+          to agree the arrangement with the centre directly; this page doesn’t
+          make a booking.
         </p>
       </section>
       <button className="text-link" onClick={onCompare}>
-        Return to comparison <ArrowRight size={16} />
+        Compare centres <ArrowRight size={16} />
       </button>
     </>
   );

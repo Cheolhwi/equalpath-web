@@ -67,7 +67,7 @@ while (true) {
 }
 assert.match(
   await (await get("")).text(),
-  /EqualPath — Care for this occasion/,
+  /EqualPath — Find childcare/,
 );
 for (const asset of manifest.assets) await get(asset);
 const response = await fetch(

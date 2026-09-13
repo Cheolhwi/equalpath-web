@@ -127,7 +127,7 @@ export default function Experience() {
                 <Suspense
                   fallback={
                     <div className="care-scene-placeholder">
-                      Opening the collection…
+                      Loading illustrations…
                     </div>
                   }
                 >
@@ -140,7 +140,7 @@ export default function Experience() {
                 <h1>
                   EQUALPATH<span>／</span>
                 </h1>
-                <p>A LITTLE MORE POSSIBILITY.</p>
+                <p>FIND CHILDCARE</p>
               </div>
               <span className="landing-region">
                 CHILDCARE
@@ -163,7 +163,7 @@ export default function Experience() {
               </button>
             </div>
             <footer className="landing-footer">
-              <span>CARE, IN GOOD COMPANY.</span>
+              <span>NO ACCOUNT NEEDED</span>
               <button
                 className="motion-toggle"
                 onClick={() => setReduced((v) => !v)}

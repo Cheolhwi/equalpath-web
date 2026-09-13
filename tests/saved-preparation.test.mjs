@@ -199,7 +199,7 @@ test("5.2 / 5.4 handover questions belong to three parties and do not assert ass
     sheet.groups.map((g) => g.id),
     ["usual", "receiving", "transport"],
   );
-  assert.match(sheet.groups[2].party, /to be confirmed/);
+  assert.match(sheet.groups[2].party, /Confirm who is collecting/);
   for (const id of ["release", "identity", "delay"])
     assert.ok(sheet.groups[0].questions.some((x) => x.id === id));
   assert.match(sheet.notice, /does not authorise collection/);
@@ -213,9 +213,9 @@ test("5.3 sequence distinguishes requests and published facts; coordinates never
   const sheet = preparationFor(await provider(r), r);
   assert.equal(sheet.sequence.length, 3);
   assert.equal(sheet.sequence[0].basis, "Your request");
-  assert.match(sheet.sequence[1].detail, /Arrival to be confirmed/);
-  assert.match(sheet.sequence[1].detail, /no journey time/);
-  assert.equal(sheet.sequence[1].basis, "Published destination");
+  assert.match(sheet.sequence[1].detail, /Confirm the arrival time/);
+  assert.match(sheet.sequence[1].detail, /Travel time hasn’t been calculated/);
+  assert.equal(sheet.sequence[1].basis, "Centre address");
 });
 test("5.5 provider requirements need their own source and stay separate from general prompts", async () => {
   const p = await provider(r);
@@ -242,7 +242,7 @@ test("5.6 standalone export preserves dates, contacts, draft, blank offline spac
     "Usual centre",
     "Collector identification",
     "Health, allergy",
-    "institution-managed",
+    "pickup permission",
     "☑",
     '<div class="line"></div>',
   ])

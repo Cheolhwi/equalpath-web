@@ -1,6 +1,6 @@
 import { minutes, requestCaption, todayKL } from "./request.mjs";
 export const DRAFT_NOTICE =
-  "Preparation draft. Arrange provider agreement and institution-managed pickup authorisation separately. This sheet does not authorise collection.";
+  "Draft checklist. Confirm care and pickup permission with the centres directly. This sheet does not authorise collection.";
 const prompt = (id, text) => ({
   id,
   text,
@@ -14,26 +14,26 @@ export function preparationFor(
   const span = minutes(request.end) - minutes(request.deadline);
   const transport =
     request.transport === "institution"
-      ? "Institutional pickup requested"
+      ? "Centre pickup requested"
       : request.transport === "self"
-        ? "Self-arranged delivery requested"
-        : "Transport arrangement to be confirmed";
+        ? "I’ll arrange transport"
+        : "Pickup arrangement to be confirmed";
   const groups = [
     {
       id: "usual",
       name: "Usual centre",
       party: request.pickup.label,
-      contact: "Release contact to be confirmed",
+      contact: "Ask who handles pickup",
       questions: [
         prompt(
           "release",
-          `What release procedure is needed for collection by ${request.deadline} on ${request.date}?`,
+          `What do I need to arrange for pickup by ${request.deadline} on ${request.date}?`,
         ),
         prompt(
           "identity",
-          "Which identification and prior authorisation must the collector present?",
+          "What ID and permission does the collector need?",
         ),
-        prompt("delay", "Whom should we contact if the collector is delayed?"),
+        prompt("delay", "Who should we call if the collector is running late?"),
       ],
     },
     {
@@ -42,8 +42,8 @@ export function preparationFor(
       party: p.name,
       contact:
         p.phone || p.whatsapp?.length
-          ? "Published enquiry contact below; receiving staff member to be confirmed"
-          : "Receiving contact to be confirmed",
+          ? "Contact details below. Ask who will welcome your child."
+          : "Ask who will welcome your child",
       questions: [
         prompt(
           "receive",
@@ -51,11 +51,11 @@ export function preparationFor(
         ),
         prompt(
           "arrival",
-          "What arrival time should we agree after pickup? Transfer duration is not yet confirmed.",
+          "What time should my child arrive after pickup?",
         ),
         prompt(
           "final",
-          `What collection and delay procedure applies when I return by ${request.end}?`,
+          `Can I collect my child by ${request.end}? What happens if I’m late?`,
         ),
         prompt(
           "private",
@@ -65,21 +65,21 @@ export function preparationFor(
     },
     {
       id: "transport",
-      name: "Transport / collector",
-      party: "Collector or transport contact to be confirmed",
+      name: "Person collecting your child",
+      party: "Confirm who is collecting your child",
       contact: transport,
       questions: [
         prompt(
           "collector",
           request.transport === "institution"
-            ? "Which named collector and vehicle will the institution arrange?"
+            ? "Who will collect my child, and in which vehicle?"
             : request.transport === "self"
-              ? "Who will collect and deliver the child under my arrangement?"
-              : "Who can provide collection and transfer for this occasion?",
+              ? "Who will pick up my child and take them to the centre?"
+              : "Who can help with pickup and drop-off?",
         ),
         prompt(
           "handover",
-          "How will the collector identify the receiving staff member and confirm the handover directly?",
+          "Who should the collector meet, and how will they confirm my child has arrived?",
         ),
         prompt(
           "transport-delay",
@@ -92,14 +92,14 @@ export function preparationFor(
     prompt("bag", "A labelled bag, spare clothes and a water bottle."),
     prompt(
       "instructions",
-      "Check the centres’ release instructions and agreed collection contacts.",
+      "Check pickup instructions and contact numbers with both centres.",
     ),
   ];
   if (span >= 120)
     packing.push(
       prompt(
         "meal",
-        "Check whether a meal or snack is needed for this care interval.",
+        "Check whether to pack a meal or snack.",
       ),
     );
   if (span >= 240)
@@ -128,7 +128,7 @@ export function preparationFor(
     packing.push(
       prompt(
         "self-items",
-        "Check your collector has the agreed address and the institution’s release instructions.",
+        "Make sure the collector has the address and pickup instructions.",
       ),
     );
   const published = (p.preparationRequirements ?? [])
@@ -145,22 +145,22 @@ export function preparationFor(
       text: `${request.pickup.label} · collect by ${request.deadline}`,
       basis: "Your request",
       detail:
-        "Release procedure and collector to be agreed with the usual centre.",
+        "Agree who will collect your child and what they need to bring.",
     },
     {
       title: "02 / Transfer & arrival",
       text: `To ${p.name}${p.address ? " · " + p.address : ""}`,
       basis: p.address
-        ? "Published destination"
-        : "Destination details unresolved",
+        ? "Centre address"
+        : "Address to confirm",
       source: p.addressSource,
-      detail: `${transport}. Arrival to be confirmed — no journey time has been calculated.`,
+      detail: `${transport}. Confirm the arrival time. Travel time hasn’t been calculated.`,
     },
     {
       title: "03 / Final collection",
       text: `Collect from ${p.name} by ${request.end}`,
       basis: "Your request",
-      detail: `Published care end time: ${p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not published"}. Check the condition results for this date.`,
+      detail: `Published care end time: ${p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not published"}. Check this against your collection time.`,
       source: p.careEndTimeSource ?? p.businessHours?.source,
     },
   ];
@@ -171,7 +171,7 @@ export function preparationFor(
     preparedAt,
     preparationDate: todayKL(),
     request: requestCaption(request),
-    interval: `${request.deadline}–${request.end} · ${span} minutes requested (transfer included; actual care duration to be agreed)`,
+    interval: `${request.deadline}–${request.end} · ${span} minutes including travel. Confirm the time at the centre.`,
     transport,
     groups,
     packing,
@@ -212,10 +212,10 @@ export function preparationHTML(sheet, checked = []) {
   <p>EQUALPATH / CARE PREPARATION ${sheet.mode === "demo" ? " / CONTROLLED DEMO" : ""}</p><h1>${escape(sheet.name)}</h1>
   <p class="notice">${escape(sheet.notice)}</p><p>${escape(sheet.request)}</p><p>${escape(sheet.interval)}</p><small>Prepared ${escape(sheet.preparedAt)} · Times are Malaysia time.</small>
   ${sheet.conflicts.length ? `<h2>Conditions to resolve</h2>${items(sheet.conflicts.map((c) => ({ id: c.id, text: c.label + ": " + c.reason, source: c.source })))}` : ""}
-  <h2>Collection and handover sequence</h2>${sheet.sequence.map((x) => `<section class="step"><h3>${escape(x.title)}</h3><small>${escape(x.basis)}</small><p>${escape(x.text)}</p><p>${escape(x.detail)}</p>${sourceHTML(x.source)}</section>`).join("")}
-  <h2>Published institutional contacts</h2><p>Receiving centre: ${escape(sheet.name)}</p>${sheet.phone ? `<p>Telephone: ${escape(sheet.phone.display)}</p>${sourceHTML(sheet.phone.source)}` : ""}${sheet.whatsapp.map((x) => `<p>WhatsApp: ${escape(x.display)}${x.scope === "website" ? " (website enquiry; may serve multiple branches)" : ""}</p>${sourceHTML(x.source)}`).join("")}${!sheet.phone && !sheet.whatsapp.length ? "<p>Receiving contact to be confirmed.</p>" : ""}<p>Usual centre release contact and collector / transport contact: to be confirmed.</p>
+  <h2>Pickup plan</h2>${sheet.sequence.map((x) => `<section class="step"><h3>${escape(x.title)}</h3><small>${escape(x.basis)}</small><p>${escape(x.text)}</p><p>${escape(x.detail)}</p>${sourceHTML(x.source)}</section>`).join("")}
+  <h2>Contact details</h2><p>Receiving centre: ${escape(sheet.name)}</p>${sheet.phone ? `<p>Telephone: ${escape(sheet.phone.display)}</p>${sourceHTML(sheet.phone.source)}` : ""}${sheet.whatsapp.map((x) => `<p>WhatsApp: ${escape(x.display)}${x.scope === "website" ? " (website enquiry; may serve multiple branches)" : ""}</p>${sourceHTML(x.source)}`).join("")}${!sheet.phone && !sheet.whatsapp.length ? "<p>Ask who will welcome your child.</p>" : ""}<p>Also keep the usual centre’s number and the collector’s number handy.</p>
   <h2>Handover questions — to discuss</h2>${sheet.groups.map((g) => `<section><h3>${escape(g.name)}</h3><p>${escape(g.party)}</p><small>${escape(g.contact)}</small>${items(g.questions)}</section>`).join("")}
-  <h2>General packing prompts</h2>${items(sheet.packing)}<h2>Provider-sourced requirements</h2>${sheet.published.length ? items(sheet.published) : "<p>No specific packing or handover requirements are published in the current record. Ask the receiving centre.</p>"}
-  <h2>Private information — complete on paper only</h2><p>Provide identity, emergency and health details privately to the institution. These blank spaces contain no saved personal information.</p>${["Collector identification / authorisation reference", "Emergency contact", "Health, allergy or medication instructions for the institution"].map((x) => `<section class="blank"><p>${escape(x)}</p><div class="line"></div></section>`).join("")}
-  <p class="notice">${escape(sheet.notice)} Ticked packing items mean prepared, not provider agreement.</p></main></body></html>`;
+  <h2>Packing list</h2>${items(sheet.packing)}<h2>What the centre asks you to bring</h2>${sheet.published.length ? items(sheet.published) : "<p>We haven’t found a packing list for this centre. Ask them what to bring.</p>"}
+  <h2>Personal details — fill in on paper</h2><p>Fill in these spaces on paper and share them privately with the centre.</p>${["Collector identification / authorisation reference", "Emergency contact", "Health, allergy or medication instructions for the institution"].map((x) => `<section class="blank"><p>${escape(x)}</p><div class="line"></div></section>`).join("")}
+  <p class="notice">${escape(sheet.notice)} Tick items as you pack; confirm arrangements with the centre separately.</p></main></body></html>`;
 }

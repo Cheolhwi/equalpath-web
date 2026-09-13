@@ -43,20 +43,20 @@ try {
   const id = await row.getAttribute("data-provider-id");
   await row.getByRole("button", { name: /^Save / }).click();
   await page
-    .getByRole("button", { name: "Save institution", exact: true })
+    .getByRole("button", { name: "Save centre", exact: true })
     .click();
   await page.getByRole("button", { name: /SAVED/ }).click();
   await page
-    .getByRole("button", { name: "Reopen & check new date", exact: true })
+    .getByRole("button", { name: "Check for a new date", exact: true })
     .click();
   assert.equal(await page.locator("#service-date").inputValue(), "");
   await page.locator("#service-date").fill("2026-09-22");
   await page
-    .getByRole("button", { name: "Check saved institution", exact: true })
+    .getByRole("button", { name: "Check saved centre", exact: true })
     .click();
   await page
     .getByRole("heading", {
-      name: "No material differences in the compared facts",
+      name: "The details we checked haven’t changed",
       exact: true,
     })
     .waitFor({ timeout: 90000 });
@@ -65,7 +65,7 @@ try {
     .click();
   await page
     .getByRole("heading", {
-      name: "From pickup to final collection.",
+      name: "Pickup, drop-off and collection",
       exact: true,
     })
     .waitFor();

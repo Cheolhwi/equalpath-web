@@ -15,14 +15,14 @@ export function SaveExplanation() {
     <details className="save-explanation">
       <summary>What stays in this browser?</summary>
       <p>
-        Only items you choose to save: institution references, published fact
-        snapshots and optional non-identifying reasons; template names, public
-        pickup places, collection / care times and transport preferences.
+        We save only what you choose: centres, their listed details, your
+        notes and search templates with a public pickup place, times and
+        transport preferences.
       </p>
       <p>
-        Service dates, child ages, identities and health information are not
-        saved. Clearing browser data can remove these items. They do not sync or
-        recover automatically on other browsers or devices.
+        Dates, child ages and personal or health details are not saved.
+        Clearing browser data can remove these items. Saved items are only
+        available in this browser, not on your other devices.
       </p>
     </details>
   );
@@ -44,8 +44,8 @@ export function SavedLibrary({
   return (
     <div className="saved-library">
       <p className="dialog-lead">
-        A familiar starting point. Choose a new date and check this occasion
-        again.
+        Pick up where you left off. Choose a new date when you reuse a
+        saved centre or search.
       </p>
       <SaveExplanation />
       {failure && (
@@ -59,13 +59,13 @@ export function SavedLibrary({
           aria-pressed={tab === "favourites"}
           onClick={() => setTab("favourites")}
         >
-          Institutions <em>{library.favourites.length}</em>
+          Centres <em>{library.favourites.length}</em>
         </button>
         <button
           aria-pressed={tab === "templates"}
           onClick={() => setTab("templates")}
         >
-          Request templates <em>{library.templates.length}</em>
+          Saved searches <em>{library.templates.length}</em>
         </button>
       </div>
       {!entries.length && (
@@ -73,16 +73,16 @@ export function SavedLibrary({
           <Bookmark size={30} />
           <h3>
             {tab === "favourites"
-              ? "Keep a promising option."
-              : "Save your usual starting point."}
+              ? "No saved centres yet"
+              : "No saved searches yet"}
           </h3>
           <p>
             {tab === "favourites"
-              ? "Use Save on an institution’s card or details."
-              : "Choose Save request template below the search form. Your date is always chosen afresh."}
+              ? "Tap Save on a centre to find it here next time."
+              : "Use Save request template below the search form. You’ll choose a new date each time."}
           </p>
           <button className="primary" onClick={onDiscover}>
-            Go to discovery <ArrowRight size={16} />
+            Find childcare <ArrowRight size={16} />
           </button>
         </div>
       )}
@@ -91,14 +91,14 @@ export function SavedLibrary({
           <div className="section-kicker">
             {tab === "favourites"
               ? `${item.category} · ${item.region}`
-              : "REUSABLE REQUEST"}
+              : "SAVED SEARCH"}
           </div>
           <h3>{item.name}</h3>
           {tab === "favourites" ? (
             <>
-              <p>{item.reason || "No reason added."}</p>
+              <p>{item.reason || "No note added."}</p>
               <small>
-                Saved {item.savedAt?.slice(0, 10)} · Last snapshot{" "}
+                Saved {item.savedAt?.slice(0, 10)} · Details saved{" "}
                 {item.snapshot?.capturedAt?.slice(0, 10) ?? "unavailable"}
               </small>
               <small>{factDates(item.snapshot?.facts)}</small>
@@ -110,10 +110,10 @@ export function SavedLibrary({
                 Collect by {item.deadline || "not set"} · care until{" "}
                 {item.end || "not set"} ·{" "}
                 {item.transport === "institution"
-                  ? "Institutional pickup"
+                  ? "Centre pickup"
                   : item.transport === "self"
-                    ? "Self-arranged delivery"
-                    : "Transport unspecified"}
+                    ? "I’ll arrange transport"
+                    : "Pickup not specified"}
               </small>
             </>
           )}
@@ -125,7 +125,7 @@ export function SavedLibrary({
               }
             >
               {tab === "favourites"
-                ? "Reopen & check new date"
+                ? "Check for a new date"
                 : "Use template"}{" "}
               <ArrowRight size={15} />
             </button>
@@ -162,14 +162,14 @@ export function FavouriteEditor({ p, existing, onSave, onCancel }) {
         if (result) onCancel();
         else
           setError(
-            "Not saved. The previous saved version is unchanged. Your institution is still available; retry or return.",
+            "We couldn’t save this. Your previous saved details are unchanged. Please try again.",
           );
       }}
     >
       <p className="dialog-lead">{p.name}</p>
       <SaveExplanation />
       <label className="field">
-        Why keep this option?{" "}
+        Add a note{" "}
         <span className="notice">
           Optional · no names, phone numbers or child details
         </span>
@@ -189,7 +189,7 @@ export function FavouriteEditor({ p, existing, onSave, onCancel }) {
       <div className="saved-actions">
         <button className="primary" type="submit">
           <Save size={16} />
-          {existing ? "Update saved reason" : "Save institution"}
+          {existing ? "Save note" : "Save centre"}
         </button>
         <button type="button" onClick={onCancel}>
           Back
@@ -216,7 +216,7 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
       if (onSave(template(draft, name, value.id))) onCancel();
       else
         setFailure(
-          "Not saved. The previous saved version is unchanged. Retry saving.",
+          "We couldn’t save this. Your previous saved details are unchanged. Please try again.",
         );
     } catch (err) {
       setFailure(err.message);
@@ -274,8 +274,8 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
           onChange={(e) => field("transport", e.target.value)}
         >
           <option value="">Not specified</option>
-          <option value="self">I'll arrange delivery</option>
-          <option value="institution">Institutional pickup</option>
+          <option value="self">I'll arrange transport</option>
+          <option value="institution">Centre pickup</option>
         </select>
       </label>
       <p className="notice">
@@ -303,33 +303,33 @@ export function SavedChanges({ saved, current, failure, onUpdate }) {
   const changes = compareFacts(saved.snapshot, current);
   return (
     <section className="saved-changes">
-      <div className="section-kicker">SAVED OPTION / FACT REVIEW</div>
+      <div className="section-kicker">CHANGES SINCE YOU SAVED</div>
       <h3>
         {failure
-          ? "Current facts could not be refreshed"
+          ? "We couldn’t check the latest details"
           : !changes.comparable
-            ? "Earlier facts cannot be compared"
+            ? "No earlier details to compare"
             : changes.changes.length
-              ? `${changes.changes.length} published fact group${changes.changes.length === 1 ? " has" : "s have"} changed`
-              : "No material differences in the compared facts"}
+              ? `${changes.changes.length} ${changes.changes.length === 1 ? "detail has" : "details have"} changed`
+              : "The details we checked haven’t changed"}
       </h3>
       <p className="notice">
-        Saved snapshot {saved.snapshot?.capturedAt ?? "unavailable"}.{" "}
+        Details saved {saved.snapshot?.capturedAt ?? "unavailable"}.{" "}
         {current
-          ? `Current snapshot checked ${current.capturedAt}.`
-          : "Last saved dates are retained."}{" "}
-        A successful retrieval does not mean the institution updated its
-        information.
+          ? `Latest check ${current.capturedAt}.`
+          : "Your saved details are still here."}{" "}
+        The check date shows when we read the source, not when the centre
+        last updated it.
       </p>
       {failure && (
         <p className="error-box">
-          {failure} Changes could not be checked; no unchanged claim is made.
+          {failure} Your saved details are still here, but we can’t tell whether they’ve changed.
         </p>
       )}
       {!changes.comparable && (
-        <p>No comparable earlier fact snapshot is available.</p>
+        <p>There isn’t an earlier saved version to compare with.</p>
       )}
-      {!!changes.uncompared?.length && <p className="notice">No comparable snapshot for: {changes.uncompared.join(', ')}.</p>}
+      {!!changes.uncompared?.length && <p className="notice">We don’t have earlier details for: {changes.uncompared.join(', ')}.</p>}
       {changes.changes.map((c) => (
         <div className="fact-change" key={c.key}>
           <h4>{c.label}</h4>
@@ -349,7 +349,7 @@ export function SavedChanges({ saved, current, failure, onUpdate }) {
       ))}
       {current && (
         <button className="text-link" onClick={onUpdate}>
-          Keep this reviewed snapshot
+          Update saved details
         </button>
       )}
     </section>
