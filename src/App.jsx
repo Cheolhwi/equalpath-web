@@ -25,6 +25,7 @@ import {
   Comparison,
   Enquiry,
   Status,
+  RegistrationBadge,
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
 import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM } from "../shared/request.mjs";
@@ -1278,6 +1279,8 @@ export default function App({
       {dialog && (
         <Dialog
           tourBehind={tourOpen}
+          className={dialog === "details" ? "centre-dialog" : ""}
+          titleAccessory={dialog === "details" && profile ? <RegistrationBadge p={profile.p} /> : null}
           title={
             dialog === "saved"
               ? "Your saved centres & searches"
@@ -1393,9 +1396,6 @@ export default function App({
             ))}
           {dialog === "details" && profile && (
             <>
-              <p className="dialog-context">
-                {requestCaption(profile.request)}
-              </p>
               {profile.saved && (
                 <SavedChanges
                   saved={profile.saved}
@@ -1433,6 +1433,7 @@ export default function App({
               )}
               <Details
                 p={profile.p}
+                request={profile.request}
                 saved={library.favourites.some((x) => x.id === profile.p.id)}
                 onSave={() => editFavourite(profile.p, "details")}
                 onPreparation={() =>

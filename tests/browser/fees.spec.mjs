@@ -16,12 +16,14 @@ test('listed KPM codes and fee programme breakdowns are clear without claiming o
   await expect(page.locator('.provider-row')).not.toContainText('MYR 80');
   await page.getByRole('button',{name:/View details for/}).click();
   const dialog=page.getByRole('dialog');
+  await dialog.locator('.centre-evidence > summary').click();
   await expect(dialog.getByRole('heading',{name:'KPM code listed',exact:true})).toBeVisible();
   await expect(dialog).toContainText('W5L0048');
   await expect(dialog.getByRole('heading',{name:'Published fees',exact:true})).toBeVisible();
   await expect(dialog.locator('.fee-line')).toHaveCount(3);
   await expect(dialog.locator('.fee-line').last()).toContainText('MYR 80 / month');
   await expect(dialog.locator('.fee-line').last()).toContainText('Meal plan');
+  await dialog.locator('.fee-line').first().getByText('View source',{exact:true}).click();
   await expect(dialog.locator('.fee-line').first().getByRole('link')).toHaveAttribute('href',source.url);
 });
 test('area budget references stay labelled in search and details',async({page})=>{

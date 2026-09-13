@@ -16,6 +16,11 @@ import {
   ChevronUp,
   ChevronDown,
   BadgeCheck,
+  MapPin,
+  Clock3,
+  Car,
+  Users,
+  Wallet,
 } from "lucide-react";
 import { requestCaption, todayKL } from "../shared/request.mjs";
 import { drivingLabel, feeSummary, formatFee } from "../shared/result-summary.mjs";
@@ -47,7 +52,12 @@ export function SourceLink({ source, children }) {
     </span>
   );
 }
-export function PublishedContacts({ p }) {
+function SourceDisclosure({ source, children = "View source", extra }) {
+  if (!source) return null;
+  return <details className="source-disclosure"><summary>{children}</summary><SourceLink source={source} />{extra}</details>;
+}
+export function PublishedContacts({ p, compact = false }) {
+  const ContactSource = compact ? SourceDisclosure : SourceLink;
   return (
     <>
       {p.phone && (
@@ -56,7 +66,7 @@ export function PublishedContacts({ p }) {
             <Phone size={19} />
             {p.phone.display}
           </div>
-          <SourceLink source={p.phone.source} />
+          <ContactSource source={p.phone.source} />
         </div>
       )}
       {(p.whatsapp ?? []).map((contact) => (
@@ -72,7 +82,7 @@ export function PublishedContacts({ p }) {
             WhatsApp · {contact.display}
             <ArrowUpRight size={15} />
           </a>
-          <SourceLink source={contact.source} />
+          <ContactSource source={contact.source} />
           {contact.scope === "website" && (
             <small className="notice">
               General enquiry number; may cover more than one branch.
@@ -231,7 +241,6 @@ export function Registration({ p }) {
               : "Registration not yet verified";
   return (
     <section className="detail-section">
-      <div className="section-kicker">02 / REGISTRATION</div>
       <h3>{status}</h3>
       <dl className="facts-grid">
         <div>
@@ -282,7 +291,7 @@ export function Costs({ p }) {
     c = p.cost;
   return (
     <section className="detail-section">
-      <div className="section-kicker">03 / FEES</div>
+      <div className="section-kicker">COST BREAKDOWN</div>
       <h3>
         {c.available
           ? "Estimate your cost"
@@ -293,21 +302,23 @@ export function Costs({ p }) {
       {p.fees.length ? (
         p.fees.map((f, i) => (
           <div className="fee-line" key={i}>
+            {f.programme && <span className="fee-programme">{f.programme}</span>}
             <strong>{feeLabel(f)}</strong>
             <p>{f.conditions}</p>
-            <SourceLink source={f.source} />
-            {f.originalSource && f.originalSource !== f.source?.url && <a className="source-link" href={f.originalSource} target="_blank" rel="noreferrer">Original fee source <ArrowUpRight size={12} /></a>}
-            {f.documentURL && <a className="source-link" href={f.documentURL} target="_blank" rel="noreferrer">Fee document <ArrowUpRight size={12} /></a>}
+            <SourceDisclosure source={f.source} extra={<>
+              {f.originalSource && f.originalSource !== f.source?.url && <a className="source-link" href={f.originalSource} target="_blank" rel="noreferrer">Original fee source <ArrowUpRight size={12} /></a>}
+              {f.documentURL && <a className="source-link" href={f.documentURL} target="_blank" rel="noreferrer">Fee document <ArrowUpRight size={12} /></a>}
+            </>} />
           </div>
         ))
       ) : (
         <p>We couldn’t find a published fee for this service.</p>
       )}
       {!c.available ? (
-        <p className="notice">
-          Confirm: {c.missing.join("; ")}. Monthly fees are not converted into
-          hourly prices.
-        </p>
+        <details className="fee-questions"><summary>Check one-off fees & extras</summary>
+          <ul>{c.missing.map(item=><li key={item}>{item}</li>)}</ul>
+          <p className="notice">Ask for a quote for your date. Monthly fees don’t give a one-off care total.</p>
+        </details>
       ) : (
         <>
           <button className="secondary" onClick={() => setShow((x) => !x)}>
@@ -337,181 +348,83 @@ export function Costs({ p }) {
     </section>
   );
 }
-export function Details({
-  p,
-  onPrepare,
-  onCompare,
-  compared,
-  onSave,
-  saved,
-  onPreparation,
-}) {
-  return (
-    <>
-      <div className="profile-location">
-        {p.category} · {p.district}, {p.region}
-      </div>
-      {p.mode === "demo" && (
-        <p className="demo-notice">
-          Demo centre — fictional details.
-        </p>
-      )}
-      <div className="profile-address">
-        <p>{p.address ?? "Exact address not listed."}</p>
-        <p>{drivingLabel(p.driving)}{p.driving?.state === "available" ? ` · ${p.driving.distanceKm} km by road · no live traffic` : ""}</p>
-        {p.driving?.source && <SourceLink source={p.driving.source} />}
-        <SourceLink source={p.addressSource} />
-        {!p.location && (
-          <p className="notice">
-            We can’t place this centre on the map yet. You can still review
-            its details here.
-          </p>
-        )}
-      </div>
-      <div className="profile-actions">
-        <button className="secondary" aria-pressed={saved} onClick={onSave}>
-          <Bookmark size={16} />
-          {saved ? "Saved centre" : "Save centre"}
-        </button>
-        <button className="primary" onClick={onPrepare}>
-          Prepare questions <ArrowRight size={16} />
-        </button>
-        <button
-          className="secondary"
-          aria-pressed={compared}
-          onClick={onCompare}
-        >
-          {compared ? <Check size={16} /> : <Plus size={16} />}Compare
-        </button>
-      </div>
-      {(p.phone || p.whatsapp?.length > 0) && (
-        <section className="detail-section">
-          <div className="section-kicker">CONTACT DETAILS</div>
-          <PublishedContacts p={p} />
-        </section>
-      )}
-      <section className="detail-section">
-        <div className="section-kicker">01 / YOUR CARE NEEDS</div>
-        <h3>
-          {p.fit.counts.conflict
-            ? "Some details don’t match"
-            : p.fit.counts.unknown
-              ? "A few details to confirm"
-              : "Matches your care needs"}
-        </h3>
-        <p className="notice">Contact the centre to confirm a place for your date.</p>
-        <div className="condition-list">
-          {p.fit.conditions.map((c) => (
-            <div key={c.id} className="condition">
-              <div>
-                <h4>{c.label}</h4>
-                <Status state={c.state}>{c.statusLabel}</Status>
-              </div>
-              <p>{c.reason}</p>
-              <SourceLink source={c.source} />
-              {c.id === "age" && p.age?.alternative && (
-                <SourceLink source={p.age.alternative.source} />
-              )}
-            </div>
-          ))}
+const detailAgeLabel = p => (p.age?.rangeLabel ?? p.age?.wording ?? "Not listed").replace(/\s*\(controlled example\)/i, "");
+const checkLabels = { care: "Care end time", age: "Age", admission: "Temporary care", transport: "Centre pickup", coverage: "Pickup area", pickup: "Collection time", transfer: "Travel & handover" };
+function checkValue(c, p, request) {
+  switch (c.id) {
+    case "care": return `${p.careEndTimeLabel ?? p.businessHoursLabel ?? "Hours not listed"} · you need ${request.end}`;
+    case "age": return detailAgeLabel(p);
+    case "admission": return p.admission?.value === true ? "One-off care listed" : p.admission?.value === false ? "One-off care not offered" : "Ask about a place for this date";
+    case "transport": return request.transport === "self" ? "You’ll arrange delivery" : p.transport?.exists === true ? "Pickup service listed" : p.transport?.exists === false ? "Centre pickup not offered" : "Pickup service not listed";
+    case "coverage": return request.transport === "self" ? "Centre pickup not needed" : c.state === "supported" ? "Your pickup place is covered" : c.state === "conflict" ? "Outside the listed pickup area" : "Confirm coverage of your pickup place";
+    case "pickup": return request.transport === "self" ? `You’ll arrange collection by ${request.deadline}` : `Collection needed by ${request.deadline}`;
+    case "transfer": return p.driving?.state === "available" ? `About ${p.driving.minutes} min driving + handover time` : "Confirm travel and handover time";
+    default: return c.label;
+  }
+}
+function CareSchedule({ p }) {
+  return <section className="centre-hours centre-section" aria-label="Care hours">
+    <div className="centre-section-heading"><h3>Care hours</h3><span>{p.businessHoursDay}</span></div>
+    <div className="care-day"><span>Care ends at</span><strong>{p.careEndTimeLabel ?? p.businessHoursLabel}</strong></div>
+    <SourceDisclosure source={p.careEndTimeSource ?? p.businessHours?.source}>Care schedule source</SourceDisclosure>
+    {p.businessHours?.publishedSchedule && <div className="notice"><p>{p.businessHours.publishedSchedule.notes}</p><SourceDisclosure source={p.businessHours.publishedSchedule.source} /></div>}
+    {p.businessHours?.alternative && <div className="notice"><p>Another listing: {p.businessHours.alternative.notes}</p><SourceDisclosure source={p.businessHours.alternative.source}>Additional care schedule source</SourceDisclosure></div>}
+    <details className="weekly-hours"><summary>View weekly care end times</summary><dl>
+      {(p.weeklyCareEndTimes ?? []).map(({ day, label, source }) => <div key={day} className={day === p.businessHoursDay ? "requested-day" : ""}><dt>{day}{day === p.businessHoursDay ? " · your visit" : ""}</dt><dd>{label}{source?.url && source.url !== p.businessHours?.source?.url && <SourceDisclosure source={source} />}</dd></div>)}
+    </dl></details>
+  </section>;
+}
+export function Details({ p, request, onPrepare, onCompare, compared, onSave, saved, onPreparation }) {
+  const counts = p.fit.counts, fees = feeSummary(p), badge = registrationBadge(p, todayKL());
+  const date = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(request.date + "T12:00:00+08:00"));
+  const checks = [...p.fit.conditions].sort((a, b) => ({conflict:0,unknown:1,supported:2,reference:3}[a.state] - {conflict:0,unknown:1,supported:2,reference:3}[b.state]));
+  const care = p.fit.conditions.find(c => c.id === "care");
+  return <div className="centre-details">
+    <div className="centre-identity"><span>{p.category} · {p.district}, {p.region}</span><p><MapPin size={14} />{p.address ?? "Exact address not listed"}</p></div>
+    {p.mode === "demo" && <p className="demo-notice">Demo centre — fictional details.</p>}
+    <div className="centre-request" aria-label="Your visit">
+      <div><span>Your visit</span><strong>{date}</strong></div>
+      <div><span>Collect by</span><strong>{request.deadline}</strong></div>
+      <ArrowRight size={16} aria-hidden="true" />
+      <div><span>Care until</span><strong>{request.end}</strong></div>
+      <p><MapPin size={13} /><span>From {request.pickup.label}</span></p>
+    </div>
+    <dl className="centre-metrics" aria-label="Key information">
+      <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care end time</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>
+      <div><dt><Users size={15} />Age</dt><dd>{detailAgeLabel(p)}</dd><small>{p.age?.basis === "type_reference" ? "Official type range" : "Published age range"}</small></div>
+      <div><dt><Car size={15} />Drive from pickup</dt><dd>{p.driving?.state === "available" ? `About ${p.driving.minutes} min` : "Unavailable"}</dd><small>{p.driving?.state === "available" ? `${p.driving.distanceKm} km by road · no live traffic` : "Travel time couldn’t be checked"}</small></div>
+      <div className="metric-fee"><dt><Wallet size={15} />Fee</dt><dd>{fees.label}</dd><small>{p.cost?.available ? "For your selected care hours" : p.fees?.every(f=>f.verification==='area_estimate') && p.fees.length ? "Area budget reference" : "Check the programme and extras"}</small></div>
+    </dl>
+    <div className="centre-layout">
+      <section className="centre-fit centre-section" aria-label="Your care needs">
+        <div className="centre-section-heading"><h3>Your care needs</h3><span>{counts.supported} match · {counts.unknown} to check</span></div>
+        <div className={`fit-verdict ${counts.conflict ? "conflict" : counts.unknown ? "unknown" : "supported"}`}>
+          {counts.conflict ? <AlertTriangle size={19} /> : counts.unknown ? <HelpCircle size={19} /> : <CheckCircle2 size={19} />}
+          <div><strong>{counts.conflict ? `${counts.conflict} ${counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match` : counts.unknown ? "Check a few details with the centre" : "The listed details match your request"}</strong><p>{counts.conflict ? "Review these differences before you choose." : "Ask the centre to confirm a place for your date."}</p></div>
         </div>
-        <div className="business-note">
-          <strong>
-            Care end time{p.businessHoursDay ? ` · ${p.businessHoursDay}` : ""}:{" "}
-            {p.careEndTimeLabel ?? p.businessHoursLabel}
-          </strong>
-          <p>Published care end time for your selected day.</p>
-          <SourceLink source={p.careEndTimeSource ?? p.businessHours.source}>
-            Care schedule source
-          </SourceLink>
-          {p.businessHours.publishedSchedule && (
-            <div className="published-schedule">
-              <p>{p.businessHours.publishedSchedule.notes}</p>
-              <SourceLink source={p.businessHours.publishedSchedule.source} />
-            </div>
-          )}
-          {p.businessHours.alternative && (
-            <div className="notice">
-              <p>
-                Additional care schedule: {p.businessHours.alternative.notes}
-              </p>
-              <SourceLink source={p.businessHours.alternative.source}>
-                Additional care schedule source
-              </SourceLink>
-            </div>
-          )}
-          <details className="weekly-hours">
-            <summary>View weekly care end times</summary>
-            <dl>
-              {(p.weeklyCareEndTimes ?? []).map(({ day, label, source }) => {
-                return (
-                  <div
-                    key={day}
-                    className={
-                      day === p.businessHoursDay ? "requested-day" : ""
-                    }
-                  >
-                    <dt>
-                      {day}
-                      {day === p.businessHoursDay ? " · requested" : ""}
-                    </dt>
-                    <dd>
-                      {label}
-                      {source?.url &&
-                        source.url !== p.businessHours.source?.url && (
-                          <SourceLink source={source} />
-                        )}
-                    </dd>
-                  </div>
-                );
-              })}
-            </dl>
-          </details>
+        <div className="fit-checks condition-list">{checks.map(c=><details key={c.id} className={`fit-check ${c.state}`} data-condition-id={c.id} open={c.state === "conflict"}>
+          <summary><div><strong>{checkLabels[c.id] ?? c.label}</strong><span>{checkValue(c,p,request)}</span></div><Status state={c.state}>{c.statusLabel}</Status><ChevronDown size={15} className="disclosure-chevron" /></summary>
+          <div className="fit-check-explanation"><p>{c.reason}</p><SourceDisclosure source={c.source} extra={c.id === "age" && p.age?.alternative ? <SourceLink source={p.age.alternative.source} /> : null} /></div>
+        </details>)}</div>
+      </section>
+      <aside className="centre-next" aria-label="Contact and next steps">
+        <div className="centre-next-card"><span className="section-kicker">NEXT STEP</span><h3>Ask about a place</h3><p>Prepare what to ask for your date and care hours.</p>
+          <button className="primary" onClick={onPrepare}>Prepare questions <ArrowRight size={16} /></button>
+          <div className="centre-shortlist"><button className="secondary" aria-pressed={compared} onClick={onCompare}>{compared ? <Check size={15} /> : <Plus size={15} />}Compare</button><button className="secondary" aria-pressed={saved} onClick={onSave}><Bookmark size={15} />{saved ? "Saved centre" : "Save centre"}</button></div>
+          <div className="centre-contact"><h4>Contact the centre</h4><PublishedContacts p={p} compact />{p.sourcePage && <a className="centre-listing" href={p.sourcePage} target="_blank" rel="noreferrer">View centre listing <ArrowUpRight size={13} /></a>}</div>
+          <div className="centre-preparation"><h4>After you’ve spoken</h4><p>Get your pickup and handover checklist ready.</p><button onClick={onPreparation}><ClipboardList size={15} />Create preparation sheet<ArrowRight size={14} /></button></div>
         </div>
-        {p.transport?.source && (
-          <div className="business-note">
-            <strong>
-              Transport:{" "}
-              {p.transport.exists === true
-                ? "Advertised"
-                : p.transport.exists === false
-                  ? "Listed as unavailable"
-                  : "Ask the centre"}
-            </strong>
-            <p>{p.transport.wording}</p>
-            <SourceLink source={p.transport.source} />
-          </div>
-        )}
-        {p.notes.map((n, i) => (
-          <p className="notice" key={i}>
-            {n}
-          </p>
-        ))}
-      </section>
-      <Registration p={p} />
-      <Costs p={p} />
-      <section className="detail-section">
-        <h3>Plan the pickup and handover</h3>
-        <p>
-          Make a checklist of pickup arrangements, questions and things to
-          bring.
-        </p>
-        <button className="primary" onClick={onPreparation}>
-          <ClipboardList size={16} />
-          Create preparation sheet
-        </button>
-      </section>
-      <section className="detail-section">
-        <h3>Questions before you decide</h3>
-        <p>
-          Choose what you’d like to ask this centre before arranging care.
-        </p>
-        <button className="primary" onClick={onPrepare}>
-          Prepare questions <ArrowRight size={16} />
-        </button>
-      </section>
-    </>
-  );
+      </aside>
+      <div className="centre-fees"><Costs p={p} /></div>
+      <CareSchedule p={p} />
+      <details className="centre-evidence" open={badge?.state === "attention"}><summary><div><strong>Registration & sources</strong><span>{badge ? `${badge.authority} · ${badge.number}${badge.state === "attention" ? " · needs checking" : ""}` : "Where these details come from"}</span></div><ChevronDown size={17} className="disclosure-chevron" /></summary>
+        <Registration p={p} />
+        <div className="centre-source-group"><h4>Address & travel</h4><p>{p.address ?? "Exact address not listed"}</p><SourceLink source={p.addressSource} />{p.driving?.source && <SourceLink source={p.driving.source} />}{!p.location && <p className="notice">We can’t place this centre on the map yet.</p>}</div>
+        {p.transport?.source && <div className="centre-source-group"><h4>Pickup service</h4><p>{p.transport.wording}</p><SourceLink source={p.transport.source} /></div>}
+        {(p.notes ?? []).map((n,i)=><p className="notice" key={i}>{n}</p>)}
+      </details>
+    </div>
+  </div>;
 }
 export function Comparison({
   items,

@@ -7,6 +7,8 @@ export default function Dialog({
   onClose,
   wide = false,
   tourBehind = false,
+  className = "",
+  titleAccessory,
 }) {
   const ref = useRef(null),
     titleId = useId();
@@ -24,7 +26,7 @@ export default function Dialog({
     <dialog
       aria-labelledby={titleId}
       ref={ref}
-      className={`${wide ? "wide" : ""} ${tourBehind ? "tour-behind" : ""}`}
+      className={`${wide ? "wide" : ""} ${tourBehind ? "tour-behind" : ""} ${className}`}
       onCancel={(e) => {
         e.preventDefault();
         onClose();
@@ -40,7 +42,7 @@ export default function Dialog({
             <X size={20} />
           </button>
         </div>
-        <h2 id={titleId}>{title}</h2>
+        {titleAccessory ? <div className="dialog-title-row"><h2 id={titleId}>{title}</h2>{titleAccessory}</div> : <h2 id={titleId}>{title}</h2>}
         {children}
       </div>
     </dialog>
