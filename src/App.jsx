@@ -26,6 +26,7 @@ import {
   Enquiry,
   Status,
   RegistrationBadge,
+  OrderingNote,
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
 import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM } from "../shared/request.mjs";
@@ -919,7 +920,7 @@ export default function App({
               />
             </div>
             <div className="field">
-              <label htmlFor="radius">Distance from pickup</label>
+              <label htmlFor="radius">Search radius</label>
               <select
                 id="radius"
                 value={draft.radius}
@@ -932,7 +933,7 @@ export default function App({
               >
                 {[5, MAX_SEARCH_RADIUS_KM].map((n) => (
                   <option key={n} value={n}>
-                    Within {n} km (straight-line)
+                    Within {n} km
                   </option>
                 ))}
               </select>
@@ -1163,7 +1164,7 @@ export default function App({
             {!nearbyBusy && nearby && <p>{nearby.total} centres within {nearby.radius} km · showing {nearby.items.length}</p>}
             {!nearbyBusy && nearby?.total === 0 && <p>No centres nearby. Choose another pickup place.</p>}
             {items.map((p) => <button key={p.id} id={"card-" + p.id} className={`nearby-card ${selected === p.id ? "selected" : ""}`} onClick={() => select(p.id)} aria-label={`Select ${p.name}`} aria-pressed={selected === p.id}>
-              <strong>{p.name}</strong><span>{p.district} · {p.distanceKm.toFixed(1)} km</span><span>Fees · {feeSummary(p).label}</span>
+              <strong>{p.name}</strong><span>{[p.district, p.region].filter(Boolean).join(" · ")}</span><span>Fees · {feeSummary(p).label}</span>
             </button>)}
           </div>
         )}
@@ -1224,7 +1225,7 @@ export default function App({
             <div>
               {active.fit ? <Status
                 state={active.fit.counts.conflict ? "conflict" : "unknown"}
-              /> : <span>{active.distanceKm.toFixed(1)} km away</span>}
+              /> : null}
               <button onClick={() => openDetails(active)}>
                 {active.fit ? "Check conditions" : "Check this centre"} <ArrowUpRight size={18} />
               </button>
@@ -1539,7 +1540,7 @@ export default function App({
           )}
           {dialog === "ordering" && (
             <div className="prose">
-              <p>{results?.ordering.explanation}</p>
+              <OrderingNote ordering={results?.ordering} radius={results?.request.radius} />
               <p>
                 When a detail is missing, that centre appears after those with
                 information we can compare. This order doesn’t rate care quality

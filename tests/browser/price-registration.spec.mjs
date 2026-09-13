@@ -43,6 +43,12 @@ test('monthly price changes result/map/comparison priority and registration icon
   await page.keyboard.press('Escape');
   for(const id of ['higher','budget','lowest'])await page.getByRole('button',{name:`Compare Test ${id}`,exact:true}).click();
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/COMPARE/}).click();
+  await expect(page.getByLabel('Comparison priority').locator('option[value="distance"]')).toHaveText('Nearest first');
+  await expect(page.getByRole('dialog')).not.toContainText(/straight.line/i);
+  const locations=page.locator('.comparison-scroll tr').filter({has:page.getByText('Location',{exact:true})});
+  await expect(locations).toHaveCount(1);
+  await expect(locations).not.toContainText(/\bkm\b/);
+  await expect(page.locator('.comparison-scroll')).toContainText('3 km by road');
   await page.getByLabel('Comparison priority').selectOption('price');
   await expect(page.locator('th.comparison-best')).toHaveCount(1);await expect(page.locator('th.comparison-best')).toHaveAttribute('data-provider-id','lowest');
   await expect(page.locator('.comparison-best-tag')).toHaveText('Lowest monthly fee');

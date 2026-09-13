@@ -26,6 +26,15 @@ import { requestCaption, todayKL } from "../shared/request.mjs";
 import { drivingLabel, feeSummary, formatFee } from "../shared/result-summary.mjs";
 import { bestForPriority } from "../shared/conditions.mjs";
 import { registrationBadge } from "../shared/registration.mjs";
+export function OrderingNote({ ordering, radius }) {
+  if (!ordering) return null;
+  const text = ordering.factor === "distance"
+    ? ordering.pageSelection === "nearest"
+      ? `Each page shows the next 20 nearest centres${radius ? ` within ${radius} km` : ""}. Centres with conflicting details appear last.`
+      : "Nearest centres first, with conflicting details last."
+    : ordering.explanation;
+  return <p>{text}</p>;
+}
 export function SourceLink({ source, children }) {
   if (!source)
     return (
@@ -474,7 +483,7 @@ export function Comparison({
             onChange={(e) => onSort(e.target.value)}
           >
             {[
-              ["distance", "Nearest (straight-line)"],
+              ["distance", "Nearest first"],
               ["price", "Lowest monthly fee"],
               ["closing", "Later care end time"],
               ["pickup", "Centres with pickup"],
@@ -493,7 +502,7 @@ export function Comparison({
             ))}
           </select>
         </label>
-        <p>{ordering?.explanation}</p>
+        <OrderingNote ordering={ordering} />
         <p className="comparison-priority-message" role="status">{best.message}</p>
       </div>
       <div className="comparison-scroll">
@@ -544,10 +553,7 @@ export function Comparison({
               <th>Location</th>
               {items.map((p) => (
                 <td key={p.id}>
-                  {p.distanceKm == null
-                    ? "Coordinates unavailable"
-                    : `${p.distanceKm.toFixed(1)} km straight-line`}
-                  <p>{p.address}</p>
+                  {p.address || "Address not listed"}
                 </td>
               ))}
             </tr>

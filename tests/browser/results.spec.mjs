@@ -9,7 +9,7 @@ async function setup(page, calls, routing=true, coLocated=false, extraItems=[]){
   const api=createAPI({store:{catalog:async()=>({...catalog,items:[...catalog.items,...extraItems]})},drivingRoutes:async(_,items)=>items.map(p=>({...p,driving:routing&&p.location?{state:"available",minutes:8,distanceKm:5.5,traffic:false}:{state:"unavailable"}}))});
   await page.route("**/api",async route=>{const b=route.request().postDataJSON();calls.push(b);await route.fulfill({json:{ok:true,...await api(b)}});});
 }
-test("zooming far out and repeated dragging do not query the backend; zoom-in requires a deliberate refresh",async({page})=>{
+test("zooming and repeated dragging never query; reopening loads the saved neighbourhood once",async({page})=>{
   const calls=[];await setup(page,calls);await page.goto("/#discover");await expect(page.locator(".nearby-card").first()).toBeVisible();
   const before=calls.filter(c=>c.action==="nearby").length;
   for(let i=0;i<4;i++)await page.getByRole("button",{name:"Zoom out",exact:true}).click();
@@ -18,17 +18,16 @@ test("zooming far out and repeated dragging do not query the backend; zoom-in re
   for(let i=0;i<3;i++){await page.mouse.move(box.x+box.width*.6,box.y+box.height*.55);await page.mouse.down();await page.mouse.move(box.x+box.width*.6-45,box.y+box.height*.55+15,{steps:10});await page.mouse.up();}
   await page.waitForTimeout(750);
   expect(calls.filter(c=>c.action==="nearby").length).toBe(before);
-  await expect(page.getByText("Zoom in to search this area",{exact:true})).toBeVisible();
+  await expect(page.getByText("Zoom in to search this area",{exact:true})).toHaveCount(0);
   await expect(page.getByRole("button",{name:"Search this area",exact:true})).toHaveCount(0);
   await page.screenshot({path:dir+"/zoomed-out.png"});
-  // A return to a wide saved map must also avoid an automatic area query.
-  await page.reload();await page.waitForTimeout(900);
-  expect(calls.filter(c=>c.action==="nearby").length).toBe(before);
-  for(let i=0;i<5;i++)await page.getByRole("button",{name:"Zoom in",exact:true}).click();
-  await expect(page.getByRole("button",{name:"Search this area",exact:true})).toBeEnabled();
-  expect(calls.filter(c=>c.action==="nearby").length).toBe(before);
-  await page.getByRole("button",{name:"Search this area",exact:true}).click();
+  // Reopening loads one bounded neighbourhood, independent of map zoom.
+  await page.reload();
   await expect.poll(()=>calls.filter(c=>c.action==="nearby").length).toBe(before+1);
+  for(let i=0;i<5;i++)await page.getByRole("button",{name:"Zoom in",exact:true}).click();
+  await page.waitForTimeout(750);
+  await expect(page.getByRole("button",{name:"Search this area",exact:true})).toHaveCount(0);
+  expect(calls.filter(c=>c.action==="nearby").length).toBe(before+1);
 });
 async function search(page){
   await page.addInitScript(()=>localStorage.setItem("equalpath:map:v1:live",JSON.stringify({version:1,center:{lat:3.139,lng:101.6869},zoom:13,pickup:{id:"demo-pickup",label:"KL Sentral",lat:3.139,lng:101.6869}})));
@@ -51,7 +50,7 @@ test("search offers only 5 or 10 km and the map and count exclude distant or unl
   await page.screenshot({path:dir+"/radius-mobile.png"});
   await page.getByRole("button",{name:/Edit request/}).click();
   await page.locator(".search-refinements summary").click();
-  await expect(page.locator("#radius option")).toHaveText(["Within 5 km (straight-line)","Within 10 km (straight-line)"]);
+  await expect(page.locator("#radius option")).toHaveText(["Within 5 km","Within 10 km"]);
   await page.locator("#radius").selectOption("5");
   await page.getByRole("button",{name:/Update results/}).click();
   await expect(page.locator(".results-toolbar strong")).toHaveText("9");
