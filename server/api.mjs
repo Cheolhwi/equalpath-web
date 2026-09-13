@@ -12,13 +12,15 @@ import {
   costFor,
   enquiries,
   sortProviders,
+  suggestProviders,
   applicableWindows,
 } from "../shared/conditions.mjs";
 import { regionAt, regions, distanceKm } from "./geography.mjs";
 import { fixtureCatalog, demoPickup } from "./fixtures.mjs";
 import { createStore, ServiceError } from "./appwrite-store.mjs";
 import { createPlaceSearch } from "./places.mjs";
-export function createAPI({ store = createStore(), placeSearch = createPlaceSearch() } = {}) {
+import { createDrivingRoutes } from "./driving.mjs";
+export function createAPI({ store = createStore(), placeSearch = createPlaceSearch(), drivingRoutes = createDrivingRoutes() } = {}) {
   return async function handle(body) {
     if (!body || typeof body !== "object" || Array.isArray(body))
       throw new ServiceError("INVALID_REQUEST", 400);
@@ -54,7 +56,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
         throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
       const radius = [5, 10, 25, 50].includes(body.radius) ? body.radius : 5;
       const candidates = items.filter((p) => p.location && distanceKm(center, p.location) <= radius)
-        .map((p) => ({ id: p.id, name: p.name, category: p.category, address: p.address, district: p.district, region: p.region, location: p.location, distanceKm: distanceKm(center, p.location) }))
+        .map((p) => ({ id: p.id, name: p.name, category: p.category, address: p.address, district: p.district, region: p.region, location: p.location, fees: p.fees, distanceKm: distanceKm(center, p.location) }))
         .sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
       return { ...meta, center, radius, total: candidates.length, items: candidates.slice(0, 20) };
     }
@@ -107,6 +109,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
     if (Object.keys(errors).length)
       throw new ServiceError("INVALID_REQUEST", 422, errors);
     const request = canonicalRequest(body.request);
+    const withDriving = rows => mode === "demo" ? rows.map(p => ({ ...p, driving: { state: "unavailable", reason: "demo" } })) : drivingRoutes(request.pickup, rows);
     if (!regions.includes(regionAt(request.pickup)))
       throw new ServiceError("OUTSIDE_SERVICE_AREA", 422, {
         pickup:
@@ -159,7 +162,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       return {
         ...meta,
         request,
-        items: candidates.slice(page * 20, page * 20 + 20),
+        items: await withDriving(suggestProviders(candidates.slice(page * 20, page * 20 + 20), request)),
         total: candidates.length,
         page,
         pageSize: 20,
@@ -187,7 +190,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
     return {
       ...meta,
       request,
-      items: ordered,
+      items: await withDriving(ordered),
       ordering: ordering(request.sort, hydrated, request.date),
     };
   };
@@ -195,14 +198,14 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
 function ordering(sort, items, date) {
   return {
     factor: sort,
-    explanation:
+    explanation: "Centres without known conflicts first; conflicting details go last. Within each group: " + (
       sort === "distance"
         ? "Nearest straight-line distance first; missing coordinates last. This is not a travel-time estimate."
         : sort === "closing"
           ? "Later care end time first; missing times last. One-off admission and capacity remain unconfirmed."
           : sort === "pickup"
             ? "Published institutional transport first; unknown transport last. Coverage and seats are checked separately."
-            : "Names in alphabetical order, with a stable branch identifier for ties.",
+            : "Names in alphabetical order, with a stable branch identifier for ties."),
     available: {
       name: true,
       distance: items.some((p) => p.distanceKm != null),

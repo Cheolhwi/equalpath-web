@@ -1,0 +1,34 @@
+
+> equalpath-web@0.0.0 test:browser
+> playwright test
+
+[WebServer] (node:21649) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 21 tests using 1 worker
+
+(node:21651) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/browser/map-discovery.spec.mjs:19:1 › first visit shows nearby childcare without a request; partial place search is explicit and restores on reload (3.3s)
+  ✓   2 tests/browser/map-discovery.spec.mjs:46:1 › drag map, confirm pickup, reload and keep the same point; cancellation leaves the pickup unchanged (2.7s)
+  ✓   3 tests/browser/map-discovery.spec.mjs:66:1 › mobile pickup confirmation is visible, map stays flat and blocked storage does not stop selection (1.0s)
+  ✓   4 tests/browser/map-discovery.spec.mjs:80:1 › dragging remembers the viewport but only an explicit area search refreshes nearby centres (3.7s)
+  ✓   5 tests/browser/map-discovery.spec.mjs:99:1 › a nearby marker can lead to a dated condition check without pretending discovery was assessed (2.3s)
+  ✓   6 tests/browser/phase4-5.spec.mjs:53:1 › questions belong to a selected centre and never appear in main navigation (1.7s)
+  ✓   7 tests/browser/phase4-5.spec.mjs:77:1 › save, reload, edit, reuse fresh request, inspect preparation, download, and remove (4.5s)
+  ✓   8 tests/browser/phase4-5.spec.mjs:220:1 › failed local writes preserve candidate, previous reason and saved list (1.7s)
+  ✓   9 tests/browser/phase4-5.spec.mjs:258:1 › unmatched saved place and conflicting times require correction, not silent replacement (1.7s)
+  ✓  10 tests/browser/phase4-5.spec.mjs:311:1 › reopened favourite reports changed source facts and preserves snapshot after refresh failure (2.0s)
+  ✓  11 tests/browser/phase4-5.spec.mjs:365:1 › preparation remains dated until explicitly regenerated for new times and transport (1.6s)
+  ✓  12 tests/browser/phase4-5.spec.mjs:400:1 › mobile navigation, modal layout, checkboxes and keyboard close remain usable (1.8s)
+  ✓  13 tests/browser/phase4-5.spec.mjs:437:1 › print action creates the standalone sheet and compact zoom keeps controls usable (1.6s)
+  ✓  14 tests/browser/results.spec.mjs:11:1 › zooming far out and repeated dragging do not query the backend; zoom-in requires a deliberate refresh (4.4s)
+  ✓  15 tests/browser/results.spec.mjs:37:1 › result cards show drive time and fee basis, while conflicts stay below other results on desktop and mobile (1.5s)
+  ✓  16 tests/browser/results.spec.mjs:57:1 › route outage keeps results and published prices, without fake drive estimates (1.2s)
+  ✓  17 tests/browser/tour.spec.mjs:18:1 › first entry offers an immediate Skip; dismissal survives reload and Quick tour replays (2.2s)
+  ✓  18 tests/browser/tour.spec.mjs:30:1 › guided sample uses the actual form, search, checks, comparison and questions, then restores existing input (3.7s)
+  ✓  19 tests/browser/tour.spec.mjs:54:1 › mobile walkthrough stays on screen with visible highlights and respects reduced motion (4.0s)
+  ✓  20 tests/browser/tour.spec.mjs:82:1 › skip during an in-flight example restores results and cannot be overwritten by the late response (1.5s)
+  ✓  21 tests/browser/tour.spec.mjs:98:1 › failed example can be retried; blocked storage and keyboard skip keep the page usable (1.7s)
+
+  21 passed (51.6s)

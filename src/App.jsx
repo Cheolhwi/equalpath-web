@@ -33,6 +33,8 @@ import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory
 import Preparation from "./Preparation.jsx";
 import GettingStarted from "./GettingStarted.jsx";
 import { tourSeen, saveTour } from "../shared/tour.mjs";
+import { MIN_SEARCH_ZOOM } from "../shared/map-search.mjs";
+import { feeSummary, drivingLabel } from "../shared/result-summary.mjs";
 import {
   SavedLibrary,
   FavouriteEditor,
@@ -294,6 +296,7 @@ export default function App({
   }, [mode]);
   useEffect(() => {
     if (results || tourOpen) return;
+    if (mapView.current.zoom < MIN_SEARCH_ZOOM) { setNearbyBusy(false); return; }
     let alive = true;
     setNearby(null);
     setNearbyBusy(true);
@@ -1147,9 +1150,9 @@ export default function App({
             {nearbyBusy && <p role="status">Finding nearby centres…</p>}
             {nearbyError && <p role="status">{errorMessage(nearbyError)} <button className="text-link" onClick={() => setNearbyReload((v) => v + 1)}>Retry nearby centres</button></p>}
             {!nearbyBusy && nearby && <p>{nearby.total} centres within {nearby.radius} km · showing {nearby.items.length}</p>}
-            {!nearbyBusy && nearby?.total === 0 && <p>Move the map or choose another pickup place.</p>}
+            {!nearbyBusy && nearby?.total === 0 && <p>Move the map and select Search this area, or choose another pickup place.</p>}
             {items.map((p) => <button key={p.id} id={"card-" + p.id} className={`nearby-card ${selected === p.id ? "selected" : ""}`} onClick={() => select(p.id)} aria-label={`Select ${p.name}`} aria-pressed={selected === p.id}>
-              <strong>{p.name}</strong><span>{p.district} · {p.distanceKm.toFixed(1)} km</span>
+              <strong>{p.name}</strong><span>{p.district} · {p.distanceKm.toFixed(1)} km</span><span>Fees · {feeSummary(p).label}</span>
             </button>)}
           </div>
         )}
@@ -1169,10 +1172,13 @@ export default function App({
           items={items}
           viewTarget={mapTarget}
           autoFit={!!results}
+          browseEnabled={!results && !tourOpen}
+          browseCenter={nearby?.center}
+          browseBusy={nearbyBusy}
+          onSearchArea={(center) => { if (!nearbyBusy) { setNearbyBusy(true); setBrowseCenter(center); setSelected(null); setMapRestored(false); } }}
           onViewChange={(view) => {
             if (tourOpen) return;
             rememberMap(view);
-            if (!results) { setBrowseCenter(view.center); setSelected(null); }
           }}
           onChoose={() => { setChoosing(true); setMobilePane("map"); }}
           onCancel={() => { setChoosing(false); setMobilePane("list"); }}
@@ -1207,6 +1213,7 @@ export default function App({
             <p>
               {active.address || `${active.district} · ${active.region}`}
             </p>
+            {active.fit && <p>{drivingLabel(active.driving)} · Fees: {feeSummary(active).label}</p>}
             <div>
               {active.fit ? <Status
                 state={active.fit.counts.conflict ? "conflict" : "unknown"}
@@ -1612,8 +1619,8 @@ export default function App({
               <p>
                 Published care end times are used for this check. Specific care
                 schedules and date exceptions take precedence. Transport
-                coverage and actual acceptance are checked separately. No route
-                duration or live vacancy is inferred.
+                coverage and actual acceptance are checked separately. Road-network
+                drive times are estimates; live vacancy is not inferred.
               </p>
               <p>
                 Geographic checks use a versioned{" "}
@@ -1635,6 +1642,9 @@ export default function App({
                 templates you save. Dates and child ages are not saved automatically.
                 Place searches use OpenStreetMap data through Photon; map tiles
                 come from the map provider.
+                Driving estimates send only pickup and centre coordinates to the
+                OSRM routing service. They use road data without live traffic.
+                <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noreferrer"> OSRM / OpenStreetMap routing</a> · <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noreferrer">Fix the map</a>.
               </p>
               <p>
                 Registration and historical listings do not prove present

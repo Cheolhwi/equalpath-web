@@ -1,14 +1,13 @@
 {
-  "created_at": "2026-09-13T04:37:21.859Z",
+  "created_at": "2026-09-13T06:14:36.357Z",
   "function": "web-provider-query",
-  "deployment": "6aa628817a2b402390ef",
-  "status": "ready",
+  "deployment": "6aa63f4be6f680bb89d6",
+  "status": "waiting",
   "execute": [
     "any"
   ],
   "scopes": [],
   "logging": false,
   "owner_resources_accessed": false,
-  "production_domains_changed": false,
-  "checked_at": "2026-09-13T04:39:22.749Z"
+  "production_domains_changed": false
 }

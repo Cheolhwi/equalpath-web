@@ -12,10 +12,12 @@ import {
   CheckCircle2,
   HelpCircle,
   AlertTriangle,
+  Star,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
 import { requestCaption, todayKL } from "../shared/request.mjs";
+import { drivingLabel, feeSummary } from "../shared/result-summary.mjs";
 export function SourceLink({ source, children }) {
   if (!source)
     return (
@@ -117,9 +119,10 @@ export function ProviderCard({
   saved,
   onSave,
 }) {
+  const fees = feeSummary(p);
   return (
     <article
-      className={`provider-row ${selected ? "selected" : ""}`}
+      className={`provider-row ${selected ? "selected" : ""} ${p.fit.counts.conflict ? "lower-priority" : ""} ${p.suggested ? "suggested" : ""}`}
       id={"card-" + p.id}
       data-provider-id={p.id}
     >
@@ -161,12 +164,18 @@ export function ProviderCard({
             <strong>{p.age.rangeLabel ?? p.age.wording}</strong>
           </div>
         )}
+        <div className="row-facts"><span>Drive from pickup</span><strong>{drivingLabel(p.driving)}</strong></div>
+        {p.driving?.state === "available" && <p className="row-note">{p.driving.distanceKm} km by road · without live traffic</p>}
+        <div className="row-facts"><span>Fees</span><strong>{fees.label}</strong></div>
+        <p className="row-note">{fees.note}</p>
         <div className="row-status">
+          {p.suggested && <span className="suggestion-tag"><Star size={12} fill="currentColor" />Suggested first</span>}
           <Status state={p.fit.counts.conflict ? "conflict" : "unknown"}>
             {p.fit.counts.conflict
               ? `${p.fit.counts.conflict} ${p.fit.counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match`
               : `${p.fit.counts.unknown} ${p.fit.counts.unknown === 1 ? "detail" : "details"} to confirm`}
           </Status>
+          {!!p.fit.counts.conflict && <span className="priority-note">Lower priority</span>}
           {p.admission.value === true && (
             <span className="published-tag">Hourly / one-off care listed</span>
           )}
@@ -338,6 +347,8 @@ export function Details({
       )}
       <div className="profile-address">
         <p>{p.address ?? "Exact address not listed."}</p>
+        <p>{drivingLabel(p.driving)}{p.driving?.state === "available" ? ` · ${p.driving.distanceKm} km by road · no live traffic` : ""}</p>
+        {p.driving?.source && <SourceLink source={p.driving.source} />}
         <SourceLink source={p.addressSource} />
         {!p.location && (
           <p className="notice">
@@ -589,6 +600,10 @@ export function Comparison({
                 })}
               </tr>
             ))}
+            <tr>
+              <th>Drive from pickup</th>
+              {items.map(p => <td key={p.id}>{drivingLabel(p.driving)}{p.driving?.state === "available" && <p>{p.driving.distanceKm} km by road · no live traffic</p>}</td>)}
+            </tr>
             <tr>
               <th>Location</th>
               {items.map((p) => (

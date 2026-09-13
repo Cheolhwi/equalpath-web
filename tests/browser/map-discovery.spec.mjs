@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 });
 const place = { id: "osm:N:1", label: "KL Sentral", address: "Jalan Stesen Sentral, Kuala Lumpur", region: "Kuala Lumpur", lat: 3.1341, lng: 101.6865 };
 async function mockAPI(page, calls) {
-  const api = createAPI({ store: { catalog: async () => fixtureCatalog }, placeSearch: async () => ({ items: [place] }) });
+  const api = createAPI({ store: { catalog: async () => fixtureCatalog }, placeSearch: async () => ({ items: [place] }), drivingRoutes: async (_,items) => items.map(p=>({...p,driving:{state:"unavailable"}})) });
   await page.route("**/api", async (route) => {
     const body = route.request().postDataJSON(); calls.push(body);
     try { await route.fulfill({ json: { ok: true, ...await api(body) } }); }
@@ -77,13 +77,19 @@ test("mobile pickup confirmation is visible, map stays flat and blocked storage 
   await expect.poll(()=>calls.filter(c=>c.action==="nearby").length).toBeGreaterThan(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
-test("browsing by dragging refreshes nearby centres and remembers the viewport without inventing a pickup", async ({page})=>{
+test("dragging remembers the viewport but only an explicit area search refreshes nearby centres", async ({page})=>{
   const calls=[];await mockAPI(page,calls);await page.goto("/#discover");
   await expect(page.locator(".provider-pin").first()).toBeVisible();
+  const before=calls.filter(c=>c.action==="nearby").length;
   const box=await page.locator(".map-canvas").boundingBox();
   await page.mouse.move(box.x+box.width*.7,box.y+box.height*.4);await page.mouse.down();
   await page.mouse.move(box.x+box.width*.7-180,box.y+box.height*.4+50,{steps:20});await page.mouse.up();
-  await expect.poll(()=>calls.filter(c=>c.action==="nearby").length).toBeGreaterThan(1);
+  await expect(page.getByRole("button",{name:"Search this area",exact:true})).toBeEnabled();
+  await page.waitForTimeout(700);
+  expect(calls.filter(c=>c.action==="nearby").length).toBe(before);
+  await page.getByRole("button",{name:"Search this area",exact:true}).click();
+  await expect.poll(()=>calls.filter(c=>c.action==="nearby").length).toBe(before+1);
+  await expect(page.getByRole("button",{name:"Search this area",exact:true})).toBeDisabled();
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:map:v1:live")));
   expect(saved.pickup).toBeNull();expect(saved.center.lng).not.toBe(101.6869);
   await page.reload();await expect(page.locator(".provider-pin").first()).toBeVisible();

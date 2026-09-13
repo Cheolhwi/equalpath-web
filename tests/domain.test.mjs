@@ -166,12 +166,14 @@ test("one deduplicated enquiry list carries unknown service conditions without a
   assert.ok(q.some((x) => x.id === "coverage"));
   assert.ok(q.some((x) => x.text.includes(req.date)));
 });
-test("missing coordinates stay in list and sort after known straight-line distances", async () => {
+test("missing coordinates stay in list, after known distances within their conflict group", async () => {
   const r = await api(body);
   assert.equal(r.items.length, 10);
   assert.equal(r.missingLocations, 1);
-  assert.equal(r.items.at(-1).id, "demo-cloud");
-  assert.equal(r.items.at(-1).distanceKm, null);
+  const cloud = r.items.find(p => p.id === "demo-cloud");
+  assert.equal(cloud.distanceKm, null);
+  const group = r.items.filter(p => p.fit.counts.conflict === cloud.fit.counts.conflict);
+  assert.equal(group.at(-1).id, cloud.id);
 });
 test("comparison uses separate branch facts and deterministic unknown-last priorities", async () => {
   const r = await api({
@@ -182,9 +184,9 @@ test("comparison uses separate branch facts and deterministic unknown-last prior
   });
   assert.deepEqual(
     r.items.map((p) => p.id),
-    ["demo-garden", "demo-river", "demo-cloud"],
+    ["demo-garden", "demo-cloud", "demo-river"],
   );
-  assert.equal(r.items[2].cost.available, false);
+  assert.equal(r.items.find(p => p.id === "demo-cloud").cost.available, false);
 });
 test("no result is distinct from source failure", async () => {
   assert.equal(

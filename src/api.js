@@ -1,5 +1,20 @@
 import { API_URL, APPWRITE_PROJECT } from "./config.js";
+import { nearbyCacheKey } from "../shared/map-search.mjs";
+const nearbyCache = new Map(), nearbyPending = new Map();
 export async function requestAPI(body) {
+  if (body.action !== "nearby") return fetchAPI(body);
+  const key = nearbyCacheKey(body), hit = nearbyCache.get(key);
+  if (hit?.expires > Date.now()) return hit.value;
+  if (nearbyPending.has(key)) return nearbyPending.get(key);
+  const job = fetchAPI(body).then(value => {
+    nearbyCache.set(key, { value, expires: Date.now() + 60000 });
+    if (nearbyCache.size > 32) nearbyCache.delete(nearbyCache.keys().next().value);
+    return value;
+  }).finally(() => nearbyPending.delete(key));
+  nearbyPending.set(key, job);
+  return job;
+}
+async function fetchAPI(body) {
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), 75000),
     execution = API_URL.endsWith("/executions");

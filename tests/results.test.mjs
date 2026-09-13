@@ -1,0 +1,65 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createDrivingRoutes } from "../server/driving.mjs";
+import { createAPI } from "../server/api.mjs";
+import { fixtureCatalog, demoPickup } from "../server/fixtures.mjs";
+import { sortProviders, suggestProviders } from "../shared/conditions.mjs";
+import { feeSummary } from "../shared/result-summary.mjs";
+import { areaMoved, nearbyCacheKey } from "../shared/map-search.mjs";
+const origin = { lat: 3.139, lng: 101.6869 };
+const places = [{ id:"a", location:{lat:3.15,lng:101.7} },{ id:"b",location:{lat:3.16,lng:101.72} }];
+const response = { ok:true, json:async()=>({code:"Ok",durations:[[433, null]],distances:[[5485.2,null]],sources:[{distance:10}],destinations:[{distance:10},{distance:10}]}) };
+test("driving uses one bounded table, caches pairs across search/compare and coalesces concurrent requests", async()=>{
+  let calls=0;
+  const routes=createDrivingRoutes({interval:0,fetcher:async url=>{
+    calls++;assert.equal(url.searchParams.get("sources"),"0");assert.equal(url.searchParams.get("destinations"),"1;2");assert.equal(url.searchParams.has("fallback_speed"),false);return response;
+  }});
+  const [a,b]=await Promise.all([routes(origin,places),routes(origin,places)]);
+  assert.deepEqual(a,b);assert.equal(a[0].driving.minutes,8);assert.equal(a[0].driving.distanceKm,5.5);assert.equal(a[1].driving.reason,"no_route");
+  await routes(origin,[places[0]]);assert.equal(calls,1);
+});
+test("routing timeout/failure has a short cooldown and recovers without inventing travel times",async()=>{
+  let clock=0,calls=0;
+  const routes=createDrivingRoutes({interval:0,now:()=>clock,fetcher:async()=>{calls++;if(calls===1)throw Error("offline");return response;}});
+  assert.equal((await routes(origin,places))[0].driving.state,"unavailable");
+  await routes(origin,places);assert.equal(calls,1);clock=31000;
+  assert.equal((await routes(origin,places))[0].driving.minutes,8);assert.equal(calls,2);
+});
+test("remote road snaps and null route values are not represented as zero-minute trips",async()=>{
+  const routes=createDrivingRoutes({interval:0,fetcher:async()=>({ok:true,json:async()=>({...await response.json(),destinations:[{distance:900},{distance:10}]})})});
+  const out=await routes(origin,[...places,{id:"c",location:null}]);
+  assert.equal(out[0].driving.reason,"location_too_far_from_road");assert.equal(out[1].driving.reason,"no_route");assert.equal(out[2].driving.reason,"missing_location");
+});
+test("all secondary sorts place known conflicts below non-conflicts before pagination",async()=>{
+  for(const sort of ["name","distance","closing","pickup"]){
+    const rows=[{id:"a",name:"A",distanceKm:.1,fit:{counts:{conflict:1}}},{id:"b",name:"B",distanceKm:40,fit:{counts:{conflict:0}}},{id:"c",name:"C",distanceKm:.01,fit:{counts:{conflict:2}}}];
+    assert.deepEqual(sortProviders(rows,sort,"2026-09-14").map(p=>p.id),["b","a","c"]);
+  }
+  const base=fixtureCatalog.items[0];
+  const items=Array.from({length:45},(_,i)=>({...base,id:String(i).padStart(2,"0"),location:origin,admission:{value:i>=22}}));
+  const batches=[];
+  const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(o,rows)=>{batches.push(rows);return rows;}});
+  const request={pickup:demoPickup,date:"2026-09-14",deadline:"13:00",end:"18:00",age:"4",transport:"self",radius:5,sort:"distance"};
+  const first=await api({action:"search",request});
+  assert.equal(first.items.length,20);assert.ok(first.items.every(p=>p.fit.counts.conflict===0));assert.equal(batches[0].length,20);
+  const second=await api({action:"search",request,page:1});
+  assert.ok(second.items.slice(0,3).every(p=>p.fit.counts.conflict===0));assert.ok(second.items.slice(3).every(p=>p.fit.counts.conflict>0));
+  await api({action:"nearby",center:origin});assert.equal(batches.length,2);
+});
+test("fee summaries keep hourly/monthly ranges separate and only show totals with a complete rule",()=>{
+  assert.equal(feeSummary({fees:[]}).label,"Ask the centre");
+  const p={fees:[{amount:600,basis:"month"},{amount:1200,basis:"month"},{amount:20,basis:"hour"},{amount:null,basis:"visit"}]};
+  assert.equal(feeSummary(p).label,"MYR 600–1,200 / month · MYR 20 / hour");
+  assert.match(feeSummary({...p,cost:{available:true,total:90,currency:"MYR"}}).label,/90 estimated total/);
+});
+test("neighbourhood threshold ignores tiny movements; cache keys separate modes and radii",()=>{
+  assert.equal(areaMoved(origin,{...origin,lat:3.1391}),false);assert.equal(areaMoved(origin,{...origin,lat:3.15}),true);
+  assert.equal(nearbyCacheKey({center:origin}),nearbyCacheKey({center:{...origin,lat:3.13901}}));
+  assert.notEqual(nearbyCacheKey({center:origin}),nearbyCacheKey({center:origin,mode:"demo"}));
+});
+test("map suggestions prefer stronger relevant matches, cap at three and exclude conflicts or unmappable centres",()=>{
+  const p=(id,n,conflict=0,location=origin)=>({id,distanceKm:Number(id),location,fit:{counts:{conflict},conditions:[{id:"care",state:n>0?"supported":"unknown"},{id:"admission",state:n>1?"supported":"unknown"}]}});
+  const rows=[p("1",0),p("2",2),p("3",1),p("4",2),p("5",2,1),p("6",2,0,null)];
+  assert.deepEqual(suggestProviders(rows,{age:"",transport:"self"}).filter(p=>p.suggested).map(p=>p.id),["2","3","4"]);
+  assert.equal(suggestProviders([p("1",2,1)],{age:"",transport:"self"}).some(p=>p.suggested),false);
+});

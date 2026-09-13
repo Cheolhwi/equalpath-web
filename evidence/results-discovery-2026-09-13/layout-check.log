@@ -1,0 +1,12 @@
+[WebServer] (node:22265) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:22267) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/results.spec.mjs:11:1 › zooming far out and repeated dragging do not query the backend; zoom-in requires a deliberate refresh (4.1s)
+  ✓  2 tests/browser/results.spec.mjs:37:1 › result cards show drive time and fee basis, while conflicts stay below other results on desktop and mobile (1.2s)
+  ✓  3 tests/browser/results.spec.mjs:57:1 › route outage keeps results and published prices, without fake drive estimates (788ms)
+
+  3 passed (7.1s)

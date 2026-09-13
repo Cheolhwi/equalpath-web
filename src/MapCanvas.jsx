@@ -4,6 +4,7 @@ import { LocateFixed, Plus, Minus, RotateCcw, MapPin } from "lucide-react";
 import { DEFAULT_MAP } from "../shared/map-memory.mjs";
 import { makeStyle } from "./map-style.js";
 import { entranceCamera } from "./entrance.js";
+import { areaMoved, MIN_SEARCH_ZOOM } from "../shared/map-search.mjs";
 export default function MapCanvas({
   items = [],
   pickup,
@@ -21,6 +22,10 @@ export default function MapCanvas({
   onViewChange,
   onChoose,
   onCancel,
+  browseEnabled = false,
+  browseCenter,
+  browseBusy = false,
+  onSearchArea,
   introPhase = "ready",
   introArea = 0,
   introReduced = false,
@@ -195,11 +200,16 @@ export default function MapCanvas({
       .filter((p) => p.location)
       .forEach((p, i) => {
         const el = document.createElement("button");
-        el.className = "provider-pin" + (p.id === selected ? " selected" : "");
+        el.className = "provider-pin" + (p.suggested ? " suggested" : "") + (p.id === selected ? " selected" : "");
         el.textContent = String(
           items.findIndex((x) => x.id === p.id) + 1,
         ).padStart(2, "0");
-        el.title = p.name;
+        el.title = p.name + (p.suggested ? " · Suggested first" : "");
+        if (p.suggested) {
+          const badge = document.createElement("span");
+          badge.className = "pin-star"; badge.textContent = "★"; badge.setAttribute("aria-hidden", "true"); el.appendChild(badge);
+          el.setAttribute("aria-description", "Suggested first: no known conflicts, stronger condition matches on this page.");
+        }
         el.setAttribute("aria-label", "Select " + p.name + " on map");
         el.setAttribute("aria-pressed", String(p.id === selected));
         el.dataset.providerId = p.id;
@@ -294,6 +304,7 @@ export default function MapCanvas({
               ? `${items.filter((p) => p.location).length} centres shown${pickup ? " · P marks your pickup place" : " · drag the map to explore"}`
               : "Find your pickup place and nearby centres here."}
         </p>
+        {items.some(p => p.suggested) && <span className="map-suggestion-legend"><b>★</b> Suggested first · {items.filter(p=>p.suggested).length} on this page</span>}
       </div>
       {choosing ? <>
         <div className="map-center-pin" aria-hidden="true"><MapPin size={40} fill="currentColor" /></div>
@@ -306,6 +317,15 @@ export default function MapCanvas({
           }}>Use this location</button></div>
         </div>
       </> : <button className="map-choose secondary" onClick={onChoose}><MapPin size={15} />Choose pickup here</button>}
+      {browseEnabled && !choosing && <div className="map-area-search">
+        {camera.zoom < MIN_SEARCH_ZOOM ? <span>Zoom in to search this area</span> :
+          <button className="secondary" disabled={browseBusy || (browseCenter && !areaMoved(camera, browseCenter))} onClick={() => {
+            const m = map.current;
+            if (!m || m.getZoom() < MIN_SEARCH_ZOOM || browseBusy) return;
+            const c = m.getCenter();
+            if (!browseCenter || areaMoved(c, browseCenter)) onSearchArea?.({ lat: c.lat, lng: c.lng });
+          }}>{browseBusy ? "Finding centres…" : "Search this area"}</button>}
+      </div>}
       <div className="map-tools">
         <button onClick={fit} aria-label="Fit pickup and results">
           <LocateFixed size={19} />

@@ -30,6 +30,7 @@ mkdirSync(resolve(path, "server/data"), { recursive: true });
 for (const f of [
   "server/api.mjs",
   "server/places.mjs",
+  "server/driving.mjs",
   "server/function.mjs",
   "server/geography.mjs",
   "server/fixtures.mjs",

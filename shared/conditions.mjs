@@ -253,7 +253,7 @@ export function assess(p, r) {
       "transfer",
       "Transfer and arrival",
       "unknown",
-      "Transfer duration and arrival time are not calculated in this version.",
+      "Confirm transfer and arrival with the centre. Driving estimates do not include handover time or live traffic.",
       null,
       r.transport === "self"
         ? "How early must the child arrive for this temporary session?"
@@ -400,6 +400,12 @@ export function sortProviders(items, sort, date) {
           ? careEndScheduleFor(p,date).end
           : p.name.toLocaleLowerCase("en");
   return [...items].sort((a, b) => {
+    // Conflicts always rank below every result without a known conflict,
+    // regardless of the selected secondary ordering and before pagination.
+    const conflicts = p => p.fit?.counts?.conflict ?? 0;
+    const group = Number(conflicts(a) > 0) - Number(conflicts(b) > 0);
+    if (group) return group;
+    if (conflicts(a) !== conflicts(b)) return conflicts(a) - conflicts(b);
     let x = value(a),
       y = value(b);
     if (x === -Infinity) x = null;
@@ -414,4 +420,13 @@ export function sortProviders(items, sort, date) {
           : x - y;
     return a.id.localeCompare(b.id);
   });
+}
+export function suggestProviders(items, request) {
+  const relevant = new Set(["admission", "care", ...(request.age !== "" ? ["age"] : []), ...(request.transport === "institution" ? ["transport", "coverage", "pickup"] : [])]);
+  const score = p => p.fit.conditions.filter(c => relevant.has(c.id) && c.state === "supported").length;
+  // Only suggest centres that can be located on the current result map.
+  const ids = [...items].filter(p => p.location && !p.fit.counts.conflict)
+    .sort((a,b) => score(b) - score(a) || a.distanceKm - b.distanceKm || a.id.localeCompare(b.id))
+    .slice(0,3).map(p => p.id);
+  return items.map(p => ({ ...p, suggested: ids.includes(p.id) }));
 }

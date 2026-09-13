@@ -1,0 +1,405 @@
+{
+  "at": "2026-09-13T06:16:09.539Z",
+  "milliseconds": 12977,
+  "total": 979,
+  "shown": 20,
+  "routes": 20,
+  "fees": 2,
+  "suggested": 3,
+  "items": [
+    {
+      "id": "provider_kpm_bfdc218f0320ac7961e47a87",
+      "name": "Brainy Bunch Montessori Playschool KL Sentral",
+      "conflicts": 0,
+      "suggested": true,
+      "driving": {
+        "state": "available",
+        "minutes": 4,
+        "distanceKm": 1.6,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": [
+        {
+          "amount": null,
+          "min": 500,
+          "max": 780,
+          "currency": "MYR",
+          "basis": "month",
+          "kind": "tuition_range",
+          "conditions": "Published basis only; one-off applicability and extra charges need confirmation.",
+          "source": {
+            "label": "Published fees",
+            "url": "https://www.carischools.com/school/brainy-bunch-montessori-playschool-kl-sentral-zon-bangsarpudu-kuala-lumpur",
+            "retrievedAt": null,
+            "sourceDate": null,
+            "kind": "carischools_public_directory"
+          }
+        }
+      ]
+    },
+    {
+      "id": "provider_kpm_d473b86c69991058be2ffed4",
+      "name": "Taska Tadika MIDA Genius",
+      "conflicts": 0,
+      "suggested": true,
+      "driving": {
+        "state": "available",
+        "minutes": 3,
+        "distanceKm": 1.3,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_d7562bf5466898dd221b2152",
+      "name": "Al Hidayah Preschool Bangsar",
+      "conflicts": 0,
+      "suggested": true,
+      "driving": {
+        "state": "available",
+        "minutes": 9,
+        "distanceKm": 4.7,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_aa7f1e101c606f46d474c1f1",
+      "name": "Tadika Suria",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 8,
+        "distanceKm": 4.5,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_bf63c3e760f452536a30d2aa",
+      "name": "Tadika Inovasi Ilmu Sdn. Bhd.",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 7,
+        "distanceKm": 3.5,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_663bafaf78bf9fc46b758c19",
+      "name": "Mandarin Lighthaus (Bangsar Branch)",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 8,
+        "distanceKm": 4.2,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_2039337958b0556584594ee7",
+      "name": "Tadika Kelab Jepun",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 6,
+        "distanceKm": 3.2,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_b87daa856ca62187df4624f6",
+      "name": "Mid Valley Preschool",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 7,
+        "distanceKm": 4,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_afee97033483c3e2a6f32fd3",
+      "name": "Julia Gabriel Preschool - formerly Chiltern House Bangsar",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 9,
+        "distanceKm": 4.9,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_00fc4619bc3efd69fde4c0af",
+      "name": "TADIKA GENIUS RIANG",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 10,
+        "distanceKm": 5.9,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.651Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_2baeb8257e9258c2d97f4abe",
+      "name": "Tadika Junior Jaya Besteri",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 11,
+        "distanceKm": 6.2,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_3f01c6746335ba4a296bec61",
+      "name": "Tadika Riang",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 8,
+        "distanceKm": 4.9,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_a5880a4bc3eaf220cc34b163",
+      "name": "Melody Kindyland South Link, Bangsar South",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 9,
+        "distanceKm": 6.2,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_cecc6c0e9f6e9413dfe5820b",
+      "name": "Tadika Islam Maiwp Al-Muhsinin/Permata Maiwp Muhsinin",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 10,
+        "distanceKm": 6.8,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_54881ab87a9a670e60298b5c",
+      "name": "Tadika Villamaria Good Shepherd",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 8,
+        "distanceKm": 6,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_28d947955b938556f9ebc7fd",
+      "name": "LITTLE DREAMERS CHILDCARE CENTRE (RC RESIDENCE)",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 12,
+        "distanceKm": 8.9,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": [
+        {
+          "amount": null,
+          "min": 700,
+          "max": 1500,
+          "currency": "MYR",
+          "basis": "month",
+          "kind": "tuition_range",
+          "conditions": "Published basis only; one-off applicability and extra charges need confirmation.",
+          "source": {
+            "label": "Published fees",
+            "url": "https://www.carischools.com/school/little-dreamers-childcare-centre-rc-residence-zon-bangsarpudu-kuala-lumpur",
+            "retrievedAt": "2026-07-10T08:46:03.032147+00:00",
+            "sourceDate": null,
+            "kind": "carischools_public_directory"
+          }
+        }
+      ]
+    },
+    {
+      "id": "provider_kpm_25e502c5049d5a1c5c9f15c0",
+      "name": "SJK (C) Tai Thung",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 11,
+        "distanceKm": 8.2,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_efb5ed0675d63a6fd0eba909",
+      "name": "Tadika Sinar Sempurna",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 10,
+        "distanceKm": 6.6,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_e9d3ebd028a32a64cb3be509",
+      "name": "Tadika Lagenda - Alpha Kidz",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 10,
+        "distanceKm": 6.4,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": []
+    },
+    {
+      "id": "provider_kpm_5c10ed2b5f458a7fdcd99955",
+      "name": "TADIKA SRI INTELEK",
+      "conflicts": 0,
+      "suggested": false,
+      "driving": {
+        "state": "available",
+        "minutes": 10,
+        "distanceKm": 7.3,
+        "source": {
+          "label": "OSRM · © OpenStreetMap contributors",
+          "url": "https://routing.openstreetmap.de/about.html"
+        },
+        "traffic": false,
+        "checkedAt": "2026-09-13T06:16:09.652Z"
+      },
+      "fees": []
+    }
+  ]
+}
