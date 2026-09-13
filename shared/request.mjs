@@ -69,7 +69,7 @@ export function canonicalRequest(input) {
       .slice(0, 100),
     includeUnknown: input.includeUnknown !== false,
     includeConflicts: input.includeConflicts !== false,
-    sort: ["distance", "closing", "pickup", "name"].includes(input.sort)
+    sort: ["distance", "price", "closing", "pickup", "name"].includes(input.sort)
       ? input.sort
       : "distance",
   };

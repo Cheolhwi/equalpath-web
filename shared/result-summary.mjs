@@ -1,4 +1,10 @@
 const money = (n) => Number(n).toLocaleString("en-MY", { maximumFractionDigits: 2 });
+const feeExtra = f => ['meal','transport','registration','deposit','annual','late_pickup'].includes(f.kind) || ['one_off','deposit'].includes(f.basis);
+export function monthlyFeeFrom(p) {
+  const values = (p.fees ?? []).filter(f => f.basis === 'month' && (f.currency ?? 'MYR') === 'MYR' && !feeExtra(f))
+    .map(f => f.amount ?? f.min).filter(n => Number.isFinite(n) && n >= 0);
+  return values.length ? Math.min(...values) : null;
+}
 const period = basis => !basis || basis === 'unspecified' ? ' · period not listed' : basis === 'one_off' ? ' one-time' : basis === 'deposit' ? ' deposit' : ` / ${basis}`;
 export function formatFee(f) {
   const min=f.amount??f.min,max=f.amount??f.max;
@@ -8,8 +14,7 @@ export function formatFee(f) {
 export function feeSummary(p) {
   if (p.cost?.available) return { label: `${p.cost.currency || "MYR"} ${money(p.cost.total)} estimated total`, note: "For these care hours; see the breakdown in details." };
   const fees = p.fees ?? [];
-  const extras = f => ['meal','transport','registration','deposit','annual','late_pickup'].includes(f.kind) || ['one_off','deposit'].includes(f.basis);
-  const primary = fees.filter(f => !extras(f));
+  const primary = fees.filter(f => !feeExtra(f));
   const listed = primary.length ? primary : fees;
   const groups = new Map();
   for (const f of listed) {

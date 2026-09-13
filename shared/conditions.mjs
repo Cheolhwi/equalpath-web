@@ -1,4 +1,5 @@
 import { minutes, timeLabel } from "./request.mjs";
+import { monthlyFeeFrom } from "./result-summary.mjs";
 const result = (id, label, state, reason, source = null, question = null) => ({
   id,
   label,
@@ -389,6 +390,8 @@ export function enquiries(p, r, fit = assess(p, r)) {
 export const priorityValue = (p, sort, date) =>
     sort === "distance"
       ? p.distanceKm
+      : sort === "price"
+        ? monthlyFeeFrom(p)
       : sort === "pickup"
         ? p.transport?.exists === true
           ? 1
@@ -425,14 +428,14 @@ export function suggestProviders(items, request) {
   const relevant = new Set(["admission", "care", ...(request.age !== "" ? ["age"] : []), ...(request.transport === "institution" ? ["transport", "coverage", "pickup"] : [])]);
   const score = p => p.fit.conditions.filter(c => relevant.has(c.id) && c.state === "supported").length;
   // Only suggest centres that can be located on the current result map.
-  const ids = [...items].filter(p => p.location && !p.fit.counts.conflict)
+  const ids = [...items].filter(p => p.location && !p.fit.counts.conflict && (request.sort !== "price" || monthlyFeeFrom(p) != null))
     .sort((a,b) => {
       const sort=request.sort;
-      if (["distance","closing","pickup"].includes(sort)) {
+      if (["distance","price","closing","pickup"].includes(sort)) {
         const x=priorityValue(a,sort,request.date), y=priorityValue(b,sort,request.date);
         if(x==null && y!=null)return 1;
         if(y==null && x!=null)return -1;
-        if(x!=null && y!=null && x!==y)return sort==="distance" ? x-y : y-x;
+        if(x!=null && y!=null && x!==y)return sort==="distance" || sort==="price" ? x-y : y-x;
       }
       return score(b)-score(a) || a.distanceKm-b.distanceKm || a.id.localeCompare(b.id);
     })
@@ -441,7 +444,7 @@ export function suggestProviders(items, request) {
 }
 
 export function bestForPriority(items, sort, date) {
-  const labels={distance:"Nearest option",closing:"Latest care end",pickup:"Offers pickup"};
+  const labels={distance:"Nearest option",price:"Lowest monthly fee",closing:"Latest care end",pickup:"Offers pickup"};
   if (!labels[sort]) return {ids:[],message:"Alphabetical order doesn’t select a best match."};
   const eligible=sortProviders(items.filter(p=>!p.fit?.counts?.conflict && priorityValue(p,sort,date)!=null && (sort!=="pickup" || p.transport?.exists===true)),sort,date);
   if (!eligible.length) return {ids:[],message:"No centre without a known conflict has details for this priority."};

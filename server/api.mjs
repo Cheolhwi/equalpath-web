@@ -14,6 +14,7 @@ import {
   costFor,
   enquiries,
   sortProviders,
+  priorityValue,
   suggestProviders,
   applicableWindows,
 } from "../shared/conditions.mjs";
@@ -212,6 +213,8 @@ function ordering(sort, items, date) {
     explanation: "Centres without known conflicts first; conflicting details go last. Within each group: " + (
       sort === "distance"
         ? "Nearest straight-line distance first; missing coordinates last. This is not a travel-time estimate."
+        : sort === "price"
+          ? "Lowest monthly care fee first, using the starting amount for ranges. Estimated budgets are included and labelled. Other billing periods and missing monthly fees go last; extras are excluded."
         : sort === "closing"
           ? "Later care end time first; missing times last. One-off admission and capacity remain unconfirmed."
           : sort === "pickup"
@@ -220,6 +223,7 @@ function ordering(sort, items, date) {
     available: {
       name: true,
       distance: items.some((p) => p.distanceKm != null),
+      price: items.some((p) => priorityValue(p, 'price', date) != null),
       closing: items.some(
         (p) => applicableWindows(p.businessHours?.windows, date).length,
       ),

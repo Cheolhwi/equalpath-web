@@ -1035,6 +1035,7 @@ export default function App({
                 >
                   {[
                     ["distance", "Nearest first"],
+                    ["price", "Lowest monthly fee"],
                     ["closing", "Later care end time"],
                     ["pickup", "Centres with pickup first"],
                     ["name", "By name"],

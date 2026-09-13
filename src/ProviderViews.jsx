@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
   Bookmark,
   ClipboardList,
@@ -15,10 +15,12 @@ import {
   Star,
   ChevronUp,
   ChevronDown,
+  BadgeCheck,
 } from "lucide-react";
 import { requestCaption, todayKL } from "../shared/request.mjs";
 import { drivingLabel, feeSummary, formatFee } from "../shared/result-summary.mjs";
 import { bestForPriority } from "../shared/conditions.mjs";
+import { registrationBadge } from "../shared/registration.mjs";
 export function SourceLink({ source, children }) {
   if (!source)
     return (
@@ -109,6 +111,24 @@ export function Status({ state, children }) {
     </span>
   );
 }
+export function RegistrationBadge({p}) {
+  const [open,setOpen]=useState(false), id=useId(), badge=registrationBadge(p,todayKL());
+  if (!badge) return null;
+  const Icon=badge.state==='attention'?AlertTriangle:BadgeCheck;
+  return <div className="registration-badge-wrap" onKeyDown={e=>{
+    if(e.key==='Escape' && open){e.stopPropagation();setOpen(false);e.currentTarget.querySelector('button').focus();}
+  }}>
+    <button className={`registration-badge ${badge.state}`} title={`${badge.label} · ${badge.number}`}
+      aria-label={`${badge.label} for ${p.name}`} aria-expanded={open} aria-controls={id} onClick={()=>setOpen(!open)}>
+      <Icon size={19} aria-hidden="true" />
+    </button>
+    {open && <div className="registration-popover" id={id} role="region" aria-label="Registration record">
+      <strong>{badge.label}</strong><span>{badge.authority} · {badge.number}</span>
+      <p>{badge.description}</p>
+      <a href={badge.source.url} target="_blank" rel="noreferrer">View source <ArrowUpRight size={12} /></a>
+    </div>}
+  </div>;
+}
 export function ProviderCard({
   p,
   index,
@@ -127,12 +147,9 @@ export function ProviderCard({
       id={"card-" + p.id}
       data-provider-id={p.id}
     >
-      <button
-        className="provider-main"
-        aria-label={"Select " + p.name}
-        aria-pressed={selected}
-        onClick={onSelect}
-      >
+      <div className="provider-main" onClick={e=>{
+        if(!e.target.closest('button, a, .registration-badge-wrap'))onSelect();
+      }}>
         <div className="row-kicker">
           <span>
             {String(index + 1).padStart(2, "0")} / {p.category}
@@ -143,7 +160,12 @@ export function ProviderCard({
               : "Distance unavailable"}
           </span>
         </div>
-        <h3>{p.name}</h3>
+        <div className="provider-heading">
+          <button className="provider-select" aria-label={"Select " + p.name} aria-pressed={selected} onClick={onSelect}>
+            <h3>{p.name}</h3>
+          </button>
+          <RegistrationBadge p={p} />
+        </div>
         <div className="row-facts">
           <span>Age</span>
           <strong>{p.age?.rangeLabel ?? p.age?.wording ?? "Not listed"}</strong>
@@ -164,7 +186,7 @@ export function ProviderCard({
               : `${p.fit.counts.unknown} ${p.fit.counts.unknown === 1 ? "detail" : "details"} to confirm`}
           </Status>
         </div>
-      </button>
+      </div>
       <div className="row-actions">
         <button
           aria-label={`Save ${p.name}`}
@@ -540,6 +562,7 @@ export function Comparison({
           >
             {[
               ["distance", "Nearest (straight-line)"],
+              ["price", "Lowest monthly fee"],
               ["closing", "Later care end time"],
               ["pickup", "Centres with pickup"],
               ["name", "Centre name"],

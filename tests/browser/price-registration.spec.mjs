@@ -1,0 +1,49 @@
+import {test,expect} from '@playwright/test';
+import {createAPI} from '../../server/api.mjs';
+import {fixtureCatalog} from '../../server/fixtures.mjs';
+import {mkdirSync} from 'node:fs';
+const out=process.env.QA_EVIDENCE_DIR||'.build/price-registration';mkdirSync(out,{recursive:true});
+test('monthly price changes result/map/comparison priority and registration icons reveal their actual sources',async({page})=>{
+  const source={url:'https://example.com/fee-source',label:'Test source',retrievedAt:'2026-09-13'},base=fixtureCatalog.items[0];
+  const items=[['higher',600,'month',true],['budget',400,'month',false],['lowest',300,'month',null],['unknown',1,'unspecified',null],['conflict',5,'month',null]].map(([id,amount,basis,official],i)=>({...structuredClone(base),id,name:`Test ${id}`,mode:'live',location:{lat:3.139+i*.001,lng:101.6869},feeRule:null,
+    fees:[{amount,currency:'MYR',basis,kind:'programme',verification:id==='budget'?'area_estimate':'provider_published',conditions:'Test programme',source}],admission:{...base.admission,value:id!=='conflict'},
+    registration:{...base.registration,authority:official?'JKM':'KPM',number:official===null?null:official?'JKM-TEST':'KPM-TEST',official:official===true,match:'existing_registered_record',source}}));
+  const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(_,rows)=>rows.map(p=>({...p,driving:{state:'available',minutes:8,distanceKm:3}}))});
+  await page.route('**/api',async route=>route.fulfill({json:{ok:true,...await api(route.request().postDataJSON())}}));
+  await page.addInitScript(()=>{
+    localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
+    localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
+  });
+  await page.goto('/#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','higher');
+  await page.getByLabel('Order search results').selectOption('price');
+  await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','lowest');
+  expect(await page.locator('.provider-row').evaluateAll(xs=>xs.map(x=>x.dataset.providerId))).toEqual(['lowest','budget','higher','unknown','conflict']);
+  await expect(page.locator('#card-budget')).toContainText('Estimated MYR 400 / month');
+  expect(await page.locator('.provider-pin.suggested').evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort())).toEqual(['budget','higher','lowest']);
+  await expect(page.locator('.provider-pin')).toHaveCount(5);
+  const conflictPin=page.locator('.provider-pin.conflict');await expect(conflictPin).toHaveCount(1);await expect(conflictPin).toHaveAttribute('data-provider-id','conflict');
+  await expect(conflictPin).toHaveAttribute('aria-description',/don’t match/);
+  expect(await conflictPin.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe(await page.locator('.provider-pin[data-provider-id="unknown"]').evaluate(el=>getComputedStyle(el).backgroundColor));
+  await conflictPin.click();await expect(conflictPin).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('button',{name:'Select Test conflict',exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#card-lowest .registration-badge')).toHaveCount(0);
+  await page.locator('#card-budget .row-facts').last().click();
+  await expect(page.getByRole('button',{name:'Select Test budget',exact:true})).toHaveAttribute('aria-pressed','true');
+  const registered=page.getByRole('button',{name:'Listed in JKM register for Test higher'});await registered.click();
+  await expect(registered.locator('svg')).toHaveAttribute('class',await page.locator('#card-budget .registration-badge svg').getAttribute('class'));
+  await expect(page.getByRole('region',{name:'Registration record'})).toContainText('JKM-TEST');
+  await expect(page.getByRole('region',{name:'Registration record'}).getByRole('link')).toHaveAttribute('href',source.url);
+  await page.keyboard.press('Escape');await expect(registered).toBeFocused();await expect(registered).toHaveAttribute('aria-expanded','false');
+  await page.getByRole('button',{name:'KPM code listed for Test budget'}).click();
+  await expect(page.getByRole('region',{name:'Registration record'})).toContainText('not been independently checked');
+  await page.locator('#card-budget').scrollIntoViewIfNeeded();await page.screenshot({path:out+'/price-badge-desktop.png'});
+  await page.setViewportSize({width:390,height:844});await page.locator('#card-budget').scrollIntoViewIfNeeded();await page.screenshot({path:out+'/price-badge-mobile.png'});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.keyboard.press('Escape');
+  for(const id of ['higher','budget','lowest'])await page.getByRole('button',{name:`Compare Test ${id}`,exact:true}).click();
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/COMPARE/}).click();
+  await page.getByLabel('Comparison priority').selectOption('price');
+  await expect(page.locator('th.comparison-best')).toHaveCount(1);await expect(page.locator('th.comparison-best')).toHaveAttribute('data-provider-id','lowest');
+  await expect(page.locator('.comparison-best-tag')).toHaveText('Lowest monthly fee');
+});

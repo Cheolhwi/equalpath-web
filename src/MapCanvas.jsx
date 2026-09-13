@@ -224,11 +224,13 @@ export default function MapCanvas({
       .filter((p) => p.location)
       .forEach((p, i) => {
         const el = document.createElement("button");
-        el.className = "provider-pin" + (p.suggested ? " suggested" : "") + (p.id === selected ? " selected" : "");
+        const conflict = (p.fit?.counts?.conflict ?? 0) > 0;
+        el.className = "provider-pin" + (conflict ? " conflict" : "") + (p.suggested ? " suggested" : "") + (p.id === selected ? " selected" : "");
         el.textContent = String(
           items.findIndex((x) => x.id === p.id) + 1,
         ).padStart(2, "0");
-        el.title = p.name + (p.suggested ? " · Suggested first" : "");
+        el.title = p.name + (conflict ? " · Some details don’t match" : p.suggested ? " · Suggested first" : "");
+        if (conflict) el.setAttribute("aria-description", "Some details don’t match this request. Select to check.");
         if (p.suggested) {
           const badge = document.createElement("span");
           badge.className = "pin-star"; badge.textContent = "★"; badge.setAttribute("aria-hidden", "true"); el.appendChild(badge);

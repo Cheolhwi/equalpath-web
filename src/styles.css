@@ -628,6 +628,17 @@ select {
   line-height: 1.35;
   margin: 9px 0 14px;
 }
+.provider-heading { display: flex; align-items: flex-start; gap: 7px; }
+.provider-select { flex: 1; min-width: 0; text-align: left; }
+.registration-badge-wrap { position: relative; flex: 0 0 auto; margin-top: 6px; }
+.registration-badge { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; color: var(--accent); border-radius: 50%; }
+.registration-badge:hover, .registration-badge[aria-expanded="true"] { background: #6e7c4c1a; }
+.registration-badge.attention { color: #87601f; }
+.registration-popover { position: absolute; right: 0; top: 34px; z-index: 20; width: min(290px, 72vw); padding: 14px; border: 1px solid var(--rule); background: var(--bg); box-shadow: 0 8px 26px #0002; font-size: 12px; line-height: 1.5; }
+.registration-popover strong, .registration-popover > span { display: block; }
+.registration-popover > span { color: var(--muted); margin-top: 4px; overflow-wrap: anywhere; }
+.registration-popover p { margin: 9px 0; }
+.registration-popover a { display: inline-flex; align-items: center; gap: 4px; text-decoration: underline; text-underline-offset: 3px; }
 .provider-main > p {
   font-size: 11px;
   color: var(--muted);
@@ -1972,4 +1983,7 @@ dialog::backdrop {
 .map-canvas { isolation: isolate; }
 .provider-pin.spread-pin::before { content: ''; position: absolute; left: 50%; top: 50%; width: var(--stem-length); height: 1px; background: var(--accent); transform: rotate(var(--stem-angle)); transform-origin: left center; z-index: -1; pointer-events: none; }
 .provider-pin.suggested:not(.selected) { color: #35412c; }
+.provider-pin.conflict:not(.selected) { background: #dadcd5; border-color: #a4a89c; color: #5c6254; box-shadow: none; z-index: 0; }
+.provider-pin.conflict:not(.selected):hover, .provider-pin.conflict:not(.selected):focus-visible { background: #c3c9b9; border-color: #6e7864; color: #30372a; }
+.provider-pin.conflict.selected { background: #69715f; color: #fff; border-color: #69715f; outline-color: #9da58f50; }
 .pickup-pin { pointer-events: none; }
