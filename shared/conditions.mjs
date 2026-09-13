@@ -21,12 +21,23 @@ export function applicableWindows(windows, date) {
   );
 }
 export function checkAge(age, r) {
+  if (age?.basis === 'type_reference') return result(
+    'age', 'Admission age', 'unknown',
+    `${age.wording} · Type reference. Confirm this branch’s admission ages.`,
+    age.source,
+    r.age === '' ? 'What ages do you accept for temporary care?' : `Do you accept children ${r.age === '0' ? 'under 1 year' : `aged ${r.age}`} for temporary care?`,
+  );
+  if (age?.alternative) return result(
+    'age', 'Admission age', 'unknown',
+    `${age.wording}; another source lists ${age.alternative.wording}. Confirm the applicable age range with this branch.`,
+    age.source, 'Which published age range applies to this temporary visit?',
+  );
   if (r.age === "")
     return result(
       "age",
       "Admission age",
       "unknown",
-      "Age has not been selected.",
+      age ? `${age.wording}. Select the child’s age to check this range.` : "Age has not been selected.",
       age?.source,
       "Does your service accept the child’s age group?",
     );
@@ -186,7 +197,7 @@ export function assess(p, r) {
     end = minutes(r.end),
     exception = (p.dateExceptions ?? []).find((x) => x.date === r.date);
   let state = "unknown",
-    reason = "No care or opening hours are published for this date.",
+    reason = "No care hours are published for this date.",
     careSource = p.businessHours?.source;
   if (exception) {
     reason = `${exception.label ?? exception.displayed_label ?? "Date-specific hours unresolved"}. Confirm temporary care for this date.`;
@@ -195,7 +206,7 @@ export function assess(p, r) {
     state = care.some((w) => end >= w.start && end <= w.end)
       ? "supported"
       : "conflict";
-    reason = `${hasCareSchedule ? "Published care hours" : "Care hours (published opening hours)"}: ${care.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")}. Requested final collection: ${r.end}.`;
+    reason = `Published care hours: ${care.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")}. Requested final collection: ${r.end}.`;
     careSource = care[0].source;
   } else if (!hasCareSchedule && (p.businessHours?.closedDays ?? []).includes(dayFor(r.date))) {
     state = "conflict";
@@ -262,6 +273,29 @@ export function businessHoursFor(p, date) {
     : (p.businessHours?.closedDays ?? []).includes(dayFor(date))
       ? "Listed closed"
       : p.businessHours?.windows?.length ? "Not listed for this day" : "Not published";
+}
+export function careEndTimeFor(p, date) {
+  return careEndScheduleFor(p, date).label;
+}
+export function careEndScheduleFor(p, date) {
+  const exception = (p.dateExceptions ?? []).find(x=>x.date===date);
+  if (exception) return {end:null,label:'Date-specific hours need confirmation',source:exception.source ?? p.businessHours?.source};
+  const specific = (p.careWindows ?? []).length > 0;
+  const windows = applicableWindows(specific ? p.careWindows : p.businessHours?.windows, date);
+  if (!specific && hoursDisagree(p,date)) return {end:null,label:'Sources differ · check details',source:p.businessHours?.source};
+  if (!windows.length) return {end:null,label:specific ? 'Not listed for this day' : businessHoursFor(p,date),source:p.businessHours?.source};
+  const windowEnd = Math.max(...windows.map(w=>w.end));
+  const end = Math.min(windowEnd,p.lateRule?.latestEnd ?? Infinity);
+  return {end,label:timeLabel(end),source:end<windowEnd ? p.lateRule.source : windows.find(w=>w.end===windowEnd)?.source ?? p.businessHours?.source};
+}
+export function weeklyCareEndTimes(p, date) {
+  const start = new Date(date+'T12:00:00Z');
+  start.setUTCDate(start.getUTCDate() - (start.getUTCDay()+6)%7);
+  return ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map((day,i)=>{
+    const d=new Date(start);d.setUTCDate(d.getUTCDate()+i);
+    const selectedDate=d.toISOString().slice(0,10);
+    return {day,date:selectedDate,...careEndScheduleFor(p,selectedDate)};
+  });
 }
 export function hoursDisagree(p,date){
   const a=p.businessHours?.alternative;if(!a)return false;
@@ -353,12 +387,7 @@ export function sortProviders(items, sort, date) {
             ? 0
             : null
         : sort === "closing"
-          ? hoursDisagree(p,date) ? null : Math.max(
-              ...applicableWindows(p.businessHours?.windows, date).map(
-                (w) => w.end,
-              ),
-              -Infinity,
-            )
+          ? careEndScheduleFor(p,date).end
           : p.name.toLocaleLowerCase("en");
   return [...items].sort((a, b) => {
     let x = value(a),

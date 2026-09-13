@@ -1,11 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {parsePublishedHours,translateMalayHours} from '../shared/published-hours.mjs';
-import {assess,businessHoursFor} from '../shared/conditions.mjs';
+import {assess,businessHoursFor,careEndTimeFor,weeklyCareEndTimes,sortProviders} from '../shared/conditions.mjs';
 import {fixtureProviders,demoPickup} from '../server/fixtures.mjs';
 const p={...fixtureProviders[0],careWindows:[],lateRule:null};
 const r={pickup:demoPickup,date:'2026-09-14',deadline:'16:00',end:'19:00',age:'4',transport:'self'};
 const care=(provider,request=r)=>assess(provider,request).conditions.find(c=>c.id==='care');
+test('care-end display and sorting use the same specific schedule, exceptions and late rules as the check',()=>{
+ assert.equal(careEndTimeFor(p,r.date),'19:00');
+ assert.equal(careEndTimeFor({...p,careWindows:[{days:['MON'],start:480,end:1080}]},r.date),'18:00');
+ assert.equal(careEndTimeFor({...p,lateRule:{latestEnd:1080}},r.date),'18:00');
+ const exception={...p,id:'exception',dateExceptions:[{date:r.date,label:'Holiday hours unresolved'}]};
+ assert.match(careEndTimeFor(exception,r.date),/confirmation/);
+ assert.equal(sortProviders([exception,p],'closing',r.date)[0].id,p.id);
+ const weekly=weeklyCareEndTimes(exception,r.date);
+ assert.equal(weekly[0].date,'2026-09-14');assert.equal(weekly[0].end,null);assert.match(weekly[0].label,/confirmation/);
+ const conflicting={...p,businessHours:{...p.businessHours,alternative:{windows:[{days:['MON'],start:480,end:1200}],closedDays:[]}}};
+ assert.equal(weeklyCareEndTimes(conflicting,r.date)[0].label,'Sources differ · check details');
+});
 test('opening-hour closing boundary, closed day and missing day are distinct',()=>{
  assert.equal(care(p).state,'supported');
  assert.equal(care(p,{...r,end:'19:01'}).state,'conflict');

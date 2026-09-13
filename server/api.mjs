@@ -6,6 +6,9 @@ import {
 import {
   assess,
   businessHoursFor,
+  careEndTimeFor,
+  careEndScheduleFor,
+  weeklyCareEndTimes,
   costFor,
   enquiries,
   sortProviders,
@@ -106,6 +109,9 @@ export function createAPI({ store = createStore() } = {}) {
         cost: costFor(p, request),
         enquiries: enquiries(p, request, fit),
         businessHoursLabel: businessHoursFor(p, request.date),
+        careEndTimeLabel: careEndTimeFor(p, request.date),
+        careEndTimeSource: careEndScheduleFor(p, request.date).source,
+        weeklyCareEndTimes: weeklyCareEndTimes(p, request.date),
         businessHoursDay: new Intl.DateTimeFormat("en", {weekday:"long", timeZone:"UTC"}).format(new Date(request.date + "T12:00:00Z")),
       };
     };
@@ -179,7 +185,7 @@ function ordering(sort, items, date) {
       sort === "distance"
         ? "Nearest straight-line distance first; missing coordinates last. This is not a travel-time estimate."
         : sort === "closing"
-          ? "Later published business closing first; missing hours last. Opening hours check care timing; one-off admission and capacity remain unconfirmed."
+          ? "Later care end time first; missing times last. One-off admission and capacity remain unconfirmed."
           : sort === "pickup"
             ? "Published institutional transport first; unknown transport last. Coverage and seats are checked separately."
             : "Names in alphabetical order, with a stable branch identifier for ties.",

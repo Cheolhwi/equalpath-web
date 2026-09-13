@@ -868,7 +868,7 @@ export default function App({
                 >
                   {[
                     ["distance", "Nearest first"],
-                    ["closing", "Later business closing"],
+                    ["closing", "Later care end time"],
                     ["pickup", "Published pickup first"],
                     ["name", "By name"],
                   ].map(([id, label]) => (
@@ -1343,7 +1343,7 @@ export default function App({
                 own source links and retrieval dates.
               </p>
               <p>
-                Published opening hours are used for the care end check.
+                Published care end times are used for this check.
                 Specific care schedules and date exceptions take precedence.
                 Transport coverage and actual acceptance are checked separately.
                 No route duration or live vacancy is inferred.

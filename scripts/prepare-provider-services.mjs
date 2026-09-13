@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {assessMatch,normalise} from '../../webapp-data/scripts/google-crawler/core.mjs';
 import {whatsappLink} from '../shared/whatsapp.mjs';
 import {parsePublishedHours} from '../shared/published-hours.mjs';
+import {parsePublishedAge} from '../shared/published-ages.mjs';
 import {applyHoursEvidence} from '../server/hours-overlay.mjs';
 import {applyServicesEvidence} from '../server/services-overlay.mjs';
 import {buildCatalog} from '../server/providers.mjs';
@@ -35,7 +36,7 @@ for(const row of crawl.rows.filter(r=>r.kind==='listing'&&r.status==='observed')
  const h=parsePublishedHours(row.fields?.['Operating Hours']);
  const windows=h.windows.flatMap(w=>w.days.map(weekday=>({weekday,start_minute:w.start,end_minute:w.end})));
  const wa=[...new Set((row.whatsapp??[]).map(w=>whatsappLink(w)?.href).filter(Boolean))];
- if(!wa.length&&!t&&!windows.length&&!row.phone)continue;
+ if(!wa.length&&!t&&!windows.length&&!row.phone&&!row.fields?.['Student Age Group'])continue;
  const record={provider_id:p.id,base_release:baseRelease,provider_name:p.display_name,match,source_url:row.source_url,source_kind:'kiddy123_directory',observed_on:row.retrieved_at,sha256:row.sha256,whatsapp:wa,phone:row.phone||null,
    transport:t?{published,wording:`Directory states: ${t}. ${published===false?'Confirm alternatives if you need institutional pickup.':'Route, collection time and a place on the vehicle need confirmation.'}`} : null,
    hours:windows.length?{weekly_windows:windows,closed_weekdays:h.closedDays,notes:row.fields['Operating Hours']}:null};
@@ -63,6 +64,16 @@ if(existsSync(resolve(out,'reviewed-services.json'))){
   const i=records.findIndex(r=>r.provider_id===reviewed.provider_id),record={...reviewed,provider_name:byId.get(reviewed.provider_id).display_name};
   if(i>=0)records[i]=record;else records.push(record);
  }
+}
+// Attach ages only from the exact branch page already matched above.
+// Generic centre-category descriptions are not branch admission facts.
+const observedPages=new Map(crawl.rows.filter(r=>r.kind==='listing'&&r.status==='observed').map(r=>[r.source_url,r]));
+for(const record of records){
+ const text=observedPages.get(record.source_url)?.fields?.['Student Age Group'];
+ if(!text)continue;
+ const age=parsePublishedAge(text);
+ if(age)record.age={raw:text,min_months:age.min,max_months:age.max};
+ else held.push({provider_id:record.provider_id,source_url:record.source_url,reason:'admission_age_unparsed',text});
 }
 records.sort((a,b)=>a.provider_id.localeCompare(b.provider_id));
 const hash=createHash('sha256').update(JSON.stringify(records)).digest('hex'),release='services_'+hash.slice(0,24);

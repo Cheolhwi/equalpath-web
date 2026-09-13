@@ -39,6 +39,7 @@ for (const f of [
   "shared/request.mjs",
   "shared/conditions.mjs",
   "shared/published-hours.mjs",
+  "shared/published-ages.mjs",
   "shared/whatsapp.mjs",
   "server/data/service-boundaries.json",
   "server/data/provenance-index.json",

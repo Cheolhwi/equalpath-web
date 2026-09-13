@@ -3,11 +3,12 @@ import { createHash } from "node:crypto";
 import { providerRegion } from "./geography.mjs";
 import { parsePublishedHours } from "../shared/published-hours.mjs";
 import { whatsappLink } from "../shared/whatsapp.mjs";
+import { parsePublishedAge, referenceAgeFor, ageRangeLabel } from "../shared/published-ages.mjs";
 const index = JSON.parse(
   readFileSync(new URL("./data/provenance-index.json", import.meta.url)),
 );
 const reviewedFees = JSON.parse(readFileSync(new URL('./data/reviewed-fees.json', import.meta.url)));
-export const supplementVersion = "service-review-2026-09-13-v5";
+export const supplementVersion = "service-review-2026-09-13-v6";
 export function safeURL(value) {
   try {
     const u = new URL(value);
@@ -97,8 +98,9 @@ export function normalizeProvider(raw, release) {
   const ageSource = source(
     "Published admission ages",
     raw.age_source?.source_url ?? raw.admission?.evidence_urls?.[0],
-    directory.retrievedAt,
+    raw.age_source?.retrieved_at ?? directory.retrievedAt,
   );
+  const translatedAge = parsePublishedAge(raw.age_source?.raw);
   const translatedHours = parsePublishedHours(h.notes);
   const p = {
     id: raw.id,
@@ -148,14 +150,17 @@ export function normalizeProvider(raw, release) {
     website: safeURL(raw.website),
     sourcePage: safeURL(raw.website) ?? directory.url ?? regSource.url,
     age:
-      raw.age_min_months != null
+      raw.age_min_months != null && ageSource.url
         ? {
             min: raw.age_min_months,
             max: raw.age_max_months,
-            endpointKnown: false,
+            endpointKnown: translatedAge?.endpointKnown ?? false,
+            maxInclusive: translatedAge?.maxInclusive,
             wording:
-              raw.age_source?.raw ??
+              translatedAge?.wording ?? raw.age_source?.raw ??
               `${raw.age_min_months}–${raw.age_max_months} months (published range; endpoint convention unconfirmed)`,
+            originalWording: raw.age_source?.raw ?? null,
+            basis: 'published',
             source: ageSource,
           }
         : null,
@@ -322,6 +327,20 @@ export function normalizeProvider(raw, release) {
     p.businessHours.closedDays.push(...alternative.closedDays.filter(d=>!known.has(d)));
     p.businessHours.alternative=alternative;
     p.sources.push(s);
+  }
+  if (!p.age) p.age = referenceAgeFor(p.category);
+  if (p.age) {
+    p.age.basis ??= 'published';
+    p.age.rangeLabel = ageRangeLabel(p.age);
+    if (raw.additional_admission_age) {
+      const extra = raw.additional_admission_age;
+      const parsed = parsePublishedAge(extra.raw);
+      if (parsed && (parsed.min !== p.age.min || parsed.max !== p.age.max)) {
+        p.age.alternative = {...parsed, source: source('Additional published admission ages', extra.source_url, extra.retrieved_at)};
+      }
+    }
+    p.sources.push(p.age.source, p.age.alternative?.source);
+    p.sources = [...new Map(p.sources.filter(s=>s?.url).map(s=>[s.url,s])).values()];
   }
   return { provider: p };
 }

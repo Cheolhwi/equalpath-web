@@ -13,7 +13,7 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { requestCaption, todayKL, timeLabel } from "../shared/request.mjs";
+import { requestCaption, todayKL } from "../shared/request.mjs";
 export function SourceLink({ source, children }) {
   if (!source)
     return (
@@ -106,9 +106,13 @@ export function ProviderCard({
           {p.district} · {p.region}
         </p>
         <div className="row-facts">
-          <span>{p.businessHoursDay ? `Hours · ${p.businessHoursDay}` : "Business hours"}</span>
-          <strong>{p.businessHoursLabel}</strong>
+          <span>{p.businessHoursDay ? `Care end time · ${p.businessHoursDay}` : "Care end time"}</span>
+          <strong>{p.careEndTimeLabel ?? p.businessHoursLabel}</strong>
         </div>
+        {p.age && <div className="row-facts">
+          <span>{p.age.basis === 'type_reference' ? 'Age · type reference' : 'Admission age'}</span>
+          <strong>{p.age.rangeLabel ?? p.age.wording}</strong>
+        </div>}
         <div className="row-status">
           <Status state={p.fit.counts.conflict ? "conflict" : "unknown"}>
             {p.fit.counts.conflict
@@ -304,24 +308,22 @@ export function Details({ p, onPrepare, onCompare, compared }) {
               </div>
               <p>{c.reason}</p>
               <SourceLink source={c.source} />
+              {c.id==='age'&&p.age?.alternative&&<SourceLink source={p.age.alternative.source}/>}
             </div>
           ))}
         </div>
         <div className="business-note">
-          <strong>{p.businessHoursDay ?? "Opening hours"}: {p.businessHoursLabel}</strong>
+          <strong>Care end time{p.businessHoursDay ? ` · ${p.businessHoursDay}` : ""}: {p.careEndTimeLabel ?? p.businessHoursLabel}</strong>
           <p>
-            Opening hours are used to check your required care end time.
+            Published care end time for your selected day.
           </p>
-          <SourceLink source={p.businessHours.source} />
-          {p.businessHours.alternative&&<div className="notice"><p>Additional published hours: {p.businessHours.alternative.notes}</p><SourceLink source={p.businessHours.alternative.source}/></div>}
+          <SourceLink source={p.careEndTimeSource ?? p.businessHours.source}>Care schedule source</SourceLink>
+          {p.businessHours.alternative&&<div className="notice"><p>Additional care schedule: {p.businessHours.alternative.notes}</p><SourceLink source={p.businessHours.alternative.source}>Additional care schedule source</SourceLink></div>}
           <details className="weekly-hours">
-            <summary>View weekly opening hours</summary>
+            <summary>View weekly care end times</summary>
             <dl>
-              {['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map((name,i) => {
-                const day=['MON','TUE','WED','THU','FRI','SAT','SUN'][i];
-                const windows=(p.businessHours?.windows ?? []).filter(w=>w.days.includes(day));
-                const label=windows.length ? windows.map(w=>`${timeLabel(w.start)}–${timeLabel(w.end)}`).join(', ') : (p.businessHours?.closedDays ?? []).includes(day) ? 'Listed closed' : 'Not published';
-                return <div key={day} className={name===p.businessHoursDay?'requested-day':''}><dt>{name}{name===p.businessHoursDay?' · requested':''}</dt><dd>{label}{windows[0]?.source?.url&&windows[0].source.url!==p.businessHours.source?.url&&<SourceLink source={windows[0].source}/>}</dd></div>;
+              {(p.weeklyCareEndTimes ?? []).map(({day,label,source}) => {
+                return <div key={day} className={day===p.businessHoursDay?'requested-day':''}><dt>{day}{day===p.businessHoursDay?' · requested':''}</dt><dd>{label}{source?.url&&source.url!==p.businessHours.source?.url&&<SourceLink source={source}/>}</dd></div>;
               })}
             </dl>
           </details>
@@ -397,7 +399,7 @@ export function Comparison({
           >
             {[
               ["distance", "Nearest (straight-line)"],
-              ["closing", "Later business closing"],
+              ["closing", "Later care end time"],
               ["pickup", "Published institutional pickup"],
               ["name", "Institution name"],
             ].map(([id, label]) => (
@@ -466,10 +468,10 @@ export function Comparison({
               ))}
             </tr>
             <tr>
-              <th>Business hours</th>
+              <th>Care end time</th>
               {items.map((p) => (
                 <td key={p.id}>
-                  {p.businessHoursLabel}
+                  {p.careEndTimeLabel ?? p.businessHoursLabel}
                   <p>Used for the care end check.</p>
                 </td>
               ))}
