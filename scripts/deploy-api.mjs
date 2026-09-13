@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
-import { readFileSync, writeFileSync, mkdirSync, cpSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 const root = resolve(import.meta.dirname, ".."),
   backend = resolve(root, "../appwrite-backend"),
   cli = resolve(backend, "node_modules/.bin/appwrite"),
@@ -23,6 +24,7 @@ function run(args, missing = false) {
   return JSON.parse(r.stdout.slice(r.stdout.indexOf("{")));
 }
 const path = resolve(root, ".build/function");
+rmSync(path, { recursive: true, force: true });
 mkdirSync(path, { recursive: true });
 for (const d of ["server", "shared"])
   mkdirSync(resolve(path, d), { recursive: true });
@@ -41,6 +43,7 @@ for (const f of [
   "server/fees-overlay.mjs",
   "shared/request.mjs",
   "shared/conditions.mjs",
+  "shared/result-summary.mjs",
   "shared/published-hours.mjs",
   "shared/published-ages.mjs",
   "shared/whatsapp.mjs",
@@ -59,6 +62,9 @@ writeFileSync(
     type: "module",
   }),
 );
+// Import the isolated package before any remote mutation: local source files
+// must not mask a missing runtime dependency in the uploaded function.
+await import(pathToFileURL(resolve(path, "server/function.mjs")).href);
 if (!process.argv.includes("--deploy")) {
   console.log(
     JSON.stringify({

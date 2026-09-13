@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4179",
     "test": "node --test tests/*.test.mjs",
-    "release": "npm test && npm run build && node scripts/check-build.mjs",
+    "release": "npm test && node scripts/deploy-api.mjs && npm run build && node scripts/check-build.mjs",
     "test:browser": "playwright test"
   },
   "dependencies": {
