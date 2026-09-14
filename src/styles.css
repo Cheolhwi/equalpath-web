@@ -891,7 +891,10 @@ select {
   color: var(--muted);
   margin: 0 0 13px;
 }
-.map-preview > div {
+.map-preview-compact {
+  display: none;
+}
+.map-preview-actions {
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -899,7 +902,7 @@ select {
   border-top: 1px solid var(--rule);
   padding-top: 8px;
 }
-.map-preview button {
+.map-preview-actions button {
   display: flex;
   align-items: center;
   font-size: 10px;
@@ -1556,14 +1559,45 @@ dialog::backdrop {
     font-size: 8px;
   }
   .map-preview {
-    left: 18px;
-    right: 18px;
+    left: 14px;
+    right: 14px;
     width: auto;
-    bottom: 106px;
-    padding: 15px;
+    bottom: 58px;
+    padding: 0;
   }
-  .map-preview h3 {
+  .map-preview.has-compare {
+    bottom: 106px;
+  }
+  .map-preview-expanded {
+    display: none;
+  }
+  .map-preview-compact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 17px;
+    gap: 4px 10px;
+    width: 100%;
+    padding: 12px 14px;
+    text-align: left;
+  }
+  .map-preview-compact strong {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
     font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 3px;
+  }
+  .map-preview-compact svg {
+    margin-top: 2px;
+  }
+  .map-preview-compact > span {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--muted);
+    overflow-wrap: anywhere;
   }
   .compare-tray {
     bottom: 73px;

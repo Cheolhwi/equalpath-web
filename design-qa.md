@@ -1,5 +1,13 @@
 # Landing page and map entrance QA
 
+## Compact mobile map preview (2026-09-15)
+
+The selected-centre preview on screens up to 760 px now shows only its name, driving time and fee. The whole card opens the existing details/request flow. Names use two lines at most; fee periods and estimate labels remain intact. The smaller padding and 15/12 px text leave more map visible, with separate clearance when the comparison tray is present. Desktop content and query behavior are unchanged.
+
+- Local Chrome checks cover 393 and 320 px widths with a long name and an estimated monthly fee. The card stays below 140 px high and under one quarter of the tested map height, stays inside the viewport, and clears attribution and the comparison tray. Opening it reaches the correct centre. Switching viewport/map panes adds no searches.
+- Visually inspected desktop, both mobile widths and the mobile comparison state in `.build/mobile-preview-qa/preview-*.png`. The first test run exposed an incorrect test locator for the existing provider-specific Compare accessible name; that locator was corrected and the focused case passed. The other 12 map/discovery/result browser cases also passed.
+- All 139 unit checks, isolated function packaging dry run, production build and asset validation passed. Source digest: `9bb8166b168bee306882a174a193e6f37996740b57954ee20f301cd63cb144ad`. No backend/data changes; public publication is checked separately.
+
 ## Main dialog closing motion (2026-09-14)
 
 Shared main dialogs now fade out and move down 12 px over 360 ms, while their native backdrop fades away. DialogPresence retains the last rendered content until animation completion, with a 440 ms fallback for cancelled animations. Closing cancels pending dialog updates immediately; the retained content is inert, and the native modal remains in the top layer until dismissal completes. Trigger focus returns without scrolling. Rapid dismissal captures the current entrance frame instead of flashing to full opacity. Reduced motion and tutorial handoffs remain immediate.

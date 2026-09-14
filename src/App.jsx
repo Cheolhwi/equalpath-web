@@ -1205,20 +1205,32 @@ export default function App({
           introReduced={introReduced}
         />
         {active && !choosing && (
-          <div className="map-preview">
-            <span className="eyebrow">SELECTED CENTRE</span>
-            <h3>{active.name}</h3>
-            <p>
-              {active.address || `${active.district} · ${active.region}`}
-            </p>
-            {active.fit && <p>{drivingLabel(active.driving)} · Fees: {feeSummary(active).label}</p>}
-            <div>
-              {active.fit ? <Status
-                state={active.fit.counts.conflict ? "conflict" : "unknown"}
-              /> : null}
-              <button onClick={() => openDetails(active)}>
-                {active.fit ? "Check conditions" : "Check this centre"} <ArrowUpRight size={18} />
-              </button>
+          <div className={`map-preview${compareIds.length ? " has-compare" : ""}`}>
+            <button
+              className="map-preview-compact"
+              aria-label={`View details for ${active.name}`}
+              onClick={() => openDetails(active)}
+            >
+              <strong>{active.name}</strong>
+              <ArrowUpRight size={17} aria-hidden="true" />
+              <span>{drivingLabel(active.driving)}</span>
+              <span>Fee: {feeSummary(active).label}</span>
+            </button>
+            <div className="map-preview-expanded">
+              <span className="eyebrow">SELECTED CENTRE</span>
+              <h3>{active.name}</h3>
+              <p>
+                {active.address || `${active.district} · ${active.region}`}
+              </p>
+              {active.fit && <p>{drivingLabel(active.driving)} · Fees: {feeSummary(active).label}</p>}
+              <div className="map-preview-actions">
+                {active.fit ? <Status
+                  state={active.fit.counts.conflict ? "conflict" : "unknown"}
+                /> : null}
+                <button onClick={() => openDetails(active)}>
+                  {active.fit ? "Check conditions" : "Check this centre"} <ArrowUpRight size={18} />
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -95,6 +95,47 @@ test("route outage keeps results and published prices, without fake drive estima
   await expect(page.locator(".provider-row").first().locator(".row-kicker > span").last()).toHaveText("Distance unavailable");
   await expect(page.locator(".provider-row").first()).not.toContainText("0 min");
 });
+test("mobile map previews leave room for the map and open the selected centre", async ({page}) => {
+  const provider = {
+    ...fixtureCatalog.items[0], id: "demo-compact", name: "Demo · Little Garden Childcare Taman Seri Sentosa Learning House",
+    feeRule: null, fees: [{ min: 500, max: 800, currency: "MYR", basis: "month", verification: "area_estimate" }],
+  };
+  const calls = []; await setup(page, calls, true, false, [provider]); await search(page);
+  const pin = page.locator(`.provider-pin[data-provider-id="${provider.id}"]`);
+  await pin.click();
+  const preview = page.locator(".map-preview"), compact = page.locator(".map-preview-compact");
+  await expect(compact).toBeHidden();
+  await expect(preview.getByText(provider.address, {exact:true})).toBeVisible();
+  await page.screenshot({path:dir+"/preview-desktop.png"});
+  await page.setViewportSize({width:393,height:852});
+  await page.getByRole("button", {name:"Map",exact:true}).click();
+  const searches = calls.filter(c=>["nearby","search"].includes(c.action)).length;
+  for (const width of [393, 320]) {
+    await page.setViewportSize({width,height:740});
+    await expect(compact).toBeVisible();
+    await expect(compact).toHaveAccessibleName(`View details for ${provider.name}`);
+    await expect(compact).toContainText("About 8 min by car");
+    await expect(compact).toContainText("Fee: Estimated MYR 500–800 / month");
+    await expect(preview.locator(".map-preview-expanded")).toBeHidden();
+    const box = await preview.boundingBox(), map = await page.locator(".map-wrap").boundingBox();
+    expect(box.height).toBeLessThan(140);
+    expect(box.height / map.height).toBeLessThan(.25);
+    expect(box.x).toBeGreaterThanOrEqual(0); expect(box.x+box.width).toBeLessThanOrEqual(width);
+    expect(box.y+box.height).toBeLessThan((await page.locator(".map-bottom").boundingBox()).y);
+    await page.screenshot({path:`${dir}/preview-mobile-${width}.png`});
+  }
+  expect(calls.filter(c=>["nearby","search"].includes(c.action))).toHaveLength(searches);
+  await compact.click();
+  const dialog = page.getByRole("dialog"); await expect(dialog).toBeVisible();
+  await expect(dialog).toContainText(provider.name);
+  await dialog.getByRole("button", {name:"Close dialog"}).click();
+  await page.getByRole("button", {name:"Search & results",exact:true}).click();
+  await page.locator(`.provider-row[data-provider-id="${provider.id}"]`).getByRole("button", {name:`Compare ${provider.name}`,exact:true}).click();
+  await page.getByRole("button", {name:"Map",exact:true}).click();
+  const box = await preview.boundingBox();
+  expect(box.y+box.height).toBeLessThan((await page.locator(".compare-tray").boundingBox()).y);
+  await page.screenshot({path:dir+"/preview-mobile-compare.png"});
+});
 test("co-located suggested centres stay distinct and individually selectable on the mobile map",async({page})=>{
   await page.setViewportSize({width:390,height:844});await setup(page,[],true,true);await search(page);
   await page.getByRole("button",{name:"Map",exact:true}).click();
