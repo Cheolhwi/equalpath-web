@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import MapCanvas from "./MapCanvas.jsx";
 import Dialog from "./Dialog.jsx";
+import DialogPresence from "./DialogPresence.jsx";
 import SelectMenu, { SORT_OPTIONS } from "./SelectMenu.jsx";
 import TimeInput from "./TimeInput.jsx";
 import {
@@ -1260,6 +1261,7 @@ export default function App({
           {toast}
         </div>
       )}
+      <DialogPresence immediate={reduced || introReduced || tourOpen}>
       {dialog && (
         <Dialog
           tourBehind={tourOpen}
@@ -1657,6 +1659,7 @@ export default function App({
           )}
         </Dialog>
       )}
+      </DialogPresence>
       {tourOpen && <GettingStarted onClose={finishTour} onStep={showTourStep} reduced={reduced || introReduced} />}
     </main>
   );

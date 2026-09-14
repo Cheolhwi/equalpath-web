@@ -1,4 +1,4 @@
-import { useEffect, useRef, useId } from "react";
+import { useEffect, useLayoutEffect, useRef, useId } from "react";
 import { X } from "lucide-react";
 export default function Dialog({
   title,
@@ -9,6 +9,9 @@ export default function Dialog({
   tourBehind = false,
   className = "",
   titleAccessory,
+  closing = false,
+  exitDuration,
+  onExited,
 }) {
   const ref = useRef(null),
     titleId = useId();
@@ -17,25 +20,40 @@ export default function Dialog({
     const dialog = ref.current;
     if (dialog.open) dialog.close();
     if (tourBehind) dialog.show(); else dialog.showModal();
-    return () => { dialog.close(); if (!tourBehind) previous?.focus?.(); };
+    return () => { dialog.close(); if (!tourBehind && previous?.isConnected) previous.focus?.({ preventScroll: true }); };
   }, [tourBehind]);
   useEffect(() => {
     if (ref.current) ref.current.scrollTop = 0;
   }, [title, kicker]);
+  useLayoutEffect(() => {
+    const dialog = ref.current;
+    if (!closing) { delete dialog.dataset.exitReady; return; }
+    // A quick dismissal starts from the current entrance frame, without flashing opaque.
+    const style = getComputedStyle(dialog);
+    dialog.style.setProperty("--dialog-exit-opacity", style.opacity);
+    dialog.style.setProperty("--dialog-exit-transform", style.transform);
+    dialog.style.setProperty("--dialog-exit-backdrop", getComputedStyle(dialog, "::backdrop").opacity);
+    dialog.dataset.exitReady = "true";
+  }, [closing]);
   return (
     <dialog
       aria-labelledby={titleId}
       ref={ref}
+      data-closing={closing || undefined}
+      style={{ "--dialog-exit-duration": `${exitDuration}ms` }}
       className={`${wide ? "wide" : ""} ${tourBehind ? "tour-behind" : ""} ${className}`}
       onCancel={(e) => {
         e.preventDefault();
-        onClose();
+        if (!closing) onClose();
       }}
       onClick={(e) => {
-        if (e.target === ref.current) onClose();
+        if (!closing && e.target === ref.current) onClose();
+      }}
+      onAnimationEnd={(e) => {
+        if (closing && e.target === ref.current && e.animationName === "care-surface-disappear") onExited?.();
       }}
     >
-      <div className="dialog-content">
+      <div className="dialog-content" inert={closing || undefined}>
         <div className="dialog-top">
           <span>{kicker}</span>
           <button onClick={onClose} aria-label="Close dialog">

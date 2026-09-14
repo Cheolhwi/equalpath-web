@@ -105,3 +105,67 @@ test("touch screens retain native interaction and reduced motion leaves all card
     await dialog.getByRole("button", { name: "Close dialog" }).click();
   } finally { await context.close(); }
 });
+
+test("dialogs fade out with their backdrop before removal for every dismissal route", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const calls = await start(page);
+  await page.clock.install();
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  const saved = page.locator(".app-header nav button").filter({ hasText: "SAVED" });
+  const dialog = page.locator("dialog");
+  for (const method of ["close", "escape", "backdrop", "return"]) {
+    if (method === "backdrop") await page.setViewportSize({ width: 390, height: 844 });
+    await saved.click();
+    await expect(dialog).toBeVisible();
+    await page.evaluate(() => document.getAnimations().filter(a => a.animationName?.endsWith("appear")).forEach(a => a.finish()));
+    if (method === "close") await dialog.getByRole("button", { name: "Close dialog" }).click();
+    if (method === "escape") await page.keyboard.press("Escape");
+    if (method === "backdrop") await page.mouse.click(2, 2);
+    if (method === "return") await dialog.getByRole("button", { name: "Find childcare", exact: true }).click();
+    await expect(dialog).toHaveAttribute("data-closing", "true");
+    const sample = await dialog.evaluate(el => {
+      for (const a of document.getAnimations().filter(a => a.animationName?.endsWith("disappear"))) {
+        a.pause(); a.currentTime = Number(a.effect.getTiming().duration) / 2;
+      }
+      return { opacity: Number(getComputedStyle(el).opacity), backdrop: Number(getComputedStyle(el, "::backdrop").opacity), open: el.open, inert: el.querySelector(".dialog-content").inert };
+    });
+    expect(sample.open).toBe(true); expect(sample.inert).toBe(true);
+    expect(sample.opacity).toBeGreaterThan(.1); expect(sample.opacity).toBeLessThan(.9);
+    expect(sample.backdrop).toBeGreaterThan(.1); expect(sample.backdrop).toBeLessThan(.9);
+    if (["close", "backdrop"].includes(method)) await page.screenshot({ path: `${out}/dialog-exit-${method}.png` });
+    // Repeated dismissal must not release the modal or activate anything behind it early.
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(1);
+    if (method === "return") {
+      // Even a cancelled CSS animation must not leave an invisible modal behind.
+      await page.clock.runFor(500);
+    } else {
+      await page.evaluate(() => document.getAnimations().filter(a => a.animationName?.endsWith("disappear")).forEach(a => a.finish()));
+      await page.clock.runFor(32);
+    }
+    await expect(dialog).toHaveCount(0);
+    await expect(saved).toBeFocused();
+  }
+  expect(calls.filter(x => x === "search")).toHaveLength(0);
+});
+
+test("quick dismissal does not flash opaque, and reduced motion closes immediately", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await start(page);
+  await page.getByRole("button", { name: /03.*SAVED/ }).click();
+  const dialog = page.locator("dialog");
+  const enteringOpacity = await dialog.evaluate(el => {
+    const a = el.getAnimations().find(a => a.animationName === "care-surface-appear");
+    a.pause(); a.currentTime = 60;
+    return Number(getComputedStyle(el).opacity);
+  });
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveAttribute("data-closing", "true");
+  expect(await dialog.evaluate(el => Number(el.style.getPropertyValue("--dialog-exit-opacity")))).toBeCloseTo(enteringOpacity, 3);
+  await expect(dialog).toHaveCount(0);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.getByRole("button", { name: /03.*SAVED/ }).click();
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  expect(await dialog.count()).toBe(0);
+});

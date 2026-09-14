@@ -10,6 +10,20 @@
 .equalpath dialog[open]:not(.tour-dialog)::backdrop {
   animation: care-backdrop-appear 300ms ease-out;
 }
+@keyframes care-surface-disappear {
+  from { opacity: var(--dialog-exit-opacity, 1); transform: var(--dialog-exit-transform, none); }
+  to { opacity: 0; transform: translateY(12px); }
+}
+@keyframes care-backdrop-disappear {
+  from { opacity: var(--dialog-exit-backdrop, 1); }
+  to { opacity: 0; }
+}
+.equalpath dialog[open][data-closing="true"][data-exit-ready="true"] {
+  animation: care-surface-disappear var(--dialog-exit-duration, 360ms) cubic-bezier(.4, 0, .6, 1) forwards;
+}
+.equalpath dialog[open][data-closing="true"][data-exit-ready="true"]::backdrop {
+  animation: care-backdrop-disappear var(--dialog-exit-duration, 360ms) ease-in-out forwards;
+}
 .provider-row[data-reveal="waiting"] { opacity: 0; }
 .provider-row[data-reveal="visible"] {
   animation: care-surface-appear 480ms cubic-bezier(.22, .61, .36, 1) backwards;

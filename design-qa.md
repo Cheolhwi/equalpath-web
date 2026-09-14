@@ -1,5 +1,13 @@
 # Landing page and map entrance QA
 
+## Main dialog closing motion (2026-09-14)
+
+Shared main dialogs now fade out and move down 12 px over 360 ms, while their native backdrop fades away. DialogPresence retains the last rendered content until animation completion, with a 440 ms fallback for cancelled animations. Closing cancels pending dialog updates immediately; the retained content is inert, and the native modal remains in the top layer until dismissal completes. Trigger focus returns without scrolling. Rapid dismissal captures the current entrance frame instead of flashing to full opacity. Reduced motion and tutorial handoffs remain immediate.
+
+- 18 browser scenarios pass across interactions, phases 4–5 and the guided tour. Exit checks cover the close button, Escape, backdrop, content return action, repeated dismissal, midpoint panel/backdrop opacity, timeout cleanup, quick close, focus restoration and reduced motion. No extra searches occur from the motion.
+- Desktop and mobile midpoint frames in `.build/dialog-exit/dialog-exit-close.png` and `dialog-exit-backdrop.png` were visually inspected. The panel and backdrop retreat together without clipping or layout movement behind the modal.
+- The release checks, isolated function packaging dry run, production build and asset validation pass. Source digest: `a2b25e37e3ab3b6ec4927c3f3ddb613a7f506b161fe60ac67c08446a955c17f0`. No backend deployment or provider-data change is required; public publication is checked separately.
+
 ## Reuse resources that are already loaded (2026-09-14)
 
 Returning home no longer destroys and rebuilds a ready scene or resets the loader. Its canvas and decoded transition images remain mounted but hidden in search; both rendering and autoplay pause. Return restores the existing raised READ view using those same resources, without a loading screen. Zero-size hidden layouts no longer resize the retained canvas, and selection is reported synchronously so the transition uses the visible card. Direct search entry still avoids mounting the gallery, and early entry can discard a scene that has not finished loading.
