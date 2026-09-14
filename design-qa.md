@@ -1,5 +1,14 @@
 # Landing page and map entrance QA
 
+## Minimal loading screen revision (2026-09-14)
+
+The loading centre now contains only EQUALPATH and “Find childcare that fits your day.” The slash, three paper-card icons, moving line and artwork-loading wording have been removed. A 2400 ms opacity pulse on the name signals activity; reduced motion and errors keep it static. First-frame readiness, the 480 ms reveal, immediate Find childcare access, retry and the existing landing-to-search transition are unchanged.
+
+- The three existing loader browser cases pass: delayed loading followed by the real gallery, failure/retry with reduced motion, and immediate entry/direct search links.
+- Desktop 1440 × 1000 and mobile 390 × 844 screenshots in `.build/landing-loading-minimal/` were visually checked; the two-line lockup is centred, readable and within the viewport.
+- Production build and asset validation pass for source `5cab4485c18ae1475f9ccd23fec9b79237adffc2a9489c4562d4760f9e8d7f0c`.
+- This revision is local. Earlier push attempts were rejected by automatic approval review; publication remains pending explicit approval.
+
 ## First-load artwork screen and matching wordmark (2026-09-14)
 
 The landing opens on a light paper loading surface with the EQUALPATH wordmark, three gently floating paper cards, a fine moving line and “Loading artwork…”. This is indeterminate activity, not a fabricated progress percentage. It covers both lazy scene-code loading and scene asset loading. The actual first rendered scene frame triggers a 480 ms fade; only after that fade does the existing collection-to-raised sequence begin. Reduced motion stays static and reveals immediately when ready.

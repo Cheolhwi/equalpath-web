@@ -12,15 +12,10 @@ export default function LandingLoader({ state, onRetry }) {
   return (
     <div className="landing-loader" data-state={state}>
       <div className="landing-loader-center">
-        <div className="landing-loader-cards" aria-hidden="true">
-          <span /><span /><span />
-        </div>
-        <div className="landing-loader-wordmark" aria-hidden="true">EQUALPATH<span>／</span></div>
-        <div className="landing-loader-line" aria-hidden="true"><span /></div>
-        <p role="status" aria-live="polite">
-          {state === "error" ? "The artwork couldn’t load." : "Loading artwork…"}
-        </p>
+        <div className="landing-loader-wordmark">EQUALPATH</div>
+        <p role="status" aria-live="polite">Find childcare that fits your day.</p>
         {(slow || state === "error") && <div className="landing-loader-help">
+          {state === "error" && <p role="alert">Something didn’t load. Please try again.</p>}
           <p>You can still find childcare below.</p>
           {state === "error" && <button onClick={onRetry}>Try again</button>}
         </div>}
