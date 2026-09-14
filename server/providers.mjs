@@ -52,25 +52,27 @@ export function normalizeProvider(raw, release) {
   if (
     x?.matchStatus &&
     x.matchStatus !== "matched" &&
-    raw.registration.authority === "JKM"
+    raw.registration?.authority === "JKM"
   )
     return {
       held: { id: raw.id, reason: "directory_branch_match_unresolved" },
     };
-  const r = raw.registration,
+  const r = raw.registration ?? {},
     regSource = source(
       r.authority === "JKM"
         ? "JKM imported register"
-        : "KPM code listed by CariSchool",
+        : r.authority === "KPM" ? "KPM code listed by CariSchool" : "Registration record",
       r.source_url,
       r.source_retrieved_at,
       r.source_date,
       r.authority === "JKM" ? "official_register" : "directory_claim",
     );
   const directory = source(
-    "CariSchool branch directory",
-    x?.directory?.source_url ?? (r.authority === "KPM" ? r.source_url : null),
-    x?.directory?.retrieved_at ?? r.source_retrieved_at,
+    raw.public_profile?.label ?? "CariSchool branch directory",
+    raw.public_profile?.url ?? x?.directory?.source_url ?? (r.authority === "KPM" ? r.source_url : null),
+    raw.public_profile?.retrievedAt ?? x?.directory?.retrieved_at ?? r.source_retrieved_at,
+    raw.public_profile?.sourceDate ?? null,
+    raw.public_profile?.kind ?? "public_directory",
   );
   const contactSource = raw.contact_source
     ? source(
@@ -118,7 +120,7 @@ export function normalizeProvider(raw, release) {
         }
       : null,
     locationBasis: region.reason,
-    category: r.authority === "JKM" ? "TASKA" : "TADIKA",
+    category: r.authority === "JKM" ? "TASKA" : r.authority === "KPM" ? "TADIKA" : "CHILDCARE",
     mode: "live",
     version: release + ":" + supplementVersion,
     registration: {
@@ -139,7 +141,7 @@ export function normalizeProvider(raw, release) {
         x?.google?.match_basis ??
         (r.authority === "JKM"
           ? "Stable imported branch record; separate directory facts retain their own sources."
-          : "CariSchool lists this KPM code for the named branch. The current official registration status has not been independently checked."),
+          : r.authority === "KPM" ? "CariSchool lists this KPM code for the named branch. The current official registration status has not been independently checked." : "Service and contact details come from public provider pages. No government registration record has been matched."),
       warnings: r.warning_codes ?? [],
     },
     phone: phoneFact(raw.public_phone, contactSource),
@@ -190,7 +192,7 @@ export function normalizeProvider(raw, release) {
       source: raw.transport?.source_url ? source('Published transport service',raw.transport.source_url,raw.transport.retrieved_at) : null,
     },
     pickupWindows: [],
-    careWindows: [],
+    careWindows: (raw.care_windows ?? []).map(w => ({days:w.days,start:w.start,end:w.end,source:w.source})),
     lateRule: null,
     businessHours: {
       publishedSchedule: raw.published_hours_schedule ? {
@@ -239,8 +241,8 @@ export function normalizeProvider(raw, release) {
       ),
     })),
     feeRule: null,
-    notes: [],
-    sources: [regSource, directory, hs, contactSource, ageSource].filter(
+    notes: raw.public_profile_notes ?? [],
+    sources: [regSource, directory, hs, contactSource, ageSource, ...(raw.profile_sources ?? [])].filter(
       (s) => s?.url,
     ),
   };

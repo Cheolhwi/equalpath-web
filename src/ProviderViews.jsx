@@ -262,7 +262,7 @@ export function Registration({ p }) {
         <div>
           <dt>Authority / record</dt>
           <dd>
-            {r.authority} · {r.number ?? "No matched record"}
+            {r.authority ? `${r.authority} · ` : ''}{r.number ?? "No matched record"}
           </dd>
         </div>
         <div>
@@ -550,7 +550,7 @@ export function Comparison({
               <th>Registration</th>
               {items.map((p) => (
                 <td key={p.id}>
-                  {p.registration.authority} ·{" "}
+                  {p.registration.authority ? `${p.registration.authority} · ` : ''}
                   {p.registration.number ?? "Not matched"}
                   <p>
                     {p.registration.until && p.registration.until < todayKL()

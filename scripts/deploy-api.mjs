@@ -41,6 +41,7 @@ for (const f of [
   "server/hours-overlay.mjs",
   "server/services-overlay.mjs",
   "server/admissions-overlay.mjs",
+  "server/provider-additions.mjs",
   "server/fees-overlay.mjs",
   "shared/request.mjs",
   "shared/conditions.mjs",

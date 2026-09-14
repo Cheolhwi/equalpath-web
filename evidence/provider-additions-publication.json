@@ -1,0 +1,77 @@
+{
+  "verifiedAt": "2026-09-14T20:22:58.493Z",
+  "release": "additions_262041aafe363e98dace9de5",
+  "before": 3122,
+  "after": 3129,
+  "added": 7,
+  "publishedTemporaryCareBefore": 4,
+  "publishedTemporaryCareAfter": 11,
+  "existingProvidersUnchanged": 3122,
+  "heldUnchanged": true,
+  "publicBackend": true,
+  "checked": [
+    {
+      "id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+      "name": "Lullabee — Old Klang Road",
+      "phone": "016-323 4369",
+      "feeEntries": 1,
+      "admission": "supported",
+      "visibleOnNearbyPage": true,
+      "registrationBadge": false
+    },
+    {
+      "id": "provider_4576ca09bd13bb7c7798a359247",
+      "name": "Learning Fresh — Mont Kiara",
+      "phone": "012-232 5281",
+      "feeEntries": 3,
+      "admission": "supported",
+      "visibleOnNearbyPage": true,
+      "registrationBadge": false
+    },
+    {
+      "id": "provider_88408de0b4f21319175ac455673",
+      "name": "Learning Fresh — KLCC",
+      "phone": "012-232 5281",
+      "feeEntries": 2,
+      "admission": "supported",
+      "visibleOnNearbyPage": true,
+      "registrationBadge": false
+    },
+    {
+      "id": "provider_b4fca32684be03c852a77c7f3f2",
+      "name": "Kinder Mindz — Kepong",
+      "phone": "012-549 2768",
+      "feeEntries": 0,
+      "admission": "supported",
+      "visibleOnNearbyPage": true,
+      "registrationBadge": false
+    },
+    {
+      "id": "provider_b98cf5c4416105eb3c18b26160b",
+      "name": "iKid House — Bandar Puteri",
+      "phone": "03-5888 5551",
+      "feeEntries": 0,
+      "admission": "supported",
+      "visibleOnNearbyPage": true,
+      "registrationBadge": false
+    },
+    {
+      "id": "provider_bc393868c856c47ef03fd2043b1",
+      "name": "Kasih Nilly Nursery",
+      "phone": "010-837 8443",
+      "feeEntries": 0,
+      "admission": "supported",
+      "visibleOnNearbyPage": true,
+      "registrationBadge": false
+    },
+    {
+      "id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+      "name": "Learning Fresh — Damansara Heights",
+      "phone": "012-232 5281",
+      "feeEntries": 2,
+      "admission": "supported",
+      "visibleOnNearbyPage": true,
+      "registrationBadge": false
+    }
+  ]
+}

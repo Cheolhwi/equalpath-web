@@ -1,0 +1,1061 @@
+{
+  "summary": {
+    "baseRelease": "web_79f1397603c1e28325955f64",
+    "release": "additions_262041aafe363e98dace9de5",
+    "hash": "262041aafe363e98dace9de5cfa1fd4a17c8410f6ff601a21079b11074a8e8e7",
+    "count": 7,
+    "published": 7,
+    "withPhone": 7,
+    "withFees": 4,
+    "withHours": 6,
+    "preparedAt": "2026-09-14T20:18:28.959Z",
+    "unmergedLeads": [
+      {
+        "name": "Little Human Scholars",
+        "reason": "Official drop-in page names No. 10 Jalan 11/9, but its embedded map points to No. 1 Jalan Bukit 11/2 and the current playschool map lists No. 3 Jalan 5/37. Hourly service is published; branch address is unresolved, so no searchable pin is invented.",
+        "url": "https://www.littlehumanscholars.com.my/drop-in-childcare-petaling-jaya/"
+      },
+      {
+        "name": "Baby Angels — Taman OUG",
+        "reason": "FAQ states a November 2026 opening and pending licensing; not an available childcare option on the review date.",
+        "url": "https://www.babyangels.com.my/faq.html"
+      },
+      {
+        "name": "Little Playhouse — three KL campuses",
+        "reason": "Rendered FAQ offers daily/weekly/monthly packages with at least one week's notice. Half-day sessions are fixed mornings. No evidence of on-demand hourly childcare; retained as an advance-booking lead.",
+        "url": "https://littleplayhouse.com.my/faq"
+      },
+      {
+        "name": "Beyond Kids Montessori",
+        "reason": "Company profile describes backup/drop-in care, but current branch identity and service availability are not yet matched.",
+        "url": "https://my.linkedin.com/company/beyond-kids-montessori"
+      },
+      {
+        "name": "Iman Child Centre",
+        "reason": "Non-regular daily care is published, but listed branches are in Negeri Sembilan, outside the service area.",
+        "url": "https://imancc.edu.my/hubungi/"
+      }
+    ]
+  },
+  "records": [
+    {
+      "provider_id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The hourly product explicitly names Old Klang Road. Contact-page branch section supplies the Wisma Ambawang address, coordinates and hours. This is separate from the existing Puchong Taska Pondok Indah/Lullabee branch; no Old Klang Road address or name matches the base catalogue.",
+      "provider": {
+        "id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+        "official_name": "Lullabee — Old Klang Road",
+        "display_name": "Lullabee — Old Klang Road",
+        "address": "3G & 3G-1, Wisma Ambawang, Jalan Anggor, Jalan Klang Lama, 58100 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Seputeh",
+        "registration": null,
+        "public_profile": {
+          "label": "Lullabee — branch addresses and hours",
+          "kind": "provider_website",
+          "url": "https://www.lullabee.com.my/contactus/",
+          "retrievedAt": "2026-09-14T20:10:09.229693+00:00",
+          "sourceDate": null,
+          "snapshotHash": "cf2877cdd2e58545ea898c7e1862de0337944962bc128cb252b518f50cb98a57"
+        },
+        "profile_sources": [
+          {
+            "label": "Lullabee — branch addresses and hours",
+            "kind": "provider_website",
+            "url": "https://www.lullabee.com.my/contactus/",
+            "retrievedAt": "2026-09-14T20:10:09.229693+00:00",
+            "sourceDate": null,
+            "snapshotHash": "cf2877cdd2e58545ea898c7e1862de0337944962bc128cb252b518f50cb98a57"
+          },
+          {
+            "label": "Lullabee — hourly drop-in",
+            "kind": "provider_website",
+            "url": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+            "retrievedAt": "2026-09-14T20:10:09.182835+00:00",
+            "sourceDate": null,
+            "snapshotHash": "bc04e0f1bb40fe2c3fddf655bdab7499aae959fcf91ad4493040ddd0434d8258"
+          },
+          {
+            "label": "Lullabee — care ages and booking questions",
+            "kind": "provider_website",
+            "url": "https://www.lullabee.com.my/faq/",
+            "retrievedAt": "2026-09-14T20:10:09.233477+00:00",
+            "sourceDate": null,
+            "snapshotHash": "1dc4f7d9a87232baa3d0db7a3a5887ac7123a32b3db39074ed17276b05a3fd08"
+          }
+        ],
+        "public_profile_notes": [
+          "Public holidays are listed closed; confirm opening for the chosen date. The fee page does not specify the RM120 billing period."
+        ],
+        "location": {
+          "latitude": 3.0995877,
+          "longitude": 101.6765953,
+          "source_url": "https://www.lullabee.com.my/contactus/"
+        },
+        "website": "https://www.lullabee.com.my/",
+        "public_phone": "016-323 4369",
+        "contact_source": {
+          "source_url": "https://www.lullabee.com.my/contactus/",
+          "retrieved_at": "2026-09-14T20:10:09.229693+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Lullabee — Old Klang Road",
+            "basis": "The hourly product explicitly names Old Klang Road. Contact-page branch section supplies the Wisma Ambawang address, coordinates and hours. This is separate from the existing Puchong Taska Pondok Indah/Lullabee branch; no Old Klang Road address or name matches the base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "Hourly drop-in care is advertised at the Old Klang Road branch for short visits. Contact the centre before coming to confirm space, ages, minimum hours and the total fee.",
+          "question": "Is hourly care available at Old Klang Road for these hours, and what does the listed RM120 cover?",
+          "sources": [
+            {
+              "label": "Lullabee — hourly drop-in",
+              "kind": "provider_website",
+              "url": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+              "retrievedAt": "2026-09-14T20:10:09.182835+00:00",
+              "sourceDate": null,
+              "snapshotHash": "bc04e0f1bb40fe2c3fddf655bdab7499aae959fcf91ad4493040ddd0434d8258"
+            },
+            {
+              "label": "Lullabee — care ages and booking questions",
+              "kind": "provider_website",
+              "url": "https://www.lullabee.com.my/faq/",
+              "retrievedAt": "2026-09-14T20:10:09.233477+00:00",
+              "sourceDate": null,
+              "snapshotHash": "1dc4f7d9a87232baa3d0db7a3a5887ac7123a32b3db39074ed17276b05a3fd08"
+            }
+          ]
+        },
+        "age_min_months": 2,
+        "age_max_months": 72,
+        "age_source": {
+          "raw": "2 months to 6 years",
+          "source_url": "https://www.lullabee.com.my/faq/",
+          "retrieved_at": "2026-09-14T20:10:09.233477+00:00"
+        },
+        "care_windows": [],
+        "operating_hours": {
+          "source_url": "https://www.lullabee.com.my/contactus/",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.229693+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 450,
+              "end_minute": 1140
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 450,
+              "end_minute": 1140
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 450,
+              "end_minute": 1140
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 450,
+              "end_minute": 1140
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 450,
+              "end_minute": 1140
+            }
+          ],
+          "closed_weekdays": [
+            "SAT",
+            "SUN"
+          ],
+          "notes": "Monday–Friday 07:30–19:00; weekends and public holidays closed. The published number is the shared Lullabee enquiry contact."
+        },
+        "fees": [
+          {
+            "amount": 120,
+            "currency": "MYR",
+            "basis": "unspecified",
+            "kind": "care",
+            "programme": "Hourly Drop In listing",
+            "conditions": "The product page displays RM120 but does not state how many hours it covers. This is not a verified hourly rate; ask for the total for your visit.",
+            "source_url": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.182835+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_4576ca09bd13bb7c7798a359247",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "Provider care page names Mont Kiara; contact-page campus data gives the Plaza Arcoris address and coordinates. Its own Setmore page repeats the address, phone and specific hourly sessions. No matching name, address or phone was found in the base catalogue.",
+      "provider": {
+        "id": "provider_4576ca09bd13bb7c7798a359247",
+        "official_name": "Learning Fresh — Mont Kiara",
+        "display_name": "Learning Fresh — Mont Kiara",
+        "address": "LG3-6, Plaza Arcoris, Jalan Kiara, Mont Kiara, 50480 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Segambut",
+        "registration": null,
+        "public_profile": {
+          "label": "Learning Fresh — campus contacts",
+          "kind": "provider_website",
+          "url": "https://learningfresh.org/contact-us",
+          "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+          "sourceDate": null,
+          "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+        },
+        "profile_sources": [
+          {
+            "label": "Learning Fresh — campus contacts",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/contact-us",
+            "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+            "sourceDate": null,
+            "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+          },
+          {
+            "label": "Learning Fresh — hourly After-School Club",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/after-school-club",
+            "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+            "sourceDate": null,
+            "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+          },
+          {
+            "label": "Learning Fresh Mont Kiara — published sessions",
+            "kind": "provider_website",
+            "url": "https://learningfresh.setmore.com/",
+            "retrievedAt": "2026-09-14T20:10:09.309855+00:00",
+            "sourceDate": null,
+            "snapshotHash": "c3223ae8c3284134569eef9e14a5b0816eb531bd820ab653b0d9c6835cb175f0"
+          }
+        ],
+        "public_profile_notes": [
+          "The general school profile gives ages 3–12, while newer programme pages cover other ranges. Confirm the age range for the selected hourly session."
+        ],
+        "location": {
+          "latitude": 3.1681185,
+          "longitude": 101.6518685,
+          "source_url": "https://learningfresh.org/contact-us"
+        },
+        "website": "https://learningfresh.org/after-school-club",
+        "public_phone": "012-232 5281",
+        "contact_source": {
+          "source_url": "https://learningfresh.org/contact-us",
+          "retrieved_at": "2026-09-14T20:10:09.342399+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_4576ca09bd13bb7c7798a359247",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Learning Fresh — Mont Kiara",
+            "basis": "Provider care page names Mont Kiara; contact-page campus data gives the Plaza Arcoris address and coordinates. Its own Setmore page repeats the address, phone and specific hourly sessions. No matching name, address or phone was found in the base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "Hourly drop-in care is available without a package. Call ahead to check space. Weekday, weekend and evening sessions have different prices and times.",
+          "question": "Is there space for these hours, and which hourly rate applies?",
+          "sources": [
+            {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            },
+            {
+              "label": "Learning Fresh Mont Kiara — published sessions",
+              "kind": "provider_website",
+              "url": "https://learningfresh.setmore.com/",
+              "retrievedAt": "2026-09-14T20:10:09.309855+00:00",
+              "sourceDate": null,
+              "snapshotHash": "c3223ae8c3284134569eef9e14a5b0816eb531bd820ab653b0d9c6835cb175f0"
+            }
+          ]
+        },
+        "age_min_months": null,
+        "age_max_months": null,
+        "age_source": null,
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI"
+            ],
+            "start": 780,
+            "end": 1350,
+            "source": {
+              "label": "Learning Fresh Mont Kiara — published sessions",
+              "kind": "provider_website",
+              "url": "https://learningfresh.setmore.com/",
+              "retrievedAt": "2026-09-14T20:10:09.309855+00:00",
+              "sourceDate": null,
+              "snapshotHash": "c3223ae8c3284134569eef9e14a5b0816eb531bd820ab653b0d9c6835cb175f0"
+            }
+          },
+          {
+            "days": [
+              "SAT",
+              "SUN"
+            ],
+            "start": 540,
+            "end": 1260,
+            "source": {
+              "label": "Learning Fresh Mont Kiara — published sessions",
+              "kind": "provider_website",
+              "url": "https://learningfresh.setmore.com/",
+              "retrievedAt": "2026-09-14T20:10:09.309855+00:00",
+              "sourceDate": null,
+              "snapshotHash": "c3223ae8c3284134569eef9e14a5b0816eb531bd820ab653b0d9c6835cb175f0"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://learningfresh.setmore.com/",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.309855+00:00",
+          "weekly_windows": [],
+          "closed_weekdays": [],
+          "notes": "Childcare sessions: weekdays 13:00–18:30; weekends 09:00–17:00. Night Owl continues to 22:30 on weekdays and 21:00 on weekends. These specific care sessions differ from the general opening-hours panel. Call ahead."
+        },
+        "fees": [
+          {
+            "amount": 40,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekday Seedling",
+            "conditions": "Monday–Friday, 13:00–18:30. Call ahead for space.",
+            "source_url": "https://learningfresh.setmore.com/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.309855+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 50,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekend Seedling",
+            "conditions": "Saturday–Sunday, 09:00–17:00. Call ahead for space.",
+            "source_url": "https://learningfresh.setmore.com/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.309855+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 60,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Night Owl",
+            "conditions": "Monday–Friday 18:30–22:30; Saturday–Sunday 17:00–21:00. Confirm the visit before attending.",
+            "source_url": "https://learningfresh.setmore.com/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.309855+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_88408de0b4f21319175ac455673",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The current hourly-care page explicitly lists KLCC and its contact page gives Megan Avenue 2. The site's embedded KLCC coordinates incorrectly point outside Malaysia, so they are rejected; the matching branch map supplies the location instead. No base-catalogue branch matches.",
+      "provider": {
+        "id": "provider_88408de0b4f21319175ac455673",
+        "official_name": "Learning Fresh — KLCC",
+        "display_name": "Learning Fresh — KLCC",
+        "address": "B-9-7, Megan Avenue 2, Jalan Yap Kwan Seng, 50450 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Kuala Lumpur",
+        "registration": null,
+        "public_profile": {
+          "label": "Learning Fresh — campus contacts",
+          "kind": "provider_website",
+          "url": "https://learningfresh.org/contact-us",
+          "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+          "sourceDate": null,
+          "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+        },
+        "profile_sources": [
+          {
+            "label": "Learning Fresh — campus contacts",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/contact-us",
+            "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+            "sourceDate": null,
+            "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+          },
+          {
+            "label": "Learning Fresh KLCC — mapped branch",
+            "kind": "map_listing",
+            "url": "https://www.google.com/maps/place/Learning+Fresh,+KLCC/data=!4m6!3m5!1s0x31cc37ebccb7ff21:0x3e9bc0eb6ba86557!8m2!3d3.1628878!4d101.7126118!16s%2Fg%2F11z7ngb4g_",
+            "retrievedAt": "2026-09-14T20:17:01.782105+00:00",
+            "sourceDate": null,
+            "snapshotHash": "401bdd66b0e9d941779cc14afabbe381487f26221910fdfe23addcc7eddf75c0"
+          },
+          {
+            "label": "Learning Fresh — hourly After-School Club",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/after-school-club",
+            "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+            "sourceDate": null,
+            "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+          }
+        ],
+        "public_profile_notes": [
+          "The listed number is the provider's shared enquiry contact."
+        ],
+        "location": {
+          "latitude": 3.1628878,
+          "longitude": 101.7126118,
+          "source_url": "https://www.google.com/maps/place/Learning+Fresh,+KLCC/data=!4m6!3m5!1s0x31cc37ebccb7ff21:0x3e9bc0eb6ba86557!8m2!3d3.1628878!4d101.7126118!16s%2Fg%2F11z7ngb4g_"
+        },
+        "website": "https://learningfresh.org/after-school-club",
+        "public_phone": "012-232 5281",
+        "contact_source": {
+          "source_url": "https://learningfresh.org/contact-us",
+          "retrieved_at": "2026-09-14T20:10:09.342399+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_88408de0b4f21319175ac455673",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Learning Fresh — KLCC",
+            "basis": "The current hourly-care page explicitly lists KLCC and its contact page gives Megan Avenue 2. The site's embedded KLCC coordinates incorrectly point outside Malaysia, so they are rejected; the matching branch map supplies the location instead. No base-catalogue branch matches."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "The After-School Club page names Megan Avenue 2, KLCC and offers occasional care by the hour. Call ahead to confirm the session and space at this campus.",
+          "question": "Can you provide hourly care for these times at the KLCC campus?",
+          "sources": [
+            {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          ]
+        },
+        "age_min_months": null,
+        "age_max_months": null,
+        "age_source": null,
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI"
+            ],
+            "start": 780,
+            "end": 1110,
+            "source": {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          },
+          {
+            "days": [
+              "SAT"
+            ],
+            "start": 540,
+            "end": 1020,
+            "source": {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://learningfresh.org/after-school-club",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+          "weekly_windows": [],
+          "closed_weekdays": [],
+          "notes": "Hourly programme: weekdays 13:00–18:30 and weekends 09:00–17:00. The campus list says Monday–Saturday, so Sunday hours remain unconfirmed."
+        },
+        "fees": [
+          {
+            "amount": 40,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekday Seedling",
+            "conditions": "Monday–Friday, 13:00–18:30. Confirm space at KLCC.",
+            "source_url": "https://learningfresh.org/after-school-club",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 50,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekend Seedling",
+            "conditions": "Published weekend rate, 09:00–17:00. Confirm the campus and day; the location list says Monday–Saturday.",
+            "source_url": "https://learningfresh.org/after-school-club",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_b4fca32684be03c852a77c7f3f2",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "Provider contact page and Google Maps agree on the exact ground-floor Block C address, phone and website. About page clearly states 1–12 years, resolving the contact-page age typo. No matching name, address or phone found in base catalogue.",
+      "provider": {
+        "id": "provider_b4fca32684be03c852a77c7f3f2",
+        "official_name": "Kinder Mindz — Kepong",
+        "display_name": "Kinder Mindz — Kepong",
+        "address": "No. 1, Ground Floor, Block C, Vista Mutiara Apartment, Jalan Vista Mutiara, Kepong Baru, 52000 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Kepong",
+        "registration": null,
+        "public_profile": {
+          "label": "Kinder Mindz — drop-in care and opening hours",
+          "kind": "provider_website",
+          "url": "https://kindermindz.com/index.php/contact/",
+          "retrievedAt": "2026-09-14T20:10:09.813025+00:00",
+          "sourceDate": null,
+          "snapshotHash": "e5c09342d6ba0bb571373d4209f902e3a4608895523586f061f7e909548125a7"
+        },
+        "profile_sources": [
+          {
+            "label": "Kinder Mindz — drop-in care and opening hours",
+            "kind": "provider_website",
+            "url": "https://kindermindz.com/index.php/contact/",
+            "retrievedAt": "2026-09-14T20:10:09.813025+00:00",
+            "sourceDate": null,
+            "snapshotHash": "e5c09342d6ba0bb571373d4209f902e3a4608895523586f061f7e909548125a7"
+          },
+          {
+            "label": "Kinder Mindz — matched branch map",
+            "kind": "map_listing",
+            "url": "https://www.google.com/maps/place/Kindermindz+Preschool+Kepong+Baru/data=!4m6!3m5!1s0x31cc47a3d2384acb:0x8dbc33f14817e6f3!8m2!3d3.210141!4d101.6485344!16s%2Fg%2F11whnx2vvp",
+            "retrievedAt": "2026-09-14T20:17:01.781544+00:00",
+            "sourceDate": null,
+            "snapshotHash": "88c572172728af0fe32b4739a618be4eba7dfdff0b1e48c1ca491545604ab2d2"
+          },
+          {
+            "label": "Kinder Mindz — published age range",
+            "kind": "provider_website",
+            "url": "https://kindermindz.com/index.php/about-us-kinder-mindz/",
+            "retrievedAt": "2026-09-14T20:12:20.759698+00:00",
+            "sourceDate": null,
+            "snapshotHash": "92f3805e6ac71cb20746ad327d93b0873378d2b0206b2be03dd6a91044569c00"
+          }
+        ],
+        "public_profile_notes": [],
+        "location": {
+          "latitude": 3.210141,
+          "longitude": 101.6485344,
+          "source_url": "https://www.google.com/maps/place/Kindermindz+Preschool+Kepong+Baru/data=!4m6!3m5!1s0x31cc47a3d2384acb:0x8dbc33f14817e6f3!8m2!3d3.210141!4d101.6485344!16s%2Fg%2F11whnx2vvp"
+        },
+        "website": "https://kindermindz.com/",
+        "public_phone": "012-549 2768",
+        "contact_source": {
+          "source_url": "https://kindermindz.com/index.php/contact/",
+          "retrieved_at": "2026-09-14T20:10:09.813025+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_b4fca32684be03c852a77c7f3f2",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Kinder Mindz — Kepong",
+            "basis": "Provider contact page and Google Maps agree on the exact ground-floor Block C address, phone and website. About page clearly states 1–12 years, resolving the contact-page age typo. No matching name, address or phone found in base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "drop_in"
+          ],
+          "wording": "The centre advertises drop-in care alongside full-time and part-time care. Ask which short sessions are available and whether advance booking is needed.",
+          "question": "Can you take a child for just these hours, and what are the booking requirements?",
+          "sources": [
+            {
+              "label": "Kinder Mindz — drop-in care and opening hours",
+              "kind": "provider_website",
+              "url": "https://kindermindz.com/index.php/contact/",
+              "retrievedAt": "2026-09-14T20:10:09.813025+00:00",
+              "sourceDate": null,
+              "snapshotHash": "e5c09342d6ba0bb571373d4209f902e3a4608895523586f061f7e909548125a7"
+            }
+          ]
+        },
+        "age_min_months": 12,
+        "age_max_months": 144,
+        "age_source": {
+          "raw": "1 year to 12 years",
+          "source_url": "https://kindermindz.com/index.php/about-us-kinder-mindz/",
+          "retrieved_at": "2026-09-14T20:12:20.759698+00:00"
+        },
+        "care_windows": [],
+        "operating_hours": {
+          "source_url": "https://kindermindz.com/index.php/contact/",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.813025+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 450,
+              "end_minute": 1110
+            }
+          ],
+          "closed_weekdays": [
+            "SAT",
+            "SUN"
+          ],
+          "notes": "Monday–Friday 07:30–18:30; weekends closed."
+        },
+        "fees": []
+      }
+    },
+    {
+      "provider_id": "provider_b98cf5c4416105eb3c18b26160b",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The provider's flexible-scheduling and enquiry pages give the same Bandar Puteri address and office phone. Its linked Google Maps pin matches iKid House. Not the unrelated iKids Cyberjaya entry in the base catalogue.",
+      "provider": {
+        "id": "provider_b98cf5c4416105eb3c18b26160b",
+        "official_name": "iKid House — Bandar Puteri",
+        "display_name": "iKid House — Bandar Puteri",
+        "address": "11-1, Jalan Puteri 4/7a, Bandar Puteri, 47100 Puchong, Selangor",
+        "state": "Selangor",
+        "district": "Petaling",
+        "registration": null,
+        "public_profile": {
+          "label": "iKid House — branch contact",
+          "kind": "provider_website",
+          "url": "https://www.ikidhouse.org/inquiry/",
+          "retrievedAt": "2026-09-14T20:10:09.168263+00:00",
+          "sourceDate": null,
+          "snapshotHash": "1844bdca3a980218430c2ce91174adcfe74a0b5cde9174c2ceab11875ea90601"
+        },
+        "profile_sources": [
+          {
+            "label": "iKid House — branch contact",
+            "kind": "provider_website",
+            "url": "https://www.ikidhouse.org/inquiry/",
+            "retrievedAt": "2026-09-14T20:10:09.168263+00:00",
+            "sourceDate": null,
+            "snapshotHash": "1844bdca3a980218430c2ce91174adcfe74a0b5cde9174c2ceab11875ea90601"
+          },
+          {
+            "label": "iKid House — provider-linked map",
+            "kind": "map_listing",
+            "url": "https://maps.app.goo.gl/yxiKjR7RoMXG7DeT9",
+            "retrievedAt": "2026-09-14T20:10:09.176847+00:00",
+            "sourceDate": null,
+            "snapshotHash": "7111524bbc159d405271ac101ad4499bf14e0a40cfa5416e5e749159bb5299d6"
+          },
+          {
+            "label": "iKid House — drop-in care",
+            "kind": "provider_website",
+            "url": "https://www.ikidhouse.org/features/flexible-scheduling/",
+            "retrievedAt": "2026-09-14T20:10:09.053137+00:00",
+            "sourceDate": null,
+            "snapshotHash": "db03f6a9b82490bd0fb1161b2fda787ba385065737d0bae615bea68286b4b8e5"
+          }
+        ],
+        "public_profile_notes": [],
+        "location": {
+          "latitude": 3.0183889,
+          "longitude": 101.6140898,
+          "source_url": "https://maps.app.goo.gl/yxiKjR7RoMXG7DeT9"
+        },
+        "website": "https://www.ikidhouse.org/",
+        "public_phone": "03-5888 5551",
+        "contact_source": {
+          "source_url": "https://www.ikidhouse.org/inquiry/",
+          "retrieved_at": "2026-09-14T20:10:09.168263+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_b98cf5c4416105eb3c18b26160b",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "iKid House — Bandar Puteri",
+            "basis": "The provider's flexible-scheduling and enquiry pages give the same Bandar Puteri address and office phone. Its linked Google Maps pin matches iKid House. Not the unrelated iKids Cyberjaya entry in the base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "drop_in",
+            "occasional"
+          ],
+          "wording": "Occasional drop-in care is advertised. Families can choose days and hours as needed; ask about the minimum stay, notice and space for this visit.",
+          "question": "Can a new child stay for these hours, and how much notice do you need?",
+          "sources": [
+            {
+              "label": "iKid House — drop-in care",
+              "kind": "provider_website",
+              "url": "https://www.ikidhouse.org/features/flexible-scheduling/",
+              "retrievedAt": "2026-09-14T20:10:09.053137+00:00",
+              "sourceDate": null,
+              "snapshotHash": "db03f6a9b82490bd0fb1161b2fda787ba385065737d0bae615bea68286b4b8e5"
+            }
+          ]
+        },
+        "age_min_months": null,
+        "age_max_months": null,
+        "age_source": null,
+        "care_windows": [],
+        "operating_hours": {
+          "source_url": null,
+          "source_kind": null,
+          "source_retrieved_at": null,
+          "weekly_windows": [],
+          "closed_weekdays": [],
+          "notes": null
+        },
+        "fees": []
+      }
+    },
+    {
+      "provider_id": "provider_bc393868c856c47ef03fd2043b1",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The nursery's public August 2026 posts link its Linktree, which links the Google Maps destination at Warisan Cityview. Name and phone match that map listing. Coordinates use the destination, not the start of its directions link. No matching base-catalogue branch was found.",
+      "provider": {
+        "id": "provider_bc393868c856c47ef03fd2043b1",
+        "official_name": "Kasih Nilly Nursery",
+        "display_name": "Kasih Nilly Nursery",
+        "address": "Warisan Cityview, Cheras, 55200 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Cheras",
+        "registration": null,
+        "public_profile": {
+          "label": "Kasih Nilly — provider-linked branch map",
+          "kind": "map_listing",
+          "url": "https://www.google.com/maps?cid=711188355013355688",
+          "retrievedAt": "2026-09-14T20:17:01.782196+00:00",
+          "sourceDate": null,
+          "snapshotHash": "5d859e48a08d87154a42d75d166cbebf2cb7b62df9305d81e59d47a48def066a"
+        },
+        "profile_sources": [
+          {
+            "label": "Kasih Nilly — provider-linked branch map",
+            "kind": "map_listing",
+            "url": "https://www.google.com/maps?cid=711188355013355688",
+            "retrievedAt": "2026-09-14T20:17:01.782196+00:00",
+            "sourceDate": null,
+            "snapshotHash": "5d859e48a08d87154a42d75d166cbebf2cb7b62df9305d81e59d47a48def066a"
+          },
+          {
+            "label": "Kasih Nilly — public nursery posts, mirrored by FindGlocal",
+            "kind": "social_post_mirror",
+            "sourceDate": "2026-08-24",
+            "url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+            "retrievedAt": "2026-09-14T20:10:10.622815+00:00",
+            "snapshotHash": "1ec1f3ab636f3f418a505c82b50f92e6f1442777354cc888b658b5aaec121650"
+          },
+          {
+            "label": "Kasih Nilly — provider contact and location links",
+            "kind": "provider_website",
+            "url": "https://linktr.ee/kasihnillynursery",
+            "retrievedAt": "2026-09-14T20:10:11.104679+00:00",
+            "sourceDate": null,
+            "snapshotHash": "fcccca61d1e5afa577681448f006bb263aac9b2300eeecb1548a17d32eea6620"
+          }
+        ],
+        "public_profile_notes": [
+          "The listed address identifies the Warisan Cityview complex. Ask the nursery for the exact unit and entrance before visiting."
+        ],
+        "location": {
+          "latitude": 3.1276855,
+          "longitude": 101.7206308,
+          "source_url": "https://linktr.ee/kasihnillynursery"
+        },
+        "website": "https://linktr.ee/kasihnillynursery",
+        "public_phone": "010-837 8443",
+        "contact_source": {
+          "source_url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+          "retrieved_at": "2026-09-14T20:10:10.622815+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_bc393868c856c47ef03fd2043b1",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Kasih Nilly Nursery",
+            "basis": "The nursery's public August 2026 posts link its Linktree, which links the Google Maps destination at Warisan Cityview. Name and phone match that map listing. Coordinates use the destination, not the start of its directions link. No matching base-catalogue branch was found."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "occasional"
+          ],
+          "wording": "The nursery's August 2026 public posts advertise hourly, one-day and weekly care. Contact the nursery to check space and the price for this visit.",
+          "question": "Can my child attend for these hours, and what is the minimum charge?",
+          "sources": [
+            {
+              "label": "Kasih Nilly — public nursery posts, mirrored by FindGlocal",
+              "kind": "social_post_mirror",
+              "sourceDate": "2026-08-24",
+              "url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+              "retrievedAt": "2026-09-14T20:10:10.622815+00:00",
+              "snapshotHash": "1ec1f3ab636f3f418a505c82b50f92e6f1442777354cc888b658b5aaec121650"
+            }
+          ]
+        },
+        "age_min_months": 3,
+        "age_max_months": 48,
+        "age_source": {
+          "raw": "3 months to 4 years",
+          "source_url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+          "retrieved_at": "2026-09-14T20:10:10.622815+00:00"
+        },
+        "care_windows": [],
+        "operating_hours": {
+          "source_url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+          "source_kind": "social_post_mirror",
+          "source_retrieved_at": "2026-09-14T20:10:10.622815+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 450,
+              "end_minute": 1110
+            }
+          ],
+          "closed_weekdays": [],
+          "notes": "Public nursery posts list Monday–Friday 07:30–18:30. Weekend arrangements are not stated."
+        },
+        "fees": []
+      }
+    },
+    {
+      "provider_id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The hourly-care page explicitly names Plaza Damansara; provider contact-page campus data supplies its exact street address and coordinates. Shared phone matches the programme page. No matching branch found in base catalogue.",
+      "provider": {
+        "id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+        "official_name": "Learning Fresh — Damansara Heights",
+        "display_name": "Learning Fresh — Damansara Heights",
+        "address": "22-1, Jalan Medan Setia 2, Bukit Damansara, 50490 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Segambut",
+        "registration": null,
+        "public_profile": {
+          "label": "Learning Fresh — campus contacts",
+          "kind": "provider_website",
+          "url": "https://learningfresh.org/contact-us",
+          "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+          "sourceDate": null,
+          "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+        },
+        "profile_sources": [
+          {
+            "label": "Learning Fresh — campus contacts",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/contact-us",
+            "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+            "sourceDate": null,
+            "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+          },
+          {
+            "label": "Learning Fresh — hourly After-School Club",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/after-school-club",
+            "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+            "sourceDate": null,
+            "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+          }
+        ],
+        "public_profile_notes": [
+          "The listed number is the provider's shared enquiry contact."
+        ],
+        "location": {
+          "latitude": 3.1491051,
+          "longitude": 101.6531268,
+          "source_url": "https://learningfresh.org/contact-us"
+        },
+        "website": "https://learningfresh.org/after-school-club",
+        "public_phone": "012-232 5281",
+        "contact_source": {
+          "source_url": "https://learningfresh.org/contact-us",
+          "retrieved_at": "2026-09-14T20:10:09.342399+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Learning Fresh — Damansara Heights",
+            "basis": "The hourly-care page explicitly names Plaza Damansara; provider contact-page campus data supplies its exact street address and coordinates. Shared phone matches the programme page. No matching branch found in base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "The After-School Club page names Damansara Heights and offers care by the hour, including occasional drop-offs. Call ahead for space and confirm weekend arrangements.",
+          "question": "Can you take a new child for these hours at the Damansara Heights campus?",
+          "sources": [
+            {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          ]
+        },
+        "age_min_months": null,
+        "age_max_months": null,
+        "age_source": null,
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI"
+            ],
+            "start": 780,
+            "end": 1110,
+            "source": {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          },
+          {
+            "days": [
+              "SAT"
+            ],
+            "start": 540,
+            "end": 1020,
+            "source": {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://learningfresh.org/after-school-club",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+          "weekly_windows": [],
+          "closed_weekdays": [],
+          "notes": "Hourly programme: weekdays 13:00–18:30 and weekends 09:00–17:00. The campus list on the same page says Monday–Saturday, so Sunday hours remain unconfirmed."
+        },
+        "fees": [
+          {
+            "amount": 40,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekday Seedling",
+            "conditions": "Monday–Friday, 13:00–18:30. Call ahead for space.",
+            "source_url": "https://learningfresh.org/after-school-club",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 50,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekend Seedling",
+            "conditions": "Published weekend rate, 09:00–17:00. Confirm the campus and day; the location list says Monday–Saturday.",
+            "source_url": "https://learningfresh.org/after-school-club",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    }
+  ]
+}
