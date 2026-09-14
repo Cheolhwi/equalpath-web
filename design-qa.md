@@ -1,5 +1,19 @@
 # Landing page and map entrance QA
 
+## First-load artwork screen and matching wordmark (2026-09-14)
+
+The landing opens on a light paper loading surface with the EQUALPATH wordmark, three gently floating paper cards, a fine moving line and “Loading artwork…”. This is indeterminate activity, not a fabricated progress percentage. It covers both lazy scene-code loading and scene asset loading. The actual first rendered scene frame triggers a 480 ms fade; only after that fade does the existing collection-to-raised sequence begin. Reduced motion stays static and reveals immediately when ready.
+
+Find childcare remains available throughout loading and errors and enters search immediately. A failed image offers Try again; a delayed load offers a brief reminder that search remains available. Direct #discover visits do not mount the loader. Early entry also revealed a focus race: the first animation frame still reported the search page hidden after inert was removed. Focusing after the first visible paint fixes this without changing transition duration or blocking interaction.
+
+The main header now uses the landing wordmark's MiSans family, 750 weight, −0.075em tracking and 300-weight slash. Header sizing remains responsive, and other app typography is unchanged.
+
+- 139 unit checks, the isolated function-package import, production build and asset validation passed. No query-function deployment is needed for these frontend changes.
+- All eight landing browser cases passed, including delayed cold images, no premature reveal, image failure and successful retry, immediate entry, reduced motion, direct search links, collection opening, transition artwork identity, Escape and request preservation on return.
+- New typography checks compare computed font family, weight and proportional tracking across landing and main header. Desktop 1440 × 1000 and mobile 390 × 844 loading, gallery and header screenshots in `.build/landing-loading/` were visually inspected. The loader has no image dependency, text/buttons stay inside the viewport, and the app header retains its navigation spacing.
+- An initial local run was delayed by macOS cloud-placeholder project files; unchanged tracked resources were materialised from Git before the successful final verification. No source artwork content changed.
+- Release source digest: `e89b36a0b187fcb20ca1f4a5fc344e657d533c419b0d4360b83351c72404a311`. Public deployment is verified separately after publication.
+
 ## Contact-first recommendations (2026-09-14)
 
 Search still selects each nearest-20 page inside the 10 km radius before ranking. Within the existing conflict groups, a published phone or explicit WhatsApp contact now takes priority over distance, fee, closing time, pickup or name. Known conflicts remain last. Search/map suggestions and comparison winners use contactable, conflict-free candidates first; a website alone does not qualify. If there are only one or two contactable candidates, spare suggestion slots remain empty. No-contact candidates become the fallback only when that eligible page/shortlist has no contactable option. Existing requirements for comparable monthly prices remain. Per the user's subsequent clarification, this is an internal rule: it is not explained in search/comparison copy and has no extra badge.

@@ -10,6 +10,7 @@ import {
 import { ArrowRight, Minus, Plus } from "lucide-react";
 import App from "./App.jsx";
 import Pointer from "./Pointer.jsx";
+import LandingLoader from "./LandingLoader.jsx";
 import { careArtworks } from "./care-artworks.js";
 import { ENTRANCE_COVER_MS, ENTRANCE_REVEAL_MS, startEntrance } from "./entrance.js";
 import "./landing.css";
@@ -21,14 +22,9 @@ class SceneBoundary extends Component {
   static getDerivedStateFromError() {
     return { unavailable: true };
   }
+  componentDidCatch() { this.props.onError(); }
   render() {
-    return this.state.unavailable ? (
-      <div className="care-scene-placeholder">
-        The scene couldn’t load. You can still find childcare.
-      </div>
-    ) : (
-      this.props.children
-    );
+    return this.state.unavailable ? null : this.props.children;
   }
 }
 
@@ -45,6 +41,15 @@ export default function Experience() {
   const [activeArtwork, setActiveArtwork] = useState(0);
   const [entryArtwork, setEntryArtwork] = useState(0);
   const [readyArtworks, setReadyArtworks] = useState(() => new Set());
+  const [sceneStatus, setSceneStatus] = useState("loading");
+  const [loadStage, setLoadStage] = useState("loading");
+  const [sceneAttempt, setSceneAttempt] = useState(0);
+  const sceneError = useCallback(() => setSceneStatus("error"), []);
+  const retryScene = () => {
+    setSceneStatus("loading");
+    setLoadStage("loading");
+    setSceneAttempt(n => n + 1);
+  };
   const enterButton = useRef(null);
   const hasEntered = useRef(phase === "ready");
   const moving = phase !== "welcome" && phase !== "ready";
@@ -65,7 +70,7 @@ export default function Experience() {
     setEntryArtwork(activeArtwork);
     cancelEntrance.current();
     // The optional decoration must never show an empty frame or hold up entry.
-    if (!readyArtworks.has(activeArtwork)) {
+    if (loadStage !== "ready" || !readyArtworks.has(activeArtwork)) {
       finish();
       return;
     }
@@ -73,16 +78,29 @@ export default function Experience() {
       (next) => (next === "ready" ? finish() : setPhase(next)),
       { reduced },
     );
-  }, [phase, reduced, finish, activeArtwork, readyArtworks]);
+  }, [phase, reduced, finish, activeArtwork, readyArtworks, loadStage]);
   const home = useCallback(() => {
     cancelEntrance.current();
     history.replaceState(null, "", `${location.pathname}${location.search}`);
     setActiveArtwork(0);
     setReadyArtworks(new Set());
+    setSceneStatus("loading");
+    setLoadStage("loading");
     setPhase("welcome");
   }, []);
 
   useEffect(() => () => cancelEntrance.current(), []);
+  useEffect(() => {
+    if (phase !== "welcome") return;
+    if (sceneStatus !== "ready") {
+      setLoadStage(sceneStatus);
+      return;
+    }
+    if (reduced) { setLoadStage("ready"); return; }
+    setLoadStage(stage => stage === "ready" ? stage : "revealing");
+    const timer = setTimeout(() => setLoadStage("ready"), 480);
+    return () => clearTimeout(timer);
+  }, [phase, sceneStatus, reduced]);
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
     const changed = () => setReduced(media.matches);
@@ -93,13 +111,17 @@ export default function Experience() {
     if (reduced && moving) finish();
   }, [reduced, moving, finish]);
   useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      if (phase === "ready")
-        document
-          .getElementById("pickup-search")
-          ?.focus({ preventScroll: true });
-      else if (phase === "welcome" && hasEntered.current)
-        enterButton.current?.focus({ preventScroll: true });
+    // Immediate entry can remove the inert/hidden landing state in the same
+    // frame as the click. Focus only after the visible app has been painted.
+    let id = requestAnimationFrame(() => {
+      id = requestAnimationFrame(() => {
+        if (phase === "ready")
+          document
+            .getElementById("pickup-search")
+            ?.focus({ preventScroll: true });
+        else if (phase === "welcome" && hasEntered.current)
+          enterButton.current?.focus({ preventScroll: true });
+      });
     });
     return () => cancelAnimationFrame(id);
   }, [phase]);
@@ -134,6 +156,7 @@ export default function Experience() {
       {phase !== "ready" && (
         <section
           className="landing"
+          data-load-state={loadStage}
           aria-label="Welcome to EqualPath"
           aria-hidden={moving || undefined}
         >
@@ -143,19 +166,15 @@ export default function Experience() {
             aria-hidden={moving || undefined}
           >
             <div className="care-art">
-              <SceneBoundary>
-                <Suspense
-                  fallback={
-                    <div className="care-scene-placeholder">
-                      Loading illustrations…
-                    </div>
-                  }
-                >
+              <SceneBoundary key={sceneAttempt} onError={sceneError}>
+                <Suspense fallback={null}>
                   <CareScene reduced={reduced} animateOpening={!hasEntered.current}
-                    leaving={moving} onArtworkChange={setActiveArtwork} />
+                    leaving={moving} presented={loadStage === "ready"}
+                    onStatusChange={setSceneStatus} onArtworkChange={setActiveArtwork} />
                 </Suspense>
               </SceneBoundary>
             </div>
+            <LandingLoader state={loadStage} onRetry={retryScene} />
             <header className="landing-header">
               <div className="landing-brand">
                 <h1>

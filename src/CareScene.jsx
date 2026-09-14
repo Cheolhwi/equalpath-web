@@ -5,7 +5,7 @@ import { fileAtCell } from "./vendor/rhine/archive-loop";
 import { fileLocation, records } from "./vendor/rhine/data";
 import { careArtworks, nextArtwork, artworkDwell } from "./care-artworks.js";
 
-export default function CareScene({ reduced, animateOpening = true, leaving = false, onArtworkChange }) {
+export default function CareScene({ reduced, animateOpening = true, leaving = false, presented = true, onStatusChange, onArtworkChange }) {
   const host = useRef(null);
   const instance = useRef(null);
   const selected = useRef(0);
@@ -20,7 +20,7 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
   const [opening, setOpening] = useState(openingRef.current);
   const [paused, setPaused] = useState(false);
   const [hidden, setHidden] = useState(() => document.hidden);
-  const [retry, setRetry] = useState(0);
+  useEffect(() => { onStatusChange?.(status); }, [status, onStatusChange]);
   useEffect(() => { onArtworkChange?.(artIndex); }, [artIndex, onArtworkChange]);
   const finishOpening = useCallback(() => {
     openingRef.current = "complete";
@@ -65,9 +65,9 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
     };
   }, []);
   const playing =
-    status === "ready" && opening === "complete" && !paused && !reduced && !overview && !hidden && !leaving;
+    status === "ready" && presented && opening === "complete" && !paused && !reduced && !overview && !hidden && !leaving;
   useEffect(() => {
-    if (status !== "ready" || opening === "complete" || hidden || paused || reduced || leaving) return;
+    if (status !== "ready" || !presented || opening === "complete" || hidden || paused || reduced || leaving) return;
     return artworkDwell(() => {
       if (openingRef.current === "complete") return;
       if (opening === "collection") {
@@ -80,7 +80,7 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
         setOpening("lifting");
       } else finishOpening();
     }, { delay: opening === "collection" ? 300 : 1800 });
-  }, [status, opening, hidden, paused, reduced, leaving, finishOpening]);
+  }, [status, presented, opening, hidden, paused, reduced, leaving, finishOpening]);
   useEffect(() => {
     if (!playing) return;
     return artworkDwell(() => {
@@ -168,7 +168,7 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
       instance.current = null;
       scene?.dispose();
     };
-  }, [retry, choose, interact]);
+  }, [choose, interact]);
   const navigate = (step) => {
     interact();
     direction.current = step;
@@ -210,19 +210,9 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
         onPointerDown={interact}
       />
       <div className="care-scene-soften" aria-hidden="true" />
-      {status !== "ready" && (
-        <div className="care-scene-status" role="status">
-          {status === "loading" ? (
-            "Opening the collection…"
-          ) : (
-            <button onClick={() => setRetry((n) => n + 1)}>
-              Reload artwork
-            </button>
-          )}
-        </div>
-      )}
       <div
         className="care-scene-controls"
+        inert={!presented}
         onPointerDownCapture={finishOpening}
         onFocusCapture={(event) => {
           if (keyboardInteraction.current) interact();

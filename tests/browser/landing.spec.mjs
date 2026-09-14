@@ -113,11 +113,11 @@ test('reduced-motion mobile landing opens raised, with visible controls and keyb
 });
 
 test('Escape finishes entry on mobile and returning home preserves the current request',async({page})=>{
+  test.setTimeout(90000);
   await page.setViewportSize({width:390,height:844});
   await page.emulateMedia({reducedMotion:'no-preference'});
-  // Entry must remain usable even while the optional 3D scene has not loaded.
-  await page.route('**/CareScene.jsx',route=>route.abort());
   await page.goto('/');
+  await expect(page.locator('.landing')).toHaveAttribute('data-load-state','ready',{timeout:60000});
   await expect(page.locator('.entrance-art:not([hidden])')).toHaveAttribute('data-ready','true');
   await page.clock.install();await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
   await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
@@ -128,6 +128,9 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   await expect(page.locator('.entrance-curtain')).toHaveCount(0);
   await page.locator('#pickup-search').fill('Petaling Jaya');
   await page.getByRole('button',{name:'EqualPath home',exact:true}).click();
+  await page.clock.resume();
+  await expect(page.locator('.landing')).toHaveAttribute('data-load-state','ready',{timeout:60000});
+  await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
   await page.getByRole('button',{name:'BACK TO YOUR OPTIONS',exact:true}).click();
   await page.clock.runFor(ENTRANCE_DURATION_MS+32);
   await expect(page.locator('#pickup-search')).toHaveValue('Petaling Jaya');
