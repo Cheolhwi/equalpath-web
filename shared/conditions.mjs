@@ -116,7 +116,7 @@ export function assess(p, r) {
       ad?.source,
       ad?.value === true
         ? null
-        : "Can you accept a one-off temporary care visit on this date?",
+        : ad?.question ?? "Can you accept a one-off temporary care visit on this date?",
     ),
   );
   if (r.transport === "self") {

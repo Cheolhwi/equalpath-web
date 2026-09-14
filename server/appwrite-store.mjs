@@ -1,6 +1,7 @@
 import { buildCatalog } from "./providers.mjs";
 import { applyHoursEvidence } from "./hours-overlay.mjs";
 import { applyServicesEvidence } from "./services-overlay.mjs";
+import { applyAdmissionsEvidence } from "./admissions-overlay.mjs";
 import { applyFeesEvidence } from "./fees-overlay.mjs";
 const endpoint = "https://sgp.cloud.appwrite.io/v1",
   project = "6a916a6c0030a70a9d75";
@@ -36,7 +37,8 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
     const hoursKey = [summary.hours_release, summary.hours_hash, summary.hours_count].join(":");
     const servicesKey = [summary.services_release, summary.services_hash, summary.services_count].join(":");
     const feesKey = [summary.fees_release, summary.fees_hash, summary.fees_count].join(":");
-    if (cache?.release === manifest.release_id && cache.hoursKey === hoursKey && cache.servicesKey === servicesKey && cache.feesKey === feesKey) {
+    const admissionsKey = [summary.admissions_release, summary.admissions_hash, summary.admissions_count].join(":");
+    if (cache?.release === manifest.release_id && cache.hoursKey === hoursKey && cache.servicesKey === servicesKey && cache.feesKey === feesKey && cache.admissionsKey === admissionsKey) {
       checked = now();
       return cache;
     }
@@ -100,6 +102,18 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
         }), manifest.release_id, summary.hours_hash);
       } catch { throw new ServiceError("SOURCE_INVALID"); }
     }
+    if (summary.admissions_release) {
+      if (!/^admissions_[a-f0-9]{24}$/.test(summary.admissions_release) || !/^[a-f0-9]{64}$/.test(summary.admissions_hash ?? '') || !Number.isInteger(summary.admissions_count) || summary.admissions_count < 1 || summary.admissions_count > summary.provider_count) throw new ServiceError('SOURCE_INVALID');
+      const evidenceRows=[];
+      for(let offset=0;offset<summary.admissions_count;offset+=100){
+        const params=new URLSearchParams();
+        for(const q of [query('equal','release_id',[summary.admissions_release]),query('orderAsc','$id',[]),query('limit',null,[100]),query('offset',null,[offset])])params.append('queries[]',q);
+        params.set('total','false');
+        evidenceRows.push(...(await get('/tablesdb/equalpath/tables/web_provider_evidence/rows?'+params)).rows);
+      }
+      if(evidenceRows.length!==summary.admissions_count||evidenceRows.some(r=>r.release_id!==summary.admissions_release))throw new ServiceError('SOURCE_INCOMPLETE');
+      try{raw=applyAdmissionsEvidence(raw,evidenceRows.map(r=>{const value=JSON.parse(r.payload);if(value.provider_id!==r.provider_id)throw Error('Identity differs');return value;}),manifest.release_id,summary.admissions_hash);}catch{throw new ServiceError('SOURCE_INVALID');}
+    }
     if (summary.services_release) {
       if (!/^services_[a-f0-9]{24}$/.test(summary.services_release) || !/^[a-f0-9]{64}$/.test(summary.services_hash ?? '') || !Number.isInteger(summary.services_count) || summary.services_count < 1 || summary.services_count > summary.provider_count) throw new ServiceError('SOURCE_INVALID');
       const evidenceRows=[];
@@ -140,6 +154,7 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
     candidate.hoursKey = hoursKey;
     candidate.servicesKey = servicesKey;
     candidate.feesKey = feesKey;
+    candidate.admissionsKey = admissionsKey;
     if (summary.hours_release) {
       candidate.version += ":" + summary.hours_release;
       for (const p of candidate.items) p.version = candidate.version;
@@ -151,6 +166,10 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
     if (summary.fees_release) {
       candidate.version += ':' + summary.fees_release;
       for (const p of candidate.items) p.version=candidate.version;
+    }
+    if (summary.admissions_release) {
+      candidate.version += ':' + summary.admissions_release;
+      for (const p of candidate.items) p.version = candidate.version;
     }
     cache = candidate;
     checked = now();

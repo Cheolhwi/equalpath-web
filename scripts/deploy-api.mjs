@@ -40,6 +40,7 @@ for (const f of [
   "server/appwrite-store.mjs",
   "server/hours-overlay.mjs",
   "server/services-overlay.mjs",
+  "server/admissions-overlay.mjs",
   "server/fees-overlay.mjs",
   "shared/request.mjs",
   "shared/conditions.mjs",

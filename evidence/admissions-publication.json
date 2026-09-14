@@ -1,0 +1,48 @@
+{
+  "publication": {
+    "mode": "publish",
+    "table": "web_provider_evidence",
+    "rows": 12,
+    "release": "admissions_175b46b920fc9c6eebcfd6ea",
+    "baseRelease": "web_79f1397603c1e28325955f64",
+    "manifest": "web_data_releases/current",
+    "owner_tables_mutated": 0,
+    "startedAt": "2026-09-14T19:53:14.316Z",
+    "verified": 12,
+    "completedAt": "2026-09-14T19:53:15.292Z",
+    "manifestVerified": true
+  },
+  "verification": {
+    "verifiedAt": "2026-09-14T19:55:21.707Z",
+    "release": "admissions_175b46b920fc9c6eebcfd6ea",
+    "version": "web_79f1397603c1e28325955f64:service-review-2026-09-13-v7:hours_07097222eb15319e14097448:services_93cc3b562c6e94ee19a475f0:fees_9e6b8a50381b09144e1b4299:admissions_175b46b920fc9c6eebcfd6ea",
+    "visible": 3122,
+    "publishedTemporaryCare": 4,
+    "reviewed": 12,
+    "programmeOnly": 7,
+    "paused": 1,
+    "unchangedOtherProviderFacts": true,
+    "unchangedOtherManifestFields": true,
+    "publicFunction": "ok",
+    "publicCases": [
+      {
+        "name": "Cherie Hearts International Preschool Kota Damansara",
+        "admission": "unknown",
+        "source": "https://www.cheriehearts.com.my/programmes",
+        "hasAvailabilityQuestion": true
+      },
+      {
+        "name": "TASKA PONDOK INDAH",
+        "admission": "supported",
+        "source": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+        "hasAvailabilityQuestion": true
+      },
+      {
+        "name": "Human StarChild Care Center",
+        "admission": "unknown",
+        "source": "https://humanstarchild.com/",
+        "hasAvailabilityQuestion": true
+      }
+    ]
+  }
+}

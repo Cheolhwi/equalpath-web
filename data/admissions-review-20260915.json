@@ -1,0 +1,310 @@
+{
+  "reviewed_on": "2026-09-15",
+  "sources": {
+    "lullabee": {
+      "url": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+      "label": "Lullabee — hourly drop-in",
+      "kind": "provider_website",
+      "sourceDate": null
+    },
+    "lullabee_alias": {
+      "url": "https://www.lullabee.com.my/ourproducts/cid/642545/cat/hourly-dropin/",
+      "label": "Lullabee / Taska Pondok Indah — programme directory",
+      "kind": "provider_website",
+      "sourceDate": null
+    },
+    "feetrah": {
+      "url": "https://www.maukerja.my/company/little-feetrah-child-care-centre",
+      "label": "Little Feetrah — employer profile",
+      "kind": "employer_profile",
+      "sourceDate": null
+    },
+    "whale": {
+      "url": "https://www.carischools.com/school/little-whale-child-care-centre-selangor",
+      "label": "CariSchool — Little Whale care options",
+      "kind": "public_directory",
+      "sourceDate": null
+    },
+    "bonda": {
+      "url": "https://www.schoolandcollegelistings.com/MY/Puncak-Alam/101855019147237/Taska-Bonda-Mama-Sayang-Sentrovue-A%2C-PP-Alam-Jaya%2C-Puncak-Alam%2C-Selangor",
+      "label": "Bonda Mama Sayang — dated post on a public mirror",
+      "kind": "social_post_mirror",
+      "sourceDate": "2025-10-03"
+    },
+    "cherie": {
+      "url": "https://www.cheriehearts.com.my/programmes",
+      "label": "Cherie Hearts — Flexi Care programme",
+      "kind": "provider_website",
+      "sourceDate": null
+    },
+    "cherie_kd": {
+      "url": "https://www.cheriehearts.com.my/branches/kota-damansara",
+      "label": "Cherie Hearts — Kota Damansara branch",
+      "kind": "provider_website",
+      "sourceDate": null
+    },
+    "cherie_kk": {
+      "url": "https://www.cheriehearts.com.my/branches/kota-kemuning",
+      "label": "Cherie Hearts — Kota Kemuning branch",
+      "kind": "provider_website",
+      "sourceDate": null
+    },
+    "campus": {
+      "url": "https://www.kidscampus.my/childcare/",
+      "label": "Kids Campus — hourly care programmes",
+      "kind": "provider_website",
+      "sourceDate": null
+    },
+    "tree": {
+      "url": "https://www.kiddy123.com/article/tree-dolphin-childcare-centre-ara-damansara-3/",
+      "label": "Kiddy123 — Tree Dolphin care options",
+      "kind": "public_directory",
+      "sourceDate": "2025-08-02"
+    },
+    "orange": {
+      "url": "https://orangetreepreschool.com.my/curriculum/",
+      "label": "Orange Tree — extended care options",
+      "kind": "provider_website",
+      "sourceDate": null
+    },
+    "human": {
+      "url": "https://humanstarchild.com/",
+      "label": "Human StarChild — Kuala Lumpur admissions notice",
+      "kind": "provider_website",
+      "sourceDate": "2026-09-04"
+    }
+  },
+  "records": [
+    {
+      "provider_id": "provider_048d12e84516f211fc58acceef1",
+      "catalogue_name": "TASKA PONDOK INDAH",
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "hourly",
+        "drop_in"
+      ],
+      "sources": [
+        "lullabee",
+        "lullabee_alias"
+      ],
+      "match_basis": "The provider programme directory identifies Taska Pondok Indah; its drop-in page names 16A Jalan Kenari 1, Puchong Jaya, matching the imported branch address.",
+      "wording": "Hourly drop-in care is advertised at this Puchong Jaya branch, now called Lullabee. Contact the centre to arrange a short visit and check the minimum stay, age accepted and price.",
+      "question": "Can I book a few hours at your Puchong Jaya branch on this date, and what is the minimum stay and total price?"
+    },
+    {
+      "provider_id": "provider_1c9df519e489a6da1a3659dfb02",
+      "catalogue_name": "LITTLE FEETRAH CHILD CARE CENTRE",
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "drop_in"
+      ],
+      "sources": [
+        "feetrah"
+      ],
+      "match_basis": "The employer profile names Little Feetrah Child Care Centre at No. 2 Jalan 8/3, Bandar Baru Bangi, matching the imported name and street address.",
+      "wording": "The centre advertises drop-in care alongside regular care in its employer profile. Session length, advance notice and current prices are not listed.",
+      "question": "Can my child attend for just a few hours on this date, and how much notice do you need?"
+    },
+    {
+      "provider_id": "provider_57987832b49511aad3a52391f1b",
+      "catalogue_name": "LITTLE WHALE CHILDCARE CENTRE",
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "hourly"
+      ],
+      "sources": [
+        "whale"
+      ],
+      "match_basis": "Exact Little Whale branch name and Lot 4-1 Kiara Plaza, Jalan Semenyih address match.",
+      "wording": "Hourly care is listed for this branch. Ask about the minimum stay, advance booking and the price for your visit.",
+      "question": "Can I arrange hourly care on this date, and what is the minimum stay and total price?"
+    },
+    {
+      "provider_id": "provider_faf113b11a3a39d973d7704e42c",
+      "catalogue_name": "TASKA BONDA MAMA SAYANG",
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "occasional"
+      ],
+      "sources": [
+        "bonda"
+      ],
+      "match_basis": "The dated post names Taska Bonda Mama Sayang Sentrovue A, Jalan PPAJ 5, Alam Jaya, Puncak Alam, matching the imported branch name, building and street.",
+      "wording": "A post dated 3 October 2025 advertises temporary weekday care while parents attend to errands. It asks parents to register first. Confirm that this option is still offered, the ages accepted and the minimum stay.",
+      "question": "Do you still offer temporary weekday care, and can I register my child for a few hours on this date?"
+    },
+    {
+      "provider_id": "provider_kpm_e568c0c0a13afedf16b7b6ea",
+      "catalogue_name": "TADIKA CERI HATI (CAWANGAN KOTA DAMANSARA)",
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "flexi"
+      ],
+      "sources": [
+        "cherie",
+        "cherie_kd"
+      ],
+      "match_basis": "Official branch page matches the imported Kota Damansara branch address. The Flexi Care description is shared across the brand, without a branch-specific offer.",
+      "wording": "Cherie Hearts advertises a few hours of Flexi Care for ages 2 months–6 years. Ask whether the Kota Damansara branch offers it for a single visit and accepts new children for this service.",
+      "question": "Does your Kota Damansara branch offer Flexi Care for a one-off visit, and can a new child attend on this date?"
+    },
+    {
+      "provider_id": "provider_8decab43ab4f3e21d046f9bd1d2",
+      "catalogue_name": "CHERIE HEARTS CHILD CARE CENTRE",
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "flexi"
+      ],
+      "sources": [
+        "cherie",
+        "cherie_kk"
+      ],
+      "match_basis": "Official branch page matches the imported Kota Kemuning branch address. The Flexi Care description is shared across the brand, without a branch-specific offer.",
+      "wording": "Cherie Hearts advertises a few hours of Flexi Care for ages 2 months–6 years. Ask whether the Kota Kemuning branch offers it for a single visit and accepts new children for this service.",
+      "question": "Does your Kota Kemuning branch offer Flexi Care for a one-off visit, and can a new child attend on this date?"
+    },
+    {
+      "provider_id": "provider_aca4036ed9e9162d02bafe49beb",
+      "catalogue_name": "KIDS CAMPUS CHILD CARE CENTRE",
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "hourly"
+      ],
+      "sources": [
+        "campus"
+      ],
+      "match_basis": "The official Kids Campus childcare page lists Campus 6, Shah Alam. The imported branch matches that campus location. Programme descriptions are shared and do not specify each campus.",
+      "wording": "Kids Campus lists 2–3 hours of care from 10:00 for its preschool (ages 4–6) and transit (ages 5–15) programmes. Confirm availability at Campus 6, Shah Alam and whether a child can attend without regular enrolment.",
+      "question": "Does Campus 6, Shah Alam accept a new child for 2–3 hours, and does this option cover my child’s age?"
+    },
+    {
+      "provider_id": "provider_9c0bd03e329d0c94e9abf11085a",
+      "catalogue_name": "KIDS CAMPUS CHILD CARE CENTRE",
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "hourly"
+      ],
+      "sources": [
+        "campus"
+      ],
+      "match_basis": "The official Kids Campus childcare page lists Campus 7, Shah Alam. The imported branch matches that campus location. Programme descriptions are shared and do not specify each campus.",
+      "wording": "Kids Campus lists 2–3 hours of care from 10:00 for its preschool (ages 4–6) and transit (ages 5–15) programmes. Confirm availability at Campus 7, Shah Alam and whether a child can attend without regular enrolment.",
+      "question": "Does Campus 7, Shah Alam accept a new child for 2–3 hours, and does this option cover my child’s age?"
+    },
+    {
+      "provider_id": "provider_9bf9c5cf005742c633ea5954a42",
+      "catalogue_name": "KIDS CAMPUS CHILD CARE CENTRE",
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "hourly"
+      ],
+      "sources": [
+        "campus"
+      ],
+      "match_basis": "The official Kids Campus childcare page lists HTAR, Klang. The imported branch matches that campus location. Programme descriptions are shared and do not specify each campus.",
+      "wording": "Kids Campus lists 2–3 hours of care from 10:00 for its preschool (ages 4–6) and transit (ages 5–15) programmes. Confirm availability at HTAR, Klang and whether a child can attend without regular enrolment.",
+      "question": "Does HTAR, Klang accept a new child for 2–3 hours, and does this option cover my child’s age?"
+    },
+    {
+      "provider_id": "provider_05ae2bd1eaed1fbc438f3c4fc57",
+      "catalogue_name": "TREE DOPLHIN CHILD CARE CENTRE",
+      "status": "programme_only",
+      "scope": "branch",
+      "service_types": [
+        "flexi"
+      ],
+      "sources": [
+        "tree"
+      ],
+      "match_basis": "Kiddy123 article identifies Tree Dolphin in Ara Damansara, matching the branch already linked to this provider.",
+      "wording": "Flexi-care and weekend care are advertised. The article does not say whether a new child can attend for a single short visit; some services refer to enrolled children and siblings.",
+      "question": "Can a child who is not enrolled attend your flexi-care for just a few hours?"
+    },
+    {
+      "provider_id": "provider_c36825e25ecc65a6057036d5e50",
+      "catalogue_name": "ORANGE TREE ACADEMY CHILD CARE CENTRE",
+      "status": "programme_only",
+      "scope": "branch",
+      "service_types": [
+        "extended_care"
+      ],
+      "sources": [
+        "orange"
+      ],
+      "match_basis": "Official curriculum page lists the Wisma TA headquarters at Lot G-01, 1A Jalan SS20/1, matching the imported branch address.",
+      "wording": "Extra care after the full-day programme and holiday care are available for an additional charge. The website does not establish standalone drop-in care for a new child.",
+      "question": "Do you accept a child for one-off care without enrolling in your regular preschool programme?"
+    },
+    {
+      "provider_id": "provider_20ed0d1ee2778f7b998a54cd236",
+      "catalogue_name": "HUMAN STAR CHILD CARE CENTRE",
+      "status": "paused",
+      "scope": "branch",
+      "service_types": [
+        "admissions_pause"
+      ],
+      "sources": [
+        "human"
+      ],
+      "match_basis": "Official site identifies the Kuala Lumpur nursery at Lalaport, matching the imported branch. The notice is explicitly for Kuala Lumpur.",
+      "wording": "The centre announced on 4 September 2026 that its Kuala Lumpur nursery is not accepting new enrolments. It does not clarify whether temporary visits are also paused; contact the centre before planning a visit.",
+      "question": "Your website says new enrolments are paused. Are one-off short care visits also unavailable?"
+    }
+  ],
+  "unmerged_leads": [
+    {
+      "name": "Little Human Scholars — Section 11, Petaling Jaya",
+      "url": "https://www.littlehumanscholars.com.my/drop-in-childcare-petaling-jaya/",
+      "reason": "Explicit hourly drop-in; neither published address matches an existing catalogue branch. Do not attach it to a similarly named provider."
+    },
+    {
+      "name": "iKid House — Bandar Puteri, Puchong",
+      "url": "https://www.ikidhouse.org/features/flexible-scheduling/",
+      "reason": "Explicit occasional drop-in at Jalan Puteri 4/7A; catalogue iKids records are in Cyberjaya and are not this branch."
+    },
+    {
+      "name": "Lullabee — Old Klang Road",
+      "url": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+      "reason": "Explicit hourly drop-in; no current catalogue match at Wisma Ambawang, Jalan Anggor. Only the matched Puchong Jaya branch was enriched."
+    },
+    {
+      "name": "Kinder Mindz — Vista Mutiara",
+      "url": "https://kindermindz.com/index.php/contact/",
+      "reason": "FAQ advertises drop-in; no confident existing branch match."
+    },
+    {
+      "name": "Baby Angels — Taman OUG",
+      "url": "https://www.babyangels.com.my/services.html",
+      "reason": "Hourly care advertised; no existing catalogue match at Boulevard Harmoni, Jalan Awan Makmur."
+    },
+    {
+      "name": "Wonder Minds",
+      "url": "https://wonderminds.com.my/",
+      "reason": "Ad-hoc babysitting advertised; centre drop-off versus visiting babysitter not established, and existing branch identity unresolved."
+    },
+    {
+      "name": "Iman Child Centre",
+      "url": "https://imancc.edu.my/program/",
+      "reason": "Non-regular day/half-day packages published; no confident existing branch match."
+    },
+    {
+      "name": "Taska Ceria blog",
+      "url": "https://taskaceria.blogspot.com/p/programmes-offers.html",
+      "reason": "Out of area: Miri, Sarawak; 2012 material. Excluded."
+    },
+    {
+      "name": "Learning Fresh — Mont Kiara / Damansara Heights",
+      "url": "https://my.linkedin.com/company/learning-fresh-education",
+      "reason": "Company posts describe hourly FreshCare; no existing catalogue match. Not included in current provider counts."
+    }
+  ]
+}

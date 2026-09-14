@@ -322,6 +322,22 @@ export function normalizeProvider(raw, release) {
     p.notes.push(
       "Kiddy123 describes weekend care, while Maps lists weekends closed. Ask whether weekend care is by arrangement.",
     );
+  if (raw.admission_review) {
+    const review = raw.admission_review;
+    p.admission = {
+      value: review.status === 'published' ? true : review.status === 'not_offered' ? false : null,
+      wording: review.wording,
+      question: review.question,
+      source: review.sources[0],
+      sources: review.sources,
+      serviceTypes: review.service_types,
+      scope: review.scope,
+      evidenceStatus: review.status,
+      sameDayAcceptance: 'unknown',
+      placesAvailable: 'unknown',
+    };
+    p.sources.push(...review.sources);
+  }
   p.sources = [...new Map(p.sources.map((s) => [s.url, s])).values()];
   const reviewed = reviewedFees.records.find(row => row.id === p.id);
   if (reviewed) {
