@@ -15,6 +15,7 @@ export function applyAdmissionsEvidence(raw, records, baseRelease, expectedHash)
         !text(r.match.basis, 600) || !['published', 'programme_only', 'not_offered', 'paused'].includes(r.status) ||
         !['branch', 'brand'].includes(r.scope) || (r.status === 'published' && r.scope !== 'branch') ||
         !text(r.wording, 1000) || !text(r.question, 400) ||
+        (r.requirements != null && (!Array.isArray(r.requirements) || r.requirements.length > 6 || r.requirements.some(s => !text(s, 400)))) ||
         !Array.isArray(r.service_types) || !r.service_types.length ||
         r.service_types.some(t => !['hourly', 'drop_in', 'occasional', 'flexi', 'extended_care', 'admissions_pause'].includes(t)) ||
         !Array.isArray(r.sources) || !r.sources.length || r.sources.length > 5 ||

@@ -1,0 +1,80 @@
+{
+  "verifiedAt": "2026-09-14T20:52:15.837Z",
+  "additionsRelease": "additions_a8727db3b492c2eb95f4f25f",
+  "admissionsRelease": "admissions_e480fff022a03f57e29e68d8",
+  "before": 3129,
+  "after": 3135,
+  "added": 6,
+  "existingServiceUpdates": 1,
+  "publishedTemporaryCareBefore": 11,
+  "publishedTemporaryCareAfter": 18,
+  "unchangedProviders": 3128,
+  "existingOtherFieldsPreserved": true,
+  "heldUnchanged": true,
+  "publicBackend": true,
+  "checked": [
+    {
+      "id": "provider_7617dd8dc6f837b9d9f170a9465",
+      "name": "KLEVER CAPE CHILD CARE CENTRE",
+      "phone": "019-6197585",
+      "feeEntries": 1,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    },
+    {
+      "id": "provider_d599142b1023ab80f309304845e",
+      "name": "We Rock the Spectrum — Taman Desa",
+      "phone": "010-939 5711",
+      "feeEntries": 2,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    },
+    {
+      "id": "provider_038b7be988901ada265e733de80",
+      "name": "Little Playhouse — Jalan Mesra (KLCC)",
+      "phone": "016-652 6307",
+      "feeEntries": 3,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    },
+    {
+      "id": "provider_21507892dc4fa7d9cba4819519a",
+      "name": "Little Playhouse — KL Eco City",
+      "phone": "010-281 1337",
+      "feeEntries": 3,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    },
+    {
+      "id": "provider_7ac2d78d14abd37d859b7dfcae9",
+      "name": "Limoncito — Bukit Tunku Art Drop",
+      "phone": "019-254 1918",
+      "feeEntries": 1,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    },
+    {
+      "id": "provider_b5e469ac6144ecffad381d62593",
+      "name": "Little Playhouse — Menara Shell (KL Sentral)",
+      "phone": "010-263 1337",
+      "feeEntries": 3,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    },
+    {
+      "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+      "name": "TOY8 Playground — The Gardens Mall",
+      "phone": "019-736 4588",
+      "feeEntries": 0,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    }
+  ]
+}

@@ -1,0 +1,612 @@
+{
+  "sources": {
+    "playhouse-klcc": {
+      "label": "Little Playhouse — KLCC campus",
+      "kind": "provider_website"
+    },
+    "playhouse-sentral": {
+      "label": "Little Playhouse — KL Sentral campus",
+      "kind": "provider_website"
+    },
+    "playhouse-eco": {
+      "label": "Little Playhouse — KL Eco City campus",
+      "kind": "provider_website"
+    },
+    "playhouse-locations": {
+      "label": "Little Playhouse campus locations and ages",
+      "kind": "provider_website"
+    },
+    "playhouse-faq": {
+      "label": "Little Playhouse short-term booking FAQ",
+      "kind": "provider_website"
+    },
+    "playhouse-ui": {
+      "label": "Little Playhouse — short-term care prices and programmes",
+      "kind": "provider_website",
+      "pageURL": "https://littleplayhouse.com.my/pricing"
+    },
+    "playhouse-pricing": {
+      "label": "Little Playhouse short-term prices",
+      "kind": "provider_website"
+    },
+    "wrts-care": {
+      "label": "We Rock the Spectrum — Drop Off terms and prices",
+      "kind": "provider_website"
+    },
+    "wrts-contact": {
+      "label": "We Rock the Spectrum — Taman Desa contact",
+      "kind": "provider_website"
+    },
+    "wrts-map": {
+      "label": "We Rock the Spectrum — linked map",
+      "kind": "map_listing"
+    },
+    "toy-care": {
+      "label": "TOY8 — Child Drop-off Service",
+      "kind": "provider_website"
+    },
+    "toy-contact": {
+      "label": "TOY8 playground contact",
+      "kind": "provider_website"
+    },
+    "toy-care-map-64": {
+      "label": "TOY8 — embedded branch map",
+      "kind": "map_listing"
+    },
+    "toy-member": {
+      "label": "Japan Club — TOY8 2026 service information",
+      "kind": "public_directory"
+    },
+    "limon-care": {
+      "label": "Limoncito — Art Drop at Bukit Tunku",
+      "kind": "provider_website"
+    },
+    "limon-contact": {
+      "label": "Limoncito branch contact details",
+      "kind": "provider_website"
+    },
+    "limon-map": {
+      "label": "Limoncito Bukit Tunku — map listing",
+      "kind": "map_listing"
+    },
+    "klever-programme": {
+      "label": "KleverCape hourly care programme",
+      "kind": "provider_website"
+    },
+    "klever-faq": {
+      "label": "KleverCape hours and hourly-care rules",
+      "kind": "provider_website"
+    },
+    "klever-directory": {
+      "label": "KleverCape branch address and phone",
+      "kind": "public_directory"
+    }
+  },
+  "providers": [
+    {
+      "key": "playhouse-klcc",
+      "name": "Little Playhouse — Jalan Mesra (KLCC)",
+      "address": "34, Jalan Mesra, Off Jalan Damai, 55000 Kuala Lumpur",
+      "state": "Kuala Lumpur",
+      "district": "Kuala Lumpur",
+      "latitude": 3.1615,
+      "longitude": 101.7177,
+      "locationSource": "playhouse-ui",
+      "website": "https://littleplayhouse.com.my/locations/klcc",
+      "phone": "016-652 6307",
+      "contactSource": "playhouse-klcc",
+      "profileSource": "playhouse-klcc",
+      "admissionSources": [
+        "playhouse-faq",
+        "playhouse-ui"
+      ],
+      "serviceTypes": [
+        "occasional"
+      ],
+      "wording": "Daily, weekly and monthly short-term care is offered. Book at least one week ahead, subject to space. Half-day care runs 08:00–12:00; flexible arrival and collection times need agreement.",
+      "question": "Can you accept this short-term visit with the required notice, and which session and daily price apply?",
+      "requirements": [
+        "Book at least one week in advance; a place must be agreed with the centre.",
+        "Half-day care uses a fixed 08:00–12:00 session."
+      ],
+      "age": {
+        "min": 3,
+        "max": 72,
+        "raw": "3 months to 6 years",
+        "source": "playhouse-locations"
+      },
+      "hoursSource": "playhouse-locations",
+      "hours": [
+        {
+          "days": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "start": 480,
+          "end": 1080
+        }
+      ],
+      "closedDays": [
+        "SAT",
+        "SUN"
+      ],
+      "careWindows": [
+        {
+          "days": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "start": 480,
+          "end": 1080
+        }
+      ],
+      "hoursNote": "Monday–Friday 08:00–18:00. Half-day programme 08:00–12:00. Short-term bookings require one week notice.",
+      "fees": [
+        {
+          "amount": 200,
+          "basis": "day",
+          "programme": "Short-term infant care / playgroup",
+          "conditions": "Infant care (3 months–1 year) or playgroup (2 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+          "source": "playhouse-ui"
+        },
+        {
+          "amount": 180,
+          "basis": "day",
+          "programme": "Short-term KG 1",
+          "conditions": "KG 1 (3 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+          "source": "playhouse-ui"
+        },
+        {
+          "amount": 160,
+          "basis": "day",
+          "programme": "Short-term KG 2 / reception",
+          "conditions": "KG 2 (4 years), Junior Reception (5 years) or Senior Reception (6 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+          "source": "playhouse-ui"
+        }
+      ],
+      "notes": [
+        "Prices are daily short-term programme fees, not an hourly quote or a guaranteed total.",
+        "Branch and age details are published by the operator. A current government registration record was not independently matched for this addition."
+      ],
+      "identityReview": "The operator lists this campus separately with its address and phone; its public campus map data provides these coordinates. The shared FAQ and pricing page explicitly offer temporary daily care at its centres. Checked against all original and newly added records by name, address and phone; no matching branch."
+    },
+    {
+      "key": "playhouse-sentral",
+      "name": "Little Playhouse — Menara Shell (KL Sentral)",
+      "address": "Level 4, Menara Shell, 211 Jalan Tun Sambanthan, 50470 Kuala Lumpur",
+      "state": "Kuala Lumpur",
+      "district": "Kuala Lumpur",
+      "latitude": 3.1335,
+      "longitude": 101.6865,
+      "locationSource": "playhouse-ui",
+      "website": "https://littleplayhouse.com.my/locations/kl-sentral",
+      "phone": "010-263 1337",
+      "contactSource": "playhouse-sentral",
+      "profileSource": "playhouse-sentral",
+      "admissionSources": [
+        "playhouse-faq",
+        "playhouse-ui"
+      ],
+      "serviceTypes": [
+        "occasional"
+      ],
+      "wording": "Daily, weekly and monthly short-term care is offered. Book at least one week ahead, subject to space. Half-day care runs 08:00–12:00; flexible arrival and collection times need agreement.",
+      "question": "Can you accept this short-term visit with the required notice, and which session and daily price apply?",
+      "requirements": [
+        "Book at least one week in advance; a place must be agreed with the centre.",
+        "Half-day care uses a fixed 08:00–12:00 session."
+      ],
+      "age": {
+        "min": 3,
+        "max": 72,
+        "raw": "3 months to 6 years",
+        "source": "playhouse-locations"
+      },
+      "hoursSource": "playhouse-locations",
+      "hours": [
+        {
+          "days": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "start": 480,
+          "end": 1080
+        }
+      ],
+      "closedDays": [
+        "SAT",
+        "SUN"
+      ],
+      "careWindows": [
+        {
+          "days": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "start": 480,
+          "end": 1080
+        }
+      ],
+      "hoursNote": "Monday–Friday 08:00–18:00. Half-day programme 08:00–12:00. Short-term bookings require one week notice.",
+      "fees": [
+        {
+          "amount": 200,
+          "basis": "day",
+          "programme": "Short-term infant care / playgroup",
+          "conditions": "Infant care (3 months–1 year) or playgroup (2 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+          "source": "playhouse-ui"
+        },
+        {
+          "amount": 180,
+          "basis": "day",
+          "programme": "Short-term KG 1",
+          "conditions": "KG 1 (3 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+          "source": "playhouse-ui"
+        },
+        {
+          "amount": 160,
+          "basis": "day",
+          "programme": "Short-term KG 2 / reception",
+          "conditions": "KG 2 (4 years), Junior Reception (5 years) or Senior Reception (6 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+          "source": "playhouse-ui"
+        }
+      ],
+      "notes": [
+        "Prices are daily short-term programme fees, not an hourly quote or a guaranteed total.",
+        "Branch and age details are published by the operator. A current government registration record was not independently matched for this addition."
+      ],
+      "identityReview": "The operator lists this campus separately with its address and phone; its public campus map data provides these coordinates. The shared FAQ and pricing page explicitly offer temporary daily care at its centres. Checked against all original and newly added records by name, address and phone; no matching branch."
+    },
+    {
+      "key": "playhouse-eco",
+      "name": "Little Playhouse — KL Eco City",
+      "address": "M-01, KL Eco City Mall, 3 Jalan Bangsar, 59100 Kuala Lumpur",
+      "state": "Kuala Lumpur",
+      "district": "Kuala Lumpur",
+      "latitude": 3.1178,
+      "longitude": 101.6773,
+      "locationSource": "playhouse-ui",
+      "website": "https://littleplayhouse.com.my/locations/kl-eco-city",
+      "phone": "010-281 1337",
+      "contactSource": "playhouse-eco",
+      "profileSource": "playhouse-eco",
+      "admissionSources": [
+        "playhouse-faq",
+        "playhouse-ui"
+      ],
+      "serviceTypes": [
+        "occasional"
+      ],
+      "wording": "Daily, weekly and monthly short-term care is offered. Book at least one week ahead, subject to space. Half-day care runs 08:00–12:00; flexible arrival and collection times need agreement.",
+      "question": "Can you accept this short-term visit with the required notice, and which session and daily price apply?",
+      "requirements": [
+        "Book at least one week in advance; a place must be agreed with the centre.",
+        "Half-day care uses a fixed 08:00–12:00 session."
+      ],
+      "age": {
+        "min": 3,
+        "max": 72,
+        "raw": "3 months to 6 years",
+        "source": "playhouse-locations"
+      },
+      "hoursSource": "playhouse-locations",
+      "hours": [
+        {
+          "days": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "start": 480,
+          "end": 1080
+        }
+      ],
+      "closedDays": [
+        "SAT",
+        "SUN"
+      ],
+      "careWindows": [
+        {
+          "days": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "start": 480,
+          "end": 1080
+        }
+      ],
+      "hoursNote": "Monday–Friday 08:00–18:00. Half-day programme 08:00–12:00. Short-term bookings require one week notice.",
+      "fees": [
+        {
+          "amount": 200,
+          "basis": "day",
+          "programme": "Short-term infant care / playgroup",
+          "conditions": "Infant care (3 months–1 year) or playgroup (2 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+          "source": "playhouse-ui"
+        },
+        {
+          "amount": 180,
+          "basis": "day",
+          "programme": "Short-term KG 1",
+          "conditions": "KG 1 (3 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+          "source": "playhouse-ui"
+        },
+        {
+          "amount": 160,
+          "basis": "day",
+          "programme": "Short-term KG 2 / reception",
+          "conditions": "KG 2 (4 years), Junior Reception (5 years) or Senior Reception (6 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+          "source": "playhouse-ui"
+        }
+      ],
+      "notes": [
+        "Prices are daily short-term programme fees, not an hourly quote or a guaranteed total.",
+        "Branch and age details are published by the operator. A current government registration record was not independently matched for this addition."
+      ],
+      "identityReview": "The operator lists this campus separately with its address and phone; its public campus map data provides these coordinates. The shared FAQ and pricing page explicitly offer temporary daily care at its centres. Checked against all original and newly added records by name, address and phone; no matching branch."
+    },
+    {
+      "key": "wrts-taman-desa",
+      "name": "We Rock the Spectrum — Taman Desa",
+      "address": "G1, Wisma Miramas, No. 1, Jalan 2/109e, Taman Desa, 58100 Kuala Lumpur",
+      "state": "Kuala Lumpur",
+      "district": "Kuala Lumpur",
+      "latitude": 3.0975134,
+      "longitude": 101.6779551,
+      "locationSource": "wrts-map",
+      "website": "https://werockthespectrumtamandesa.com/drop-off/",
+      "phone": "010-939 5711",
+      "contactSource": "wrts-contact",
+      "profileSource": "wrts-contact",
+      "admissionSources": [
+        "wrts-care"
+      ],
+      "serviceTypes": [
+        "hourly",
+        "drop_in"
+      ],
+      "wording": "Supervised drop-off at an inclusive play gym, for 1–3 hours. Book at least one day ahead. Ages 3–13; children must be toilet trained. The operator explicitly says this is not a licensed daycare.",
+      "question": "Can you supervise my child for this 1–3-hour visit, with the required notice and toilet-training requirements?",
+      "requirements": [
+        "Each visit is 1–3 hours, booked at least one day in advance.",
+        "Children must be toilet trained; the operator requires completed parent and health forms."
+      ],
+      "age": {
+        "min": 36,
+        "max": 156,
+        "raw": "3 to 13 years",
+        "source": "wrts-care"
+      },
+      "hoursSource": "wrts-contact",
+      "hours": [
+        {
+          "days": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI",
+            "SAT",
+            "SUN"
+          ],
+          "start": 600,
+          "end": 1080
+        }
+      ],
+      "closedDays": [],
+      "careWindows": [
+        {
+          "days": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI",
+            "SAT",
+            "SUN"
+          ],
+          "start": 600,
+          "end": 1080
+        }
+      ],
+      "hoursNote": "Generally daily 10:00–18:00; private rentals and parties can change opening times. Drop-off must be booked at least one day ahead.",
+      "fees": [
+        {
+          "amount": 60,
+          "basis": "hour",
+          "programme": "Drop-off, 1 staff to 4 children",
+          "conditions": "Drop-off only, 1–3 hours per visit. Advance booking and toilet training required. Multi-hour packages are separate.",
+          "source": "wrts-care"
+        },
+        {
+          "amount": 80,
+          "basis": "hour",
+          "programme": "Drop-off, 1-to-1 care",
+          "conditions": "Drop-off only, 1–3 hours per visit. Advance booking and toilet training required. Multi-hour packages are separate.",
+          "source": "wrts-care"
+        }
+      ],
+      "notes": [
+        "Supervised play-gym service. The provider explicitly states that it is not a licensed daycare.",
+        "The old Bangsar website redirects to Taman Desa; these were counted as one current location, not two branches."
+      ],
+      "identityReview": "Current provider contact page and drop-off terms both name Wisma Miramas, Taman Desa, and 010-9395711. The linked map gives this location. Old Bangsar URL redirects here and is not a separate addition. No matching existing branch by name, address or phone."
+    },
+    {
+      "key": "toy8-gardens",
+      "name": "TOY8 Playground — The Gardens Mall",
+      "address": "T-216C, Level 3, The Gardens Mall, Lingkaran Syed Putra, Mid Valley City, 59200 Kuala Lumpur",
+      "state": "Kuala Lumpur",
+      "district": "Kuala Lumpur",
+      "latitude": 3.119604,
+      "longitude": 101.6765444,
+      "locationSource": "toy-care-map-64",
+      "website": "https://www.toyeight.com/playground",
+      "phone": "019-736 4588",
+      "contactSource": "toy-contact",
+      "profileSource": "toy-care",
+      "admissionSources": [
+        "toy-care",
+        "toy-member"
+      ],
+      "serviceTypes": [
+        "drop_in",
+        "occasional"
+      ],
+      "wording": "The Child Drop-off Service lets parents leave while the trained support team supervises purposeful play. Reserve this service separately; ordinary playground admission requires a parent to stay. Ask about ages, duration and price.",
+      "question": "Can I book supervised drop-off for my child’s age and these hours, and what is the total price?",
+      "requirements": [
+        "Book the Child Drop-off Service separately; ordinary playground admission does not include supervision.",
+        "The drop-off age range, length of stay and price must be agreed before attending."
+      ],
+      "age": null,
+      "hoursSource": "toy-member",
+      "hours": [],
+      "closedDays": [],
+      "careWindows": [],
+      "hoursNote": "The Japan Club 2026 partner listing gives general opening hours 10:00–21:30 daily. These are not guaranteed supervised drop-off session hours.",
+      "fees": [],
+      "notes": [
+        "Ordinary playground tickets and therapy fees were not imported as drop-off prices.",
+        "Age ranges listed for therapy, classes or playground admission do not establish the drop-off age range."
+      ],
+      "identityReview": "Provider page names The Gardens Mall T-216C and a distinct supervised Child Drop-off Service. Its contact page has the playground phone. Embedded map resolves to this same floor/unit and address, with phone 03-22022887 also shown on the provider contact page. No matching existing branch."
+    },
+    {
+      "key": "limoncito-bukit-tunku",
+      "name": "Limoncito — Bukit Tunku Art Drop",
+      "address": "Lot G2, Persiaran Taman Tunku, Bukit Tunku, 50480 Kuala Lumpur",
+      "state": "Kuala Lumpur",
+      "district": "Segambut",
+      "latitude": 3.1744135,
+      "longitude": 101.6799787,
+      "locationSource": "limon-map",
+      "website": "https://limoncitoart.com/art-programs/art-drop/",
+      "phone": "019-254 1918",
+      "contactSource": "limon-contact",
+      "profileSource": "limon-care",
+      "admissionSources": [
+        "limon-care"
+      ],
+      "serviceTypes": [
+        "hourly",
+        "drop_in"
+      ],
+      "wording": "Art Drop provides supervised crafts while parents leave, for ages 5–10 and stays up to 3 hours. One-time visits and walk-ins are accepted if space is available; booking ahead is recommended. This service is at Bukit Tunku.",
+      "question": "Is there space in Art Drop for my child’s age and a visit of up to three hours?",
+      "requirements": [
+        "Art Drop is limited to three hours per visit and the published Art Drop session times."
+      ],
+      "age": {
+        "min": 60,
+        "max": 120,
+        "raw": "5 to 10 years",
+        "source": "limon-care"
+      },
+      "hoursSource": "limon-care",
+      "hours": [],
+      "closedDays": [
+        "MON"
+      ],
+      "careWindows": [
+        {
+          "days": [
+            "TUE",
+            "THU",
+            "FRI"
+          ],
+          "start": 720,
+          "end": 960
+        },
+        {
+          "days": [
+            "WED",
+            "SAT",
+            "SUN"
+          ],
+          "start": 600,
+          "end": 960
+        }
+      ],
+      "hoursNote": "Art Drop: Tuesday/Thursday/Friday 12:00–16:00; Wednesday/Saturday/Sunday 10:00–16:00. General studio opening hours are longer and do not extend Art Drop.",
+      "fees": [
+        {
+          "amount": 80,
+          "basis": "hour",
+          "programme": "Art Drop",
+          "conditions": "Ages 5–10, up to 3 hours per visit, Bukit Tunku only. Walk-ins subject to space. Package deals are separate.",
+          "source": "limon-care"
+        }
+      ],
+      "notes": [
+        "Supervised creative drop-off service; no government childcare registration is claimed.",
+        "The Art Drop page specifically names Bukit Tunku. Mont Kiara was not added as another Art Drop location."
+      ],
+      "identityReview": "Provider Art Drop page explicitly locates this service at Bukit Tunku; contact page gives Lot G2. Maps matches the same name, unit, phone and website at these coordinates. No matching existing branch."
+    }
+  ],
+  "existingProviders": [
+    {
+      "id": "provider_7617dd8dc6f837b9d9f170a9465",
+      "name": "KLEVER CAPE CHILD CARE CENTRE",
+      "admissionSources": [
+        "klever-programme",
+        "klever-faq",
+        "klever-directory"
+      ],
+      "serviceTypes": [
+        "hourly",
+        "drop_in"
+      ],
+      "wording": "Hourly childcare is offered for ages 1–4, Monday–Friday 08:00–18:00. Parents can book care while running errands or attending meetings, without a long-term commitment. Ask about available slots, minimum stay and fees.",
+      "question": "Is there an hourly-care slot for my child’s age and these hours, and what is the minimum stay and price?",
+      "requirements": [
+        "The hourly-care programme is for children aged 1–4. Confirm the child’s age and session with the centre."
+      ],
+      "identityReview": "The existing register entry and the provider-linked listing share 63-G/63-1 Jalan PJU 5/20, Kota Damansara and 019-6197585. This updates its service evidence rather than creating a duplicate branch."
+    }
+  ],
+  "unmergedLeads": [
+    {
+      "name": "Little Human Scholars",
+      "reason": "Drop-in page names No.10 Jalan11/9, while its embedded map resolves to the preschool at No.1 Jalan Bukit11/2 and the separate playschool map lists Jalan5/37. Await an unambiguous current drop-in location."
+    },
+    {
+      "name": "Cherie Hearts / Kids Campus",
+      "reason": "Brand flexi-care or 2–3-hour programmes located; acceptance of non-enrolled children at individual branches remains unresolved. Existing programme-only records retained."
+    },
+    {
+      "name": "Taska Oren",
+      "reason": "2022 report describes ad-hoc care across seven centres but does not identify seven current addresses offering the service."
+    },
+    {
+      "name": "Taska Qistina / Maybank Tiger Cubs",
+      "reason": "Employer/profession eligibility restrictions; not general public candidates."
+    },
+    {
+      "name": "Discover Early Years",
+      "reason": "Hourly learning sessions are published; parent-absent care not established by terms."
+    },
+    {
+      "name": "Baby Angels",
+      "reason": "Future opening, not currently available."
+    }
+  ]
+}

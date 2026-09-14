@@ -24,7 +24,7 @@ export function applyProviderAdditions(raw, records, baseRelease, expectedHash) 
       !validSource(p.public_profile) || !sources.some(s=>s.url===p.public_profile.url) ||
       !Number.isFinite(p.location?.latitude) || !Number.isFinite(p.location?.longitude) || !sources.some(s=>s.url===p.location.source_url) ||
       !sources.some(s=>s.url===p.contact_source?.source_url) || !Array.isArray(p.fees) ||
-      p.fees.some(f=> !['hour','month','unspecified'].includes(f.basis) || !['care','tuition'].includes(f.kind) || !Number.isFinite(f.amount) || f.amount<0 || f.currency!=='MYR' || !sources.some(s=>s.url===f.source_url) || !text(f.conditions,600)) ||
+      p.fees.some(f=> !['hour','day','month','unspecified'].includes(f.basis) || !['care','tuition'].includes(f.kind) || !Number.isFinite(f.amount) || f.amount<0 || f.currency!=='MYR' || !sources.some(s=>s.url===f.source_url) || !text(f.conditions,600)) ||
       (p.care_windows??[]).some(w=>!w.days?.length || w.days.some(d=>!days.includes(d)) || !Number.isInteger(w.start) || !Number.isInteger(w.end) || w.start<0 || w.end>1440 || w.end<=w.start || !validSource(w.source)) ||
       (p.public_profile_notes??[]).some(n=>!text(n,600))) throw Error('Invalid added provider');
     const age=parsePublishedAge(p.age_source?.raw);

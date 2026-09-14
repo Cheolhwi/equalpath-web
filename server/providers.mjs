@@ -337,6 +337,7 @@ export function normalizeProvider(raw, release) {
       evidenceStatus: review.status,
       sameDayAcceptance: 'unknown',
       placesAvailable: 'unknown',
+      ...(review.requirements?.length ? { requirements: review.requirements } : {}),
     };
     p.sources.push(...review.sources);
   }

@@ -15,7 +15,9 @@ export const pickupPreference = transport => transport === "self" ? "I’ll arra
 
 function wording(q, p, r, c) {
   switch (q.id) {
-    case "admission": return `Can my child come for a one-off visit on ${visitDate(r.date)}?`;
+    case "admission": return p.admission?.requirements?.length
+      ? `${p.admission.question} The visit is on ${visitDate(r.date)}, with care needed until ${r.end}.`
+      : `Can my child come for a one-off visit on ${visitDate(r.date)}?`;
     case "capacity": return `Do you have a place on ${visitDate(r.date)} until ${r.end}? How much notice do you need, and which documents should I bring?`;
     case "age":
       if (p.age?.alternative) return "I found different age ranges listed. Which one applies to a one-off visit?";
@@ -36,6 +38,7 @@ function wording(q, p, r, c) {
 }
 function whyAsk(q, p, r, c) {
   if (q.id === "capacity") return "A listing can’t tell us whether a place is free on your date.";
+  if (q.id === "admission" && p.admission?.requirements?.length) return p.admission.requirements.join(" ");
   if (q.id === "fees") return p.cost?.available
     ? "The estimate still needs to be agreed with the centre."
     : "Programme fees and budget estimates don’t give the total for a one-off visit.";

@@ -106,7 +106,7 @@ export function assess(p, r) {
     result(
       "admission",
       "Temporary admission",
-      ad?.value === true
+      ad?.value === true && !ad.requirements?.length
         ? "supported"
         : ad?.value === false
           ? "conflict"
@@ -114,7 +114,7 @@ export function assess(p, r) {
       ad?.wording ??
         "Ordinary enrolment or general childcare does not establish one-off admission.",
       ad?.source,
-      ad?.value === true
+      ad?.value === true && !ad.requirements?.length
         ? null
         : ad?.question ?? "Can you accept a one-off temporary care visit on this date?",
     ),

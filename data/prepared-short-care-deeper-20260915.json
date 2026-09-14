@@ -1,0 +1,2188 @@
+{
+  "summary": {
+    "baseRelease": "web_79f1397603c1e28325955f64",
+    "release": "additions_a8727db3b492c2eb95f4f25f",
+    "hash": "a8727db3b492c2eb95f4f25f1250fa3c8a792c7ed9fa0cd4fa9ab5efe0d20f34",
+    "count": 13,
+    "retained": 7,
+    "added": 6,
+    "published": 13,
+    "withPhone": 13,
+    "withFees": 9,
+    "withHours": 11,
+    "preparedAt": "2026-09-14T20:45:11.215Z",
+    "unmergedLeads": [
+      {
+        "name": "Little Human Scholars",
+        "reason": "Drop-in page names No.10 Jalan11/9, while its embedded map resolves to the preschool at No.1 Jalan Bukit11/2 and the separate playschool map lists Jalan5/37. Await an unambiguous current drop-in location."
+      },
+      {
+        "name": "Cherie Hearts / Kids Campus",
+        "reason": "Brand flexi-care or 2–3-hour programmes located; acceptance of non-enrolled children at individual branches remains unresolved. Existing programme-only records retained."
+      },
+      {
+        "name": "Taska Oren",
+        "reason": "2022 report describes ad-hoc care across seven centres but does not identify seven current addresses offering the service."
+      },
+      {
+        "name": "Taska Qistina / Maybank Tiger Cubs",
+        "reason": "Employer/profession eligibility restrictions; not general public candidates."
+      },
+      {
+        "name": "Discover Early Years",
+        "reason": "Hourly learning sessions are published; parent-absent care not established by terms."
+      },
+      {
+        "name": "Baby Angels",
+        "reason": "Future opening, not currently available."
+      }
+    ],
+    "expectedPriorRelease": "additions_262041aafe363e98dace9de5"
+  },
+  "records": [
+    {
+      "provider_id": "provider_038b7be988901ada265e733de80",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The operator lists this campus separately with its address and phone; its public campus map data provides these coordinates. The shared FAQ and pricing page explicitly offer temporary daily care at its centres. Checked against all original and newly added records by name, address and phone; no matching branch.",
+      "provider": {
+        "id": "provider_038b7be988901ada265e733de80",
+        "official_name": "Little Playhouse — Jalan Mesra (KLCC)",
+        "display_name": "Little Playhouse — Jalan Mesra (KLCC)",
+        "address": "34, Jalan Mesra, Off Jalan Damai, 55000 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Kuala Lumpur",
+        "registration": null,
+        "public_profile": {
+          "label": "Little Playhouse — KLCC campus",
+          "kind": "provider_website",
+          "url": "https://littleplayhouse.com.my/locations/klcc",
+          "retrievedAt": "2026-09-14T20:36:42.852152+00:00",
+          "sourceDate": null,
+          "snapshotHash": "5bd962b68704a59db30e4840ede6a5fcdb1e64c1d1178aeca149cffce51de16a"
+        },
+        "profile_sources": [
+          {
+            "label": "Little Playhouse — KLCC campus",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/locations/klcc",
+            "retrievedAt": "2026-09-14T20:36:42.852152+00:00",
+            "sourceDate": null,
+            "snapshotHash": "5bd962b68704a59db30e4840ede6a5fcdb1e64c1d1178aeca149cffce51de16a"
+          },
+          {
+            "label": "Little Playhouse — short-term care prices and programmes",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/pricing",
+            "retrievedAt": "2026-09-14T20:38:27.340152+00:00",
+            "sourceDate": null,
+            "snapshotHash": "e96f3fdf63ca653f44c3d6778b8e31deeae0d82df07d89c685d024158d73ca22",
+            "captureURL": "https://littleplayhouse.com.my/assets/index-CQQVGnsv.js",
+            "captureMethod": "published_page_asset"
+          },
+          {
+            "label": "Little Playhouse short-term booking FAQ",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/faq",
+            "retrievedAt": "2026-09-14T20:32:02.425902+00:00",
+            "sourceDate": null,
+            "snapshotHash": "2af259ef1c5246e4ece2fcde768a915d6ccd72d68520f8d312d64da595048e9f"
+          },
+          {
+            "label": "Little Playhouse campus locations and ages",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/locations",
+            "retrievedAt": "2026-09-14T20:32:02.817431+00:00",
+            "sourceDate": null,
+            "snapshotHash": "a44a7a452a3a242d1809cd0b1fa62943b7db81dd53789942cd35aca5ca9fca2a"
+          }
+        ],
+        "public_profile_notes": [
+          "Prices are daily short-term programme fees, not an hourly quote or a guaranteed total.",
+          "Branch and age details are published by the operator. A current government registration record was not independently matched for this addition."
+        ],
+        "location": {
+          "latitude": 3.1615,
+          "longitude": 101.7177,
+          "source_url": "https://littleplayhouse.com.my/pricing"
+        },
+        "website": "https://littleplayhouse.com.my/locations/klcc",
+        "public_phone": "016-652 6307",
+        "contact_source": {
+          "source_url": "https://littleplayhouse.com.my/locations/klcc",
+          "retrieved_at": "2026-09-14T20:36:42.852152+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_038b7be988901ada265e733de80",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Little Playhouse — Jalan Mesra (KLCC)",
+            "basis": "The operator lists this campus separately with its address and phone; its public campus map data provides these coordinates. The shared FAQ and pricing page explicitly offer temporary daily care at its centres. Checked against all original and newly added records by name, address and phone; no matching branch."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "occasional"
+          ],
+          "wording": "Daily, weekly and monthly short-term care is offered. Book at least one week ahead, subject to space. Half-day care runs 08:00–12:00; flexible arrival and collection times need agreement.",
+          "question": "Can you accept this short-term visit with the required notice, and which session and daily price apply?",
+          "sources": [
+            {
+              "label": "Little Playhouse short-term booking FAQ",
+              "kind": "provider_website",
+              "url": "https://littleplayhouse.com.my/faq",
+              "retrievedAt": "2026-09-14T20:32:02.425902+00:00",
+              "sourceDate": null,
+              "snapshotHash": "2af259ef1c5246e4ece2fcde768a915d6ccd72d68520f8d312d64da595048e9f"
+            },
+            {
+              "label": "Little Playhouse — short-term care prices and programmes",
+              "kind": "provider_website",
+              "url": "https://littleplayhouse.com.my/pricing",
+              "retrievedAt": "2026-09-14T20:38:27.340152+00:00",
+              "sourceDate": null,
+              "snapshotHash": "e96f3fdf63ca653f44c3d6778b8e31deeae0d82df07d89c685d024158d73ca22",
+              "captureURL": "https://littleplayhouse.com.my/assets/index-CQQVGnsv.js",
+              "captureMethod": "published_page_asset"
+            }
+          ],
+          "requirements": [
+            "Book at least one week in advance; a place must be agreed with the centre.",
+            "Half-day care uses a fixed 08:00–12:00 session."
+          ]
+        },
+        "age_min_months": 3,
+        "age_max_months": 72,
+        "age_source": {
+          "raw": "3 months to 6 years",
+          "source_url": "https://littleplayhouse.com.my/locations",
+          "retrieved_at": "2026-09-14T20:32:02.817431+00:00"
+        },
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI"
+            ],
+            "start": 480,
+            "end": 1080,
+            "source": {
+              "label": "Little Playhouse campus locations and ages",
+              "kind": "provider_website",
+              "url": "https://littleplayhouse.com.my/locations",
+              "retrievedAt": "2026-09-14T20:32:02.817431+00:00",
+              "sourceDate": null,
+              "snapshotHash": "a44a7a452a3a242d1809cd0b1fa62943b7db81dd53789942cd35aca5ca9fca2a"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://littleplayhouse.com.my/locations",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:32:02.817431+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 480,
+              "end_minute": 1080
+            }
+          ],
+          "closed_weekdays": [
+            "SAT",
+            "SUN"
+          ],
+          "notes": "Monday–Friday 08:00–18:00. Half-day programme 08:00–12:00. Short-term bookings require one week notice."
+        },
+        "fees": [
+          {
+            "amount": 200,
+            "currency": "MYR",
+            "basis": "day",
+            "kind": "care",
+            "programme": "Short-term infant care / playgroup",
+            "conditions": "Infant care (3 months–1 year) or playgroup (2 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+            "source_url": "https://littleplayhouse.com.my/pricing",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:38:27.340152+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 180,
+            "currency": "MYR",
+            "basis": "day",
+            "kind": "care",
+            "programme": "Short-term KG 1",
+            "conditions": "KG 1 (3 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+            "source_url": "https://littleplayhouse.com.my/pricing",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:38:27.340152+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 160,
+            "currency": "MYR",
+            "basis": "day",
+            "kind": "care",
+            "programme": "Short-term KG 2 / reception",
+            "conditions": "KG 2 (4 years), Junior Reception (5 years) or Senior Reception (6 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+            "source_url": "https://littleplayhouse.com.my/pricing",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:38:27.340152+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The hourly product explicitly names Old Klang Road. Contact-page branch section supplies the Wisma Ambawang address, coordinates and hours. This is separate from the existing Puchong Taska Pondok Indah/Lullabee branch; no Old Klang Road address or name matches the base catalogue.",
+      "provider": {
+        "id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+        "official_name": "Lullabee — Old Klang Road",
+        "display_name": "Lullabee — Old Klang Road",
+        "address": "3G & 3G-1, Wisma Ambawang, Jalan Anggor, Jalan Klang Lama, 58100 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Seputeh",
+        "registration": null,
+        "public_profile": {
+          "label": "Lullabee — branch addresses and hours",
+          "kind": "provider_website",
+          "url": "https://www.lullabee.com.my/contactus/",
+          "retrievedAt": "2026-09-14T20:10:09.229693+00:00",
+          "sourceDate": null,
+          "snapshotHash": "cf2877cdd2e58545ea898c7e1862de0337944962bc128cb252b518f50cb98a57"
+        },
+        "profile_sources": [
+          {
+            "label": "Lullabee — branch addresses and hours",
+            "kind": "provider_website",
+            "url": "https://www.lullabee.com.my/contactus/",
+            "retrievedAt": "2026-09-14T20:10:09.229693+00:00",
+            "sourceDate": null,
+            "snapshotHash": "cf2877cdd2e58545ea898c7e1862de0337944962bc128cb252b518f50cb98a57"
+          },
+          {
+            "label": "Lullabee — hourly drop-in",
+            "kind": "provider_website",
+            "url": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+            "retrievedAt": "2026-09-14T20:10:09.182835+00:00",
+            "sourceDate": null,
+            "snapshotHash": "bc04e0f1bb40fe2c3fddf655bdab7499aae959fcf91ad4493040ddd0434d8258"
+          },
+          {
+            "label": "Lullabee — care ages and booking questions",
+            "kind": "provider_website",
+            "url": "https://www.lullabee.com.my/faq/",
+            "retrievedAt": "2026-09-14T20:10:09.233477+00:00",
+            "sourceDate": null,
+            "snapshotHash": "1dc4f7d9a87232baa3d0db7a3a5887ac7123a32b3db39074ed17276b05a3fd08"
+          }
+        ],
+        "public_profile_notes": [
+          "Public holidays are listed closed; confirm opening for the chosen date. The fee page does not specify the RM120 billing period."
+        ],
+        "location": {
+          "latitude": 3.0995877,
+          "longitude": 101.6765953,
+          "source_url": "https://www.lullabee.com.my/contactus/"
+        },
+        "website": "https://www.lullabee.com.my/",
+        "public_phone": "016-323 4369",
+        "contact_source": {
+          "source_url": "https://www.lullabee.com.my/contactus/",
+          "retrieved_at": "2026-09-14T20:10:09.229693+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Lullabee — Old Klang Road",
+            "basis": "The hourly product explicitly names Old Klang Road. Contact-page branch section supplies the Wisma Ambawang address, coordinates and hours. This is separate from the existing Puchong Taska Pondok Indah/Lullabee branch; no Old Klang Road address or name matches the base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "Hourly drop-in care is advertised at the Old Klang Road branch for short visits. Contact the centre before coming to confirm space, ages, minimum hours and the total fee.",
+          "question": "Is hourly care available at Old Klang Road for these hours, and what does the listed RM120 cover?",
+          "sources": [
+            {
+              "label": "Lullabee — hourly drop-in",
+              "kind": "provider_website",
+              "url": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+              "retrievedAt": "2026-09-14T20:10:09.182835+00:00",
+              "sourceDate": null,
+              "snapshotHash": "bc04e0f1bb40fe2c3fddf655bdab7499aae959fcf91ad4493040ddd0434d8258"
+            },
+            {
+              "label": "Lullabee — care ages and booking questions",
+              "kind": "provider_website",
+              "url": "https://www.lullabee.com.my/faq/",
+              "retrievedAt": "2026-09-14T20:10:09.233477+00:00",
+              "sourceDate": null,
+              "snapshotHash": "1dc4f7d9a87232baa3d0db7a3a5887ac7123a32b3db39074ed17276b05a3fd08"
+            }
+          ]
+        },
+        "age_min_months": 2,
+        "age_max_months": 72,
+        "age_source": {
+          "raw": "2 months to 6 years",
+          "source_url": "https://www.lullabee.com.my/faq/",
+          "retrieved_at": "2026-09-14T20:10:09.233477+00:00"
+        },
+        "care_windows": [],
+        "operating_hours": {
+          "source_url": "https://www.lullabee.com.my/contactus/",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.229693+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 450,
+              "end_minute": 1140
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 450,
+              "end_minute": 1140
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 450,
+              "end_minute": 1140
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 450,
+              "end_minute": 1140
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 450,
+              "end_minute": 1140
+            }
+          ],
+          "closed_weekdays": [
+            "SAT",
+            "SUN"
+          ],
+          "notes": "Monday–Friday 07:30–19:00; weekends and public holidays closed. The published number is the shared Lullabee enquiry contact."
+        },
+        "fees": [
+          {
+            "amount": 120,
+            "currency": "MYR",
+            "basis": "unspecified",
+            "kind": "care",
+            "programme": "Hourly Drop In listing",
+            "conditions": "The product page displays RM120 but does not state how many hours it covers. This is not a verified hourly rate; ask for the total for your visit.",
+            "source_url": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.182835+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_21507892dc4fa7d9cba4819519a",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The operator lists this campus separately with its address and phone; its public campus map data provides these coordinates. The shared FAQ and pricing page explicitly offer temporary daily care at its centres. Checked against all original and newly added records by name, address and phone; no matching branch.",
+      "provider": {
+        "id": "provider_21507892dc4fa7d9cba4819519a",
+        "official_name": "Little Playhouse — KL Eco City",
+        "display_name": "Little Playhouse — KL Eco City",
+        "address": "M-01, KL Eco City Mall, 3 Jalan Bangsar, 59100 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Kuala Lumpur",
+        "registration": null,
+        "public_profile": {
+          "label": "Little Playhouse — KL Eco City campus",
+          "kind": "provider_website",
+          "url": "https://littleplayhouse.com.my/locations/kl-eco-city",
+          "retrievedAt": "2026-09-14T20:36:42.994539+00:00",
+          "sourceDate": null,
+          "snapshotHash": "771cbbdc71764274e6aa924a3c62098178fe99ad162b2ad19a8ba2e373527614"
+        },
+        "profile_sources": [
+          {
+            "label": "Little Playhouse — KL Eco City campus",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/locations/kl-eco-city",
+            "retrievedAt": "2026-09-14T20:36:42.994539+00:00",
+            "sourceDate": null,
+            "snapshotHash": "771cbbdc71764274e6aa924a3c62098178fe99ad162b2ad19a8ba2e373527614"
+          },
+          {
+            "label": "Little Playhouse — short-term care prices and programmes",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/pricing",
+            "retrievedAt": "2026-09-14T20:38:27.340152+00:00",
+            "sourceDate": null,
+            "snapshotHash": "e96f3fdf63ca653f44c3d6778b8e31deeae0d82df07d89c685d024158d73ca22",
+            "captureURL": "https://littleplayhouse.com.my/assets/index-CQQVGnsv.js",
+            "captureMethod": "published_page_asset"
+          },
+          {
+            "label": "Little Playhouse short-term booking FAQ",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/faq",
+            "retrievedAt": "2026-09-14T20:32:02.425902+00:00",
+            "sourceDate": null,
+            "snapshotHash": "2af259ef1c5246e4ece2fcde768a915d6ccd72d68520f8d312d64da595048e9f"
+          },
+          {
+            "label": "Little Playhouse campus locations and ages",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/locations",
+            "retrievedAt": "2026-09-14T20:32:02.817431+00:00",
+            "sourceDate": null,
+            "snapshotHash": "a44a7a452a3a242d1809cd0b1fa62943b7db81dd53789942cd35aca5ca9fca2a"
+          }
+        ],
+        "public_profile_notes": [
+          "Prices are daily short-term programme fees, not an hourly quote or a guaranteed total.",
+          "Branch and age details are published by the operator. A current government registration record was not independently matched for this addition."
+        ],
+        "location": {
+          "latitude": 3.1178,
+          "longitude": 101.6773,
+          "source_url": "https://littleplayhouse.com.my/pricing"
+        },
+        "website": "https://littleplayhouse.com.my/locations/kl-eco-city",
+        "public_phone": "010-281 1337",
+        "contact_source": {
+          "source_url": "https://littleplayhouse.com.my/locations/kl-eco-city",
+          "retrieved_at": "2026-09-14T20:36:42.994539+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_21507892dc4fa7d9cba4819519a",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Little Playhouse — KL Eco City",
+            "basis": "The operator lists this campus separately with its address and phone; its public campus map data provides these coordinates. The shared FAQ and pricing page explicitly offer temporary daily care at its centres. Checked against all original and newly added records by name, address and phone; no matching branch."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "occasional"
+          ],
+          "wording": "Daily, weekly and monthly short-term care is offered. Book at least one week ahead, subject to space. Half-day care runs 08:00–12:00; flexible arrival and collection times need agreement.",
+          "question": "Can you accept this short-term visit with the required notice, and which session and daily price apply?",
+          "sources": [
+            {
+              "label": "Little Playhouse short-term booking FAQ",
+              "kind": "provider_website",
+              "url": "https://littleplayhouse.com.my/faq",
+              "retrievedAt": "2026-09-14T20:32:02.425902+00:00",
+              "sourceDate": null,
+              "snapshotHash": "2af259ef1c5246e4ece2fcde768a915d6ccd72d68520f8d312d64da595048e9f"
+            },
+            {
+              "label": "Little Playhouse — short-term care prices and programmes",
+              "kind": "provider_website",
+              "url": "https://littleplayhouse.com.my/pricing",
+              "retrievedAt": "2026-09-14T20:38:27.340152+00:00",
+              "sourceDate": null,
+              "snapshotHash": "e96f3fdf63ca653f44c3d6778b8e31deeae0d82df07d89c685d024158d73ca22",
+              "captureURL": "https://littleplayhouse.com.my/assets/index-CQQVGnsv.js",
+              "captureMethod": "published_page_asset"
+            }
+          ],
+          "requirements": [
+            "Book at least one week in advance; a place must be agreed with the centre.",
+            "Half-day care uses a fixed 08:00–12:00 session."
+          ]
+        },
+        "age_min_months": 3,
+        "age_max_months": 72,
+        "age_source": {
+          "raw": "3 months to 6 years",
+          "source_url": "https://littleplayhouse.com.my/locations",
+          "retrieved_at": "2026-09-14T20:32:02.817431+00:00"
+        },
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI"
+            ],
+            "start": 480,
+            "end": 1080,
+            "source": {
+              "label": "Little Playhouse campus locations and ages",
+              "kind": "provider_website",
+              "url": "https://littleplayhouse.com.my/locations",
+              "retrievedAt": "2026-09-14T20:32:02.817431+00:00",
+              "sourceDate": null,
+              "snapshotHash": "a44a7a452a3a242d1809cd0b1fa62943b7db81dd53789942cd35aca5ca9fca2a"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://littleplayhouse.com.my/locations",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:32:02.817431+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 480,
+              "end_minute": 1080
+            }
+          ],
+          "closed_weekdays": [
+            "SAT",
+            "SUN"
+          ],
+          "notes": "Monday–Friday 08:00–18:00. Half-day programme 08:00–12:00. Short-term bookings require one week notice."
+        },
+        "fees": [
+          {
+            "amount": 200,
+            "currency": "MYR",
+            "basis": "day",
+            "kind": "care",
+            "programme": "Short-term infant care / playgroup",
+            "conditions": "Infant care (3 months–1 year) or playgroup (2 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+            "source_url": "https://littleplayhouse.com.my/pricing",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:38:27.340152+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 180,
+            "currency": "MYR",
+            "basis": "day",
+            "kind": "care",
+            "programme": "Short-term KG 1",
+            "conditions": "KG 1 (3 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+            "source_url": "https://littleplayhouse.com.my/pricing",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:38:27.340152+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 160,
+            "currency": "MYR",
+            "basis": "day",
+            "kind": "care",
+            "programme": "Short-term KG 2 / reception",
+            "conditions": "KG 2 (4 years), Junior Reception (5 years) or Senior Reception (6 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+            "source_url": "https://littleplayhouse.com.my/pricing",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:38:27.340152+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_4576ca09bd13bb7c7798a359247",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "Provider care page names Mont Kiara; contact-page campus data gives the Plaza Arcoris address and coordinates. Its own Setmore page repeats the address, phone and specific hourly sessions. No matching name, address or phone was found in the base catalogue.",
+      "provider": {
+        "id": "provider_4576ca09bd13bb7c7798a359247",
+        "official_name": "Learning Fresh — Mont Kiara",
+        "display_name": "Learning Fresh — Mont Kiara",
+        "address": "LG3-6, Plaza Arcoris, Jalan Kiara, Mont Kiara, 50480 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Segambut",
+        "registration": null,
+        "public_profile": {
+          "label": "Learning Fresh — campus contacts",
+          "kind": "provider_website",
+          "url": "https://learningfresh.org/contact-us",
+          "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+          "sourceDate": null,
+          "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+        },
+        "profile_sources": [
+          {
+            "label": "Learning Fresh — campus contacts",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/contact-us",
+            "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+            "sourceDate": null,
+            "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+          },
+          {
+            "label": "Learning Fresh — hourly After-School Club",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/after-school-club",
+            "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+            "sourceDate": null,
+            "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+          },
+          {
+            "label": "Learning Fresh Mont Kiara — published sessions",
+            "kind": "provider_website",
+            "url": "https://learningfresh.setmore.com/",
+            "retrievedAt": "2026-09-14T20:10:09.309855+00:00",
+            "sourceDate": null,
+            "snapshotHash": "c3223ae8c3284134569eef9e14a5b0816eb531bd820ab653b0d9c6835cb175f0"
+          }
+        ],
+        "public_profile_notes": [
+          "The general school profile gives ages 3–12, while newer programme pages cover other ranges. Confirm the age range for the selected hourly session."
+        ],
+        "location": {
+          "latitude": 3.1681185,
+          "longitude": 101.6518685,
+          "source_url": "https://learningfresh.org/contact-us"
+        },
+        "website": "https://learningfresh.org/after-school-club",
+        "public_phone": "012-232 5281",
+        "contact_source": {
+          "source_url": "https://learningfresh.org/contact-us",
+          "retrieved_at": "2026-09-14T20:10:09.342399+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_4576ca09bd13bb7c7798a359247",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Learning Fresh — Mont Kiara",
+            "basis": "Provider care page names Mont Kiara; contact-page campus data gives the Plaza Arcoris address and coordinates. Its own Setmore page repeats the address, phone and specific hourly sessions. No matching name, address or phone was found in the base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "Hourly drop-in care is available without a package. Call ahead to check space. Weekday, weekend and evening sessions have different prices and times.",
+          "question": "Is there space for these hours, and which hourly rate applies?",
+          "sources": [
+            {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            },
+            {
+              "label": "Learning Fresh Mont Kiara — published sessions",
+              "kind": "provider_website",
+              "url": "https://learningfresh.setmore.com/",
+              "retrievedAt": "2026-09-14T20:10:09.309855+00:00",
+              "sourceDate": null,
+              "snapshotHash": "c3223ae8c3284134569eef9e14a5b0816eb531bd820ab653b0d9c6835cb175f0"
+            }
+          ]
+        },
+        "age_min_months": null,
+        "age_max_months": null,
+        "age_source": null,
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI"
+            ],
+            "start": 780,
+            "end": 1350,
+            "source": {
+              "label": "Learning Fresh Mont Kiara — published sessions",
+              "kind": "provider_website",
+              "url": "https://learningfresh.setmore.com/",
+              "retrievedAt": "2026-09-14T20:10:09.309855+00:00",
+              "sourceDate": null,
+              "snapshotHash": "c3223ae8c3284134569eef9e14a5b0816eb531bd820ab653b0d9c6835cb175f0"
+            }
+          },
+          {
+            "days": [
+              "SAT",
+              "SUN"
+            ],
+            "start": 540,
+            "end": 1260,
+            "source": {
+              "label": "Learning Fresh Mont Kiara — published sessions",
+              "kind": "provider_website",
+              "url": "https://learningfresh.setmore.com/",
+              "retrievedAt": "2026-09-14T20:10:09.309855+00:00",
+              "sourceDate": null,
+              "snapshotHash": "c3223ae8c3284134569eef9e14a5b0816eb531bd820ab653b0d9c6835cb175f0"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://learningfresh.setmore.com/",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.309855+00:00",
+          "weekly_windows": [],
+          "closed_weekdays": [],
+          "notes": "Childcare sessions: weekdays 13:00–18:30; weekends 09:00–17:00. Night Owl continues to 22:30 on weekdays and 21:00 on weekends. These specific care sessions differ from the general opening-hours panel. Call ahead."
+        },
+        "fees": [
+          {
+            "amount": 40,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekday Seedling",
+            "conditions": "Monday–Friday, 13:00–18:30. Call ahead for space.",
+            "source_url": "https://learningfresh.setmore.com/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.309855+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 50,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekend Seedling",
+            "conditions": "Saturday–Sunday, 09:00–17:00. Call ahead for space.",
+            "source_url": "https://learningfresh.setmore.com/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.309855+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 60,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Night Owl",
+            "conditions": "Monday–Friday 18:30–22:30; Saturday–Sunday 17:00–21:00. Confirm the visit before attending.",
+            "source_url": "https://learningfresh.setmore.com/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.309855+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "Provider page names The Gardens Mall T-216C and a distinct supervised Child Drop-off Service. Its contact page has the playground phone. Embedded map resolves to this same floor/unit and address, with phone 03-22022887 also shown on the provider contact page. No matching existing branch.",
+      "provider": {
+        "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+        "official_name": "TOY8 Playground — The Gardens Mall",
+        "display_name": "TOY8 Playground — The Gardens Mall",
+        "address": "T-216C, Level 3, The Gardens Mall, Lingkaran Syed Putra, Mid Valley City, 59200 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Kuala Lumpur",
+        "registration": null,
+        "public_profile": {
+          "label": "TOY8 — Child Drop-off Service",
+          "kind": "provider_website",
+          "url": "https://www.toyeight.com/playground",
+          "retrievedAt": "2026-09-14T20:36:43.308264+00:00",
+          "sourceDate": null,
+          "snapshotHash": "1f4f0130d7dcaf1b74014e1638ad58289c22e1250b200ac91ad29d0baef51713"
+        },
+        "profile_sources": [
+          {
+            "label": "TOY8 — Child Drop-off Service",
+            "kind": "provider_website",
+            "url": "https://www.toyeight.com/playground",
+            "retrievedAt": "2026-09-14T20:36:43.308264+00:00",
+            "sourceDate": null,
+            "snapshotHash": "1f4f0130d7dcaf1b74014e1638ad58289c22e1250b200ac91ad29d0baef51713"
+          },
+          {
+            "label": "TOY8 playground contact",
+            "kind": "provider_website",
+            "url": "https://www.toyeight.com/contact",
+            "retrievedAt": "2026-09-14T20:36:43.558203+00:00",
+            "sourceDate": null,
+            "snapshotHash": "e1c034c00b7d601fb292d1c5096f2745cfc07f83d24b46d12fb41a88c00695cf"
+          },
+          {
+            "label": "TOY8 — embedded branch map",
+            "kind": "map_listing",
+            "url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d254969.97393874903!2d101.3963930328125!3d3.1196040000000087!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4990471fef69%3A0x2dfa9b410ff9ebd0!2sTOY8%20Playground!5e0!3m2!1sja!2sjp!4v1737641209393!5m2!1sja!2sjp",
+            "retrievedAt": "2026-09-14T20:38:27.340651+00:00",
+            "sourceDate": null,
+            "snapshotHash": "60644657a939215fd94b505cb76f3c0c76d5db1bf4f31a77d4f7edf0e9a7e531"
+          },
+          {
+            "label": "Japan Club — TOY8 2026 service information",
+            "kind": "public_directory",
+            "url": "https://www.jckl.org.my/en/privileges_of_membership_test",
+            "retrievedAt": "2026-09-14T20:42:10.847970+00:00",
+            "sourceDate": null,
+            "snapshotHash": "89753f79a10e82d2a40901175d8ec546860d6839f4707d096615cb39c9ba3294"
+          }
+        ],
+        "public_profile_notes": [
+          "Ordinary playground tickets and therapy fees were not imported as drop-off prices.",
+          "Age ranges listed for therapy, classes or playground admission do not establish the drop-off age range."
+        ],
+        "location": {
+          "latitude": 3.119604,
+          "longitude": 101.6765444,
+          "source_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d254969.97393874903!2d101.3963930328125!3d3.1196040000000087!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4990471fef69%3A0x2dfa9b410ff9ebd0!2sTOY8%20Playground!5e0!3m2!1sja!2sjp!4v1737641209393!5m2!1sja!2sjp"
+        },
+        "website": "https://www.toyeight.com/playground",
+        "public_phone": "019-736 4588",
+        "contact_source": {
+          "source_url": "https://www.toyeight.com/contact",
+          "retrieved_at": "2026-09-14T20:36:43.558203+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "TOY8 Playground — The Gardens Mall",
+            "basis": "Provider page names The Gardens Mall T-216C and a distinct supervised Child Drop-off Service. Its contact page has the playground phone. Embedded map resolves to this same floor/unit and address, with phone 03-22022887 also shown on the provider contact page. No matching existing branch."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "drop_in",
+            "occasional"
+          ],
+          "wording": "The Child Drop-off Service lets parents leave while the trained support team supervises purposeful play. Reserve this service separately; ordinary playground admission requires a parent to stay. Ask about ages, duration and price.",
+          "question": "Can I book supervised drop-off for my child’s age and these hours, and what is the total price?",
+          "sources": [
+            {
+              "label": "TOY8 — Child Drop-off Service",
+              "kind": "provider_website",
+              "url": "https://www.toyeight.com/playground",
+              "retrievedAt": "2026-09-14T20:36:43.308264+00:00",
+              "sourceDate": null,
+              "snapshotHash": "1f4f0130d7dcaf1b74014e1638ad58289c22e1250b200ac91ad29d0baef51713"
+            },
+            {
+              "label": "Japan Club — TOY8 2026 service information",
+              "kind": "public_directory",
+              "url": "https://www.jckl.org.my/en/privileges_of_membership_test",
+              "retrievedAt": "2026-09-14T20:42:10.847970+00:00",
+              "sourceDate": null,
+              "snapshotHash": "89753f79a10e82d2a40901175d8ec546860d6839f4707d096615cb39c9ba3294"
+            }
+          ],
+          "requirements": [
+            "Book the Child Drop-off Service separately; ordinary playground admission does not include supervision.",
+            "The drop-off age range, length of stay and price must be agreed before attending."
+          ]
+        },
+        "age_min_months": null,
+        "age_max_months": null,
+        "age_source": null,
+        "care_windows": [],
+        "operating_hours": {
+          "source_url": "https://www.jckl.org.my/en/privileges_of_membership_test",
+          "source_kind": "public_directory",
+          "source_retrieved_at": "2026-09-14T20:42:10.847970+00:00",
+          "weekly_windows": [],
+          "closed_weekdays": [],
+          "notes": "The Japan Club 2026 partner listing gives general opening hours 10:00–21:30 daily. These are not guaranteed supervised drop-off session hours."
+        },
+        "fees": []
+      }
+    },
+    {
+      "provider_id": "provider_7ac2d78d14abd37d859b7dfcae9",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "Provider Art Drop page explicitly locates this service at Bukit Tunku; contact page gives Lot G2. Maps matches the same name, unit, phone and website at these coordinates. No matching existing branch.",
+      "provider": {
+        "id": "provider_7ac2d78d14abd37d859b7dfcae9",
+        "official_name": "Limoncito — Bukit Tunku Art Drop",
+        "display_name": "Limoncito — Bukit Tunku Art Drop",
+        "address": "Lot G2, Persiaran Taman Tunku, Bukit Tunku, 50480 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Segambut",
+        "registration": null,
+        "public_profile": {
+          "label": "Limoncito — Art Drop at Bukit Tunku",
+          "kind": "provider_website",
+          "url": "https://limoncitoart.com/art-programs/art-drop/",
+          "retrievedAt": "2026-09-14T20:36:44.048017+00:00",
+          "sourceDate": null,
+          "snapshotHash": "4b26fa91962fea09492a25134e1c7d21bcc66da72575f00aa7414fdb6abfc08a"
+        },
+        "profile_sources": [
+          {
+            "label": "Limoncito — Art Drop at Bukit Tunku",
+            "kind": "provider_website",
+            "url": "https://limoncitoart.com/art-programs/art-drop/",
+            "retrievedAt": "2026-09-14T20:36:44.048017+00:00",
+            "sourceDate": null,
+            "snapshotHash": "4b26fa91962fea09492a25134e1c7d21bcc66da72575f00aa7414fdb6abfc08a"
+          },
+          {
+            "label": "Limoncito branch contact details",
+            "kind": "provider_website",
+            "url": "https://limoncitoart.com/contact/",
+            "retrievedAt": "2026-09-14T20:36:44.853180+00:00",
+            "sourceDate": null,
+            "snapshotHash": "d94dafc36938be149ce01420890f928fa9f1af378fcc203b9ece2eaae68812ad"
+          },
+          {
+            "label": "Limoncito Bukit Tunku — map listing",
+            "kind": "map_listing",
+            "url": "https://www.google.com/maps/place/Limoncito+Arts+and+Crafts+for+Children+@+Bukit+Tunku/@3.1744135,101.6799787,17z/data=!3m1!4b1!4m6!3m5!1s0x31cc49b91b97610b:0xf614813b2de39391!8m2!3d3.1744135!4d101.6799787!16s%2Fg%2F11zj7v5z3s",
+            "retrievedAt": "2026-09-14T20:42:10.847629+00:00",
+            "sourceDate": null,
+            "snapshotHash": "16fb2cb928bfe440e059c24c22c7a217572ebacf05f790f7b194b09d8e843f0b"
+          }
+        ],
+        "public_profile_notes": [
+          "Supervised creative drop-off service; no government childcare registration is claimed.",
+          "The Art Drop page specifically names Bukit Tunku. Mont Kiara was not added as another Art Drop location."
+        ],
+        "location": {
+          "latitude": 3.1744135,
+          "longitude": 101.6799787,
+          "source_url": "https://www.google.com/maps/place/Limoncito+Arts+and+Crafts+for+Children+@+Bukit+Tunku/@3.1744135,101.6799787,17z/data=!3m1!4b1!4m6!3m5!1s0x31cc49b91b97610b:0xf614813b2de39391!8m2!3d3.1744135!4d101.6799787!16s%2Fg%2F11zj7v5z3s"
+        },
+        "website": "https://limoncitoart.com/art-programs/art-drop/",
+        "public_phone": "019-254 1918",
+        "contact_source": {
+          "source_url": "https://limoncitoart.com/contact/",
+          "retrieved_at": "2026-09-14T20:36:44.853180+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_7ac2d78d14abd37d859b7dfcae9",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Limoncito — Bukit Tunku Art Drop",
+            "basis": "Provider Art Drop page explicitly locates this service at Bukit Tunku; contact page gives Lot G2. Maps matches the same name, unit, phone and website at these coordinates. No matching existing branch."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "Art Drop provides supervised crafts while parents leave, for ages 5–10 and stays up to 3 hours. One-time visits and walk-ins are accepted if space is available; booking ahead is recommended. This service is at Bukit Tunku.",
+          "question": "Is there space in Art Drop for my child’s age and a visit of up to three hours?",
+          "sources": [
+            {
+              "label": "Limoncito — Art Drop at Bukit Tunku",
+              "kind": "provider_website",
+              "url": "https://limoncitoart.com/art-programs/art-drop/",
+              "retrievedAt": "2026-09-14T20:36:44.048017+00:00",
+              "sourceDate": null,
+              "snapshotHash": "4b26fa91962fea09492a25134e1c7d21bcc66da72575f00aa7414fdb6abfc08a"
+            }
+          ],
+          "requirements": [
+            "Art Drop is limited to three hours per visit and the published Art Drop session times."
+          ]
+        },
+        "age_min_months": 60,
+        "age_max_months": 120,
+        "age_source": {
+          "raw": "5 to 10 years",
+          "source_url": "https://limoncitoart.com/art-programs/art-drop/",
+          "retrieved_at": "2026-09-14T20:36:44.048017+00:00"
+        },
+        "care_windows": [
+          {
+            "days": [
+              "TUE",
+              "THU",
+              "FRI"
+            ],
+            "start": 720,
+            "end": 960,
+            "source": {
+              "label": "Limoncito — Art Drop at Bukit Tunku",
+              "kind": "provider_website",
+              "url": "https://limoncitoart.com/art-programs/art-drop/",
+              "retrievedAt": "2026-09-14T20:36:44.048017+00:00",
+              "sourceDate": null,
+              "snapshotHash": "4b26fa91962fea09492a25134e1c7d21bcc66da72575f00aa7414fdb6abfc08a"
+            }
+          },
+          {
+            "days": [
+              "WED",
+              "SAT",
+              "SUN"
+            ],
+            "start": 600,
+            "end": 960,
+            "source": {
+              "label": "Limoncito — Art Drop at Bukit Tunku",
+              "kind": "provider_website",
+              "url": "https://limoncitoart.com/art-programs/art-drop/",
+              "retrievedAt": "2026-09-14T20:36:44.048017+00:00",
+              "sourceDate": null,
+              "snapshotHash": "4b26fa91962fea09492a25134e1c7d21bcc66da72575f00aa7414fdb6abfc08a"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://limoncitoart.com/art-programs/art-drop/",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:36:44.048017+00:00",
+          "weekly_windows": [],
+          "closed_weekdays": [
+            "MON"
+          ],
+          "notes": "Art Drop: Tuesday/Thursday/Friday 12:00–16:00; Wednesday/Saturday/Sunday 10:00–16:00. General studio opening hours are longer and do not extend Art Drop."
+        },
+        "fees": [
+          {
+            "amount": 80,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Art Drop",
+            "conditions": "Ages 5–10, up to 3 hours per visit, Bukit Tunku only. Walk-ins subject to space. Package deals are separate.",
+            "source_url": "https://limoncitoart.com/art-programs/art-drop/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:36:44.048017+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_88408de0b4f21319175ac455673",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The current hourly-care page explicitly lists KLCC and its contact page gives Megan Avenue 2. The site's embedded KLCC coordinates incorrectly point outside Malaysia, so they are rejected; the matching branch map supplies the location instead. No base-catalogue branch matches.",
+      "provider": {
+        "id": "provider_88408de0b4f21319175ac455673",
+        "official_name": "Learning Fresh — KLCC",
+        "display_name": "Learning Fresh — KLCC",
+        "address": "B-9-7, Megan Avenue 2, Jalan Yap Kwan Seng, 50450 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Kuala Lumpur",
+        "registration": null,
+        "public_profile": {
+          "label": "Learning Fresh — campus contacts",
+          "kind": "provider_website",
+          "url": "https://learningfresh.org/contact-us",
+          "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+          "sourceDate": null,
+          "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+        },
+        "profile_sources": [
+          {
+            "label": "Learning Fresh — campus contacts",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/contact-us",
+            "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+            "sourceDate": null,
+            "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+          },
+          {
+            "label": "Learning Fresh KLCC — mapped branch",
+            "kind": "map_listing",
+            "url": "https://www.google.com/maps/place/Learning+Fresh,+KLCC/data=!4m6!3m5!1s0x31cc37ebccb7ff21:0x3e9bc0eb6ba86557!8m2!3d3.1628878!4d101.7126118!16s%2Fg%2F11z7ngb4g_",
+            "retrievedAt": "2026-09-14T20:17:01.782105+00:00",
+            "sourceDate": null,
+            "snapshotHash": "401bdd66b0e9d941779cc14afabbe381487f26221910fdfe23addcc7eddf75c0"
+          },
+          {
+            "label": "Learning Fresh — hourly After-School Club",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/after-school-club",
+            "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+            "sourceDate": null,
+            "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+          }
+        ],
+        "public_profile_notes": [
+          "The listed number is the provider's shared enquiry contact."
+        ],
+        "location": {
+          "latitude": 3.1628878,
+          "longitude": 101.7126118,
+          "source_url": "https://www.google.com/maps/place/Learning+Fresh,+KLCC/data=!4m6!3m5!1s0x31cc37ebccb7ff21:0x3e9bc0eb6ba86557!8m2!3d3.1628878!4d101.7126118!16s%2Fg%2F11z7ngb4g_"
+        },
+        "website": "https://learningfresh.org/after-school-club",
+        "public_phone": "012-232 5281",
+        "contact_source": {
+          "source_url": "https://learningfresh.org/contact-us",
+          "retrieved_at": "2026-09-14T20:10:09.342399+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_88408de0b4f21319175ac455673",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Learning Fresh — KLCC",
+            "basis": "The current hourly-care page explicitly lists KLCC and its contact page gives Megan Avenue 2. The site's embedded KLCC coordinates incorrectly point outside Malaysia, so they are rejected; the matching branch map supplies the location instead. No base-catalogue branch matches."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "The After-School Club page names Megan Avenue 2, KLCC and offers occasional care by the hour. Call ahead to confirm the session and space at this campus.",
+          "question": "Can you provide hourly care for these times at the KLCC campus?",
+          "sources": [
+            {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          ]
+        },
+        "age_min_months": null,
+        "age_max_months": null,
+        "age_source": null,
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI"
+            ],
+            "start": 780,
+            "end": 1110,
+            "source": {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          },
+          {
+            "days": [
+              "SAT"
+            ],
+            "start": 540,
+            "end": 1020,
+            "source": {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://learningfresh.org/after-school-club",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+          "weekly_windows": [],
+          "closed_weekdays": [],
+          "notes": "Hourly programme: weekdays 13:00–18:30 and weekends 09:00–17:00. The campus list says Monday–Saturday, so Sunday hours remain unconfirmed."
+        },
+        "fees": [
+          {
+            "amount": 40,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekday Seedling",
+            "conditions": "Monday–Friday, 13:00–18:30. Confirm space at KLCC.",
+            "source_url": "https://learningfresh.org/after-school-club",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 50,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekend Seedling",
+            "conditions": "Published weekend rate, 09:00–17:00. Confirm the campus and day; the location list says Monday–Saturday.",
+            "source_url": "https://learningfresh.org/after-school-club",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_b4fca32684be03c852a77c7f3f2",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "Provider contact page and Google Maps agree on the exact ground-floor Block C address, phone and website. About page clearly states 1–12 years, resolving the contact-page age typo. No matching name, address or phone found in base catalogue.",
+      "provider": {
+        "id": "provider_b4fca32684be03c852a77c7f3f2",
+        "official_name": "Kinder Mindz — Kepong",
+        "display_name": "Kinder Mindz — Kepong",
+        "address": "No. 1, Ground Floor, Block C, Vista Mutiara Apartment, Jalan Vista Mutiara, Kepong Baru, 52000 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Kepong",
+        "registration": null,
+        "public_profile": {
+          "label": "Kinder Mindz — drop-in care and opening hours",
+          "kind": "provider_website",
+          "url": "https://kindermindz.com/index.php/contact/",
+          "retrievedAt": "2026-09-14T20:10:09.813025+00:00",
+          "sourceDate": null,
+          "snapshotHash": "e5c09342d6ba0bb571373d4209f902e3a4608895523586f061f7e909548125a7"
+        },
+        "profile_sources": [
+          {
+            "label": "Kinder Mindz — drop-in care and opening hours",
+            "kind": "provider_website",
+            "url": "https://kindermindz.com/index.php/contact/",
+            "retrievedAt": "2026-09-14T20:10:09.813025+00:00",
+            "sourceDate": null,
+            "snapshotHash": "e5c09342d6ba0bb571373d4209f902e3a4608895523586f061f7e909548125a7"
+          },
+          {
+            "label": "Kinder Mindz — matched branch map",
+            "kind": "map_listing",
+            "url": "https://www.google.com/maps/place/Kindermindz+Preschool+Kepong+Baru/data=!4m6!3m5!1s0x31cc47a3d2384acb:0x8dbc33f14817e6f3!8m2!3d3.210141!4d101.6485344!16s%2Fg%2F11whnx2vvp",
+            "retrievedAt": "2026-09-14T20:17:01.781544+00:00",
+            "sourceDate": null,
+            "snapshotHash": "88c572172728af0fe32b4739a618be4eba7dfdff0b1e48c1ca491545604ab2d2"
+          },
+          {
+            "label": "Kinder Mindz — published age range",
+            "kind": "provider_website",
+            "url": "https://kindermindz.com/index.php/about-us-kinder-mindz/",
+            "retrievedAt": "2026-09-14T20:12:20.759698+00:00",
+            "sourceDate": null,
+            "snapshotHash": "92f3805e6ac71cb20746ad327d93b0873378d2b0206b2be03dd6a91044569c00"
+          }
+        ],
+        "public_profile_notes": [],
+        "location": {
+          "latitude": 3.210141,
+          "longitude": 101.6485344,
+          "source_url": "https://www.google.com/maps/place/Kindermindz+Preschool+Kepong+Baru/data=!4m6!3m5!1s0x31cc47a3d2384acb:0x8dbc33f14817e6f3!8m2!3d3.210141!4d101.6485344!16s%2Fg%2F11whnx2vvp"
+        },
+        "website": "https://kindermindz.com/",
+        "public_phone": "012-549 2768",
+        "contact_source": {
+          "source_url": "https://kindermindz.com/index.php/contact/",
+          "retrieved_at": "2026-09-14T20:10:09.813025+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_b4fca32684be03c852a77c7f3f2",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Kinder Mindz — Kepong",
+            "basis": "Provider contact page and Google Maps agree on the exact ground-floor Block C address, phone and website. About page clearly states 1–12 years, resolving the contact-page age typo. No matching name, address or phone found in base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "drop_in"
+          ],
+          "wording": "The centre advertises drop-in care alongside full-time and part-time care. Ask which short sessions are available and whether advance booking is needed.",
+          "question": "Can you take a child for just these hours, and what are the booking requirements?",
+          "sources": [
+            {
+              "label": "Kinder Mindz — drop-in care and opening hours",
+              "kind": "provider_website",
+              "url": "https://kindermindz.com/index.php/contact/",
+              "retrievedAt": "2026-09-14T20:10:09.813025+00:00",
+              "sourceDate": null,
+              "snapshotHash": "e5c09342d6ba0bb571373d4209f902e3a4608895523586f061f7e909548125a7"
+            }
+          ]
+        },
+        "age_min_months": 12,
+        "age_max_months": 144,
+        "age_source": {
+          "raw": "1 year to 12 years",
+          "source_url": "https://kindermindz.com/index.php/about-us-kinder-mindz/",
+          "retrieved_at": "2026-09-14T20:12:20.759698+00:00"
+        },
+        "care_windows": [],
+        "operating_hours": {
+          "source_url": "https://kindermindz.com/index.php/contact/",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.813025+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 450,
+              "end_minute": 1110
+            }
+          ],
+          "closed_weekdays": [
+            "SAT",
+            "SUN"
+          ],
+          "notes": "Monday–Friday 07:30–18:30; weekends closed."
+        },
+        "fees": []
+      }
+    },
+    {
+      "provider_id": "provider_b5e469ac6144ecffad381d62593",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The operator lists this campus separately with its address and phone; its public campus map data provides these coordinates. The shared FAQ and pricing page explicitly offer temporary daily care at its centres. Checked against all original and newly added records by name, address and phone; no matching branch.",
+      "provider": {
+        "id": "provider_b5e469ac6144ecffad381d62593",
+        "official_name": "Little Playhouse — Menara Shell (KL Sentral)",
+        "display_name": "Little Playhouse — Menara Shell (KL Sentral)",
+        "address": "Level 4, Menara Shell, 211 Jalan Tun Sambanthan, 50470 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Kuala Lumpur",
+        "registration": null,
+        "public_profile": {
+          "label": "Little Playhouse — KL Sentral campus",
+          "kind": "provider_website",
+          "url": "https://littleplayhouse.com.my/locations/kl-sentral",
+          "retrievedAt": "2026-09-14T20:36:42.852211+00:00",
+          "sourceDate": null,
+          "snapshotHash": "b1ffabab73ae2285f0576cb6dded3b9963c30d29f9de651ea1098efcfbb5a6de"
+        },
+        "profile_sources": [
+          {
+            "label": "Little Playhouse — KL Sentral campus",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/locations/kl-sentral",
+            "retrievedAt": "2026-09-14T20:36:42.852211+00:00",
+            "sourceDate": null,
+            "snapshotHash": "b1ffabab73ae2285f0576cb6dded3b9963c30d29f9de651ea1098efcfbb5a6de"
+          },
+          {
+            "label": "Little Playhouse — short-term care prices and programmes",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/pricing",
+            "retrievedAt": "2026-09-14T20:38:27.340152+00:00",
+            "sourceDate": null,
+            "snapshotHash": "e96f3fdf63ca653f44c3d6778b8e31deeae0d82df07d89c685d024158d73ca22",
+            "captureURL": "https://littleplayhouse.com.my/assets/index-CQQVGnsv.js",
+            "captureMethod": "published_page_asset"
+          },
+          {
+            "label": "Little Playhouse short-term booking FAQ",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/faq",
+            "retrievedAt": "2026-09-14T20:32:02.425902+00:00",
+            "sourceDate": null,
+            "snapshotHash": "2af259ef1c5246e4ece2fcde768a915d6ccd72d68520f8d312d64da595048e9f"
+          },
+          {
+            "label": "Little Playhouse campus locations and ages",
+            "kind": "provider_website",
+            "url": "https://littleplayhouse.com.my/locations",
+            "retrievedAt": "2026-09-14T20:32:02.817431+00:00",
+            "sourceDate": null,
+            "snapshotHash": "a44a7a452a3a242d1809cd0b1fa62943b7db81dd53789942cd35aca5ca9fca2a"
+          }
+        ],
+        "public_profile_notes": [
+          "Prices are daily short-term programme fees, not an hourly quote or a guaranteed total.",
+          "Branch and age details are published by the operator. A current government registration record was not independently matched for this addition."
+        ],
+        "location": {
+          "latitude": 3.1335,
+          "longitude": 101.6865,
+          "source_url": "https://littleplayhouse.com.my/pricing"
+        },
+        "website": "https://littleplayhouse.com.my/locations/kl-sentral",
+        "public_phone": "010-263 1337",
+        "contact_source": {
+          "source_url": "https://littleplayhouse.com.my/locations/kl-sentral",
+          "retrieved_at": "2026-09-14T20:36:42.852211+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_b5e469ac6144ecffad381d62593",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Little Playhouse — Menara Shell (KL Sentral)",
+            "basis": "The operator lists this campus separately with its address and phone; its public campus map data provides these coordinates. The shared FAQ and pricing page explicitly offer temporary daily care at its centres. Checked against all original and newly added records by name, address and phone; no matching branch."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "occasional"
+          ],
+          "wording": "Daily, weekly and monthly short-term care is offered. Book at least one week ahead, subject to space. Half-day care runs 08:00–12:00; flexible arrival and collection times need agreement.",
+          "question": "Can you accept this short-term visit with the required notice, and which session and daily price apply?",
+          "sources": [
+            {
+              "label": "Little Playhouse short-term booking FAQ",
+              "kind": "provider_website",
+              "url": "https://littleplayhouse.com.my/faq",
+              "retrievedAt": "2026-09-14T20:32:02.425902+00:00",
+              "sourceDate": null,
+              "snapshotHash": "2af259ef1c5246e4ece2fcde768a915d6ccd72d68520f8d312d64da595048e9f"
+            },
+            {
+              "label": "Little Playhouse — short-term care prices and programmes",
+              "kind": "provider_website",
+              "url": "https://littleplayhouse.com.my/pricing",
+              "retrievedAt": "2026-09-14T20:38:27.340152+00:00",
+              "sourceDate": null,
+              "snapshotHash": "e96f3fdf63ca653f44c3d6778b8e31deeae0d82df07d89c685d024158d73ca22",
+              "captureURL": "https://littleplayhouse.com.my/assets/index-CQQVGnsv.js",
+              "captureMethod": "published_page_asset"
+            }
+          ],
+          "requirements": [
+            "Book at least one week in advance; a place must be agreed with the centre.",
+            "Half-day care uses a fixed 08:00–12:00 session."
+          ]
+        },
+        "age_min_months": 3,
+        "age_max_months": 72,
+        "age_source": {
+          "raw": "3 months to 6 years",
+          "source_url": "https://littleplayhouse.com.my/locations",
+          "retrieved_at": "2026-09-14T20:32:02.817431+00:00"
+        },
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI"
+            ],
+            "start": 480,
+            "end": 1080,
+            "source": {
+              "label": "Little Playhouse campus locations and ages",
+              "kind": "provider_website",
+              "url": "https://littleplayhouse.com.my/locations",
+              "retrievedAt": "2026-09-14T20:32:02.817431+00:00",
+              "sourceDate": null,
+              "snapshotHash": "a44a7a452a3a242d1809cd0b1fa62943b7db81dd53789942cd35aca5ca9fca2a"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://littleplayhouse.com.my/locations",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:32:02.817431+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 480,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 480,
+              "end_minute": 1080
+            }
+          ],
+          "closed_weekdays": [
+            "SAT",
+            "SUN"
+          ],
+          "notes": "Monday–Friday 08:00–18:00. Half-day programme 08:00–12:00. Short-term bookings require one week notice."
+        },
+        "fees": [
+          {
+            "amount": 200,
+            "currency": "MYR",
+            "basis": "day",
+            "kind": "care",
+            "programme": "Short-term infant care / playgroup",
+            "conditions": "Infant care (3 months–1 year) or playgroup (2 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+            "source_url": "https://littleplayhouse.com.my/pricing",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:38:27.340152+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 180,
+            "currency": "MYR",
+            "basis": "day",
+            "kind": "care",
+            "programme": "Short-term KG 1",
+            "conditions": "KG 1 (3 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+            "source_url": "https://littleplayhouse.com.my/pricing",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:38:27.340152+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 160,
+            "currency": "MYR",
+            "basis": "day",
+            "kind": "care",
+            "programme": "Short-term KG 2 / reception",
+            "conditions": "KG 2 (4 years), Junior Reception (5 years) or Senior Reception (6 years). Book at least one week ahead. Ask whether enrolment, materials or other charges apply to the visit.",
+            "source_url": "https://littleplayhouse.com.my/pricing",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:38:27.340152+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_b98cf5c4416105eb3c18b26160b",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The provider's flexible-scheduling and enquiry pages give the same Bandar Puteri address and office phone. Its linked Google Maps pin matches iKid House. Not the unrelated iKids Cyberjaya entry in the base catalogue.",
+      "provider": {
+        "id": "provider_b98cf5c4416105eb3c18b26160b",
+        "official_name": "iKid House — Bandar Puteri",
+        "display_name": "iKid House — Bandar Puteri",
+        "address": "11-1, Jalan Puteri 4/7a, Bandar Puteri, 47100 Puchong, Selangor",
+        "state": "Selangor",
+        "district": "Petaling",
+        "registration": null,
+        "public_profile": {
+          "label": "iKid House — branch contact",
+          "kind": "provider_website",
+          "url": "https://www.ikidhouse.org/inquiry/",
+          "retrievedAt": "2026-09-14T20:10:09.168263+00:00",
+          "sourceDate": null,
+          "snapshotHash": "1844bdca3a980218430c2ce91174adcfe74a0b5cde9174c2ceab11875ea90601"
+        },
+        "profile_sources": [
+          {
+            "label": "iKid House — branch contact",
+            "kind": "provider_website",
+            "url": "https://www.ikidhouse.org/inquiry/",
+            "retrievedAt": "2026-09-14T20:10:09.168263+00:00",
+            "sourceDate": null,
+            "snapshotHash": "1844bdca3a980218430c2ce91174adcfe74a0b5cde9174c2ceab11875ea90601"
+          },
+          {
+            "label": "iKid House — provider-linked map",
+            "kind": "map_listing",
+            "url": "https://maps.app.goo.gl/yxiKjR7RoMXG7DeT9",
+            "retrievedAt": "2026-09-14T20:10:09.176847+00:00",
+            "sourceDate": null,
+            "snapshotHash": "7111524bbc159d405271ac101ad4499bf14e0a40cfa5416e5e749159bb5299d6"
+          },
+          {
+            "label": "iKid House — drop-in care",
+            "kind": "provider_website",
+            "url": "https://www.ikidhouse.org/features/flexible-scheduling/",
+            "retrievedAt": "2026-09-14T20:10:09.053137+00:00",
+            "sourceDate": null,
+            "snapshotHash": "db03f6a9b82490bd0fb1161b2fda787ba385065737d0bae615bea68286b4b8e5"
+          }
+        ],
+        "public_profile_notes": [],
+        "location": {
+          "latitude": 3.0183889,
+          "longitude": 101.6140898,
+          "source_url": "https://maps.app.goo.gl/yxiKjR7RoMXG7DeT9"
+        },
+        "website": "https://www.ikidhouse.org/",
+        "public_phone": "03-5888 5551",
+        "contact_source": {
+          "source_url": "https://www.ikidhouse.org/inquiry/",
+          "retrieved_at": "2026-09-14T20:10:09.168263+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_b98cf5c4416105eb3c18b26160b",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "iKid House — Bandar Puteri",
+            "basis": "The provider's flexible-scheduling and enquiry pages give the same Bandar Puteri address and office phone. Its linked Google Maps pin matches iKid House. Not the unrelated iKids Cyberjaya entry in the base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "drop_in",
+            "occasional"
+          ],
+          "wording": "Occasional drop-in care is advertised. Families can choose days and hours as needed; ask about the minimum stay, notice and space for this visit.",
+          "question": "Can a new child stay for these hours, and how much notice do you need?",
+          "sources": [
+            {
+              "label": "iKid House — drop-in care",
+              "kind": "provider_website",
+              "url": "https://www.ikidhouse.org/features/flexible-scheduling/",
+              "retrievedAt": "2026-09-14T20:10:09.053137+00:00",
+              "sourceDate": null,
+              "snapshotHash": "db03f6a9b82490bd0fb1161b2fda787ba385065737d0bae615bea68286b4b8e5"
+            }
+          ]
+        },
+        "age_min_months": null,
+        "age_max_months": null,
+        "age_source": null,
+        "care_windows": [],
+        "operating_hours": {
+          "source_url": null,
+          "source_kind": null,
+          "source_retrieved_at": null,
+          "weekly_windows": [],
+          "closed_weekdays": [],
+          "notes": null
+        },
+        "fees": []
+      }
+    },
+    {
+      "provider_id": "provider_bc393868c856c47ef03fd2043b1",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The nursery's public August 2026 posts link its Linktree, which links the Google Maps destination at Warisan Cityview. Name and phone match that map listing. Coordinates use the destination, not the start of its directions link. No matching base-catalogue branch was found.",
+      "provider": {
+        "id": "provider_bc393868c856c47ef03fd2043b1",
+        "official_name": "Kasih Nilly Nursery",
+        "display_name": "Kasih Nilly Nursery",
+        "address": "Warisan Cityview, Cheras, 55200 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Cheras",
+        "registration": null,
+        "public_profile": {
+          "label": "Kasih Nilly — provider-linked branch map",
+          "kind": "map_listing",
+          "url": "https://www.google.com/maps?cid=711188355013355688",
+          "retrievedAt": "2026-09-14T20:17:01.782196+00:00",
+          "sourceDate": null,
+          "snapshotHash": "5d859e48a08d87154a42d75d166cbebf2cb7b62df9305d81e59d47a48def066a"
+        },
+        "profile_sources": [
+          {
+            "label": "Kasih Nilly — provider-linked branch map",
+            "kind": "map_listing",
+            "url": "https://www.google.com/maps?cid=711188355013355688",
+            "retrievedAt": "2026-09-14T20:17:01.782196+00:00",
+            "sourceDate": null,
+            "snapshotHash": "5d859e48a08d87154a42d75d166cbebf2cb7b62df9305d81e59d47a48def066a"
+          },
+          {
+            "label": "Kasih Nilly — public nursery posts, mirrored by FindGlocal",
+            "kind": "social_post_mirror",
+            "sourceDate": "2026-08-24",
+            "url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+            "retrievedAt": "2026-09-14T20:10:10.622815+00:00",
+            "snapshotHash": "1ec1f3ab636f3f418a505c82b50f92e6f1442777354cc888b658b5aaec121650"
+          },
+          {
+            "label": "Kasih Nilly — provider contact and location links",
+            "kind": "provider_website",
+            "url": "https://linktr.ee/kasihnillynursery",
+            "retrievedAt": "2026-09-14T20:10:11.104679+00:00",
+            "sourceDate": null,
+            "snapshotHash": "fcccca61d1e5afa577681448f006bb263aac9b2300eeecb1548a17d32eea6620"
+          }
+        ],
+        "public_profile_notes": [
+          "The listed address identifies the Warisan Cityview complex. Ask the nursery for the exact unit and entrance before visiting."
+        ],
+        "location": {
+          "latitude": 3.1276855,
+          "longitude": 101.7206308,
+          "source_url": "https://linktr.ee/kasihnillynursery"
+        },
+        "website": "https://linktr.ee/kasihnillynursery",
+        "public_phone": "010-837 8443",
+        "contact_source": {
+          "source_url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+          "retrieved_at": "2026-09-14T20:10:10.622815+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_bc393868c856c47ef03fd2043b1",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Kasih Nilly Nursery",
+            "basis": "The nursery's public August 2026 posts link its Linktree, which links the Google Maps destination at Warisan Cityview. Name and phone match that map listing. Coordinates use the destination, not the start of its directions link. No matching base-catalogue branch was found."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "occasional"
+          ],
+          "wording": "The nursery's August 2026 public posts advertise hourly, one-day and weekly care. Contact the nursery to check space and the price for this visit.",
+          "question": "Can my child attend for these hours, and what is the minimum charge?",
+          "sources": [
+            {
+              "label": "Kasih Nilly — public nursery posts, mirrored by FindGlocal",
+              "kind": "social_post_mirror",
+              "sourceDate": "2026-08-24",
+              "url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+              "retrievedAt": "2026-09-14T20:10:10.622815+00:00",
+              "snapshotHash": "1ec1f3ab636f3f418a505c82b50f92e6f1442777354cc888b658b5aaec121650"
+            }
+          ]
+        },
+        "age_min_months": 3,
+        "age_max_months": 48,
+        "age_source": {
+          "raw": "3 months to 4 years",
+          "source_url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+          "retrieved_at": "2026-09-14T20:10:10.622815+00:00"
+        },
+        "care_windows": [],
+        "operating_hours": {
+          "source_url": "https://www.findglocal.com/MY/Kuala-Lumpur/489301524892396/Kasih-Nilly-Nursery",
+          "source_kind": "social_post_mirror",
+          "source_retrieved_at": "2026-09-14T20:10:10.622815+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 450,
+              "end_minute": 1110
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 450,
+              "end_minute": 1110
+            }
+          ],
+          "closed_weekdays": [],
+          "notes": "Public nursery posts list Monday–Friday 07:30–18:30. Weekend arrangements are not stated."
+        },
+        "fees": []
+      }
+    },
+    {
+      "provider_id": "provider_d599142b1023ab80f309304845e",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "Current provider contact page and drop-off terms both name Wisma Miramas, Taman Desa, and 010-9395711. The linked map gives this location. Old Bangsar URL redirects here and is not a separate addition. No matching existing branch by name, address or phone.",
+      "provider": {
+        "id": "provider_d599142b1023ab80f309304845e",
+        "official_name": "We Rock the Spectrum — Taman Desa",
+        "display_name": "We Rock the Spectrum — Taman Desa",
+        "address": "G1, Wisma Miramas, No. 1, Jalan 2/109e, Taman Desa, 58100 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Kuala Lumpur",
+        "registration": null,
+        "public_profile": {
+          "label": "We Rock the Spectrum — Taman Desa contact",
+          "kind": "provider_website",
+          "url": "https://werockthespectrumtamandesa.com/contact-us/",
+          "retrievedAt": "2026-09-14T20:36:43.189775+00:00",
+          "sourceDate": null,
+          "snapshotHash": "5ec4dd5b9791dcbad1986a0ed062fe8700e069e13d0f30dd0e00007d1e7bf9bd"
+        },
+        "profile_sources": [
+          {
+            "label": "We Rock the Spectrum — Taman Desa contact",
+            "kind": "provider_website",
+            "url": "https://werockthespectrumtamandesa.com/contact-us/",
+            "retrievedAt": "2026-09-14T20:36:43.189775+00:00",
+            "sourceDate": null,
+            "snapshotHash": "5ec4dd5b9791dcbad1986a0ed062fe8700e069e13d0f30dd0e00007d1e7bf9bd"
+          },
+          {
+            "label": "We Rock the Spectrum — linked map",
+            "kind": "map_listing",
+            "url": "https://maps.app.goo.gl/oChcjXR7UvXJwZdP6",
+            "retrievedAt": "2026-09-14T20:38:27.340502+00:00",
+            "sourceDate": null,
+            "snapshotHash": "15ba3b5f58fc6f36e70de7944ed1a6504f80922ee10324088d2c45394628c0bb"
+          },
+          {
+            "label": "We Rock the Spectrum — Drop Off terms and prices",
+            "kind": "provider_website",
+            "url": "https://werockthespectrumtamandesa.com/drop-off/",
+            "retrievedAt": "2026-09-14T20:36:43.186552+00:00",
+            "sourceDate": null,
+            "snapshotHash": "563db8b272944b85c3606c1a943013171c78eddfc7a3ebb7356bdb55b407ebce"
+          }
+        ],
+        "public_profile_notes": [
+          "Supervised play-gym service. The provider explicitly states that it is not a licensed daycare.",
+          "The old Bangsar website redirects to Taman Desa; these were counted as one current location, not two branches."
+        ],
+        "location": {
+          "latitude": 3.0975134,
+          "longitude": 101.6779551,
+          "source_url": "https://maps.app.goo.gl/oChcjXR7UvXJwZdP6"
+        },
+        "website": "https://werockthespectrumtamandesa.com/drop-off/",
+        "public_phone": "010-939 5711",
+        "contact_source": {
+          "source_url": "https://werockthespectrumtamandesa.com/contact-us/",
+          "retrieved_at": "2026-09-14T20:36:43.189775+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_d599142b1023ab80f309304845e",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "We Rock the Spectrum — Taman Desa",
+            "basis": "Current provider contact page and drop-off terms both name Wisma Miramas, Taman Desa, and 010-9395711. The linked map gives this location. Old Bangsar URL redirects here and is not a separate addition. No matching existing branch by name, address or phone."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "Supervised drop-off at an inclusive play gym, for 1–3 hours. Book at least one day ahead. Ages 3–13; children must be toilet trained. The operator explicitly says this is not a licensed daycare.",
+          "question": "Can you supervise my child for this 1–3-hour visit, with the required notice and toilet-training requirements?",
+          "sources": [
+            {
+              "label": "We Rock the Spectrum — Drop Off terms and prices",
+              "kind": "provider_website",
+              "url": "https://werockthespectrumtamandesa.com/drop-off/",
+              "retrievedAt": "2026-09-14T20:36:43.186552+00:00",
+              "sourceDate": null,
+              "snapshotHash": "563db8b272944b85c3606c1a943013171c78eddfc7a3ebb7356bdb55b407ebce"
+            }
+          ],
+          "requirements": [
+            "Each visit is 1–3 hours, booked at least one day in advance.",
+            "Children must be toilet trained; the operator requires completed parent and health forms."
+          ]
+        },
+        "age_min_months": 36,
+        "age_max_months": 156,
+        "age_source": {
+          "raw": "3 to 13 years",
+          "source_url": "https://werockthespectrumtamandesa.com/drop-off/",
+          "retrieved_at": "2026-09-14T20:36:43.186552+00:00"
+        },
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI",
+              "SAT",
+              "SUN"
+            ],
+            "start": 600,
+            "end": 1080,
+            "source": {
+              "label": "We Rock the Spectrum — Taman Desa contact",
+              "kind": "provider_website",
+              "url": "https://werockthespectrumtamandesa.com/contact-us/",
+              "retrievedAt": "2026-09-14T20:36:43.189775+00:00",
+              "sourceDate": null,
+              "snapshotHash": "5ec4dd5b9791dcbad1986a0ed062fe8700e069e13d0f30dd0e00007d1e7bf9bd"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://werockthespectrumtamandesa.com/contact-us/",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:36:43.189775+00:00",
+          "weekly_windows": [
+            {
+              "weekday": "MON",
+              "start_minute": 600,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "TUE",
+              "start_minute": 600,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "WED",
+              "start_minute": 600,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "THU",
+              "start_minute": 600,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "FRI",
+              "start_minute": 600,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "SAT",
+              "start_minute": 600,
+              "end_minute": 1080
+            },
+            {
+              "weekday": "SUN",
+              "start_minute": 600,
+              "end_minute": 1080
+            }
+          ],
+          "closed_weekdays": [],
+          "notes": "Generally daily 10:00–18:00; private rentals and parties can change opening times. Drop-off must be booked at least one day ahead."
+        },
+        "fees": [
+          {
+            "amount": 60,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Drop-off, 1 staff to 4 children",
+            "conditions": "Drop-off only, 1–3 hours per visit. Advance booking and toilet training required. Multi-hour packages are separate.",
+            "source_url": "https://werockthespectrumtamandesa.com/drop-off/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:36:43.186552+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 80,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Drop-off, 1-to-1 care",
+            "conditions": "Drop-off only, 1–3 hours per visit. Advance booking and toilet training required. Multi-hour packages are separate.",
+            "source_url": "https://werockthespectrumtamandesa.com/drop-off/",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:36:43.186552+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    },
+    {
+      "provider_id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "identity_review": "The hourly-care page explicitly names Plaza Damansara; provider contact-page campus data supplies its exact street address and coordinates. Shared phone matches the programme page. No matching branch found in base catalogue.",
+      "provider": {
+        "id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+        "official_name": "Learning Fresh — Damansara Heights",
+        "display_name": "Learning Fresh — Damansara Heights",
+        "address": "22-1, Jalan Medan Setia 2, Bukit Damansara, 50490 Kuala Lumpur",
+        "state": "Kuala Lumpur",
+        "district": "Segambut",
+        "registration": null,
+        "public_profile": {
+          "label": "Learning Fresh — campus contacts",
+          "kind": "provider_website",
+          "url": "https://learningfresh.org/contact-us",
+          "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+          "sourceDate": null,
+          "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+        },
+        "profile_sources": [
+          {
+            "label": "Learning Fresh — campus contacts",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/contact-us",
+            "retrievedAt": "2026-09-14T20:10:09.342399+00:00",
+            "sourceDate": null,
+            "snapshotHash": "614eeae1cbd39a8d5724eef494cda489a2b337b81f33bacc29c0f571c5dbe27b"
+          },
+          {
+            "label": "Learning Fresh — hourly After-School Club",
+            "kind": "provider_website",
+            "url": "https://learningfresh.org/after-school-club",
+            "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+            "sourceDate": null,
+            "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+          }
+        ],
+        "public_profile_notes": [
+          "The listed number is the provider's shared enquiry contact."
+        ],
+        "location": {
+          "latitude": 3.1491051,
+          "longitude": 101.6531268,
+          "source_url": "https://learningfresh.org/contact-us"
+        },
+        "website": "https://learningfresh.org/after-school-club",
+        "public_phone": "012-232 5281",
+        "contact_source": {
+          "source_url": "https://learningfresh.org/contact-us",
+          "retrieved_at": "2026-09-14T20:10:09.342399+00:00"
+        },
+        "admission_review": {
+          "provider_id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+          "base_release": "web_79f1397603c1e28325955f64",
+          "match": {
+            "status": "matched",
+            "catalogue_name": "Learning Fresh — Damansara Heights",
+            "basis": "The hourly-care page explicitly names Plaza Damansara; provider contact-page campus data supplies its exact street address and coordinates. Shared phone matches the programme page. No matching branch found in base catalogue."
+          },
+          "status": "published",
+          "scope": "branch",
+          "service_types": [
+            "hourly",
+            "drop_in"
+          ],
+          "wording": "The After-School Club page names Damansara Heights and offers care by the hour, including occasional drop-offs. Call ahead for space and confirm weekend arrangements.",
+          "question": "Can you take a new child for these hours at the Damansara Heights campus?",
+          "sources": [
+            {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          ]
+        },
+        "age_min_months": null,
+        "age_max_months": null,
+        "age_source": null,
+        "care_windows": [
+          {
+            "days": [
+              "MON",
+              "TUE",
+              "WED",
+              "THU",
+              "FRI"
+            ],
+            "start": 780,
+            "end": 1110,
+            "source": {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          },
+          {
+            "days": [
+              "SAT"
+            ],
+            "start": 540,
+            "end": 1020,
+            "source": {
+              "label": "Learning Fresh — hourly After-School Club",
+              "kind": "provider_website",
+              "url": "https://learningfresh.org/after-school-club",
+              "retrievedAt": "2026-09-14T20:10:09.332706+00:00",
+              "sourceDate": null,
+              "snapshotHash": "9822b8e809f7781e5f8c87b1355ae664ef0024961d856a8af8475a5429f5e2fd"
+            }
+          }
+        ],
+        "operating_hours": {
+          "source_url": "https://learningfresh.org/after-school-club",
+          "source_kind": "provider_website",
+          "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+          "weekly_windows": [],
+          "closed_weekdays": [],
+          "notes": "Hourly programme: weekdays 13:00–18:30 and weekends 09:00–17:00. The campus list on the same page says Monday–Saturday, so Sunday hours remain unconfirmed."
+        },
+        "fees": [
+          {
+            "amount": 40,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekday Seedling",
+            "conditions": "Monday–Friday, 13:00–18:30. Call ahead for space.",
+            "source_url": "https://learningfresh.org/after-school-club",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+            "verification": "provider_published"
+          },
+          {
+            "amount": 50,
+            "currency": "MYR",
+            "basis": "hour",
+            "kind": "care",
+            "programme": "Weekend Seedling",
+            "conditions": "Published weekend rate, 09:00–17:00. Confirm the campus and day; the location list says Monday–Saturday.",
+            "source_url": "https://learningfresh.org/after-school-club",
+            "source_kind": "provider_website",
+            "source_retrieved_at": "2026-09-14T20:10:09.332706+00:00",
+            "verification": "provider_published"
+          }
+        ]
+      }
+    }
+  ]
+}
