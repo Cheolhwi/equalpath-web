@@ -15,13 +15,21 @@ test("cold artwork stays behind the animated loader until the first drawn frame;
   await page.route("**/images/care-gallery/robin-v3/read.webp", async route => { await gate; await route.continue(); });
   await page.addInitScript(() => {
     window.prematureLandingReveal = false;
+    let checkedReady = false;
     new MutationObserver(() => {
       const landing = document.querySelector(".landing");
-      if (["revealing", "ready"].includes(landing?.dataset.loadState) && document.querySelector(".care-scene")?.dataset.sceneStatus !== "ready") window.prematureLandingReveal = true;
+      const sceneReady = document.querySelector(".care-scene")?.dataset.sceneStatus === "ready";
+      if (landing?.dataset.loadState === "ready" && !sceneReady) window.prematureLandingReveal = true;
+      if (sceneReady && !checkedReady) {
+        checkedReady = true;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          window.loaderRemainsAfterReady = Boolean(document.querySelector(".landing-loader"));
+        }));
+      }
     }).observe(document, { childList: true, subtree: true, attributes: true });
   });
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("status")).toHaveText("Find childcare that fits your day.");
+  await expect(page.getByRole("status")).toHaveText("Loading…");
   await expect(page.locator(".landing")).toHaveAttribute("data-load-state", "loading");
   await expect(page.locator(".landing-header")).toBeHidden();
   await expect(page.locator(".landing-loader-wordmark")).toHaveText("EQUALPATH");
@@ -37,6 +45,7 @@ test("cold artwork stays behind the animated loader until the first drawn frame;
   await expect(page.locator(".landing-loader")).toHaveCount(0);
   await expect(page.locator(".care-scene")).toHaveAttribute("data-opening", "complete", { timeout: 15000 });
   expect(await page.evaluate(() => window.prematureLandingReveal)).toBe(false);
+  expect(await page.evaluate(() => window.loaderRemainsAfterReady)).toBe(false);
   await page.screenshot({ path: `${out}/loaded-gallery.png` });
   const typography = await page.evaluate(() => [".landing-brand h1", ".wordmark strong"].map(selector => {
     const style = getComputedStyle(document.querySelector(selector));

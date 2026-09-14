@@ -10,10 +10,11 @@ export default function LandingLoader({ state, onRetry }) {
   }, [state]);
   if (state === "ready") return null;
   return (
-    <div className="landing-loader" data-state={state}>
+    <div className="landing-loader" data-state={state} aria-busy={state === "loading"}>
       <div className="landing-loader-center">
         <div className="landing-loader-wordmark">EQUALPATH</div>
-        <p role="status" aria-live="polite">Find childcare that fits your day.</p>
+        <p>Find childcare that fits your day.</p>
+        {state === "loading" && <p className="landing-loader-status" role="status" aria-live="polite">Loading…</p>}
         {(slow || state === "error") && <div className="landing-loader-help">
           {state === "error" && <p role="alert">Something didn’t load. Please try again.</p>}
           <p>You can still find childcare below.</p>

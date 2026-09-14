@@ -145,10 +145,6 @@
   place-items: center;
   background: #f8f8f3;
 }
-.landing-loader[data-state="revealing"] {
-  pointer-events: none;
-  animation: landing-loaded 480ms ease both;
-}
 .landing-loader-center {
   width: min(420px, 78vw);
   padding-bottom: 7vh;
@@ -164,6 +160,7 @@
   animation: loading-wordmark 2400ms ease-in-out infinite;
 }
 .landing-loader-center > p { color: var(--landing-muted); font-size: 14px; letter-spacing: .02em; margin: 20px 0 0; }
+.landing-loader-center > .landing-loader-status { font-size: 11px; letter-spacing: .08em; margin-top: 28px; }
 .landing-loader-help { margin-top: 14px; color: var(--landing-muted); font-size: 12px; }
 .landing-loader-help p { margin-bottom: 8px; }
 .landing-loader-help button { border-bottom: 1px solid var(--landing-rule); color: var(--landing-ink); padding: 4px 10px; }
@@ -177,7 +174,6 @@
   0%, 100% { opacity: 1; }
   50% { opacity: .65; }
 }
-@keyframes landing-loaded { from { opacity: 1; } to { opacity: 0; } }
 .experience[data-intro-reduced="true"] .landing-loader-wordmark { animation: none !important; }
 @media (max-height: 540px) {
   .landing-loader-center { padding-bottom: 9vh; }

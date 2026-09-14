@@ -1,5 +1,13 @@
 # Landing page and map entrance QA
 
+## Loading follows actual readiness (2026-09-14)
+
+The loader now includes the explicit “Loading…” status under the name and slogan. Scene readiness directly controls its presence: the former 480 ms fade and extra parent staging state have been removed. The first rendered frame reports local and parent readiness in the same update. A browser regression initially exposed delayed dismissal through the old passive notification effect; synchronous reporting fixes it. There is no fixed loading duration, and failure/retry, immediate search access and normal landing-to-search timing remain unchanged.
+
+- All eight existing loader/landing browser cases pass, including the new check that no loading overlay remains on the first rendered frames after readiness.
+- Desktop/mobile loading screenshots in `.build/landing-loading-state/` were visually checked. Production build and asset validation pass for source `5d5be52b3b56e5a939e57ccde9334bb52aa44b522f060e9922c2a2955fc82e8e`.
+- Public publication is verified separately after the push; no backend or provider-data change is required.
+
 ## Minimal loading screen revision (2026-09-14)
 
 The loading centre now contains only EQUALPATH and “Find childcare that fits your day.” The slash, three paper-card icons, moving line and artwork-loading wording have been removed. A 2400 ms opacity pulse on the name signals activity; reduced motion and errors keep it static. First-frame readiness, the 480 ms reveal, immediate Find childcare access, retry and the existing landing-to-search transition are unchanged.

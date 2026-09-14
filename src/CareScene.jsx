@@ -20,7 +20,10 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
   const [opening, setOpening] = useState(openingRef.current);
   const [paused, setPaused] = useState(false);
   const [hidden, setHidden] = useState(() => document.hidden);
-  useEffect(() => { onStatusChange?.(status); }, [status, onStatusChange]);
+  const reportStatus = useCallback(value => {
+    setStatus(value);
+    onStatusChange?.(value);
+  }, [onStatusChange]);
   useEffect(() => { onArtworkChange?.(artIndex); }, [artIndex, onArtworkChange]);
   const finishOpening = useCallback(() => {
     openingRef.current = "complete";
@@ -93,7 +96,7 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
     let alive = true;
     let frame = 0;
     let scene;
-    setStatus("loading");
+    reportStatus("loading");
     try {
       scene = new ArchiveScene(host.current);
       instance.current = scene;
@@ -147,17 +150,17 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
             if (!alive) return;
             if (!document.hidden) {
               scene.update(ms / 1000);
-              if (firstFrame) { firstFrame = false; setStatus("ready"); }
+              if (firstFrame) { firstFrame = false; reportStatus("ready"); }
             }
             frame = requestAnimationFrame(tick);
           };
           frame = requestAnimationFrame(tick);
         })
         .catch(() => {
-          if (alive) setStatus("error");
+          if (alive) reportStatus("error");
         });
     } catch {
-      setStatus("error");
+      reportStatus("error");
     }
     const resize = new ResizeObserver(() => scene?.resize());
     resize.observe(host.current);
@@ -168,7 +171,7 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
       instance.current = null;
       scene?.dispose();
     };
-  }, [choose, interact]);
+  }, [choose, interact, reportStatus]);
   const navigate = (step) => {
     interact();
     direction.current = step;

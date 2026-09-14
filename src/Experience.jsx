@@ -42,12 +42,11 @@ export default function Experience() {
   const [entryArtwork, setEntryArtwork] = useState(0);
   const [readyArtworks, setReadyArtworks] = useState(() => new Set());
   const [sceneStatus, setSceneStatus] = useState("loading");
-  const [loadStage, setLoadStage] = useState("loading");
+  const loadStage = sceneStatus;
   const [sceneAttempt, setSceneAttempt] = useState(0);
   const sceneError = useCallback(() => setSceneStatus("error"), []);
   const retryScene = () => {
     setSceneStatus("loading");
-    setLoadStage("loading");
     setSceneAttempt(n => n + 1);
   };
   const enterButton = useRef(null);
@@ -85,22 +84,10 @@ export default function Experience() {
     setActiveArtwork(0);
     setReadyArtworks(new Set());
     setSceneStatus("loading");
-    setLoadStage("loading");
     setPhase("welcome");
   }, []);
 
   useEffect(() => () => cancelEntrance.current(), []);
-  useEffect(() => {
-    if (phase !== "welcome") return;
-    if (sceneStatus !== "ready") {
-      setLoadStage(sceneStatus);
-      return;
-    }
-    if (reduced) { setLoadStage("ready"); return; }
-    setLoadStage(stage => stage === "ready" ? stage : "revealing");
-    const timer = setTimeout(() => setLoadStage("ready"), 480);
-    return () => clearTimeout(timer);
-  }, [phase, sceneStatus, reduced]);
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
     const changed = () => setReduced(media.matches);
