@@ -1,5 +1,13 @@
 # Landing page and map entrance QA
 
+## Reuse resources that are already loaded (2026-09-14)
+
+Returning home no longer destroys and rebuilds a ready scene or resets the loader. Its canvas and decoded transition images remain mounted but hidden in search; both rendering and autoplay pause. Return restores the existing raised READ view using those same resources, without a loading screen. Zero-size hidden layouts no longer resize the retained canvas, and selection is reported synchronously so the transition uses the visible card. Direct search entry still avoids mounting the gallery, and early entry can discard a scene that has not finished loading.
+
+- All eight loader/landing browser cases pass. The reuse case blocks subsequent image requests, returns home, verifies the exact same canvas and zero repeated image requests, and confirms that no loader is mounted. Desktop/mobile entry, retry, reduced motion, Escape and request preservation remain covered.
+- The warm-return mobile screenshot in `.build/landing-loading-reuse/ready-return-mobile.png` was visually checked. Production build and asset validation pass for source `9808f7e0fb001dac8d22cdc7aa099534100bf564db01fd98b2ffcaed41236196`.
+- Public publication is checked separately after the push. This is in-memory reuse of real resources, not a persistent flag assuming that a future visit will have every resource cached.
+
 ## Loading follows actual readiness (2026-09-14)
 
 The loader now includes the explicit “Loading…” status under the name and slogan. Scene readiness directly controls its presence: the former 480 ms fade and extra parent staging state have been removed. The first rendered frame reports local and parent readiness in the same update. A browser regression initially exposed delayed dismissal through the old passive notification effect; synchronous reporting fixes it. There is no fixed loading duration, and failure/retry, immediate search access and normal landing-to-search timing remain unchanged.

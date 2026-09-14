@@ -54,12 +54,24 @@ test("cold artwork stays behind the animated loader until the first drawn frame;
   expect(typography[0].family).toBe(typography[1].family);
   expect(typography[0].weight).toBe(typography[1].weight);
   expect(typography[0].tracking).toBeCloseTo(typography[1].tracking, 3);
+  const loadedCanvas = await page.locator(".care-scene canvas").elementHandle();
   await page.getByRole("button", { name: "FIND CHILDCARE", exact: true }).click();
   await expect(page.locator(".experience")).toHaveAttribute("data-intro-phase", "ready");
+  await expect(page.locator(".care-scene")).toHaveAttribute("data-autoplay", "paused");
   await page.screenshot({ path: `${out}/header-desktop.png` });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: `${out}/header-mobile.png` });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  // Returning home must reuse the ready scene even if the image network is now unavailable.
+  let repeatedImages = 0;
+  await page.route("**/images/care-gallery/robin-v3/*.webp", route => { repeatedImages++; return route.abort(); });
+  await page.getByRole("button", { name: "EqualPath home", exact: true }).click();
+  await expect(page.locator(".landing")).toHaveAttribute("data-load-state", "ready");
+  await expect(page.locator(".landing-loader")).toHaveCount(0);
+  expect(await loadedCanvas.evaluate(el => el === document.querySelector(".care-scene canvas"))).toBe(true);
+  await expect(page.locator(".care-scene")).toHaveAttribute("data-artwork", "read");
+  await page.screenshot({ path: `${out}/ready-return-mobile.png` });
+  expect(repeatedImages).toBe(0);
 });
 
 test("failed artwork has a retry, and reduced-motion loading stays still", async ({ page }) => {

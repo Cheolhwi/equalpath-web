@@ -131,6 +131,7 @@
   color: var(--landing-ink);
   font-family: MiSans, "DM Sans", sans-serif;
 }
+.landing[hidden], .entrance-curtain[hidden] { display: none; }
 .landing-content {
   position: relative;
   width: 100%;

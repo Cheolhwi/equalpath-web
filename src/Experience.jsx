@@ -44,6 +44,7 @@ export default function Experience() {
   const [sceneStatus, setSceneStatus] = useState("loading");
   const loadStage = sceneStatus;
   const [sceneAttempt, setSceneAttempt] = useState(0);
+  const [homeVisit, setHomeVisit] = useState(0);
   const sceneError = useCallback(() => setSceneStatus("error"), []);
   const retryScene = () => {
     setSceneStatus("loading");
@@ -52,6 +53,7 @@ export default function Experience() {
   const enterButton = useRef(null);
   const hasEntered = useRef(phase === "ready");
   const moving = phase !== "welcome" && phase !== "ready";
+  const keepLanding = phase !== "ready" || sceneStatus === "ready";
   const displayedArtwork = moving ? entryArtwork : activeArtwork;
   const artwork = careArtworks[displayedArtwork];
   const finish = useCallback(() => {
@@ -82,8 +84,7 @@ export default function Experience() {
     cancelEntrance.current();
     history.replaceState(null, "", `${location.pathname}${location.search}`);
     setActiveArtwork(0);
-    setReadyArtworks(new Set());
-    setSceneStatus("loading");
+    setHomeVisit(n => n + 1);
     setPhase("welcome");
   }, []);
 
@@ -140,9 +141,10 @@ export default function Experience() {
     >
       <App introPhase={phase} introReduced={reduced} onHome={home} />
       <Pointer reduced={reduced} />
-      {phase !== "ready" && (
+      {keepLanding && (
         <section
           className="landing"
+          hidden={phase === "ready"}
           data-load-state={loadStage}
           aria-label="Welcome to EqualPath"
           aria-hidden={moving || undefined}
@@ -156,6 +158,7 @@ export default function Experience() {
               <SceneBoundary key={sceneAttempt} onError={sceneError}>
                 <Suspense fallback={null}>
                   <CareScene reduced={reduced} animateOpening={!hasEntered.current}
+                    active={phase !== "ready"} homeVisit={homeVisit}
                     leaving={moving} presented={loadStage === "ready"}
                     onStatusChange={setSceneStatus} onArtworkChange={setActiveArtwork} />
                 </Suspense>
@@ -203,8 +206,8 @@ export default function Experience() {
           </div>
         </section>
       )}
-      {phase !== "ready" && (
-        <div className="entrance-curtain" aria-hidden="true" data-artwork={artwork.id}>
+      {keepLanding && (
+        <div className="entrance-curtain" hidden={phase === "ready"} aria-hidden="true" data-artwork={artwork.id}>
           <svg width="0" height="0" className="entrance-image-filters" focusable="false">
             <defs>
               <filter id="entrance-white-paper" colorInterpolationFilters="sRGB">

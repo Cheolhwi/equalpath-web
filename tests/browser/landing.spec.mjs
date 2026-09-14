@@ -42,7 +42,7 @@ async function captureEntry(page, artwork = 'play', suffix = '') {
   await page.screenshot({path:out+`/entry-reveal${suffix}.png`});
   await page.clock.runFor(ENTRANCE_DURATION_MS+32);
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
-  await expect(page.locator('.entrance-curtain')).toHaveCount(0);
+  await expect(page.locator('.entrance-curtain')).toBeHidden();
   await expect(page.locator('.equalpath')).not.toHaveAttribute('inert','');
   await page.screenshot({path:out+`/entry-ready${suffix}.png`});
   await page.clock.resume();
@@ -109,7 +109,7 @@ test('reduced-motion mobile landing opens raised, with visible controls and keyb
   for(let i=0;i<8&&!await enter.evaluate(el=>el===document.activeElement);i++)await page.keyboard.press('Tab');
   await expect(enter).toBeFocused();expect(await enter.evaluate(el=>getComputedStyle(el).outlineStyle)).toBe('solid');
   await page.keyboard.press('Enter');await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
-  await expect(page.locator('.entrance-curtain')).toHaveCount(0);
+  await expect(page.locator('.entrance-curtain')).toBeHidden();
 });
 
 test('Escape finishes entry on mobile and returning home preserves the current request',async({page})=>{
@@ -125,7 +125,7 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.keyboard.press('Escape');
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
-  await expect(page.locator('.entrance-curtain')).toHaveCount(0);
+  await expect(page.locator('.entrance-curtain')).toBeHidden();
   await page.locator('#pickup-search').fill('Petaling Jaya');
   await page.getByRole('button',{name:'EqualPath home',exact:true}).click();
   await page.clock.resume();
@@ -136,7 +136,7 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   await expect(page.locator('#pickup-search')).toHaveValue('Petaling Jaya');
   await page.clock.resume();
   await expect(page.locator('#pickup-search')).toBeFocused();
-  await expect(page.locator('.entrance-curtain')).toHaveCount(0);
+  await expect(page.locator('.entrance-curtain')).toBeHidden();
   await page.screenshot({path:out+'/entry-mobile-ready.png'});
 });
 

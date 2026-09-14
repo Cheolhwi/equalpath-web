@@ -5,7 +5,7 @@ import { fileAtCell } from "./vendor/rhine/archive-loop";
 import { fileLocation, records } from "./vendor/rhine/data";
 import { careArtworks, nextArtwork, artworkDwell } from "./care-artworks.js";
 
-export default function CareScene({ reduced, animateOpening = true, leaving = false, presented = true, onStatusChange, onArtworkChange }) {
+export default function CareScene({ reduced, animateOpening = true, leaving = false, presented = true, active = true, homeVisit = 0, onStatusChange, onArtworkChange }) {
   const host = useRef(null);
   const instance = useRef(null);
   const selected = useRef(0);
@@ -20,11 +20,12 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
   const [opening, setOpening] = useState(openingRef.current);
   const [paused, setPaused] = useState(false);
   const [hidden, setHidden] = useState(() => document.hidden);
+  const renderActive = useRef(active && !hidden);
+  const renderLoop = useRef(null);
   const reportStatus = useCallback(value => {
     setStatus(value);
     onStatusChange?.(value);
   }, [onStatusChange]);
-  useEffect(() => { onArtworkChange?.(artIndex); }, [artIndex, onArtworkChange]);
   const finishOpening = useCallback(() => {
     openingRef.current = "complete";
     setOpening("complete");
@@ -36,8 +37,29 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
   const choose = useCallback((index, navigation) => {
     selected.current = index;
     instance.current?.select(index, navigation);
-    setArtIndex(fileLocation(index).lane);
-  }, []);
+    const artworkIndex = fileLocation(index).lane;
+    setArtIndex(artworkIndex);
+    onArtworkChange?.(artworkIndex);
+  }, [onArtworkChange]);
+  useEffect(() => {
+    renderActive.current = active && !hidden;
+    if (renderActive.current) {
+      if (host.current?.clientWidth && host.current?.clientHeight) instance.current?.resize();
+      renderLoop.current?.resume();
+    }
+    else renderLoop.current?.pause();
+  }, [active, hidden]);
+  useEffect(() => {
+    if (!homeVisit) return;
+    choose(0);
+    direction.current = 1;
+    setPaused(false);
+    finishOpening();
+    mode.current = "detail";
+    setOverview(false);
+    instance.current?.setMode("detail");
+    instance.current?.finishDecryption();
+  }, [homeVisit, choose, finishOpening]);
   useEffect(() => {
     reducedRef.current = reduced;
     instance.current?.setReduced(reduced);
@@ -68,9 +90,9 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
     };
   }, []);
   const playing =
-    status === "ready" && presented && opening === "complete" && !paused && !reduced && !overview && !hidden && !leaving;
+    status === "ready" && active && presented && opening === "complete" && !paused && !reduced && !overview && !hidden && !leaving;
   useEffect(() => {
-    if (status !== "ready" || !presented || opening === "complete" || hidden || paused || reduced || leaving) return;
+    if (status !== "ready" || !active || !presented || opening === "complete" || hidden || paused || reduced || leaving) return;
     return artworkDwell(() => {
       if (openingRef.current === "complete") return;
       if (opening === "collection") {
@@ -83,7 +105,7 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
         setOpening("lifting");
       } else finishOpening();
     }, { delay: opening === "collection" ? 300 : 1800 });
-  }, [status, presented, opening, hidden, paused, reduced, leaving, finishOpening]);
+  }, [status, active, presented, opening, hidden, paused, reduced, leaving, finishOpening]);
   useEffect(() => {
     if (!playing) return;
     return artworkDwell(() => {
@@ -146,15 +168,18 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
             scene.update(now - 1.5 + i / 60, undefined, false);
           scene.setReduced(reducedRef.current);
           let firstFrame = true;
-          const tick = (ms) => {
-            if (!alive) return;
-            if (!document.hidden) {
-              scene.update(ms / 1000);
-              if (firstFrame) { firstFrame = false; reportStatus("ready"); }
-            }
-            frame = requestAnimationFrame(tick);
+          const resume = () => {
+            if (alive && renderActive.current && !frame) frame = requestAnimationFrame(tick);
           };
-          frame = requestAnimationFrame(tick);
+          const tick = (ms) => {
+            frame = 0;
+            if (!alive || !renderActive.current) return;
+            scene.update(ms / 1000);
+            if (firstFrame) { firstFrame = false; reportStatus("ready"); }
+            resume();
+          };
+          renderLoop.current = { resume, pause: () => { cancelAnimationFrame(frame); frame = 0; } };
+          resume();
         })
         .catch(() => {
           if (alive) reportStatus("error");
@@ -162,11 +187,14 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
     } catch {
       reportStatus("error");
     }
-    const resize = new ResizeObserver(() => scene?.resize());
+    const resize = new ResizeObserver(() => {
+      if (host.current?.clientWidth && host.current?.clientHeight) scene?.resize();
+    });
     resize.observe(host.current);
     return () => {
       alive = false;
       cancelAnimationFrame(frame);
+      renderLoop.current = null;
       resize.disconnect();
       instance.current = null;
       scene?.dispose();
