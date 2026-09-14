@@ -8,7 +8,6 @@ export const SORT_OPTIONS = [
   ["price", "Lowest monthly fee"],
   ["closing", "Later care end time"],
   ["pickup", "Centres with pickup first"],
-  ["name", "By name"],
 ].map(([value, label]) => ({ value, label }));
 
 // Select-only combobox: navigation previews an option; Enter/click commits it.

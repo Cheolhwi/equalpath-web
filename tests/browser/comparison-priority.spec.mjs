@@ -31,6 +31,8 @@ test('restored map points gain a street address and priority highlights switch, 
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByRole('button',{name:'Remove Test tied from comparison',exact:true}).click();
   await expect(highlighted).toHaveCount(1);await expect(highlighted).toHaveAttribute('data-provider-id','late');
-  await page.getByRole('combobox',{name:'Comparison priority',exact:true}).click();await page.getByRole('option',{name:'By name',exact:true}).click();await expect(highlighted).toHaveCount(0);
-  await expect(page.locator('.comparison-priority-message')).toContainText('Alphabetical');
+  await page.getByRole('combobox',{name:'Comparison priority',exact:true}).click();
+  await expect(page.getByRole('option',{name:'By name',exact:true})).toHaveCount(0);
+  await page.getByRole('option',{name:'Nearest first',exact:true}).click();
+  await expect(highlighted).toHaveCount(1);await expect(highlighted).toHaveAttribute('data-provider-id','near');
 });

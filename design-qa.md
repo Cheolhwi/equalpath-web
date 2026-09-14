@@ -1,5 +1,12 @@
 # Landing page and map entrance QA
 
+## Useful sorting choices only (2026-09-15)
+
+Removed `By name` from the shared search/comparison menu. The remaining choices are nearest, lowest monthly fee, later care end and pickup first. Saved templates do not persist sorting, and both views initialise to nearest, so no saved-data migration is needed.
+
+- All three existing sorting-menu/comparison browser checks passed, including keyboard End selecting pickup, unavailable choices, mobile bounds and changing highlighted providers. Desktop search and mobile comparison screenshots in `.build/sort-options-qa/` were visually inspected.
+- All 139 unit checks, packaging dry run, production build and asset validation passed. Source digest: `c2a291bc6622eef5ba927374c341b0874f9f930f6952d4c8c89b80fdd5b3cc87`. This changes the UI options only; backend compatibility and data are unchanged.
+
 ## Compact mobile map preview (2026-09-15)
 
 The selected-centre preview on screens up to 760 px now shows only its name, driving time and fee. The whole card opens the existing details/request flow. Names use two lines at most; fee periods and estimate labels remain intact. The smaller padding and 15/12 px text leave more map visible, with separate clearance when the comparison tray is present. Desktop content and query behavior are unchanged.

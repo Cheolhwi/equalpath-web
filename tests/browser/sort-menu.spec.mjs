@@ -46,6 +46,7 @@ test("styled sorting previews without queries, skips unavailable options and sup
   const trigger = page.getByRole("combobox", { name: "Order search results", exact: true });
   await trigger.click();
   await expect(page.getByRole("option", { selected: true })).toHaveText("Nearest first");
+  await expect(page.getByRole("option", { name: "By name", exact: true })).toHaveCount(0);
   await expect(page.getByRole("option", { name: /Later care end time/ })).toBeDisabled();
   await page.screenshot({ path: `${out}/sort-desktop.png` });
   await trigger.press("ArrowDown");
@@ -98,6 +99,7 @@ test("sorting stays on small screens and Escape closes the menu without closing 
   const priority = page.getByRole("combobox", { name: "Comparison priority", exact: true });
   await priority.click();
   await expect(menu).toBeVisible();
+  await expect(page.getByRole("option", { name: "By name", exact: true })).toHaveCount(0);
   await page.screenshot({ path: `${out}/sort-comparison-mobile.png` });
   await priority.press("Escape");
   await expect(page.getByRole("dialog")).toBeVisible();
@@ -105,7 +107,7 @@ test("sorting stays on small screens and Escape closes the menu without closing 
   await expect(menu).toHaveCount(0);
   await priority.press("End");
   await priority.press("Enter");
-  await expect(priority).toHaveText("By name");
+  await expect(priority).toHaveText("Centres with pickup first");
   await page.setViewportSize({ width: 320, height: 700 });
   await priority.click();
   box = await menu.boundingBox();
