@@ -733,9 +733,6 @@ export default function App({
         aria-label="Find care for this request"
       >
         <div className="intro">
-          <div className="eyebrow">
-            KL + SELANGOR <span>／ 01</span>
-          </div>
           <h1>Find childcare</h1>
           <p>Search by pickup place and care hours.</p>
         </div>

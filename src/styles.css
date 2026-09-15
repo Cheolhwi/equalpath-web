@@ -233,18 +233,11 @@ select {
 }
 .eyebrow,
 .section-kicker,
-.intro .eyebrow,
 .request-heading,
 .before-results > span {
   font-size: 10px;
   letter-spacing: 0.12em;
   font-weight: 600;
-}
-.intro .eyebrow {
-  display: flex;
-  justify-content: space-between;
-  color: var(--muted);
-  margin-bottom: 17px;
 }
 .intro h1 {
   font-size: 33px;
@@ -1734,9 +1727,6 @@ dialog::backdrop {
 @media (min-width: 761px) and (max-height: 800px) {
   .discovery-panel {
     padding-top: 18px;
-  }
-  .intro .eyebrow {
-    margin-bottom: 10px;
   }
   .intro h1 {
     font-size: 29px;
