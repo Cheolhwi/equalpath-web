@@ -482,7 +482,7 @@ export function Comparison({
         <div className="compare-sort-control">
           <span>Sort by</span>
           <SelectMenu label="Comparison priority" value={sort} options={sortOptions(items[0]?.careType).filter(o => o.value !== "closing" || date)}
-            available={ordering?.available} onChange={onSort} />
+            available={ordering?.available} unavailableReasons={ordering?.unavailableReasons} onChange={onSort} />
         </div>
         <OrderingNote ordering={ordering} />
         <p className="comparison-priority-message" role="status">{best.message}</p>

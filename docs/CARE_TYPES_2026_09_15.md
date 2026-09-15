@@ -33,3 +33,11 @@ Short-term search and comparison say “Lowest fee”. Shared presentation filte
 Price priority groups estimated totals, hourly, visit, session and daily fees, then compares the lowest starting amount within each group. Missing prices cannot win, monthly fees are not converted, and comparison ties must use the same period. The ordering explanation states this grouping. Regular childcare retains monthly pricing. Unit checks cover mixed periods, monthly-only records, ranges, extras, foreign currencies, unknown rates, estimated totals and API search/comparison behavior.
 
 Final follow-up verification: all 164 unit checks and 17 relevant browser scenarios pass (including the corrected fee-row locator rerun). Live radius readback at KL Sentral returned 12 short-care matches in 5 km, split 10 + 2, while regular care retained 379 matches within 10 km and 20 per page. Final release evidence is under `.build/short-care-limits/` and `.build/short-care-fees/`.
+
+## Follow-up: unavailable sorting
+
+Search and comparison now resolve unavailable priorities to Nearest first before ordering results or choosing suggestions. The response request, ordering metadata and comparison menu agree on that effective sort. Availability uses the actual nearest page or selected comparison centres. If only a later page has a quote, the current page says “No fees on this page.” rather than claiming no quotes exist nearby; choosing a priority on a later page preserves that page. Other concise reasons include “No fees listed nearby.”, “No fees listed.”, “No hours for this date.” and “No pickup service listed.”. Foreign-currency rates explain the lack of comparable MYR fees.
+
+Regression coverage includes changing to a location without quotes, removing the last quoted comparison centre, a priced later page, all-monthly short-care records, missing regular monthly rates, absent hours/pickup, foreign currencies and empty results. Disabled reasons remain readable on small screens and disabled clicks cannot trigger a search. Evidence is stored in `.build/sort-availability/`.
+
+Sort-availability validation: 168 unit checks and 12 relevant browser scenarios passed, including desktop/mobile location changes, removing the quoted comparison centre, and sorting a later page. The production bundle and isolated function package also pass release checks.

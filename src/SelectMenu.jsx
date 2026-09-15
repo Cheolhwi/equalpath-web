@@ -12,19 +12,25 @@ export const SORT_OPTIONS = [
 export const sortOptions = careType => SORT_OPTIONS.map(option => option.value === "price" && careType === "short_term" ? {...option, label:"Lowest fee"} : option);
 
 // Select-only combobox: navigation previews an option; Enter/click commits it.
-export default function SelectMenu({ label, value, options, available, disabled, onChange }) {
+const missingInformation = {
+  distance: "No mapped locations.",
+  price: "No comparable fees listed.",
+  closing: "No hours for this date.",
+  pickup: "No pickup service listed.",
+};
+export default function SelectMenu({ label, value, options, available, unavailableReasons, disabled, onChange }) {
   const id = useId(), trigger = useRef(null), menu = useRef(null);
   const typed = useRef({ text: "", at: 0 });
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const [position, setPosition] = useState(null);
-  const enabled = (index) => index >= 0 && available?.[options[index]?.value] !== false;
+  const enabled = (index) => index >= 0 && index < options.length && available?.[options[index]?.value] !== false;
   const selected = options.findIndex((option) => option.value === value);
   const enabledIndexes = options.map((_, i) => i).filter(enabled);
   const close = () => { setOpen(false); typed.current = { text: "", at: 0 }; };
   const show = (index = selected) => {
-    if (disabled || !enabledIndexes.length) return;
-    setActive(enabled(index) ? index : enabledIndexes[0]);
+    if (disabled) return;
+    setActive(enabled(index) ? index : enabledIndexes[0] ?? -1);
     setPosition(null);
     setOpen(true);
   };
@@ -86,6 +92,7 @@ export default function SelectMenu({ label, value, options, available, disabled,
     if (key === "Tab") { close(); return; }
     if (["ArrowDown", "ArrowUp", "Home", "End", "Enter", " "].includes(key)) {
       event.preventDefault();
+      if (!enabledIndexes.length) { if (!open) show(); return; }
       if (key === "Enter" || key === " ") { open ? choose(active) : show(); return; }
       if (key === "Home" || key === "End") {
         const next = key === "Home" ? enabledIndexes[0] : enabledIndexes.at(-1);
@@ -112,7 +119,7 @@ export default function SelectMenu({ label, value, options, available, disabled,
     <div className="select-menu">
       <button type="button" role="combobox" className="select-menu-trigger" ref={trigger}
         aria-label={label} aria-haspopup="listbox" aria-expanded={open}
-        aria-controls={open ? id : undefined} aria-activedescendant={open ? `${id}-${active}` : undefined}
+        aria-controls={open ? id : undefined} aria-activedescendant={open && active >= 0 ? `${id}-${active}` : undefined}
         disabled={disabled} onClick={() => open ? close() : show()} onKeyDown={onKeyDown}
         onBlur={(event) => { if (!menu.current?.contains(event.relatedTarget)) close(); }}>
         <span>{options[selected]?.label ?? "Choose an option"}</span><ChevronDown size={16} aria-hidden="true" />
@@ -126,7 +133,7 @@ export default function SelectMenu({ label, value, options, available, disabled,
               onPointerDown={(event) => event.preventDefault()}
               onPointerMove={() => { if (enabled(i)) setActive(i); }} onClick={() => choose(i)}>
               <span className="select-menu-check">{option.value === value && <Check size={16} aria-hidden="true" />}</span>
-              <span className="select-menu-option-label">{option.label}{!enabled(i) && <small>Unavailable</small>}</span>
+              <span className="select-menu-option-label">{option.label}{!enabled(i) && <small>{unavailableReasons?.[option.value] ?? missingInformation[option.value] ?? "No matching information is listed."}</small>}</span>
             </div>
           ))}
         </div>,

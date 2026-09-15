@@ -19,8 +19,8 @@ import {
   sortProviders,
   priorityValue,
   suggestProviders,
-  applicableWindows,
 } from "../shared/conditions.mjs";
+import { feesForCare } from "../shared/result-summary.mjs";
 import { regionAt, regions, distanceKm } from "./geography.mjs";
 import { fixtureCatalog, demoPickup } from "./fixtures.mjs";
 import { createStore, ServiceError } from "./appwrite-store.mjs";
@@ -183,7 +183,11 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       const page = Number(body.page ?? 0);
       if (!Number.isInteger(page) || page < 0 || page > 1000)
         throw new ServiceError("INVALID_PAGE", 400);
-      const pageItems = sortProviders(candidates.slice(page * pageSize, (page + 1) * pageSize), request.sort, request.date);
+      const pageCandidates = candidates.slice(page * pageSize, (page + 1) * pageSize);
+      const order = ordering(request.sort, pageCandidates, request.date, request.radius, pageSize, careType, candidates,
+        Boolean(request.query || !request.includeUnknown || !request.includeConflicts));
+      request.sort = order.factor;
+      const pageItems = sortProviders(pageCandidates, request.sort, request.date);
       return {
         ...meta,
         request,
@@ -192,7 +196,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
         page,
         pageSize,
         missingLocations: candidates.filter((p) => !p.location).length,
-        ordering: ordering(request.sort, candidates, request.date, request.radius, pageSize, careType),
+        ordering: order,
       };
     }
     const ids = body.action === "details" ? [body.id] : body.ids;
@@ -208,7 +212,9 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
     if (chosen.some((p) => !p))
       throw new ServiceError("PLACE_UNAVAILABLE", 404);
     const hydrated = chosen.map(hydrate),
-      ordered =
+      order = ordering(request.sort, hydrated, request.date);
+    request.sort = order.factor;
+    const ordered =
         body.action === "compare"
           ? sortProviders(hydrated, request.sort, request.date)
           : hydrated;
@@ -216,7 +222,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       ...meta,
       request,
       items: await withDriving(ordered),
-      ordering: ordering(request.sort, hydrated, request.date),
+      ordering: order,
     };
   };
 }
@@ -224,9 +230,39 @@ function withinRadius(center, location, radius) {
   const distance = distanceKm(center, location);
   return Number.isFinite(distance) && distance <= radius;
 }
-function ordering(sort, items, date, radius = null, pageSize = 20, careType = items[0]?.careType ?? "regular") {
+const sortAvailability = (items, date) => ({
+  name: true,
+  distance: items.some(p => Number.isFinite(p.distanceKm)),
+  price: items.some(p => Number.isFinite(priorityValue(p, "price", date))),
+  closing: Boolean(date) && items.some(p => Number.isFinite(priorityValue(p, "closing", date))),
+  pickup: items.some(p => p.transport?.exists === true),
+});
+function ordering(requestedSort, items, date, radius = null, pageSize = 20, careType = items[0]?.careType ?? "regular", allItems = items, filtered = false) {
+  const available = sortAvailability(items, date), allAvailable = sortAvailability(allItems, date);
+  const unavailableReasons = {};
+  for (const factor of ["distance", "price", "closing", "pickup"]) {
+    if (available[factor]) continue;
+    const scope = radius === null ? "comparison" : allAvailable[factor] ? "page" : filtered ? "matches" : "nearby";
+    const scopedItems = allAvailable[factor] ? items : allItems;
+    const foreignFees = factor === "price" && scopedItems.some(p => feesForCare(p).some(f =>
+      (careType === "short_term" || f.basis === "month") && f.currency && f.currency !== "MYR" && Number.isFinite(f.amount ?? f.min)));
+    const fee = careType === "short_term" ? "fees" : "monthly fees";
+    unavailableReasons[factor] = {
+      distance: "No mapped locations.",
+      price: foreignFees ? "No comparable MYR fees."
+        : scope === "page" ? `No ${fee} on this page.`
+        : scope === "nearby" ? `No ${fee} listed nearby.`
+        : scope === "matches" ? `No ${fee} for these results.` : `No ${fee} listed.`,
+      closing: scope === "page" ? "No care hours on this page." : "No hours for this date.",
+      pickup: scope === "page" ? "No pickup on this page." : "No pickup service listed.",
+    }[factor];
+  }
+  const sort = requestedSort !== "distance" && available[requestedSort] === false ? "distance" : requestedSort;
   return {
     factor: sort,
+    available,
+    unavailableReasons,
+    ...(sort !== requestedSort ? { fallback: { from: requestedSort, to: sort, reason: unavailableReasons[requestedSort] } } : {}),
     ...(radius !== null ? { pageSelection: "nearest", pageSize } : {}),
     explanation: (radius !== null
       ? `Each page shows the next ${pageSize} nearest centres within ${radius} km. Your priority sorts that page, with conflicting details last. `
@@ -242,15 +278,6 @@ function ordering(sort, items, date, radius = null, pageSize = 20, careType = it
           : sort === "pickup"
             ? "Published institutional transport first; unknown transport last. Coverage and seats are checked separately."
             : "Names in alphabetical order, with a stable branch identifier for ties."),
-    available: {
-      name: true,
-      distance: items.some((p) => p.distanceKm != null),
-      price: items.some((p) => priorityValue(p, 'price', date) != null),
-      closing: items.some(
-        (p) => date && applicableWindows(p.businessHours?.windows, date).length,
-      ),
-      pickup: items.some((p) => p.transport.exists !== null),
-    },
   };
 }
 export const api = createAPI();

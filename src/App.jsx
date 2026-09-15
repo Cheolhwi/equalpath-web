@@ -544,7 +544,7 @@ export default function App({
         request: { ...activeRequest, sort },
         version: results.version,
       });
-      if (seq === dialogSeq.current) setComparison(r);
+      if (seq === dialogSeq.current) { setComparison(r); setCompareSort(r.request.sort); }
     } catch (e) {
       if (seq === dialogSeq.current) setDialogError(e);
     } finally {
@@ -1055,10 +1055,11 @@ export default function App({
                 disabled={busy}
                 options={sortOptions(results.request.careType).filter(o => o.value !== "closing" || isShortCare(results.request))}
                 available={results.ordering?.available}
+                unavailableReasons={results.ordering?.unavailableReasons}
                 onChange={(sort) => {
                   const r = { ...draft, sort };
                   setDraft(r);
-                  search(null, 0, r);
+                  search(null, dirty ? 0 : results.page, r);
                 }}
               />
             </div>
