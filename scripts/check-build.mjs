@@ -6,8 +6,8 @@ import { careArtworks } from "../src/care-artworks.js";
 
 const root = resolve(import.meta.dirname, "..");
 const html = readFileSync(resolve(root, "dist/index.html"), "utf8");
-const assets = [...html.matchAll(/(?:src|href)="(\/[^"?#]+)"/g)].map(
-  (match) => match[1],
+const assets = [...html.matchAll(/(?:src|href)="(\/[^"\s]+)"/g)].map(
+  (match) => match[1].split(/[?#]/, 1)[0],
 );
 assert(
   assets.some((asset) => asset.endsWith(".js")),

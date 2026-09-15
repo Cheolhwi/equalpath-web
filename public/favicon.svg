@@ -1,1 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#e8e5e1"/><path d="M50 50C35 25 9 29 9 50s26 25 41 0 41-25 41 0-26 25-41 0" fill="none" stroke="#111" stroke-width="10"/><path d="M21 50h17m-8-8v16m32-8h17" stroke="#111" stroke-width="5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+  <title>EqualPath</title>
+  <!-- Same care emblem as appicon.svg, enlarged without fine decoration for browser tabs. -->
+  <rect x="32" y="32" width="960" height="960" rx="224" fill="#FCFBF6"/>
+  <g transform="translate(-214 -270) scale(1.4)">
+<circle cx="512" cy="344" r="69" fill="#30382F"/>
+    <path d="M247 708
+             C230 579 248 472 313 407
+             C369 351 445 353 502 390
+             C558 426 585 478 628 513
+             C650 531 675 540 704 540
+             C660 573 614 589 564 583
+             C514 577 476 548 446 514
+             C409 473 371 457 341 472
+             C311 488 296 524 299 575
+             C303 638 330 694 376 741
+             C329 748 286 735 247 708Z"
+          fill="#30382F"/>
+    <circle cx="705" cy="484" r="48" fill="#6B7951"/>
+    <path d="M643 694
+             C642 629 650 577 675 545
+             C694 520 722 519 743 539
+             C776 569 792 621 790 690
+             C789 728 775 766 750 794
+             C712 779 678 744 643 694Z"
+          fill="#6B7951"/>
+<path d="M352 822
+             C414 754 462 695 513 641
+             C566 585 620 557 702 540"
+          stroke="#8D9B77" stroke-width="34" stroke-linecap="round"/>
+  </g>
+</svg>
