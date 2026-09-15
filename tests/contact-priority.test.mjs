@@ -4,7 +4,7 @@ import { hasContact, sortProviders, suggestProviders, bestForPriority } from "..
 import { createAPI } from "../server/api.mjs";
 import { fixtureCatalog, demoPickup } from "../server/fixtures.mjs";
 const date = "2026-09-14";
-const request = { pickup: demoPickup, date, deadline: "13:00", end: "18:00", age: "4", transport: "self", radius: 10, sort: "distance" };
+const request = { careType: "regular", pickup: demoPickup, date, deadline: "13:00", end: "18:00", age: "4", transport: "self", radius: 10, sort: "distance" };
 const source = { label: "Test contact", url: "https://example.com/contact" };
 const phone = { display: "03-1234 5678", source };
 const whatsapp = [{ href: "https://wa.me/60312345678", display: "03-1234 5678", scope: "website", source }];

@@ -9,6 +9,7 @@ export const SORT_OPTIONS = [
   ["closing", "Later care end time"],
   ["pickup", "Centres with pickup first"],
 ].map(([value, label]) => ({ value, label }));
+export const sortOptions = careType => SORT_OPTIONS.map(option => option.value === "price" && careType === "short_term" ? {...option, label:"Lowest fee"} : option);
 
 // Select-only combobox: navigation previews an option; Enter/click commits it.
 export default function SelectMenu({ label, value, options, available, disabled, onChange }) {

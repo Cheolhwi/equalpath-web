@@ -2,7 +2,7 @@
 
 The search starts with “Need care for a few hours?”. “No, regular care” is the default; only location is required, with optional child age and pickup preference. “Yes, short-term care” reveals the existing required date, collect-by and care-until fields. Changing the choice clears results, map selection, comparison, questions and preparation so the two collections cannot be mixed. Location, age and pickup preference remain available.
 
-The public Appwrite catalogue currently contains 3,137 providers. The published profile snapshot `profiles_de193ab0981745497c2fea47` contains exactly 101 provider IDs; short-term search uses those IDs and regular search uses the remaining 3,036. Collection membership is checked before the existing maximum 10 km distance, nearest-20 page selection, contact priority and conflict-last ranking. A nearby search and explicit detail/comparison lookups enforce the same membership. A short-care search will usually show fewer than 101 because the radius remains in effect.
+The public Appwrite catalogue currently contains 3,137 providers. The published profile snapshot `profiles_de193ab0981745497c2fea47` contains exactly 101 provider IDs; short-term search uses those IDs and regular search uses the remaining 3,036. Collection membership is checked before distance, nearest-page selection, contact priority and conflict-last ranking. Short-term care is limited to 5 km and 10 results per page, including nearby discovery. Regular care retains its default 10 km maximum (optional 5 km) and 20 results per page. The API enforces these limits even for legacy or oversized requests. A nearby search and explicit detail/comparison lookups enforce the same membership. A short-care search will usually show fewer than 101 because the radius remains in effect.
 
 The profile snapshot is a coursework research collection, not confirmation that every branch accepts short visits. It includes 21 published-service entries and 80 with no such confirmation. A single coursework collection notice appears in short-term search. Existing admission evidence, requirements, unknowns, fee provenance and registration facts are unchanged. No owner records are written by this feature.
 
@@ -20,3 +20,16 @@ The function deployment package includes the new profile-evidence reader. It val
 - `npm run release`: all 160 unit checks pass; the isolated function package imports successfully and the production bundle passes asset checks.
 - Browser regression: 59 distinct scenarios pass across the complete run and focused rerun. The six old assertions affected by the new default/wording were corrected and verified; the focused final run passed 23/23, including delayed-response isolation.
 - Public query function deployment `6aa91f3c64cedca7a77e` reached `ready`. Local journey screenshots and live readbacks are stored in `.build/care-types/`.
+
+## Follow-up: short-care search limits
+
+- Added boundary coverage just inside/outside 5 km, invalid locations, oversized/legacy requests, four-page exhaustion without repeats, independent regular-care limits and cache normalization. All 161 unit checks pass.
+- Desktop/mobile checks cover switching, saved searches, 10-item pagination and its final partial page, map pins, conflict/contact priority, and the unchanged regular 5/10 km selection. Evidence is saved in `.build/short-care-limits/`.
+
+## Follow-up: short-stay fees
+
+Short-term search and comparison say “Lowest fee”. Shared presentation filters hide monthly, term and annual programme fees and extras from short-stay prices. Published hourly, per-visit, per-session and daily care rates keep their original billing periods. Only the existing complete, validated rule can produce an estimated visit total; missing short-stay rates show “Ask the centre”. Provider source data is preserved.
+
+Price priority groups estimated totals, hourly, visit, session and daily fees, then compares the lowest starting amount within each group. Missing prices cannot win, monthly fees are not converted, and comparison ties must use the same period. The ordering explanation states this grouping. Regular childcare retains monthly pricing. Unit checks cover mixed periods, monthly-only records, ranges, extras, foreign currencies, unknown rates, estimated totals and API search/comparison behavior.
+
+Final follow-up verification: all 164 unit checks and 17 relevant browser scenarios pass (including the corrected fee-row locator rerun). Live radius readback at KL Sentral returned 12 short-care matches in 5 km, split 10 + 2, while regular care retained 379 matches within 10 km and 20 per page. Final release evidence is under `.build/short-care-limits/` and `.build/short-care-fees/`.

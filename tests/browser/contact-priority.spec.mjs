@@ -6,11 +6,11 @@ const out = process.env.QA_EVIDENCE_DIR || ".build/contact-priority";
 mkdirSync(out, { recursive: true });
 test("contact priority stays consistent across results, map and comparison, with a contact-free second-page fallback", async ({ page }) => {
   const base = fixtureCatalog.items[0], source = { label: "Test published contact", url: "https://example.com/contact" };
-  const items = Array.from({ length: 25 }, (_, i) => ({ ...structuredClone(base), id: `p-${i}`, name: `Test centre ${i}`, mode: "live",
-    location: { lat: 3.139 + i * .001, lng: 101.6869 }, phone: i === 18 || i === 0 ? { display: "03-1234 5678", source } : null,
-    whatsapp: i === 19 ? [{ href: "https://wa.me/60312345678", display: "03-1234 5678", source, scope: "website" }] : [],
+  const items = Array.from({ length: 15 }, (_, i) => ({ ...structuredClone(base), id: `p-${i}`, name: `Test centre ${i}`, mode: "live",
+    location: { lat: 3.139 + i * .001, lng: 101.6869 }, phone: i === 8 || i === 0 ? { display: "03-1234 5678", source } : null,
+    whatsapp: i === 9 ? [{ href: "https://wa.me/60312345678", display: "03-1234 5678", source, scope: "website" }] : [],
     admission: { ...base.admission, value: i !== 0 }, feeRule: null,
-    fees: [{ amount: (i + 1) * 100, basis: "month", currency: "MYR", kind: "programme", source }],
+    fees: [{ amount: (i + 1) * 100, basis: "hour", currency: "MYR", kind: "programme", source }],
   }));
   const api = createAPI({ store: { catalog: async () => ({ ...fixtureCatalog, items }) }, drivingRoutes: async (_, rows) => rows });
   await page.route("**/api", async route => route.fulfill({ json: { ok: true, ...await api(route.request().postDataJSON()) } }));
@@ -25,25 +25,25 @@ test("contact priority stays consistent across results, map and comparison, with
   await page.getByRole("button", { name: "Find care options", exact: true }).click();
   const suggested = page.locator(".provider-row.suggested");
   await expect(suggested).toHaveCount(2);
-  expect(await suggested.evaluateAll(rows => rows.map(p => p.dataset.providerId))).toEqual(["p-18", "p-19"]);
-  expect(await page.locator(".provider-pin.suggested").evaluateAll(rows => rows.map(p => p.dataset.providerId).sort())).toEqual(["p-18", "p-19"]);
-  await expect(page.locator(".provider-row")).toHaveCount(20);
+  expect(await suggested.evaluateAll(rows => rows.map(p => p.dataset.providerId))).toEqual(["p-8", "p-9"]);
+  expect(await page.locator(".provider-pin.suggested").evaluateAll(rows => rows.map(p => p.dataset.providerId).sort())).toEqual(["p-8", "p-9"]);
+  await expect(page.locator(".provider-row")).toHaveCount(10);
   await expect(page.locator(".provider-row").last()).toHaveAttribute("data-provider-id", "p-0");
   await expect(page.locator(".provider-pin.conflict")).toHaveAttribute("data-provider-id", "p-0");
   await page.getByRole("combobox", { name: "Order search results", exact: true }).click();
-  await page.getByRole("option", { name: "Lowest monthly fee", exact: true }).click();
-  await expect(page.locator(".provider-row").first()).toHaveAttribute("data-provider-id", "p-18");
+  await page.getByRole("option", { name: "Lowest fee", exact: true }).click();
+  await expect(page.locator(".provider-row").first()).toHaveAttribute("data-provider-id", "p-8");
   await page.getByRole("button", { name: "Why this order?", exact: true }).click();
   await expect(page.getByRole("dialog")).not.toContainText(/phone|WhatsApp|contact details/i);
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.screenshot({ path: `${out}/contacts-search-desktop.png` });
-  for (const i of [1, 18, 19]) await page.getByRole("button", { name: `Compare Test centre ${i}`, exact: true }).click();
+  for (const i of [1, 8, 9]) await page.getByRole("button", { name: `Compare Test centre ${i}`, exact: true }).click();
   await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /COMPARE/ }).click();
-  await expect(page.locator("th.comparison-best")).toHaveAttribute("data-provider-id", "p-18");
+  await expect(page.locator("th.comparison-best")).toHaveAttribute("data-provider-id", "p-8");
   await expect(page.locator(".comparison-priority-message")).not.toContainText(/phone|WhatsApp|contact details/i);
   await page.getByRole("combobox", { name: "Comparison priority", exact: true }).click();
-  await page.getByRole("option", { name: "Lowest monthly fee", exact: true }).click();
-  await expect(page.locator("th.comparison-best")).toHaveAttribute("data-provider-id", "p-18");
+  await page.getByRole("option", { name: "Lowest fee", exact: true }).click();
+  await expect(page.locator("th.comparison-best")).toHaveAttribute("data-provider-id", "p-8");
   await page.screenshot({ path: `${out}/contacts-comparison-desktop.png` });
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.setViewportSize({ width: 390, height: 844 });
@@ -54,6 +54,6 @@ test("contact priority stays consistent across results, map and comparison, with
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await expect(page.locator(".provider-row")).toHaveCount(5);
   await expect(suggested).toHaveCount(3);
-  expect(await suggested.evaluateAll(rows => rows.map(p => p.dataset.providerId))).toEqual(["p-20", "p-21", "p-22"]);
-  expect(await page.locator(".provider-pin.suggested").evaluateAll(rows => rows.map(p => p.dataset.providerId).sort())).toEqual(["p-20", "p-21", "p-22"]);
+  expect(await suggested.evaluateAll(rows => rows.map(p => p.dataset.providerId))).toEqual(["p-10", "p-11", "p-12"]);
+  expect(await page.locator(".provider-pin.suggested").evaluateAll(rows => rows.map(p => p.dataset.providerId).sort())).toEqual(["p-10", "p-11", "p-12"]);
 });

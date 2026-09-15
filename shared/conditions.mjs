@@ -1,5 +1,5 @@
 import { minutes, timeLabel, isShortCare } from "./request.mjs";
-import { monthlyFeeFrom } from "./result-summary.mjs";
+import { feePriorityValue, feePriorityGroup, shortFeeFrom } from "./result-summary.mjs";
 const result = (id, label, state, reason, source = null, question = null) => ({
   id,
   label,
@@ -413,7 +413,7 @@ export const priorityValue = (p, sort, date) =>
     sort === "distance"
       ? p.distanceKm
       : sort === "price"
-        ? monthlyFeeFrom(p)
+        ? feePriorityValue(p)
       : sort === "pickup"
         ? p.transport?.exists === true
           ? 1
@@ -443,6 +443,7 @@ export function sortProviders(items, sort, date) {
     if (conflicts(a) !== conflicts(b)) return conflicts(a) - conflicts(b);
     const contact = Number(hasContact(b)) - Number(hasContact(a));
     if (contact) return contact;
+    if (sort === "price" && feePriorityGroup(a) !== feePriorityGroup(b)) return feePriorityGroup(a) - feePriorityGroup(b);
     let x = priorityValue(a,sort,date),
       y = priorityValue(b,sort,date);
     if (x === -Infinity) x = null;
@@ -465,9 +466,10 @@ export function suggestProviders(items, request) {
   // Never fill the remaining suggestion slots with unreachable centres while
   // a contactable, conflict-free option exists on this nearest-results page.
   const pool = preferContactable(items.filter(p => p.location && !p.fit.counts.conflict));
-  const ids = pool.filter(p => request.sort !== "price" || monthlyFeeFrom(p) != null)
+  const ids = pool.filter(p => request.sort !== "price" || feePriorityValue(p) != null)
     .sort((a,b) => {
       const sort=request.sort;
+      if (sort === "price" && feePriorityGroup(a) !== feePriorityGroup(b)) return feePriorityGroup(a) - feePriorityGroup(b);
       if (["distance","price","closing","pickup"].includes(sort)) {
         const x=priorityValue(a,sort,request.date), y=priorityValue(b,sort,request.date);
         if(x==null && y!=null)return 1;
@@ -488,6 +490,8 @@ export function bestForPriority(items, sort, date) {
   if (!eligible.length) return {ids:[],message:"There isn’t enough information to suggest an option for this priority."};
   const value=priorityValue(eligible[0],sort,date);
   // Equal published values are equal winners, not broken by an arbitrary ID.
-  const ids=eligible.filter(p=>Math.abs(priorityValue(p,sort,date)-value)<0.000001).map(p=>p.id);
-  return {ids,label:labels[sort],message:ids.length>1 ? "These centres tie for your priority." : "Highlighted for your priority."};
+  const ids=eligible.filter(p=>(sort!=="price" || feePriorityGroup(p)===feePriorityGroup(eligible[0])) && Math.abs(priorityValue(p,sort,date)-value)<0.000001).map(p=>p.id);
+  const shortFee=sort==='price'&&eligible[0].careType==='short_term'?shortFeeFrom(eligible[0]):null;
+  const label=shortFee?({total:'Lowest estimated total',hour:'Lowest hourly fee',visit:'Lowest visit fee',session:'Lowest session fee',day:'Lowest daily fee'})[shortFee.basis]:labels[sort];
+  return {ids,label,message:ids.length>1 ? "These centres tie for your priority." : shortFee ? "Highlighted within the same billing period." : "Highlighted for your priority."};
 }

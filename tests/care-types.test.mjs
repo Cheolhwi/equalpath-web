@@ -36,7 +36,9 @@ test('live search and map use disjoint memberships before radius, count and pagi
   for(const careType of ['regular','short_term']){
     const nearby=await api({action:'nearby',center:demoPickup,careType});
     assert.ok(nearby.items.every(p=>ids.includes(p.id)===(careType==='short_term')));
-    assert.ok(nearby.items.every(p=>p.distanceKm<=10));assert.ok(nearby.items.length<=20);
+    const radius=careType==='short_term'?5:10,pageSize=careType==='short_term'?10:20;
+    assert.equal(nearby.radius,radius);assert.equal(nearby.pageSize,pageSize);
+    assert.ok(nearby.items.every(p=>p.distanceKm<=radius));assert.ok(nearby.items.length<=pageSize);
   }
   await assert.rejects(api({action:'details',request,id:ids[0]}),e=>e.code==='PLACE_UNAVAILABLE');
   await assert.rejects(api({action:'compare',request:dated,ids:[ids[0],regular.items[0].id]}),e=>e.code==='PLACE_UNAVAILABLE');
@@ -50,6 +52,33 @@ test('membership is not an admission claim and missing membership fails closed',
   assert.equal(result.items[0].fit.conditions.find(c=>c.id==='admission').state,'unknown');
   const broken=createAPI({store:{catalog:async()=>({...catalog,shortCareReady:false})}});
   await assert.rejects(broken({action:'search',request}),e=>e.code==='SOURCE_INCOMPLETE');
+});
+test('short care clamps forged and legacy requests to 5 km and ten per page before routing',async()=>{
+  const north=km=>({lat:demoPickup.lat+km/6371*180/Math.PI,lng:demoPickup.lng});
+  const make=(id,km)=>({...structuredClone(fixtureCatalog.items[0]),id,location:km===null?null:north(km)});
+  const short=[...Array.from({length:22},(_,i)=>make(`short-${i}`,1+i*.1)),make('inside-5',4.999),make('outside-5',5.001),make('unlocated',null)];
+  const regular=Array.from({length:21},(_,i)=>make(`regular-${i}`,6+i*.1));
+  const a=createAPI({store:{catalog:async()=>({...fixtureCatalog,items:[...short,...regular],shortCareReady:true,shortCareIds:short.map(p=>p.id)})},drivingRoutes:async(_,rows)=>{
+    assert.ok(rows.length<=(rows[0]?.id.startsWith('regular')?20:10));return rows;
+  }});
+  for(const careType of ['short_term',undefined])for(const radius of [undefined,10,999]){
+    const r={...dated,careType,radius};
+    const pages=[];
+    for(let page=0;page<4;page++){
+      const result=await a({action:'search',request:r,page,pageSize:999});
+      assert.equal(result.request.radius,5);assert.equal(result.pageSize,10);assert.equal(result.total,23);
+      assert.equal(result.items.length,[10,10,3,0][page]);assert.equal(result.ordering.pageSize,10);
+      assert.ok(result.items.every(p=>p.distanceKm<=5&&!p.id.startsWith('regular')));pages.push(...result.items);
+    }
+    assert.equal(new Set(pages.map(p=>p.id)).size,23);assert.ok(pages.some(p=>p.id==='inside-5'));
+    const nearby=await a({action:'nearby',careType,center:demoPickup,radius,pageSize:999});
+    assert.equal(nearby.radius,5);assert.equal(nearby.total,23);assert.equal(nearby.items.length,10);
+    assert.ok(nearby.items.every(p=>p.distanceKm<=5));
+  }
+  const regularResult=await a({action:'search',request});
+  assert.equal(regularResult.request.radius,10);assert.equal(regularResult.total,21);assert.equal(regularResult.items.length,20);
+  assert.ok(regularResult.items.every(p=>p.id.startsWith('regular')));
+  assert.equal(nearbyCacheKey({center:demoPickup,careType:'short_term',radius:10}),nearbyCacheKey({center:demoPickup,careType:'short_term',radius:5}));
 });
 test('regular detail, question copy and printable preparation do not require or fabricate a visit date',async()=>{
   const result=await api({action:'search',request});

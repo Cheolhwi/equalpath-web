@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 import useCardReveal from "./useCardReveal.js";
-import SelectMenu, { SORT_OPTIONS } from "./SelectMenu.jsx";
+import SelectMenu, { sortOptions } from "./SelectMenu.jsx";
 import {
   Bookmark,
   ClipboardList,
@@ -23,14 +23,14 @@ import {
   Wallet,
 } from "lucide-react";
 import { todayKL, isShortCare } from "../shared/request.mjs";
-import { drivingLabel, feeSummary, formatFee } from "../shared/result-summary.mjs";
+import { drivingLabel, feeSummary, formatFee, feesForCare } from "../shared/result-summary.mjs";
 import { bestForPriority } from "../shared/conditions.mjs";
 import { registrationBadge } from "../shared/registration.mjs";
 export function OrderingNote({ ordering, radius }) {
   if (!ordering) return null;
   const text = ordering.factor === "distance"
     ? ordering.pageSelection === "nearest"
-      ? `Each page shows the next 20 nearest centres${radius ? ` within ${radius} km` : ""}. Centres with conflicting details appear last.`
+      ? `Each page shows the next ${ordering.pageSize ?? 20} nearest centres${radius ? ` within ${radius} km` : ""}. Centres with conflicting details appear last.`
       : "Compare nearby options, with conflicting details last."
     : ordering.explanation;
   return <p>{text}</p>;
@@ -300,19 +300,19 @@ export function Registration({ p }) {
 export const feeLabel = formatFee;
 export function Costs({ p }) {
   const [show, setShow] = useState(false),
-    c = p.cost;
+    c = p.cost, fees = feesForCare(p);
   return (
     <section className="detail-section">
       <div className="section-kicker">COST BREAKDOWN</div>
       <h3>
         {c.available
           ? "Estimate your cost"
-          : p.fees.length
-            ? p.fees.every(f=>f.verification==='area_estimate') ? "Estimated budget" : "Published fees"
+          : fees.length
+            ? p.careType==='short_term' ? "Short-stay fees" : fees.every(f=>f.verification==='area_estimate') ? "Estimated budget" : "Published fees"
           : "Ask the centre for a quote"}
       </h3>
-      {p.fees.length ? (
-        p.fees.map((f, i) => (
+      {fees.length ? (
+        fees.map((f, i) => (
           <div className="fee-line" key={i}>
             {f.programme && <span className="fee-programme">{f.programme}</span>}
             <strong>{feeLabel(f)}</strong>
@@ -329,7 +329,7 @@ export function Costs({ p }) {
       {!c.available ? (
         <details className="fee-questions"><summary>{isShortCare(p) ? "Check one-off fees & extras" : "Check programme fees & extras"}</summary>
           <ul>{c.missing.map(item=><li key={item}>{item}</li>)}</ul>
-          <p className="notice">{isShortCare(p) ? "Ask for a quote for your date. Monthly fees don’t give a one-off care total." : "Check which programme the fee covers and which extras are charged separately."}</p>
+          <p className="notice">{isShortCare(p) ? "Ask for a quote for your visit, including the minimum stay and any extras." : "Check which programme the fee covers and which extras are charged separately."}</p>
         </details>
       ) : (
         <>
@@ -406,7 +406,7 @@ export function Details({ p, request, onPrepare, onCompare, compared, onSave, sa
       {shortCare && <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care end time</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>}
       <div><dt><Users size={15} />Age</dt><dd>{detailAgeLabel(p)}</dd><small>{p.age?.basis === "type_reference" ? "Official type range" : "Published age range"}</small></div>
       <div><dt><Car size={15} />Drive from pickup</dt><dd>{p.driving?.state === "available" ? `About ${p.driving.minutes} min` : "Unavailable"}</dd><small>{p.driving?.state === "available" ? `${p.driving.distanceKm} km by road · no live traffic` : "Travel time couldn’t be checked"}</small></div>
-      <div className="metric-fee"><dt><Wallet size={15} />Fee</dt><dd>{fees.label}</dd><small>{p.cost?.available ? "For your selected care hours" : p.fees?.every(f=>f.verification==='area_estimate') && p.fees.length ? "Area budget reference" : "Check the programme and extras"}</small></div>
+      <div className="metric-fee"><dt><Wallet size={15} />Fee</dt><dd>{fees.label}</dd><small>{p.cost?.available ? "For your selected care hours" : p.careType === "short_term" ? fees.note : p.fees?.every(f=>f.verification==='area_estimate') && p.fees.length ? "Area budget reference" : "Check the programme and extras"}</small></div>
     </dl>
     <div className="centre-layout">
       <section className="centre-fit centre-section" aria-label="Your care needs">
@@ -481,7 +481,7 @@ export function Comparison({
       <div className="compare-sort">
         <div className="compare-sort-control">
           <span>Sort by</span>
-          <SelectMenu label="Comparison priority" value={sort} options={SORT_OPTIONS.filter(o => o.value !== "closing" || date)}
+          <SelectMenu label="Comparison priority" value={sort} options={sortOptions(items[0]?.careType).filter(o => o.value !== "closing" || date)}
             available={ordering?.available} onChange={onSort} />
         </div>
         <OrderingNote ordering={ordering} />
@@ -572,15 +572,16 @@ export function Comparison({
               <th>Fees</th>
               {items.map((p) => (
                 <td key={p.id}>
-                  {p.fees.length
-                    ? p.fees.map((f, i) => (
+                  {p.cost.available && <strong>{feeSummary(p).label}</strong>}
+                  {feesForCare(p).length
+                    ? feesForCare(p).map((f, i) => (
                         <div key={i}>
                           <strong>{feeLabel(f)}</strong>
                           <p>{f.conditions}</p>
                           <SourceLink source={f.source} />
                         </div>
                       ))
-                    : "Ask the centre for a price"}
+                    : !p.cost.available && "Ask the centre for a price"}
                   <p>
                     {p.cost.available
                       ? "View details for a cost estimate."

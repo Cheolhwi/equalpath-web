@@ -4,6 +4,7 @@ import {
   requestErrors,
   needsPickupAddress,
   searchRadius,
+  searchPageSize,
   isShortCare,
   todayKL,
 } from "../shared/request.mjs";
@@ -53,6 +54,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
     const shortIds = mode === "live" && Array.isArray(catalog.shortCareIds) ? new Set(catalog.shortCareIds) : null;
     const items = (shortIds ? allItems.filter(p => shortIds.has(p.id) === (careType === "short_term")) : allItems)
       .map(p => ({ ...p, careType }));
+    const pageSize = searchPageSize(careType);
     const meta = {
       contract: CONTRACT,
       mode,
@@ -72,11 +74,11 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       const center = { lat: body.center?.lat, lng: body.center?.lng };
       if (!regions.includes(regionAt(center)))
         throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
-      const radius = searchRadius(body.radius);
+      const radius = searchRadius(body.radius, careType);
       const candidates = items.filter((p) => withinRadius(center, p.location, radius))
         .map((p) => ({ id: p.id, name: p.name, category: p.category, careType, address: p.address, district: p.district, region: p.region, location: p.location, fees: p.fees, distanceKm: distanceKm(center, p.location) }))
         .sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
-      return { ...meta, center, radius, total: candidates.length, items: candidates.slice(0, 20) };
+      return { ...meta, center, radius, pageSize, total: candidates.length, items: candidates.slice(0, pageSize) };
     }
     if (body.action === "places") {
       const q = String(body.query ?? "")
@@ -181,16 +183,16 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       const page = Number(body.page ?? 0);
       if (!Number.isInteger(page) || page < 0 || page > 1000)
         throw new ServiceError("INVALID_PAGE", 400);
-      const pageItems = sortProviders(candidates.slice(page * 20, page * 20 + 20), request.sort, request.date);
+      const pageItems = sortProviders(candidates.slice(page * pageSize, (page + 1) * pageSize), request.sort, request.date);
       return {
         ...meta,
         request,
         items: await withDriving(suggestProviders(pageItems, request)),
         total: candidates.length,
         page,
-        pageSize: 20,
+        pageSize,
         missingLocations: candidates.filter((p) => !p.location).length,
-        ordering: ordering(request.sort, candidates, request.date, request.radius),
+        ordering: ordering(request.sort, candidates, request.date, request.radius, pageSize, careType),
       };
     }
     const ids = body.action === "details" ? [body.id] : body.ids;
@@ -222,17 +224,19 @@ function withinRadius(center, location, radius) {
   const distance = distanceKm(center, location);
   return Number.isFinite(distance) && distance <= radius;
 }
-function ordering(sort, items, date, radius = null) {
+function ordering(sort, items, date, radius = null, pageSize = 20, careType = items[0]?.careType ?? "regular") {
   return {
     factor: sort,
-    ...(radius !== null ? { pageSelection: "nearest" } : {}),
+    ...(radius !== null ? { pageSelection: "nearest", pageSize } : {}),
     explanation: (radius !== null
-      ? `Each page shows the next 20 nearest centres within ${radius} km. Your priority sorts that page, with conflicting details last. `
+      ? `Each page shows the next ${pageSize} nearest centres within ${radius} km. Your priority sorts that page, with conflicting details last. `
       : "Compare options for your priority, with conflicting details last. ") + (
       sort === "distance"
         ? "Nearest first; missing locations last."
         : sort === "price"
-          ? "Lowest monthly care fee first, using the starting amount for ranges. Estimated budgets are included and labelled. Other billing periods and missing monthly fees go last; extras are excluded."
+          ? careType === "short_term"
+            ? "Fees are grouped by billing period: estimated totals, hourly, per visit, per session, then daily. Within each group, the lowest starting fee comes first. Monthly fees and extras are excluded; unlisted short-stay prices go last."
+            : "Lowest monthly care fee first, using the starting amount for ranges. Estimated budgets are included and labelled. Other billing periods and missing monthly fees go last; extras are excluded."
         : sort === "closing"
           ? "Later care end time first; missing times last. One-off admission and capacity remain unconfirmed."
           : sort === "pickup"

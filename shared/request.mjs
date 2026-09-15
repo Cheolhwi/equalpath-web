@@ -2,7 +2,9 @@ export const CONTRACT = "equalpath-web-p03-v1";
 export const MAX_SEARCH_RADIUS_KM = 10;
 export const isShortCare = (request) => request?.careType !== "regular";
 export const careTypeLabel = (request) => isShortCare(request) ? "Short-term care" : "Regular childcare";
-export const searchRadius = (value) => Number(value) === 5 ? 5 : MAX_SEARCH_RADIUS_KM;
+export const SHORT_CARE_RADIUS_KM = 5;
+export const searchRadius = (value, careType = "regular") => careType === "short_term" ? SHORT_CARE_RADIUS_KM : Number(value) === 5 ? 5 : MAX_SEARCH_RADIUS_KM;
+export const searchPageSize = (careType) => careType === "short_term" ? 10 : 20;
 export const minutes = (s) =>
   typeof s === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(s)
     ? Number(s.slice(0, 2)) * 60 + Number(s.slice(3))
@@ -70,7 +72,7 @@ export function canonicalRequest(input) {
     end: isShortCare(input) ? input.end : "",
     age: input.age === null || input.age === undefined ? "" : String(input.age),
     transport: input.transport ?? "",
-    radius: searchRadius(input.radius),
+    radius: searchRadius(input.radius, isShortCare(input) ? "short_term" : "regular"),
     query: String(input.query ?? "")
       .trim()
       .slice(0, 100),

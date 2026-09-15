@@ -10,7 +10,7 @@ async function start(page) {
   const items = ["A", "B", "C"].map((name, i) => ({
     ...structuredClone(base), id: `test-${name}`, name: `Test Centre ${name}`,
     location: { lat: 3.139 + i * .001, lng: 101.6869 }, feeRule: null,
-    fees: [{ amount: 900 - i * 100, currency: "MYR", basis: "month", kind: "programme" }],
+    fees: [{ amount: 900 - i * 100, currency: "MYR", basis: "hour", kind: "programme" }],
   }));
   const api = createAPI({
     store: { catalog: async () => ({ ...fixtureCatalog, items }) },
@@ -50,7 +50,7 @@ test("styled sorting previews without queries, skips unavailable options and sup
   await expect(page.getByRole("option", { name: /Later care end time/ })).toBeDisabled();
   await page.screenshot({ path: `${out}/sort-desktop.png` });
   await trigger.press("ArrowDown");
-  await expect(await activeOption(page, trigger)).toHaveText("Lowest monthly fee");
+  await expect(await activeOption(page, trigger)).toHaveText("Lowest fee");
   await trigger.press("ArrowDown");
   await expect(await activeOption(page, trigger)).toHaveText("Centres with pickup first");
   expect(searches).toHaveLength(1);
@@ -59,11 +59,11 @@ test("styled sorting previews without queries, skips unavailable options and sup
   await expect(trigger).toHaveAttribute("aria-expanded", "false");
   await trigger.press("l");
   await trigger.press("Enter");
-  await expect(trigger).toHaveText("Lowest monthly fee");
+  await expect(trigger).toHaveText("Lowest fee");
   await expect(page.locator(".provider-row").first()).toHaveAttribute("data-provider-id", "test-C");
   expect(searches).toHaveLength(2);
   await trigger.click();
-  await page.getByRole("option", { name: "Lowest monthly fee", exact: true }).click();
+  await page.getByRole("option", { name: "Lowest fee", exact: true }).click();
   expect(searches).toHaveLength(2);
   await trigger.click();
   await trigger.press("Tab");

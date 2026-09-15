@@ -29,15 +29,17 @@ test("zooming and repeated dragging never query; reopening loads the saved neigh
   await expect(page.getByRole("button",{name:"Search this area",exact:true})).toHaveCount(0);
   expect(calls.filter(c=>c.action==="nearby").length).toBe(before+1);
 });
-async function search(page){
+async function search(page,regular=false){
   await page.addInitScript(()=>localStorage.setItem("equalpath:map:v1:live",JSON.stringify({version:1,center:{lat:3.139,lng:101.6869},zoom:13,pickup:{id:"demo-pickup",label:"KL Sentral",lat:3.139,lng:101.6869}})));
-  await page.goto("/?care=short_term#discover");await page.locator("#service-date").fill("2026-09-22");await page.locator("#deadline").fill("16:00");await page.locator("#care-end").fill("18:00");await page.locator("#age").selectOption("4");await page.locator("#transport").selectOption("institution");await page.getByRole("button",{name:"Find care options",exact:true}).click();
+  await page.goto(regular?"/#discover":"/?care=short_term#discover");
+  if(!regular){await page.locator("#service-date").fill("2026-09-22");await page.locator("#deadline").fill("16:00");await page.locator("#care-end").fill("18:00");}
+  await page.locator("#age").selectOption("4");await page.locator("#transport").selectOption("institution");await page.getByRole("button",{name:"Find care options",exact:true}).click();
   await expect(page.locator(".provider-row").first()).toBeVisible();
 }
 test("search offers only 5 or 10 km and the map and count exclude distant or unlocated centres",async({page})=>{
   const base=fixtureCatalog.items[0];
   const at=(id,km)=>({...base,id,name:id,location:{lat:3.139+km/6371*180/Math.PI,lng:101.6869}});
-  const calls=[];await setup(page,calls,true,false,[at("Inside radius",9.99),at("Outside radius",10.01)]);await search(page);
+  const calls=[];await setup(page,calls,true,false,[at("Inside radius",9.99),at("Outside radius",10.01)]);await search(page,true);
   expect(calls.find(c=>c.action==="search").request.radius).toBe(10);
   await expect(page.locator(".results-toolbar strong")).toHaveText("10");
   await expect(page.locator(".results-toolbar > div > span")).toHaveText("centres within 10 km");
@@ -98,7 +100,7 @@ test("route outage keeps results and published prices, without fake drive estima
 test("mobile map previews leave room for the map and open the selected centre", async ({page}) => {
   const provider = {
     ...fixtureCatalog.items[0], id: "demo-compact", name: "Demo · Little Garden Childcare Taman Seri Sentosa Learning House",
-    feeRule: null, fees: [{ min: 500, max: 800, currency: "MYR", basis: "month", verification: "area_estimate" }],
+    feeRule: null, fees: [{ min: 40, max: 60, currency: "MYR", basis: "hour", verification: "provider_published" }],
   };
   const calls = []; await setup(page, calls, true, false, [provider]); await search(page);
   const pin = page.locator(`.provider-pin[data-provider-id="${provider.id}"]`);
@@ -115,7 +117,7 @@ test("mobile map previews leave room for the map and open the selected centre", 
     await expect(compact).toBeVisible();
     await expect(compact).toHaveAccessibleName(`View details for ${provider.name}`);
     await expect(compact).toContainText("About 8 min by car");
-    await expect(compact).toContainText("Fee: Estimated MYR 500–800 / month");
+    await expect(compact).toContainText("Fee: MYR 40–60 / hour");
     await expect(preview.locator(".map-preview-expanded")).toBeHidden();
     const box = await preview.boundingBox(), map = await page.locator(".map-wrap").boundingBox();
     expect(box.height).toBeLessThan(140);

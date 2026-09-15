@@ -26,7 +26,7 @@ test('price sorts each nearest page without replacing nearby centres with farthe
   items.push({...base,id:'unknown',location:{lat:demoPickup.lat+.03,lng:demoPickup.lng},fees:[fee(1,{basis:'unspecified'})]});
   items.push({...base,id:'outside-cheapest',location:{lat:3.5,lng:101.6869},fees:[fee(1)]}, {...base,id:'unlocated-cheapest',location:null,fees:[fee(0)]});
   const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(_,rows)=>rows});
-  const request={pickup:demoPickup,date:'2026-09-14',deadline:'16:00',end:'17:00',transport:'self',sort:'price'};
+  const request={careType:'regular',pickup:demoPickup,transport:'self',sort:'price'};
   const first=await api({action:'search',request}),second=await api({action:'search',request,page:1});
   assert.equal(first.request.sort,'price');assert.equal(first.ordering.available.price,true);assert.match(first.ordering.explanation,/monthly.*Estimated/s);
   assert.equal(first.total,26);assert.equal(first.items.length,20);assert.equal(second.items.length,6);

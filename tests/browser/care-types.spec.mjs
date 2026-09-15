@@ -26,6 +26,8 @@ for(const mobile of [false,true])test(`${mobile?'mobile':'desktop'} regular flow
   if(mobile)await page.setViewportSize({width:390,height:844});
   const {calls,errors}=await setup(page);
   await expect(page.getByRole('radio',{name:'No, regular care'})).toBeChecked();
+  await expect(page.locator('#radius option')).toHaveText(['Within 5 km','Within 10 km']);
+  await expect(page.locator('#radius')).toHaveValue('10');
   await expect(page.locator('#service-date, #deadline, #care-end')).toHaveCount(0);
   await expect(page.locator('.nearby-card')).toHaveCount(2);
   await expect(page.locator('.nearby-card').first()).toContainText('Regular Care');
@@ -51,6 +53,8 @@ for(const mobile of [false,true])test(`${mobile?'mobile':'desktop'} regular flow
   await close(page);
   await page.getByRole('button',{name:'Edit request',exact:true}).click();
   await page.getByRole('radio',{name:'Yes, short-term care'}).check();
+  await expect(page.locator('#radius option')).toHaveText(['Within 5 km']);
+  await expect(page.locator('#radius')).toHaveValue('5');
   await expect(page.getByRole('button',{name:'View details for Regular Care 3',exact:true})).toHaveCount(0);
   await expect(page.getByRole('navigation').getByRole('button',{name:/COMPARE/})).toContainText('0');
   await expect(page.locator('#age')).toHaveValue('4');await expect(page.locator('#transport')).toHaveValue('self');
@@ -66,6 +70,8 @@ for(const mobile of [false,true])test(`${mobile?'mobile':'desktop'} regular flow
   await page.getByRole('button',{name:'Saved searches',exact:true}).click();
   await page.locator('.saved-row').filter({has:page.getByRole('heading',{name:'Everyday childcare',exact:true})}).getByRole('button',{name:'Use this search',exact:true}).click();
   await expect(page.getByRole('radio',{name:'No, regular care'})).toBeChecked();
+  await expect(page.locator('#radius option')).toHaveText(['Within 5 km','Within 10 km']);
+  await expect(page.locator('#radius')).toHaveValue('10');
   await expect(page.locator('#service-date, #deadline, #care-end')).toHaveCount(0);
   await expect(page.locator('.saved-search-reminder')).toBeVisible();
   await submit(page);await expect(page.getByRole('button',{name:'View details for Regular Care 3',exact:true})).toBeVisible();
@@ -86,6 +92,8 @@ test('a delayed response from regular care cannot replace short-term results aft
   });
   await submit(page);await seen;
   await page.getByRole('radio',{name:'Yes, short-term care'}).check();
+  await expect(page.locator('#radius option')).toHaveText(['Within 5 km']);
+  await expect(page.locator('#radius')).toHaveValue('5');
   await page.locator('#service-date').fill('2026-09-21');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');
   await submit(page);await expect(page.getByRole('button',{name:'View details for Short Stay 1',exact:true})).toBeVisible();
   const oldResponse=page.waitForResponse(r=>r.url().endsWith('/api')&&r.request().postDataJSON().action==='search'&&r.request().postDataJSON().request.careType==='regular');
