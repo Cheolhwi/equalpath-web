@@ -7,5 +7,5 @@ export function areaMoved(a, b) {
   return Math.hypot(dx, dy) >= 0.5;
 }
 export function nearbyCacheKey(body) {
-  return JSON.stringify([body.mode ?? "live", searchRadius(body.radius), Number(body.center?.lat).toFixed(3), Number(body.center?.lng).toFixed(3)]);
+  return JSON.stringify([body.mode ?? "live", body.careType ?? "short_term", searchRadius(body.radius), Number(body.center?.lat).toFixed(3), Number(body.center?.lng).toFixed(3)]);
 }

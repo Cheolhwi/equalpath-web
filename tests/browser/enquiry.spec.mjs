@@ -27,7 +27,7 @@ async function openQuestions(page, { missing = false, clipboard = true, transpor
       window.copiedQuestions = text;
     } } });
   }, { pickup: { ...demoPickup, id: null, label: "KL Sentral" }, clipboard });
-  await page.goto("/#discover", { waitUntil: "domcontentloaded" });
+  await page.goto("/?care=short_term#discover", { waitUntil: "domcontentloaded" });
   await page.locator("#service-date").fill("2026-09-14");
   await page.locator("#deadline").fill("13:00"); await page.locator("#care-end").fill("18:00");
   await page.locator("#age").selectOption("4"); await page.locator("#transport").selectOption(transport);

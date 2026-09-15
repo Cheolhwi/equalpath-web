@@ -121,6 +121,7 @@ test("4.2 reuse allows only public preferences and forces fresh date / age", () 
   assert.deepEqual(
     Object.keys(saved).sort(),
     [
+      "careType",
       "id",
       "name",
       "pickup",

@@ -31,7 +31,7 @@ test("zooming and repeated dragging never query; reopening loads the saved neigh
 });
 async function search(page){
   await page.addInitScript(()=>localStorage.setItem("equalpath:map:v1:live",JSON.stringify({version:1,center:{lat:3.139,lng:101.6869},zoom:13,pickup:{id:"demo-pickup",label:"KL Sentral",lat:3.139,lng:101.6869}})));
-  await page.goto("/#discover");await page.locator("#service-date").fill("2026-09-22");await page.locator("#deadline").fill("16:00");await page.locator("#care-end").fill("18:00");await page.locator("#age").selectOption("4");await page.locator("#transport").selectOption("institution");await page.getByRole("button",{name:"Find care options",exact:true}).click();
+  await page.goto("/?care=short_term#discover");await page.locator("#service-date").fill("2026-09-22");await page.locator("#deadline").fill("16:00");await page.locator("#care-end").fill("18:00");await page.locator("#age").selectOption("4");await page.locator("#transport").selectOption("institution");await page.getByRole("button",{name:"Find care options",exact:true}).click();
   await expect(page.locator(".provider-row").first()).toBeVisible();
 }
 test("search offers only 5 or 10 km and the map and count exclude distant or unlocated centres",async({page})=>{

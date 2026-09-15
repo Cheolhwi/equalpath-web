@@ -4,6 +4,8 @@ import {
   requestErrors,
   needsPickupAddress,
   searchRadius,
+  isShortCare,
+  todayKL,
 } from "../shared/request.mjs";
 import {
   assess,
@@ -44,7 +46,13 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       return {contract:CONTRACT,mode,regions,...(mode === "demo" ? {pickup:null} : await reverseGeocode(body.point))};
     }
     const catalog = mode === "demo" ? fixtureCatalog : await store.catalog(),
-      items = body.features?.includes?.('area-fees-v1') === true ? catalog.items : catalog.items.map(p=>p.fees?.some(f=>f.verification==='area_estimate') ? {...p,fees:p.fees.filter(f=>f.verification!=='area_estimate')} : p);
+      allItems = body.features?.includes?.('area-fees-v1') === true ? catalog.items : catalog.items.map(p=>p.fees?.some(f=>f.verification==='area_estimate') ? {...p,fees:p.fees.filter(f=>f.verification!=='area_estimate')} : p);
+    const careType = body.request?.careType ?? body.careType ?? "short_term";
+    if (!["regular", "short_term"].includes(careType)) throw new ServiceError("INVALID_REQUEST", 422, { careType: "Choose a care type." });
+    if (mode === "live" && catalog.shortCareReady === false && !["health", "places"].includes(body.action)) throw new ServiceError("SOURCE_INCOMPLETE");
+    const shortIds = mode === "live" && Array.isArray(catalog.shortCareIds) ? new Set(catalog.shortCareIds) : null;
+    const items = (shortIds ? allItems.filter(p => shortIds.has(p.id) === (careType === "short_term")) : allItems)
+      .map(p => ({ ...p, careType }));
     const meta = {
       contract: CONTRACT,
       mode,
@@ -53,6 +61,9 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       regions,
       available: items.length,
       withheld: catalog.held.length,
+      careType,
+      shortCareIds: shortIds ? [...shortIds] : null,
+      collection: { careType, total: items.length, coursework: mode === "live" && careType === "short_term", shortCareCount: shortIds?.size ?? null },
       distanceBasis:
         "Straight-line distance; not road distance or travel time.",
     };
@@ -63,7 +74,7 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
         throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
       const radius = searchRadius(body.radius);
       const candidates = items.filter((p) => withinRadius(center, p.location, radius))
-        .map((p) => ({ id: p.id, name: p.name, category: p.category, address: p.address, district: p.district, region: p.region, location: p.location, fees: p.fees, distanceKm: distanceKm(center, p.location) }))
+        .map((p) => ({ id: p.id, name: p.name, category: p.category, careType, address: p.address, district: p.district, region: p.region, location: p.location, fees: p.fees, distanceKm: distanceKm(center, p.location) }))
         .sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
       return { ...meta, center, radius, total: candidates.length, items: candidates.slice(0, 20) };
     }
@@ -129,17 +140,18 @@ export function createAPI({ store = createStore(), placeSearch = createPlaceSear
       throw new ServiceError("FACTS_CHANGED", 409);
     const hydrate = (p) => {
       const fit = assess(p, request);
+      const dated = isShortCare(request);
       return {
         ...p,
         distanceKm: distanceKm(request.pickup, p.location),
         fit,
         cost: costFor(p, request),
         enquiries: enquiries(p, request, fit),
-        businessHoursLabel: businessHoursFor(p, request.date),
-        careEndTimeLabel: careEndTimeFor(p, request.date),
-        careEndTimeSource: careEndScheduleFor(p, request.date).source,
-        weeklyCareEndTimes: weeklyCareEndTimes(p, request.date),
-        businessHoursDay: new Intl.DateTimeFormat("en", {weekday:"long", timeZone:"UTC"}).format(new Date(request.date + "T12:00:00Z")),
+        businessHoursLabel: dated ? businessHoursFor(p, request.date) : "See weekly hours",
+        careEndTimeLabel: dated ? careEndTimeFor(p, request.date) : null,
+        careEndTimeSource: dated ? careEndScheduleFor(p, request.date).source : p.businessHours?.source,
+        weeklyCareEndTimes: weeklyCareEndTimes(p, dated ? request.date : todayKL()),
+        businessHoursDay: dated ? new Intl.DateTimeFormat("en", {weekday:"long", timeZone:"UTC"}).format(new Date(request.date + "T12:00:00Z")) : null,
       };
     };
     if (body.action === "search") {
@@ -231,7 +243,7 @@ function ordering(sort, items, date, radius = null) {
       distance: items.some((p) => p.distanceKm != null),
       price: items.some((p) => priorityValue(p, 'price', date) != null),
       closing: items.some(
-        (p) => applicableWindows(p.businessHours?.windows, date).length,
+        (p) => date && applicableWindows(p.businessHours?.windows, date).length,
       ),
       pickup: items.some((p) => p.transport.exists !== null),
     },

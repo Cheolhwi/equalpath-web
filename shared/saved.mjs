@@ -1,4 +1,4 @@
-import { timeLabel } from "./request.mjs";
+import { timeLabel, isShortCare } from "./request.mjs";
 // Explicit, browser-local saves only. No request history or child profile.
 export const storageKey = (mode) => `equalpath:saved:v1:${mode}`;
 export const emptyLibrary = () => ({
@@ -101,6 +101,7 @@ export function favourite(
   if (!p?.id) throw new SaveError("Choose an institution first.");
   return {
     id: p.id,
+    careType: p.careType ?? previous?.careType ?? "short_term",
     name: text(p.name),
     category: text(p.category),
     region: text(p.region),
@@ -117,6 +118,7 @@ export function template(request, name, id = globalThis.crypto.randomUUID()) {
     );
   return {
     id,
+    careType: isShortCare(request) ? "short_term" : "regular",
     name: text(name, 60) || "Usual pickup",
     pickup: {
       id: text(p.id, 80) || null,
@@ -124,8 +126,8 @@ export function template(request, name, id = globalThis.crypto.randomUUID()) {
       lat: p.lat,
       lng: p.lng,
     },
-    deadline: text(request.deadline, 5),
-    end: text(request.end, 5),
+    deadline: isShortCare(request) ? text(request.deadline, 5) : "",
+    end: isShortCare(request) ? text(request.end, 5) : "",
     transport: ["", "self", "institution"].includes(request.transport)
       ? request.transport
       : "",
@@ -135,10 +137,11 @@ export function template(request, name, id = globalThis.crypto.randomUUID()) {
 export function reuseTemplate(saved, defaults) {
   return {
     ...defaults,
+    careType: isShortCare(saved) ? "short_term" : "regular",
     pickup: clone(saved.pickup),
     date: "",
-    deadline: saved.deadline,
-    end: saved.end,
+    deadline: isShortCare(saved) ? saved.deadline : "",
+    end: isShortCare(saved) ? saved.end : "",
     transport: saved.transport,
     age: "",
   };

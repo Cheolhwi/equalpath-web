@@ -291,7 +291,7 @@ test("unmatched saved place and conflicting times require correction, not silent
   );
   await page.locator("#service-date").fill("2026-09-18");
   await page
-    .getByRole("button", { name: "Update results", exact: true })
+    .getByRole("button", { name: "Find care options", exact: true })
     .click();
   await expect(page.locator("#pickup-search")).toHaveAttribute(
     "aria-invalid",

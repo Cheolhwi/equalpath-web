@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Bookmark, ArrowRight, Trash2, Pencil, Save } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
 import TimeInput from "./TimeInput.jsx";
+import CareTypeChoice from "./CareTypeChoice.jsx";
 import {
   template,
   favourite,
@@ -9,7 +10,7 @@ import {
   factDescription,
   factDates,
 } from "../shared/saved.mjs";
-import { requestErrors } from "../shared/request.mjs";
+import { requestErrors, isShortCare, careTypeLabel } from "../shared/request.mjs";
 
 export function SaveExplanation() {
   return (
@@ -17,7 +18,7 @@ export function SaveExplanation() {
       <summary>About your saved items</summary>
       <p>
         Your saved childcare, notes and searches stay in this browser.
-        Searches keep your public pickup place, care times and pickup preference.
+        Searches keep the care type, public pickup place, pickup preference and any care times.
         Dates and child ages aren’t saved.
       </p>
       <p>
@@ -34,7 +35,7 @@ export function SavedSearchReminder({ templates, onReuse, onChoose, disabled }) 
     <div className="saved-search-reminder-heading"><Bookmark size={17} aria-hidden="true" />
       <strong>{single ? "Your saved search" : `${templates.length} saved searches`}</strong>
     </div>
-    <p>{single ? <>Use <strong>{templates[0].name}</strong> with a new date.</> : "Reuse your pickup place and care times with a new date."}</p>
+    <p>{single ? <>Use <strong>{templates[0].name}</strong>{isShortCare(templates[0]) ? " with a new date." : " to find childcare again."}</> : "Your saved preferences are ready to use again."}</p>
     <button type="button" className="text-link" disabled={disabled} onClick={() => single ? onReuse(templates[0]) : onChoose()}>
       {single ? "Use this search" : "Choose a saved search"}<ArrowRight size={15} aria-hidden="true" />
     </button>
@@ -58,8 +59,8 @@ export function SavedLibrary({
     <div className="saved-library">
       <p className="dialog-lead">
         {tab === "favourites"
-          ? "Your favourite childcare, ready to check for a new date."
-          : "Your pickup place and care times, ready to use again. Just choose a new date."}
+          ? "Your favourite childcare, ready when you need it."
+          : "Your saved preferences, ready to use again. Short stays need a new date."}
       </p>
       {failure && (
         <div className="error-box" role="alert">
@@ -92,7 +93,7 @@ export function SavedLibrary({
           <p>
             {tab === "favourites"
               ? "Tap Save on any childcare option to keep it here."
-              : "Choose Save this search on Find childcare to keep your pickup place and care times."}
+              : "Choose Save this search on Find childcare to keep your care preferences."}
           </p>
           <button className="primary" onClick={onDiscover}>
             Find childcare <ArrowRight size={16} />
@@ -117,9 +118,10 @@ export function SavedLibrary({
           ) : (
             <>
               <p className="saved-pickup"><span>Pickup place</span>{item.pickup?.label}</p>
+              <p className="notice">{careTypeLabel(item)}</p>
               <dl className="saved-search-times">
-                <div><dt>Collect by</dt><dd>{item.deadline || "Not set"}</dd></div>
-                <div><dt>Care until</dt><dd>{item.end || "Not set"}</dd></div>
+                {isShortCare(item) && <><div><dt>Collect by</dt><dd>{item.deadline || "Not set"}</dd></div>
+                <div><dt>Care until</dt><dd>{item.end || "Not set"}</dd></div></>}
                 <div><dt>Pickup option</dt><dd>{item.transport === "institution"
                   ? "Centre pickup"
                   : item.transport === "self"
@@ -136,7 +138,7 @@ export function SavedLibrary({
               }
             >
               {tab === "favourites"
-                ? "Check for a new date"
+                ? isShortCare(item) ? "Check for a new date" : "Check centre"
                 : "Use this search"}{" "}
               <ArrowRight size={15} />
             </button>
@@ -216,7 +218,7 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
     [errors, setErrors] = useState({}),
     [failure, setFailure] = useState("");
   const field = (key, v) => {
-    setDraft((d) => ({ ...d, [key]: v }));
+    setDraft((d) => ({ ...d, [key]: v, ...(key === "careType" ? { deadline: "", end: "" } : {}) }));
     setErrors((x) => ({ ...x, [key]: null }));
   };
   const submit = (e) => {
@@ -246,6 +248,7 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
           placeholder="Usual pickup"
         />
       </label>
+      <CareTypeChoice value={draft.careType ?? "short_term"} onChange={v => field("careType", v)} />
       <PlaceInput
         idPrefix="template-pickup"
         mode={mode}
@@ -253,7 +256,7 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
         onChange={(p) => field("pickup", p)}
         error={errors.pickup}
       />
-      <div className="field-pair">
+      {isShortCare(draft) && <div className="field-pair">
         <div className="field">
           <label htmlFor="template-deadline">Collect by</label>
           <TimeInput
@@ -280,7 +283,7 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
           />
           {errors.end && <small id="template-care-end-error" className="field-error">{errors.end}</small>}
         </div>
-      </div>
+      </div>}
       <label className="field">
         Pickup preference
         <select
@@ -293,8 +296,7 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
         </select>
       </label>
       <p className="notice">
-        Next time, your pickup place and times will be ready. Choose a new date
-        and add your child’s age if needed.
+        {isShortCare(draft) ? "Next time, your pickup place and times will be ready. Choose a new date and add your child’s age if needed." : "Next time, your location and pickup preference will be ready. Add your child’s age if needed."}
       </p>
       {failure && (
         <p className="error-box" role="alert">

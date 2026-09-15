@@ -51,7 +51,7 @@ export default function Preparation({
         );
         const a = document.createElement("a");
         a.href = url;
-        a.download = `EqualPath-preparation-${request.date}.html`;
+        a.download = `EqualPath-preparation-${request.date || "regular-care"}.html`;
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
@@ -83,9 +83,7 @@ export default function Preparation({
           <h3>{p.name}</h3>
         </div>
         <div className="preparation-date">
-          <CalendarDays size={18} aria-hidden="true" />
-          <time dateTime={sheet.date}>{sheet.dateLabel}</time>
-          <span>Malaysia time</span>
+          {sheet.date ? <><CalendarDays size={18} aria-hidden="true" /><time dateTime={sheet.date}>{sheet.dateLabel}</time><span>Malaysia time</span></> : <strong>{sheet.dateLabel}</strong>}
         </div>
       </header>
       <p className="preparation-draft">Draft · Confirm these arrangements with the centre.</p>
@@ -93,7 +91,7 @@ export default function Preparation({
       {changed && (
         <div className="notice-panel" role="status">
           <strong>Your search has changed</strong>
-          <p>This checklist still uses your earlier date and times. Update it when you’re ready.</p>
+          <p>{sheet.date ? "This checklist still uses your earlier date and times. Update it when you’re ready." : "This checklist uses your earlier care preferences. Update it when you’re ready."}</p>
           <button className="secondary" onClick={onRefresh}>Update checklist <ArrowRight size={15} /></button>
         </div>
       )}
@@ -180,7 +178,7 @@ export default function Preparation({
             <summary>About this checklist<ChevronDown size={16} aria-hidden="true" /></summary>
             <p>{sheet.notice}</p>
             <p>Your ticks stay while this checklist is open. Download or print it before closing.</p>
-            <p>Prepared {sheet.preparationDate}. Times and pickup choices come from your request; arrival still needs to be agreed.</p>
+            <p>Prepared {sheet.preparationDate}. {sheet.date ? "Times and pickup choices come from your request; arrival still needs to be agreed." : "Agree your usual hours and pickup arrangements with the centre."}</p>
             {sheet.sequence.filter((step) => step.source).map((step) => (
               <div key={step.title}><strong>{step.title === "Drop off" ? "Centre address" : "Care hours"}</strong><SourceLink source={step.source} /></div>
             ))}

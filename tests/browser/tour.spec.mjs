@@ -45,7 +45,7 @@ test("guided sample uses the actual form, search, checks, comparison and questio
   await page.screenshot({path:`${evidence}/tour-questions.png`});
   await tour(page).getByRole("button",{name:"Find childcare",exact:true}).click();
   await expect(tour(page)).toHaveCount(0);await expect(page.locator(".tour-behind")).toHaveCount(0);
-  await expect(page.locator("#pickup-search")).toHaveValue("My pickup point");await expect(page.locator("#deadline")).toHaveValue("");
+  await expect(page.locator("#pickup-search")).toHaveValue("My pickup point");await expect(page.locator("#deadline")).toHaveCount(0);await expect(page.getByRole("radio",{name:"No, regular care"})).toBeChecked();
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:map:v1:live")))).toEqual(memory);
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:tour:v1")))).toEqual({version:1,status:"completed"});
   await page.reload();await expect(page.locator(".nearby-card").first()).toBeVisible();
@@ -104,7 +104,7 @@ test("failed example can be retried; blocked storage and keyboard skip keep the 
   await tour(page).getByRole("button",{name:"Retry example",exact:true}).click();
   await expect(tour(page).getByRole("button",{name:"Next",exact:true})).toBeEnabled();
   await page.keyboard.press("Escape");await expect(tour(page)).toHaveCount(0);
-  await expect(page.locator("#deadline")).toHaveValue("");
+  await expect(page.locator("#deadline")).toHaveCount(0);await expect(page.getByRole("radio",{name:"No, regular care"})).toBeChecked();
   await expect(page.locator("#pickup-search")).toHaveValue("");
   await expect(page.getByRole("button",{name:"Find care options",exact:true})).toBeEnabled();
 });

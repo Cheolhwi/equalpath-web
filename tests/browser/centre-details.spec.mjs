@@ -12,7 +12,7 @@ async function openDetails(page,{conflict=true,missing=false}={}){
   const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items:[p]})},drivingRoutes:async(_,rows)=>rows.map(x=>({...x,driving:missing?{state:'unavailable'}:{state:'available',minutes:8,distanceKm:3.2,source}}))});
   await page.route('**/api',async route=>route.fulfill({json:{ok:true,...await api(route.request().postDataJSON())}}));
   await page.addInitScript(()=>{localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL Sentral',lat:3.139,lng:101.6869}}));});
-  await page.goto('/#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('18:00');await page.locator('#age').selectOption('4');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();await page.getByRole('button',{name:'View details for '+p.name,exact:true}).click();
+  await page.goto('/?care=short_term#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('18:00');await page.locator('#age').selectOption('4');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();await page.getByRole('button',{name:'View details for '+p.name,exact:true}).click();
   return page.getByRole('dialog');
 }
 test('details put useful facts and next action first, retain evidence and prioritise mismatches',async({page})=>{

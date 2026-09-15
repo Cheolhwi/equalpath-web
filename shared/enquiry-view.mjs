@@ -1,3 +1,4 @@
+import { isShortCare } from "./request.mjs";
 import { feeSummary } from "./result-summary.mjs";
 
 // Presentation only: the API still decides which checks need a question.
@@ -14,6 +15,13 @@ export const childAge = age => age === "" ? "Age not specified" : age === "0" ? 
 export const pickupPreference = transport => transport === "self" ? "I’ll arrange transport" : transport === "institution" ? "Centre pickup requested" : "Pickup not decided yet";
 
 function wording(q, p, r, c) {
+  if (!isShortCare(r)) return {
+    capacity: "Are you accepting new children? What do I need to enrol?",
+    age: r.age === "" ? "What ages do your programmes cover?" : `My child is ${childAge(r.age).toLowerCase()}. Which programme would suit them?`,
+    transport: "Do you offer regular pickup?",
+    coverage: `Can you arrange regular pickup from ${r.pickup.label}?`,
+    fees: "What are the programme fees? Please include registration, meals and any pickup charges.",
+  }[q.id] ?? q.text;
   switch (q.id) {
     case "admission": return p.admission?.requirements?.length
       ? `${p.admission.question} The visit is on ${visitDate(r.date)}, with care needed until ${r.end}.`
@@ -37,6 +45,8 @@ function wording(q, p, r, c) {
   }
 }
 function whyAsk(q, p, r, c) {
+  if (!isShortCare(r) && q.id === "capacity") return "Check whether enrolment is open and when your child could start.";
+  if (!isShortCare(r) && q.id === "fees") return "Check which programme the price covers and any extra charges.";
   if (q.id === "capacity") return "A listing can’t tell us whether a place is free on your date.";
   if (q.id === "admission" && p.admission?.requirements?.length) return p.admission.requirements.join(" ");
   if (q.id === "fees") return p.cost?.available
@@ -54,7 +64,7 @@ function whyAsk(q, p, r, c) {
   if (q.id === "transport" && !r.transport) return "You haven’t chosen who will arrange pickup yet.";
   return {
     admission: "One-off care hasn’t been confirmed for this centre.",
-    transport: "Pickup for this visit needs checking.",
+    transport: isShortCare(r) ? "Pickup for this visit needs checking." : "Regular pickup needs checking.",
     coverage: "Coverage of your pickup place needs checking.",
     pickup: `Pickup by ${r.deadline} hasn’t been confirmed.`,
     care: `Care until ${r.end} needs checking for this date.`,
@@ -68,11 +78,12 @@ export function enquiryView(p, request) {
     const state = routine ? "routine" : check?.state ?? q.reason;
     return { ...q, text: wording(q, p, request, check), topic: topics[q.id] ?? check?.label ?? "Your visit",
       state, check, routine, why: whyAsk(q, p, request, check),
-      status: routine ? "Ask for every visit" : state === "conflict" ? "Doesn’t match" : "Needs confirmation",
+      status: routine ? isShortCare(request) ? "Ask for every visit" : "Ask about enrolment" : state === "conflict" ? "Doesn’t match" : "Needs confirmation",
       fee: q.id === "fees" ? feeSummary(p) : null,
     };
   }).sort((a, b) => Number(b.state === "conflict") - Number(a.state === "conflict"));
 }
 export function enquiryMessage(p, request, selected) {
+  if (!isShortCare(request)) return `Hello ${p.name}, I’m looking for regular childcare.\n\nLocation: ${request.pickup.label}\n${childAge(request.age)} · ${pickupPreference(request.transport)}\n\n${selected.map((q, i) => `${i + 1}. ${q.text}`).join("\n\n")}\n\nThank you!`;
   return `Hello ${p.name}, I’m looking for one-off care for my child.\n\nDate: ${visitDate(request.date)}\nPickup from: ${request.pickup.label}\nCollect by: ${request.deadline}\nCare until: ${request.end}\n${childAge(request.age)} · ${pickupPreference(request.transport)}\n\n${selected.map((q, i) => `${i + 1}. ${q.text}`).join("\n\n")}\n\nThank you!`;
 }

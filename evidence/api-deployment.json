@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-09-14T20:46:15.507Z",
+  "created_at": "2026-09-15T10:34:37.033Z",
   "function": "web-provider-query",
-  "deployment": "6aa85d16f125c7bffddd",
+  "deployment": "6aa91f3c64cedca7a77e",
   "status": "ready",
   "execute": [
     "any"
@@ -10,6 +10,5 @@
   "logging": false,
   "owner_resources_accessed": false,
   "production_domains_changed": false,
-  "active": true,
-  "verified_at": "2026-09-14T20:52:15.349Z"
+  "verified_at": "2026-09-15T10:35:34.702Z"
 }

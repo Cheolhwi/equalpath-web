@@ -12,7 +12,7 @@ test('restored map points gain a street address and priority highlights switch, 
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'Map point · 3.1390, 101.6869',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/#discover');await expect(page.locator('#pickup-search')).toHaveValue('Jalan Stesen Sentral, Kuala Lumpur');
+  await page.goto('/?care=short_term#discover');await expect(page.locator('#pickup-search')).toHaveValue('Jalan Stesen Sentral, Kuala Lumpur');
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('equalpath:map:v1:live')).pickup.label)).toBe('Jalan Stesen Sentral, Kuala Lumpur');
   await page.locator('#service-date').fill('2026-09-15');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');
   await page.getByRole('button',{name:'Find care options',exact:true}).click();

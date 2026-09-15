@@ -14,7 +14,7 @@ test('monthly price changes result/map/comparison priority and registration icon
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await page.goto('/?care=short_term#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','higher');
   await page.getByRole('combobox',{name:'Order search results',exact:true}).click();await page.getByRole('option',{name:'Lowest monthly fee',exact:true}).click();
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','lowest');
@@ -62,7 +62,7 @@ test('nearby conflicts stay in a full 20-centre page and remain selectable on th
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await page.goto('/?care=short_term#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();
   await expect(page.locator('.provider-row')).toHaveCount(20);
   await expect(page.locator('.provider-row').last()).toHaveAttribute('data-provider-id','near-0');
   const firstIds=await page.locator('.provider-row').evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort());

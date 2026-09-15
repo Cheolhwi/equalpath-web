@@ -1962,3 +1962,15 @@ dialog::backdrop {
   .centre-next-card { padding: 18px; }
 }
 @media (prefers-reduced-motion: reduce) { .disclosure-chevron { transition: none; } }
+
+/* The choice changes the request and collection together. */
+.care-type-choice { border: 0; padding: 0; margin: 0 0 20px; min-width: 0; }
+.care-type-choice legend { font-size: 13px; font-weight: 600; padding: 0; margin-bottom: 10px; }
+.care-type-choice > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.care-type-choice label { display: flex; align-items: center; gap: 8px; padding: 12px 10px; min-height: 48px; border: 1px solid var(--rule); background: var(--paper, var(--bg)); font-size: 12px; line-height: 1.4; cursor: pointer; }
+.care-type-choice label.selected { border-color: var(--accent); background: var(--soft); color: var(--accent); }
+.care-type-choice input { width: 14px; height: 14px; min-width: 14px; margin: 0; padding: 0; accent-color: var(--accent); }
+.short-care-notice { border-left: 3px solid var(--accent); padding: 10px 12px; margin: 0 0 18px; background: var(--soft); color: var(--muted); font-size: 11px; }
+.request-care-type { display: block; margin-bottom: 8px; }
+.centre-metrics.regular-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media(max-width:760px) { .centre-metrics.regular-metrics { grid-template-columns: 1fr; } }

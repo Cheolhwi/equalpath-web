@@ -22,6 +22,7 @@ import Dialog from "./Dialog.jsx";
 import DialogPresence from "./DialogPresence.jsx";
 import SelectMenu, { SORT_OPTIONS } from "./SelectMenu.jsx";
 import TimeInput from "./TimeInput.jsx";
+import CareTypeChoice from "./CareTypeChoice.jsx";
 import {
   ProviderCard,
   Details,
@@ -31,7 +32,7 @@ import {
   OrderingNote,
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
-import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM } from "../shared/request.mjs";
+import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM, isShortCare, careTypeLabel } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
@@ -57,8 +58,9 @@ import {
 } from "../shared/saved.mjs";
 const EMPTY = [];
 const initial = () => ({
+  careType: new URLSearchParams(location.search).get("care") === "short_term" ? "short_term" : "regular",
   pickup: null,
-  date: todayKL(),
+  date: new URLSearchParams(location.search).get("care") === "short_term" ? todayKL() : "",
   deadline: "",
   end: "",
   age: "",
@@ -72,6 +74,7 @@ const initial = () => ({
 const scenario = (r) =>
   r
     ? JSON.stringify([
+        r.careType,
         r.pickup?.label,
         r.pickup?.lat,
         r.pickup?.lng,
@@ -233,7 +236,8 @@ export default function App({
     setBusy(false);
     setDraft(next);
     setReopening(null);
-    setErrors({ date: "Choose a new service date." });
+    setResults(null); setNearby(null); setSelected(null); setCompareIds([]); setComparison(null); setCompareSort("distance"); setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({}); setBrowseSelection(null);
+    setErrors(isShortCare(next) ? { date: "Choose a new service date." } : {});
     setFailure(null);
     setReusePlace({
       state: "pending",
@@ -244,7 +248,7 @@ export default function App({
     close();
     try {
       const response = await requestAPI(mode === "live" ? {
-        action: "nearby", mode, center: item.pickup,
+        action: "nearby", mode, careType: next.careType, center: item.pickup,
       } : {
         action: "places",
         mode,
@@ -271,13 +275,15 @@ export default function App({
     }
   };
   const reopenFavourite = (saved) => {
+    reuseSeq.current++;
+    setReusePlace(null); setBrowseSelection(null);
     requestSeq.current++;
     setBusy(false);
     setReopening(saved);
-    setDraft((x) => ({ ...x, date: "" }));
-    setErrors({
-      date: "Choose a new date to check this centre.",
-    });
+    const careType = Array.isArray(health?.shortCareIds) ? health.shortCareIds.includes(saved.id) ? "short_term" : "regular" : saved.careType ?? "short_term";
+    setDraft((x) => ({ ...x, careType, date: "" }));
+    setResults(null); setNearby(null); setSelected(null); setCompareIds([]); setComparison(null); setCompareSort("distance"); setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({});
+    setErrors(isShortCare({ careType }) ? { date: "Choose a new date to check this centre." } : {});
     setFailure(null);
     setFormOpen(true);
     setMobilePane("list");
@@ -296,12 +302,14 @@ export default function App({
     setNearby(null);
     if (mode === "live") setDraft((d) => ({ ...d, pickup: saved?.pickup ?? null }));
     setHealth(null);
-    requestAPI({ action: "health", mode })
+    requestAPI({ action: "health", mode, careType: draftRef.current.careType })
       .then((h) => alive && setHealth(h))
       .catch(() => alive && setHealth({ unavailable: true }));
     if (mode === "demo")
       setDraft({
         ...initial(),
+        careType: "short_term",
+        date: todayKL(),
         pickup: {
           id: "demo-pickup",
           label: "Demo usual centre · Kuala Lumpur",
@@ -325,13 +333,13 @@ export default function App({
     setNearbyBusy(true);
     setNearbyError(null);
     const timer = setTimeout(() => {
-      requestAPI({ action: "nearby", mode, center: browseCenter })
+      requestAPI({ action: "nearby", mode, careType: draft.careType, center: browseCenter })
         .then((r) => { if (alive) { setNearby(r); setHealth(r); } })
         .catch((e) => { if (alive) setNearbyError(e); })
         .finally(() => { if (alive) setNearbyBusy(false); });
     }, 300);
     return () => { alive = false; clearTimeout(timer); };
-  }, [mode, browseCenter, results, nearbyReload, tourOpen]);
+  }, [mode, draft.careType, browseCenter, results, nearbyReload, tourOpen]);
   useEffect(() => {
     const key = (e) => {
       if (
@@ -367,6 +375,16 @@ export default function App({
     setMapRestored(false);
   };
   const setField = (field, value) => {
+    if (field === "careType") {
+      requestSeq.current++; dialogSeq.current++; reuseSeq.current++;
+      setBusy(false); setDialogBusy(false); setReusePlace(null); setReopening(null);
+      setResults(null); setNearby(null); setBrowseSelection(null); setSelected(null);
+      setCompareIds([]); setComparison(null); setCompareSort("distance");
+      setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({}); setDialog(null);
+      setErrors({}); setFailure(null); setFormOpen(true);
+      setDraft(x => ({ ...x, careType: value, date: value === "short_term" ? todayKL() : "", deadline: "", end: "", sort: "distance" }));
+      return;
+    }
     if (field === "pickup") {
       reuseSeq.current++;
       setReusePlace(null);
@@ -503,8 +521,8 @@ export default function App({
       setSelected(p.id);
       setFormOpen(true);
       setMobilePane("list");
-      notify("Add your pickup place and care hours to check this centre.");
-      setTimeout(() => document.getElementById(draft.pickup ? "deadline" : "pickup-search")?.focus(), 0);
+      notify(isShortCare(draft) ? "Add your pickup place and care hours to check this centre." : "Choose your location and preferences to check this centre.");
+      setTimeout(() => document.getElementById(draft.pickup ? isShortCare(draft) ? "deadline" : "age" : "pickup-search")?.focus(), 0);
       return;
     }
     setProfile({ p, request: activeRequest });
@@ -613,7 +631,7 @@ export default function App({
     setDialog(null); setFormOpen(true); setErrors({}); setFailure(null); setReopening(null); setReusePlace(null);
     setMobilePane(step === 3 ? "map" : "list");
     if (step === 0) return;
-    const example = { ...initial(), pickup: { id: "demo-pickup", label: "KL Sentral · tutorial", lat: 3.1341, lng: 101.6865 }, date: todayKL(), deadline: "13:00", end: "18:00", age: "4", transport: "self" };
+    const example = { ...initial(), careType: "short_term", pickup: { id: "demo-pickup", label: "KL Sentral · tutorial", lat: 3.1341, lng: 101.6865 }, date: todayKL(), deadline: "13:00", end: "18:00", age: "4", transport: "self" };
     setDraft({ ...example, ...(step === 1 ? { deadline: "", end: "", age: "", transport: "" } : {}) });
     setMapTarget({ center: { lat: 3.139, lng: 101.6869 }, zoom: 13 });
     if (step < 3) { setResults(null); setSelected(null); setCompareIds([]); return; }
@@ -718,7 +736,7 @@ export default function App({
         <div className="header-end">
           <button className="quick-tour-button" aria-label="Quick tour" disabled={busy || dialogBusy || reusePlace?.state === "pending"} onClick={startTour}><CircleHelp size={19}/><span>Quick tour</span></button>
           <span className={`data-badge ${mode === "demo" ? "demo" : ""}`}>
-            {tourOpen ? "TUTORIAL" : mode === "demo" ? "DEMO" : "KL + SELANGOR"}
+            {tourOpen ? "TUTORIAL" : mode === "demo" ? "DEMO" : isShortCare(draft) ? "COURSEWORK DEMO" : "KL + SELANGOR"}
           </span>
           <button
             aria-label="Display and data settings"
@@ -734,7 +752,7 @@ export default function App({
       >
         <div className="intro">
           <h1>Find childcare</h1>
-          <p>Search by pickup place and care hours.</p>
+          <p>Find care near you, with the options you need.</p>
         </div>
         {tourOpen && <p className="demo-notice">Tutorial · fictional centres and sample details. Your search will be restored when you finish or skip.</p>}
         {mode === "demo" && (
@@ -750,7 +768,7 @@ export default function App({
           onChoose={() => { setSavedTab("templates"); setDialog("saved"); }}
           disabled={busy || reusePlace?.state === "pending"} />}
         <div className="request-heading">
-          <strong>YOUR PICKUP & CARE DETAILS</strong>
+          <strong>YOUR CARE PREFERENCES</strong>
           {results && (
             <button onClick={() => setFormOpen((v) => !v)}>
               {formOpen ? "Hide form" : "Edit request"}{" "}
@@ -765,12 +783,13 @@ export default function App({
               <MapPin size={14} />
               {activeRequest.pickup.label}
             </p>
-            <div>
+            <strong className="request-care-type">{careTypeLabel(activeRequest)}</strong>
+            {isShortCare(activeRequest) && <div>
               <strong>{activeRequest.date}</strong>
               <span>
                 By {activeRequest.deadline} → until {activeRequest.end}
               </span>
-            </div>
+            </div>}
             <small>
               {activeRequest.age === ""
                 ? "Age unspecified"
@@ -790,8 +809,7 @@ export default function App({
           <div className="notice-panel">
             <strong>Rechecking {reopening.name}</strong>
             <p>
-              Choose a new date to see whether this centre meets your needs.
-              We’ll check its latest details.
+              {isShortCare(draft) ? "Choose a new date to check this centre." : "Check your preferences and search to see this centre’s latest details."}
             </p>
             <button className="text-link" onClick={() => setReopening(null)}>
               Back to a new search
@@ -806,12 +824,15 @@ export default function App({
             {reusePlace.message}
           </p>
         )}
+        {isShortCare(draft) && !tourOpen && mode === "live" && <p className="short-care-notice">Coursework demo · a separate collection of 101 centres. Confirm short stays with the centre.</p>}
         <form
           id="request-form"
           onSubmit={search}
           noValidate
           className={formOpen ? "request-form" : "request-form collapsed"}
         >
+          <CareTypeChoice value={draft.careType} onChange={value => setField("careType", value)} />
+
           <PlaceInput
             queryReset={pickupQueryReset}
             active={introPhase === "ready" && !dialog && !tourOpen}
@@ -828,7 +849,7 @@ export default function App({
           {pickupAddress && <p className="pickup-address-status" role="status">
             {pickupAddress === "loading" ? "Finding the nearby street…" : <>Street address unavailable. Your selected location is kept. <button type="button" className="text-link" onClick={()=>setAddressRetry(n=>n+1)}>Retry address</button></>}
           </p>}
-          <div data-tour="care-times">
+          {isShortCare(draft) && <div data-tour="care-times">
           <div className="field">
             <label htmlFor="service-date">
               Date <span>Malaysia time</span>
@@ -877,7 +898,7 @@ export default function App({
               )}
             </div>
           </div>
-          </div>
+          </div>}
           <div className="field-pair">
             <div className="field">
               <label htmlFor="age">
@@ -985,7 +1006,7 @@ export default function App({
             )}
           </button>
           <p className="form-foot">
-            No account needed. Just tell us where and when.
+            No account needed. Search with your preferences.
           </p>
         </form>
         <div className="request-save-actions">
@@ -1032,7 +1053,7 @@ export default function App({
                 label="Order search results"
                 value={results.request.sort}
                 disabled={busy}
-                options={SORT_OPTIONS}
+                options={SORT_OPTIONS.filter(o => o.value !== "closing" || isShortCare(results.request))}
                 available={results.ordering?.available}
                 onChange={(sort) => {
                   const r = { ...draft, sort };
@@ -1145,7 +1166,7 @@ export default function App({
         ) : (
           <div className="before-results nearby-results" aria-busy={nearbyBusy}>
             <h2>Nearby childcare</h2>
-            <p>{mapRestored ? "Back to your last map location." : "Explore centres around the map location."} Add care hours to check whether they fit.</p>
+            <p>{mapRestored ? "Back to your last map location." : "Explore centres around the map location."} {isShortCare(draft) ? "Add care hours to check whether they fit." : "Choose your preferences to find a match."}</p>
             {nearbyBusy && <p role="status">Finding nearby centres…</p>}
             {nearbyError && <p role="status">{errorMessage(nearbyError)} <button className="text-link" onClick={() => setNearbyReload((v) => v + 1)}>Retry nearby centres</button></p>}
             {!nearbyBusy && nearby && <p>{nearby.total} centres within {nearby.radius} km · showing {nearby.items.length}</p>}

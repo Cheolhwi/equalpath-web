@@ -4,6 +4,7 @@ import { applyServicesEvidence } from "./services-overlay.mjs";
 import { applyAdmissionsEvidence } from "./admissions-overlay.mjs";
 import { applyFeesEvidence } from "./fees-overlay.mjs";
 import { applyProviderAdditions } from "./provider-additions.mjs";
+import { shortCareCollection } from "./profile-evidence.mjs";
 const endpoint = "https://sgp.cloud.appwrite.io/v1",
   project = "6a916a6c0030a70a9d75";
 export class ServiceError extends Error {
@@ -40,7 +41,8 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
     const feesKey = [summary.fees_release, summary.fees_hash, summary.fees_count].join(":");
     const admissionsKey = [summary.admissions_release, summary.admissions_hash, summary.admissions_count].join(":");
     const additionsKey = [summary.additions_release, summary.additions_hash, summary.additions_count].join(":");
-    if (cache?.release === manifest.release_id && cache.hoursKey === hoursKey && cache.servicesKey === servicesKey && cache.feesKey === feesKey && cache.admissionsKey === admissionsKey && cache.additionsKey === additionsKey) {
+    const profilesKey = [summary.profile_evidence_release, summary.profile_evidence_hash, summary.profile_evidence_count].join(":");
+    if (cache?.release === manifest.release_id && cache.hoursKey === hoursKey && cache.servicesKey === servicesKey && cache.feesKey === feesKey && cache.admissionsKey === admissionsKey && cache.additionsKey === additionsKey && cache.profilesKey === profilesKey) {
       checked = now();
       return cache;
     }
@@ -156,6 +158,23 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
       if(evidenceRows.length!==summary.additions_count||evidenceRows.some(r=>r.release_id!==summary.additions_release))throw new ServiceError('SOURCE_INCOMPLETE');
       try{raw=applyProviderAdditions(raw,evidenceRows.map(r=>{const value=JSON.parse(r.payload);if(value.provider_id!==r.provider_id)throw Error('Identity differs');return value;}),manifest.release_id,summary.additions_hash);}catch{throw new ServiceError('SOURCE_INVALID');}
     }
+    const profileRecords = [];
+    if (summary.profile_evidence_release) {
+      if (!/^profiles_[a-f0-9]{24}$/.test(summary.profile_evidence_release) || !/^[a-f0-9]{64}$/.test(summary.profile_evidence_hash ?? "") ||
+          !Number.isInteger(summary.profile_evidence_count) || summary.profile_evidence_count < 1 || summary.profile_evidence_count > 1000)
+        throw new ServiceError("SOURCE_INVALID");
+      for (let offset = 0; offset < summary.profile_evidence_count; offset += 100) {
+        const params = new URLSearchParams();
+        for (const q of [query("equal", "release_id", [summary.profile_evidence_release]), query("orderAsc", "$id", []), query("limit", null, [100]), query("offset", null, [offset])]) params.append("queries[]", q);
+        const rows = (await get("/tablesdb/equalpath/tables/web_provider_evidence/rows?" + params)).rows;
+        for (const row of rows) {
+          const r = JSON.parse(row.payload);
+          if (row.release_id !== summary.profile_evidence_release || row.provider_id !== r.provider_id) throw new ServiceError("SOURCE_INVALID");
+          profileRecords.push(r);
+        }
+      }
+      if (profileRecords.length !== summary.profile_evidence_count) throw new ServiceError("SOURCE_INCOMPLETE");
+    }
     const after = await get(
       "/tablesdb/equalpath/tables/web_data_releases/rows/current",
     );
@@ -170,6 +189,13 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
     candidate.feesKey = feesKey;
     candidate.admissionsKey = admissionsKey;
     candidate.additionsKey = additionsKey;
+    candidate.profilesKey = profilesKey;
+    candidate.shortCareIds = [];
+    candidate.shortCareReady = Boolean(summary.profile_evidence_release);
+    if (candidate.shortCareReady) {
+      try { candidate.shortCareIds = shortCareCollection(profileRecords, summary, candidate.items); }
+      catch { throw new ServiceError("SOURCE_INVALID"); }
+    }
     if (summary.hours_release) {
       candidate.version += ":" + summary.hours_release;
       for (const p of candidate.items) p.version = candidate.version;
@@ -188,6 +214,10 @@ export function createStore({ fetcher = fetch, now = Date.now } = {}) {
     }
     if (summary.additions_release) {
       candidate.version += ':' + summary.additions_release;
+      for (const p of candidate.items) p.version = candidate.version;
+    }
+    if (summary.profile_evidence_release) {
+      candidate.version += ':' + summary.profile_evidence_release;
       for (const p of candidate.items) p.version = candidate.version;
     }
     cache = candidate;

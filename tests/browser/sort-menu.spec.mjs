@@ -30,7 +30,7 @@ async function start(page) {
       pickup: { id: null, label: "KL Sentral", lat: 3.139, lng: 101.6869 },
     }));
   });
-  await page.goto("/#discover");
+  await page.goto("/?care=short_term#discover");
   await page.locator("#service-date").fill("2026-09-14");
   await page.locator("#deadline").fill("13:00");
   await page.locator("#care-end").fill("17:00");

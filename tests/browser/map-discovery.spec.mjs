@@ -22,7 +22,7 @@ test("first visit shows nearby childcare without a request; partial place search
   await expect(page.locator(".nearby-card").first()).toBeVisible();
   await expect(page.locator(".provider-pin").first()).toBeVisible();
   expect(calls.some((c)=>c.action === "search")).toBe(false);
-  await expect(page.locator("#deadline")).toHaveValue("");
+  await expect(page.locator("#deadline")).toHaveCount(0);
   await expect(page.locator(".map-region")).toHaveAttribute("data-map-lat",/^3\.139/);
   await page.locator("#pickup-search").fill("KL sentrl");
   expect(calls.some((c)=>c.action === "places")).toBe(false);
@@ -32,7 +32,7 @@ test("first visit shows nearby childcare without a request; partial place search
   await expect(page.locator("#pickup-search")).toHaveValue("KL Sentral");
   await page.reload();
   await expect(page.locator("#pickup-search")).toHaveValue("KL Sentral");
-  await expect(page.locator("#deadline")).toHaveValue("");
+  await expect(page.locator("#deadline")).toHaveCount(0);
   await expect(page.locator(".nearby-card").first()).toBeVisible();
   await expect(page.locator(".pickup-pin")).toBeVisible();
   await expect.poll(async()=>Number(await page.locator(".map-region").getAttribute("data-map-lat"))).toBeCloseTo(3.1341,4);
@@ -104,7 +104,7 @@ test("pan and zoom do not query; choosing a pickup updates nearby centres", asyn
   await expect.poll(()=>calls.filter(c=>c.action==="nearby").length).toBe(beforePickup+1);
 });
 test("a nearby marker can lead to a dated condition check without pretending discovery was assessed",async({page})=>{
-  const calls=[]; await mockAPI(page,calls); await page.goto("/#discover");
+  const calls=[]; await mockAPI(page,calls); await page.goto("/?care=short_term#discover");
   await expect(page.locator(".provider-pin").first()).toBeVisible();
   await page.locator(".provider-pin").first().click();
   await expect(page.locator(".map-preview .state-pill")).toHaveCount(0);

@@ -1,0 +1,96 @@
+import {test,expect} from '@playwright/test';
+import {createAPI} from '../../server/api.mjs';
+import {fixtureCatalog,demoPickup} from '../../server/fixtures.mjs';
+import {mkdirSync} from 'node:fs';
+const out=process.env.QA_EVIDENCE_DIR||'.build/care-types';mkdirSync(out,{recursive:true});
+const items=fixtureCatalog.items.slice(0,4).map((p,i)=>({...structuredClone(p),mode:'live',id:`care-${i}`,name:`${i<2?'Short Stay':'Regular Care'} ${i+1}`,location:{lat:demoPickup.lat+i*.001,lng:demoPickup.lng}}));
+async function setup(page){
+  const calls=[],errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items,shortCareReady:true,shortCareIds:items.slice(0,2).map(p=>p.id)})},drivingRoutes:async(_,rows)=>rows.map(p=>({...p,driving:{state:'available',minutes:5,distanceKm:1.4}}))});
+  await page.route('**/api',async route=>{const body=route.request().postDataJSON();calls.push(body);try{await route.fulfill({json:{ok:true,...await api(body)}});}catch(e){await route.fulfill({status:e.status??500,json:{ok:false,error:{code:e.code,fields:e.fields}}});}});
+  await page.addInitScript(pickup=>{localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:pickup,pickup}));},demoPickup);
+  await page.goto('/#discover');
+  await expect(page.locator('#pickup-search')).toHaveValue(demoPickup.label);
+  return {calls,errors};
+}
+const submit=page=>page.getByRole('button',{name:'Find care options',exact:true}).click();
+const close=page=>page.getByRole('button',{name:'Close dialog',exact:true}).click();
+async function saveSearch(page,name){
+  await page.getByRole('button',{name:'Save this search',exact:true}).click();
+  await page.getByLabel('Search name').fill(name);
+  await page.getByRole('button',{name:'Save search',exact:true}).click();
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+}
+for(const mobile of [false,true])test(`${mobile?'mobile':'desktop'} regular flow needs no date; switching isolates search/map/compare and preserves template type`,async({page})=>{
+  if(mobile)await page.setViewportSize({width:390,height:844});
+  const {calls,errors}=await setup(page);
+  await expect(page.getByRole('radio',{name:'No, regular care'})).toBeChecked();
+  await expect(page.locator('#service-date, #deadline, #care-end')).toHaveCount(0);
+  await expect(page.locator('.nearby-card')).toHaveCount(2);
+  await expect(page.locator('.nearby-card').first()).toContainText('Regular Care');
+  await page.screenshot({path:`${out}/regular-${mobile?'mobile':'desktop'}.png`});
+  await page.locator('#age').selectOption('4');await page.locator('#transport').selectOption('self');await submit(page);
+  await expect(page.getByRole('button',{name:'View details for Regular Care 3',exact:true})).toBeVisible();
+  expect(calls.filter(x=>x.action==='search').at(-1).request.careType).toBe('regular');
+  await page.getByRole('button',{name:'View details for Regular Care 3',exact:true}).click();
+  await expect(page.locator('.centre-metrics dt')).toHaveText(['Age','Drive from pickup','Fee']);
+  await expect(page.locator('.fit-check')).toHaveCount(2);
+  await page.getByRole('button',{name:'Prepare questions',exact:true}).click();
+  await expect(page.locator('.question-list')).not.toContainText('one-off');
+  await expect(page.getByRole('dialog')).not.toContainText('Invalid Date');
+  await page.getByRole('button',{name:'Create checklist',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Get ready for care',exact:true})).toBeVisible();
+  await expect(page.locator('.preparation-date')).toContainText('Regular childcare');
+  await close(page);
+  await saveSearch(page,'Everyday childcare');
+  await page.getByRole('button',{name:'Compare Regular Care 3',exact:true}).click();
+  await page.getByRole('button',{name:'Compare Regular Care 4',exact:true}).click();
+  await page.getByRole('button',{name:'Compare childcare',exact:true}).click();
+  await expect(page.locator('.comparison-scroll table')).not.toContainText('One-off care');
+  await close(page);
+  await page.getByRole('button',{name:'Edit request',exact:true}).click();
+  await page.getByRole('radio',{name:'Yes, short-term care'}).check();
+  await expect(page.getByRole('button',{name:'View details for Regular Care 3',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('navigation').getByRole('button',{name:/COMPARE/})).toContainText('0');
+  await expect(page.locator('#age')).toHaveValue('4');await expect(page.locator('#transport')).toHaveValue('self');
+  await expect(page.locator('.nearby-card').first()).toContainText('Short Stay');
+  await submit(page);await expect(page.locator('#deadline-error')).toBeVisible();
+  await page.locator('#service-date').fill('2026-09-21');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');
+  await page.screenshot({path:`${out}/short-${mobile?'mobile':'desktop'}.png`});
+  await submit(page);
+  await expect(page.getByRole('button',{name:'View details for Short Stay 1',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'View details for Regular Care 3',exact:true})).toHaveCount(0);
+  await expect(page.locator('.short-care-notice')).toBeVisible();
+  await saveSearch(page,'A short stay');
+  await page.getByRole('button',{name:'Saved searches',exact:true}).click();
+  await page.locator('.saved-row').filter({has:page.getByRole('heading',{name:'Everyday childcare',exact:true})}).getByRole('button',{name:'Use this search',exact:true}).click();
+  await expect(page.getByRole('radio',{name:'No, regular care'})).toBeChecked();
+  await expect(page.locator('#service-date, #deadline, #care-end')).toHaveCount(0);
+  await expect(page.locator('.saved-search-reminder')).toBeVisible();
+  await submit(page);await expect(page.getByRole('button',{name:'View details for Regular Care 3',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Saved searches',exact:true}).click();
+  await page.locator('.saved-row').filter({has:page.getByRole('heading',{name:'A short stay',exact:true})}).getByRole('button',{name:'Use this search',exact:true}).click();
+  await expect(page.getByRole('radio',{name:'Yes, short-term care'})).toBeChecked();
+  await expect(page.locator('#service-date')).toHaveValue('');await expect(page.locator('#deadline')).toHaveValue('13:00');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  expect(errors).toEqual([]);
+});
+test('a delayed response from regular care cannot replace short-term results after switching',async({page})=>{
+  await setup(page);
+  let release,started;const gate=new Promise(r=>release=r),seen=new Promise(r=>started=r);
+  await page.route('**/api',async route=>{
+    const b=route.request().postDataJSON();
+    if(b.action==='search'&&b.request.careType==='regular'){started();await gate;}
+    await route.fallback();
+  });
+  await submit(page);await seen;
+  await page.getByRole('radio',{name:'Yes, short-term care'}).check();
+  await page.locator('#service-date').fill('2026-09-21');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');
+  await submit(page);await expect(page.getByRole('button',{name:'View details for Short Stay 1',exact:true})).toBeVisible();
+  const oldResponse=page.waitForResponse(r=>r.url().endsWith('/api')&&r.request().postDataJSON().action==='search'&&r.request().postDataJSON().request.careType==='regular');
+  release();await (await oldResponse).finished();
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  await expect(page.getByRole('button',{name:'View details for Regular Care 3',exact:true})).toHaveCount(0);
+  await expect(page.locator('.compact-request')).toContainText('Short-term care');
+});

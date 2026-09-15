@@ -19,7 +19,7 @@ test("contact priority stays consistent across results, map and comparison, with
     localStorage.setItem("equalpath:tour:v1", '{"version":1,"status":"skipped"}');
     localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, center: pickup, zoom: 13, pickup }));
   }, { ...demoPickup, label: "KL Sentral" });
-  await page.goto("/#discover", { waitUntil: "domcontentloaded" });
+  await page.goto("/?care=short_term#discover", { waitUntil: "domcontentloaded" });
   await page.locator("#service-date").fill("2026-09-14"); await page.locator("#deadline").fill("13:00");
   await page.locator("#care-end").fill("18:00"); await page.locator("#transport").selectOption("self");
   await page.getByRole("button", { name: "Find care options", exact: true }).click();

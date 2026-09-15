@@ -22,7 +22,7 @@ async function start(page) {
     localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, zoom: 13,
       center: { lat: 3.139, lng: 101.6869 }, pickup: { id: null, label: "KL Sentral", lat: 3.139, lng: 101.6869 } }));
   });
-  await page.goto("/#discover");
+  await page.goto("/?care=short_term#discover");
   return calls;
 }
 async function search(page) {

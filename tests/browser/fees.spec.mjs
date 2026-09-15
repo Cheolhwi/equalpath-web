@@ -11,7 +11,7 @@ test('listed KPM codes and fee programme breakdowns are clear without claiming o
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,center:{lat:3.139,lng:101.6869},zoom:13,pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/#discover');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await page.goto('/?care=short_term#discover');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');await page.getByRole('button',{name:'Find care options',exact:true}).click();
   await expect(page.locator('.provider-row')).toContainText('MYR 350–490 / month');
   await expect(page.locator('.provider-row')).not.toContainText('MYR 80');
   await page.getByRole('button',{name:/View details for/}).click();
@@ -36,7 +36,7 @@ test('area budget references stay labelled in search and details',async({page})=
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,center:{lat:3.139,lng:101.6869},zoom:13,pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/#discover');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await page.goto('/?care=short_term#discover');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');await page.getByRole('button',{name:'Find care options',exact:true}).click();
   await expect(page.locator('.provider-row')).toContainText('Estimated MYR 600–900 / month');
   await page.getByRole('button',{name:/View details for/}).click();
   const dialog=page.getByRole('dialog');

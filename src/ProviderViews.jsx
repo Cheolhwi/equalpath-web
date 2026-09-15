@@ -22,7 +22,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { todayKL } from "../shared/request.mjs";
+import { todayKL, isShortCare } from "../shared/request.mjs";
 import { drivingLabel, feeSummary, formatFee } from "../shared/result-summary.mjs";
 import { bestForPriority } from "../shared/conditions.mjs";
 import { registrationBadge } from "../shared/registration.mjs";
@@ -309,7 +309,7 @@ export function Costs({ p }) {
           ? "Estimate your cost"
           : p.fees.length
             ? p.fees.every(f=>f.verification==='area_estimate') ? "Estimated budget" : "Published fees"
-          : "Ask about the cost for your date"}
+          : "Ask the centre for a quote"}
       </h3>
       {p.fees.length ? (
         p.fees.map((f, i) => (
@@ -327,9 +327,9 @@ export function Costs({ p }) {
         <p>We couldn’t find a published fee for this service.</p>
       )}
       {!c.available ? (
-        <details className="fee-questions"><summary>Check one-off fees & extras</summary>
+        <details className="fee-questions"><summary>{isShortCare(p) ? "Check one-off fees & extras" : "Check programme fees & extras"}</summary>
           <ul>{c.missing.map(item=><li key={item}>{item}</li>)}</ul>
-          <p className="notice">Ask for a quote for your date. Monthly fees don’t give a one-off care total.</p>
+          <p className="notice">{isShortCare(p) ? "Ask for a quote for your date. Monthly fees don’t give a one-off care total." : "Check which programme the fee covers and which extras are charged separately."}</p>
         </details>
       ) : (
         <>
@@ -377,7 +377,7 @@ function checkValue(c, p, request) {
 function CareSchedule({ p }) {
   return <section className="centre-hours centre-section" aria-label="Care hours">
     <div className="centre-section-heading"><h3>Care hours</h3><span>{p.businessHoursDay}</span></div>
-    <div className="care-day"><span>Care ends at</span><strong>{p.careEndTimeLabel ?? p.businessHoursLabel}</strong></div>
+    {isShortCare(p) && <div className="care-day"><span>Care ends at</span><strong>{p.careEndTimeLabel ?? p.businessHoursLabel}</strong></div>}
     <SourceDisclosure source={p.careEndTimeSource ?? p.businessHours?.source}>Care schedule source</SourceDisclosure>
     {p.businessHours?.publishedSchedule && <div className="notice"><p>{p.businessHours.publishedSchedule.notes}</p><SourceDisclosure source={p.businessHours.publishedSchedule.source} /></div>}
     {p.businessHours?.alternative && <div className="notice"><p>Another listing: {p.businessHours.alternative.notes}</p><SourceDisclosure source={p.businessHours.alternative.source}>Additional care schedule source</SourceDisclosure></div>}
@@ -388,21 +388,22 @@ function CareSchedule({ p }) {
 }
 export function Details({ p, request, onPrepare, onCompare, compared, onSave, saved, onPreparation }) {
   const counts = p.fit.counts, fees = feeSummary(p), badge = registrationBadge(p, todayKL());
-  const date = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(request.date + "T12:00:00+08:00"));
+  const shortCare = isShortCare(request);
+  const date = shortCare ? new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(request.date + "T12:00:00+08:00")) : "Regular childcare";
   const checks = [...p.fit.conditions].sort((a, b) => ({conflict:0,unknown:1,supported:2,reference:3}[a.state] - {conflict:0,unknown:1,supported:2,reference:3}[b.state]));
   const care = p.fit.conditions.find(c => c.id === "care");
   return <div className="centre-details">
     <div className="centre-identity"><span>{p.category} · {p.district}, {p.region}</span><p><MapPin size={14} />{p.address ?? "Exact address not listed"}</p></div>
     {p.mode === "demo" && <p className="demo-notice">Demo centre — fictional details.</p>}
     <div className="centre-request" aria-label="Your visit">
-      <div><span>Your visit</span><strong>{date}</strong></div>
-      <div><span>Collect by</span><strong>{request.deadline}</strong></div>
+      <div><span>{shortCare ? "Your visit" : "Care type"}</span><strong>{date}</strong></div>
+      {shortCare && <><div><span>Collect by</span><strong>{request.deadline}</strong></div>
       <ArrowRight size={16} aria-hidden="true" />
-      <div><span>Care until</span><strong>{request.end}</strong></div>
+      <div><span>Care until</span><strong>{request.end}</strong></div></>}
       <p><MapPin size={13} /><span>From {request.pickup.label}</span></p>
     </div>
-    <dl className="centre-metrics" aria-label="Key information">
-      <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care end time</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>
+    <dl className={`centre-metrics ${shortCare ? "" : "regular-metrics"}`} aria-label="Key information">
+      {shortCare && <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care end time</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>}
       <div><dt><Users size={15} />Age</dt><dd>{detailAgeLabel(p)}</dd><small>{p.age?.basis === "type_reference" ? "Official type range" : "Published age range"}</small></div>
       <div><dt><Car size={15} />Drive from pickup</dt><dd>{p.driving?.state === "available" ? `About ${p.driving.minutes} min` : "Unavailable"}</dd><small>{p.driving?.state === "available" ? `${p.driving.distanceKm} km by road · no live traffic` : "Travel time couldn’t be checked"}</small></div>
       <div className="metric-fee"><dt><Wallet size={15} />Fee</dt><dd>{fees.label}</dd><small>{p.cost?.available ? "For your selected care hours" : p.fees?.every(f=>f.verification==='area_estimate') && p.fees.length ? "Area budget reference" : "Check the programme and extras"}</small></div>
@@ -412,7 +413,7 @@ export function Details({ p, request, onPrepare, onCompare, compared, onSave, sa
         <div className="centre-section-heading"><h3>Your care needs</h3><span>{counts.supported} match · {counts.unknown} to check</span></div>
         <div className={`fit-verdict ${counts.conflict ? "conflict" : counts.unknown ? "unknown" : "supported"}`}>
           {counts.conflict ? <AlertTriangle size={19} /> : counts.unknown ? <HelpCircle size={19} /> : <CheckCircle2 size={19} />}
-          <div><strong>{counts.conflict ? `${counts.conflict} ${counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match` : counts.unknown ? "Check a few details with the centre" : "The listed details match your request"}</strong><p>{counts.conflict ? "Review these differences before you choose." : "Ask the centre to confirm a place for your date."}</p></div>
+          <div><strong>{counts.conflict ? `${counts.conflict} ${counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match` : counts.unknown ? "Check a few details with the centre" : "The listed details match your request"}</strong><p>{counts.conflict ? "Review these differences before you choose." : shortCare ? "Ask the centre to confirm a place for your date." : "Ask the centre about enrolment and places."}</p></div>
         </div>
         <div className="fit-checks condition-list">{checks.map(c=><details key={c.id} className={`fit-check ${c.state}`} data-condition-id={c.id} open={c.state === "conflict"}>
           <summary><div><strong>{checkLabels[c.id] ?? c.label}</strong><span>{checkValue(c,p,request)}</span></div><Status state={c.state}>{c.statusLabel}</Status><ChevronDown size={15} className="disclosure-chevron" /></summary>
@@ -420,7 +421,7 @@ export function Details({ p, request, onPrepare, onCompare, compared, onSave, sa
         </details>)}</div>
       </section>
       <aside className="centre-next" aria-label="Contact and next steps">
-        <div className="centre-next-card"><span className="section-kicker">NEXT STEP</span><h3>Ask about a place</h3><p>Prepare what to ask for your date and care hours.</p>
+        <div className="centre-next-card"><span className="section-kicker">NEXT STEP</span><h3>Ask about a place</h3><p>{shortCare ? "Prepare what to ask for your date and care hours." : "Ask about enrolment, programmes and pickup."}</p>
           <button className="primary" onClick={onPrepare}>Prepare questions <ArrowRight size={16} /></button>
           <div className="centre-shortlist"><button className="secondary" aria-pressed={compared} onClick={onCompare}>{compared ? <Check size={15} /> : <Plus size={15} />}Compare</button><button className="secondary" aria-pressed={saved} onClick={onSave}><Bookmark size={15} />{saved ? "Saved centre" : "Save centre"}</button></div>
           <div className="centre-contact"><h4>Contact the centre</h4><PublishedContacts p={p} compact />{p.sourcePage && <a className="centre-listing" href={p.sourcePage} target="_blank" rel="noreferrer">View centre listing <ArrowUpRight size={13} /></a>}</div>
@@ -471,7 +472,7 @@ export function Comparison({
       "Arrival time",
       (p) => p.fit.conditions.find((c) => c.id === "transfer"),
     ],
-  ];
+  ].filter(([, get]) => items.some(p => get(p)));
   return (
     <>
       <p className="dialog-lead">
@@ -480,7 +481,7 @@ export function Comparison({
       <div className="compare-sort">
         <div className="compare-sort-control">
           <span>Sort by</span>
-          <SelectMenu label="Comparison priority" value={sort} options={SORT_OPTIONS}
+          <SelectMenu label="Comparison priority" value={sort} options={SORT_OPTIONS.filter(o => o.value !== "closing" || date)}
             available={ordering?.available} onChange={onSort} />
         </div>
         <OrderingNote ordering={ordering} />
@@ -515,7 +516,7 @@ export function Comparison({
               <tr key={label}>
                 <th>{label}</th>
                 {items.map((p) => {
-                  const c = get(p);
+                  const c = get(p) ?? {state: "reference", statusLabel: "Not needed", reason: "This check does not apply to your preferences."};
                   return (
                     <td key={p.id}>
                       <Status state={c.state}>{c.statusLabel}</Status>
@@ -542,7 +543,7 @@ export function Comparison({
               <th>Care hours</th>
               {items.map((p) => (
                 <td key={p.id}>
-                  {p.careEndTimeLabel ?? p.businessHoursLabel}
+                  {date ? p.careEndTimeLabel ?? p.businessHoursLabel : p.businessHours?.notes || "Hours not listed"}
                 </td>
               ))}
             </tr>

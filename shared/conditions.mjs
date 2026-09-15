@@ -1,4 +1,4 @@
-import { minutes, timeLabel } from "./request.mjs";
+import { minutes, timeLabel, isShortCare } from "./request.mjs";
 import { monthlyFeeFrom } from "./result-summary.mjs";
 const result = (id, label, state, reason, source = null, question = null) => ({
   id,
@@ -97,7 +97,28 @@ export function checkAge(age, r) {
     "Can you confirm the exact ages accepted for this temporary visit?",
   );
 }
+function assessRegular(p, r) {
+  const age = checkAge(p.age, r);
+  age.question = age.question?.replace(/temporary care/g, "regular care").replace(/temporary visit|temporary programme/g, "programme") ?? null;
+  if (r.age === "") { age.state = "reference"; age.question = null; }
+  const states = [age], transport = p.transport ?? {};
+  states.push(result("transport", "Centre pickup",
+    !r.transport ? "reference" : r.transport === "self" || transport.exists === true ? "supported" : transport.exists === false ? "conflict" : "unknown",
+    !r.transport ? "No pickup preference selected." : r.transport === "self" ? "You’ll arrange transport." : transport.wording ?? "Ask whether the centre offers pickup.",
+    transport.source, r.transport === "institution" && transport.exists !== true ? "Do you offer pickup for regular childcare?" : null));
+  if (r.transport === "institution") {
+    const coverage = transport.coverage;
+    const state = coverage?.placeIds?.includes(r.pickup.id) ? "supported" : coverage?.placeIds && coverage?.exhaustive ? "conflict" : "unknown";
+    states.push(result("coverage", "Pickup area", state, coverage?.wording ?? "Ask whether pickup covers your location.", coverage?.source ?? transport.source,
+      state === "supported" ? null : `Can you arrange regular pickup from ${r.pickup.label}?`));
+  }
+  const counts = { supported: 0, conflict: 0, unknown: 0, reference: 0 };
+  for (const c of states) counts[c.state]++;
+  return { conditions: states, counts, summary: counts.conflict ? "Known conditions conflict" : counts.unknown ? "Conditions need confirmation" : "Published conditions checked",
+    acceptance: "Enrolment and availability need to be agreed with the centre.", requestVersion: JSON.stringify(r), factVersion: p.version };
+}
 export function assess(p, r) {
+  if (!isShortCare(r)) return assessRegular(p, r);
   const states = [checkAge(p.age, r)],
     ad = p.admission,
     transport = p.transport ?? {},
@@ -317,6 +338,7 @@ export function hoursDisagree(p,date){
   return original!==null&&other!==null&&original!==other;
 }
 export function costFor(p, r) {
+  if (!isShortCare(r)) return { available: false, reason: "Ask the centre for a programme quote.", missing: ["programme fee", "registration, meals and transport charges"], published: p.fees ?? [] };
   const rule = p.feeRule,
     missing = [
       "one-off care rate",
@@ -374,13 +396,13 @@ export function enquiries(p, r, fit = assess(p, r)) {
     .map((c) => ({ id: c.id, text: c.question, reason: c.state }));
   questions.splice(Math.min(1, questions.length), 0, {
     id: "capacity",
-    text: `Is a place available on ${r.date} until ${r.end}, and what notice or documents do you require?`,
+    text: isShortCare(r) ? `Is a place available on ${r.date} until ${r.end}, and what notice or documents do you require?` : "Are you accepting new children, and what do I need to enrol?",
     reason: "availability",
   });
   const cost = costFor(p, r);
   questions.push({
     id: "fees",
-    text: cost.available
+    text: !isShortCare(r) ? "What is the programme fee, including registration, meals and any pickup charges?" : cost.available
       ? "Can you confirm this reference price and any changes for our actual arrival and collection?"
       : "What is the one-off charge, including minimum duration, transport, meals, registration and late collection?",
     reason: "charges",
