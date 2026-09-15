@@ -1,0 +1,151 @@
+{
+  "sources": {
+    "anak-details-api": {
+      "label": "Anak2U — Taska Adam Uwais ad-hoc childcare",
+      "kind": "public_directory",
+      "sourceDate": "2019-10-23",
+      "pageURL": "https://explore.anak2u.com.my/details/taska-adam-uwais-kelana-jaya-2112"
+    },
+    "anak-ibu-elisa": {
+      "label": "Anak2U — Taska Ibu Elisa hourly and daily care",
+      "kind": "public_directory",
+      "sourceDate": "2021-03-11",
+      "pageURL": "https://explore.anak2u.com.my/details/taska-ibu-elisa-2694"
+    },
+    "ibu-map": {
+      "label": "Google Maps — Taska Ibu Elisa address and phone",
+      "kind": "map_listing"
+    },
+    "ibu-directory": {
+      "label": "Daycare.my — Taska Ibu Elisa branch listing",
+      "kind": "public_directory"
+    },
+    "edu-talent": {
+      "label": "Edu Talent — holiday activities with daily drop-in",
+      "kind": "provider_website",
+      "sourceDate": "2025-04-09"
+    }
+  },
+  "providers": [
+    {
+      "key": "ibu-elisa-cheras",
+      "name": "Taska Ibu Elisa",
+      "address": "2, Jalan 12/4D, Taman Cheras Jaya, 43200 Cheras, Selangor",
+      "state": "Selangor",
+      "district": "Hulu Langat",
+      "latitude": 3.0216551,
+      "longitude": 101.7616329,
+      "locationSource": "ibu-map",
+      "website": "https://www.facebook.com/taskaibuelisa/",
+      "phone": "016-375 7990",
+      "contactSource": "ibu-map",
+      "profileSource": "ibu-directory",
+      "admissionSources": [
+        "anak-ibu-elisa"
+      ],
+      "serviceTypes": [
+        "hourly",
+        "occasional"
+      ],
+      "wording": "The public profile advertises temporary care by the hour or day. The service description was last updated in March 2021; call to check that this option is still offered and agree the visit hours, age and fee.",
+      "question": "Do you still offer hourly or daily care, and can you take my child for this visit? What are the hours and total fee?",
+      "requirements": [
+        "Reconfirm the hourly or daily service before travelling; its published description dates from 2021.",
+        "Agree the child’s age, visit hours and fee with the centre."
+      ],
+      "age": null,
+      "hoursSource": null,
+      "hours": [],
+      "closedDays": [],
+      "careWindows": [],
+      "hoursNote": "The directories disagree about Friday opening. No weekly schedule is treated as established for this addition.",
+      "fees": [],
+      "notes": [
+        "Current map and Daycare.my listings agree on No. 2 Jalan 12/4D and 016-3757990. The older Anak2U profile shows 10-2 on the same street; the address shown here follows the matching map and directory. Confirm the entrance when arranging a visit.",
+        "Historical registration numbers are present in directories but no current official registration was independently matched; no government badge is claimed."
+      ],
+      "identityReview": "One branch matched by exact name, street and phone 016-3757990 across Anak2U, Daycare.my and Google Maps. Current map and Daycare.my agree on No.2; the older service profile says 10-2. Use the matched map address/coordinates and retain the discrepancy. No existing catalogue match by name, address or phone."
+    },
+    {
+      "key": "edu-talent-setia-alam",
+      "name": "Edu Talent — Setia Alam Holiday Care",
+      "address": "6-2-2, 6-3-2, 6-2-1, 6-3-1, Jalan Setia Prima C U13/C, Setia Alam, Seksyen U13, 40170 Shah Alam, Selangor",
+      "state": "Selangor",
+      "district": "Shah Alam",
+      "latitude": 3.0945,
+      "longitude": 101.445007,
+      "locationSource": "edu-talent",
+      "website": "https://www.newpages.com.my/v2/bm/company/732546/product/429238/5393569/Study-Life-Balance-Holiday-Activities.html",
+      "phone": "011-1196 9385",
+      "contactSource": "edu-talent",
+      "profileSource": "edu-talent",
+      "admissionSources": [
+        "edu-talent"
+      ],
+      "serviceTypes": [
+        "drop_in",
+        "occasional"
+      ],
+      "wording": "School-holiday activities offer a daily drop-in option supervised by educators and activity leaders. This is a holiday programme, not a promise of childcare on ordinary school days. Ask about programme dates, age range, session length and price.",
+      "question": "Is your holiday programme running on this date, and can my child join for these hours? What age range and daily fee apply?",
+      "requirements": [
+        "Available during the centre’s holiday programme only; agree the programme date before attending.",
+        "Confirm the child’s age, session hours, drop-off arrangement and fee with the centre."
+      ],
+      "age": null,
+      "hoursSource": null,
+      "hours": [],
+      "closedDays": [],
+      "careWindows": [],
+      "hoursNote": "Morning and afternoon activities are described, but no exact session times are published.",
+      "fees": [],
+      "notes": [
+        "Daily drop-in is explicitly listed alongside weekly holiday packages. No hourly price, exact clock range or general term-time childcare availability is inferred.",
+        "The company’s Newpages listing provides this single Setia Alam address, phone and map coordinates. No government childcare registration is claimed."
+      ],
+      "identityReview": "The provider-authored holiday service listing, contact section and linked map share this Setia Alam branch. Its four unit numbers form one business address, counted once. The public map link supplies 3.094500,101.445007. No existing catalogue match by name, address or phone."
+    }
+  ],
+  "existingProviders": [
+    {
+      "id": "provider_6608d9c70e9c6ad94b4600b1e22",
+      "name": "TASKA ADAM UWAIS",
+      "admissionSources": [
+        "anak-details-api"
+      ],
+      "serviceTypes": [
+        "occasional",
+        "drop_in"
+      ],
+      "wording": "The public profile explicitly offers ad-hoc care for children who are not enrolled. The service description was last updated in October 2019; ask whether ad-hoc places are still offered and agree this visit before travelling.",
+      "question": "Do you still accept children who are not enrolled for an ad-hoc visit, and is there a place for my child at these times?",
+      "requirements": [
+        "Reconfirm the ad-hoc option before travelling; the public description dates from 2019.",
+        "Agree the child’s age, visit hours and fee with the centre."
+      ],
+      "identityReview": "The existing TASKA ADAM UWAIS record and Anak2U profile both identify No.8 Jalan SS5B/3, Kelana Jaya. The branch-specific description expressly includes non-enrolled children. Update only admission evidence and sources; retain the existing registration, contact, ages, hours and fees."
+    }
+  ],
+  "unmergedLeads": [
+    {
+      "name": "Taska Keluarga Cemerlang",
+      "reason": "Daily/transit description and Bangi address found; no current public phone and independently matched map location captured."
+    },
+    {
+      "name": "Little Human Scholars",
+      "reason": "Drop-in service published but service-page address and current preschool/playschool map addresses conflict."
+    },
+    {
+      "name": "Taska Edora",
+      "reason": "Old per-hour/emergency-care profile uses another address from the current Eco Majestic catalogue branch."
+    },
+    {
+      "name": "Cherie Hearts / Kids Campus / Taska Oren",
+      "reason": "Brand or recurring flexible care cannot establish one-off acceptance for every current branch."
+    },
+    {
+      "name": "White Lodge / ABC FlexiTot / Hikari / RHPM",
+      "reason": "Recurring attendance or parent-accompanied programmes do not establish one-off parent-absent care."
+    }
+  ]
+}

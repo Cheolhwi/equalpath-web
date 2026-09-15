@@ -1,0 +1,5294 @@
+{
+  "source": "https://api-explore.anak2u.com.my/api/clients-filter",
+  "capturedFile": "anak-filter.html",
+  "totalDirectoryRecords": 1230,
+  "KLOrSelangorRecords": 657,
+  "keywordCandidateProfiles": 13,
+  "explicitShortCareProfiles": 2,
+  "limitation": "No keyword means no explicit statement found in this directory profile, not that the provider refuses temporary care. Accepted additions were also checked by address and location.",
+  "profiles": [
+    {
+      "name": "A Kid's Cove - Childcare & Kindergarten",
+      "directoryId": 2479,
+      "url": "https://explore.anak2u.com.my/details/kids-cove-2479",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Abata Bistari (Abata Child Care Center)",
+      "directoryId": 2724,
+      "url": "https://explore.anak2u.com.my/details/abata-bistari-abata-child-care-center-2724",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE 10F, Equine Park",
+      "directoryId": 3658,
+      "url": "https://explore.anak2u.com.my/details/ake-10f-equine-park-3658",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE ALAM BUDIMAN",
+      "directoryId": 3660,
+      "url": "https://explore.anak2u.com.my/details/ake-alam-budiman-3660",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE ALAM IMPIAN",
+      "directoryId": 3662,
+      "url": "https://explore.anak2u.com.my/details/ake-alam-impian-3662",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE ALAM SUTERA, KUALA LUMPUR",
+      "directoryId": 3667,
+      "url": "https://explore.anak2u.com.my/details/ake-alam-sutera-kuala-lumpur-3667",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE AMPANG UTAMA",
+      "directoryId": 3668,
+      "url": "https://explore.anak2u.com.my/details/ake-ampang-utama-3668",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE ARA DAMANSARA",
+      "directoryId": 3699,
+      "url": "https://explore.anak2u.com.my/details/ake-ara-damansara-3699",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR BUKIT MAHKOTA",
+      "directoryId": 3674,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-bukit-mahkota-3674",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR BUKIT RAJA",
+      "directoryId": 3669,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-bukit-raja-3669",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR BUKIT TINGGI",
+      "directoryId": 3677,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-bukit-tinggi-3677",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR KINRARA",
+      "directoryId": 3678,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-kinrara-3678",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR MAHKOTA , CHERAS",
+      "directoryId": 3960,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-mahkota-cheras-3960",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR PUTERA,KLANG",
+      "directoryId": 3681,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-puteraklang-3681",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR SAUJANA PUTRA",
+      "directoryId": 3684,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-saujana-putra-3684",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR SAUJANA UTAMA",
+      "directoryId": 3682,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-saujana-utama-3682",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR SRI DAMANSARA",
+      "directoryId": 3909,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-sri-damansara-3909",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR TROPICANA AMAN",
+      "directoryId": 3760,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-tropicana-aman-3760",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANDAR TUN HUSSEIN ONN",
+      "directoryId": 3687,
+      "url": "https://explore.anak2u.com.my/details/ake-bandar-tun-hussein-onn-3687",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANGI CENTRAL",
+      "directoryId": 3690,
+      "url": "https://explore.anak2u.com.my/details/ake-bangi-central-3690",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BANGI GATEWAY",
+      "directoryId": 3676,
+      "url": "https://explore.anak2u.com.my/details/ake-bangi-gateway-3676",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BATU BELAH KLANG",
+      "directoryId": 3704,
+      "url": "https://explore.anak2u.com.my/details/ake-batu-belah-klang-3704",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BATU TIGA",
+      "directoryId": 3703,
+      "url": "https://explore.anak2u.com.my/details/ake-batu-tiga-3703",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BUKIT BINTANG",
+      "directoryId": 3675,
+      "url": "https://explore.anak2u.com.my/details/ake-bukit-bintang-3675",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BUKIT JALIL",
+      "directoryId": 3696,
+      "url": "https://explore.anak2u.com.my/details/ake-bukit-jalil-3696",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BUKIT JALIL 2",
+      "directoryId": 3706,
+      "url": "https://explore.anak2u.com.my/details/ake-bukit-jalil-2-3706",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BUKIT JELUTONG",
+      "directoryId": 3709,
+      "url": "https://explore.anak2u.com.my/details/ake-bukit-jelutong-3709",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE BUKIT RAHMAN PUTRA",
+      "directoryId": 3722,
+      "url": "https://explore.anak2u.com.my/details/ake-bukit-rahman-putra-3722",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE CAHAYA ALAM U12",
+      "directoryId": 3723,
+      "url": "https://explore.anak2u.com.my/details/ake-cahaya-alam-u12-3723",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE CHERAS Bandar seri permaisuri",
+      "directoryId": 3726,
+      "url": "https://explore.anak2u.com.my/details/ake-cheras-bandar-seri-permaisuri-3726",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE CYBERSQUARE CYBERJAYA",
+      "directoryId": 3692,
+      "url": "https://explore.anak2u.com.my/details/ake-cybersquare-cyberjaya-3692",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE DAGANG CAHAYA",
+      "directoryId": 3721,
+      "url": "https://explore.anak2u.com.my/details/ake-dagang-cahaya-3721",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE DAMANSARA DAMAI",
+      "directoryId": 3680,
+      "url": "https://explore.anak2u.com.my/details/ake-damansara-damai-3680",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE DAMANSARA PERDANA",
+      "directoryId": 3729,
+      "url": "https://explore.anak2u.com.my/details/ake-damansara-perdana-3729",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE DATARAN GLOMAC,KELANA JAYA",
+      "directoryId": 3792,
+      "url": "https://explore.anak2u.com.my/details/ake-dataran-glomackelana-jaya-3792",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE DATARAN VILLA SG BULOH",
+      "directoryId": 3725,
+      "url": "https://explore.anak2u.com.my/details/ake-dataran-villa-sg-buloh-3725",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE Demo Branch Bangi",
+      "directoryId": 3957,
+      "url": "https://explore.anak2u.com.my/details/ake-demo-branch-bangi-3957",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE Denai Alam Branch",
+      "directoryId": 3673,
+      "url": "https://explore.anak2u.com.my/details/ake-denai-alam-branch-3673",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE DESA COALFIELDS",
+      "directoryId": 3731,
+      "url": "https://explore.anak2u.com.my/details/ake-desa-coalfields-3731",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE Desa Pandan",
+      "directoryId": 3763,
+      "url": "https://explore.anak2u.com.my/details/ake-desa-pandan-3763",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE DIAMOND SQUARE",
+      "directoryId": 3737,
+      "url": "https://explore.anak2u.com.my/details/ake-diamond-square-3737",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE Eco Ardence",
+      "directoryId": 3697,
+      "url": "https://explore.anak2u.com.my/details/ake-eco-ardence-3697",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE ECO GRANDEUR",
+      "directoryId": 3740,
+      "url": "https://explore.anak2u.com.my/details/ake-eco-grandeur-3740",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE ELMINA GARDEN",
+      "directoryId": 3685,
+      "url": "https://explore.anak2u.com.my/details/ake-elmina-garden-3685",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE HQ",
+      "directoryId": 3705,
+      "url": "https://explore.anak2u.com.my/details/ake-hq-3705",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE Kampung Jawa",
+      "directoryId": 3778,
+      "url": "https://explore.anak2u.com.my/details/ake-kampung-jawa-3778",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE KAPAR",
+      "directoryId": 3747,
+      "url": "https://explore.anak2u.com.my/details/ake-kapar-3747",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE KELANA JAYA SS7",
+      "directoryId": 3686,
+      "url": "https://explore.anak2u.com.my/details/ake-kelana-jaya-ss7-3686",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE KL TRADERS SQUARE",
+      "directoryId": 3761,
+      "url": "https://explore.anak2u.com.my/details/ake-kl-traders-square-3761",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE KOTA DAMANSARA, SECTION 6",
+      "directoryId": 3755,
+      "url": "https://explore.anak2u.com.my/details/ake-kota-damansara-section-6-3755",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE KOTA DAMANSARA, SECTION 8",
+      "directoryId": 3754,
+      "url": "https://explore.anak2u.com.my/details/ake-kota-damansara-section-8-3754",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE KOTA KEMUNING",
+      "directoryId": 3749,
+      "url": "https://explore.anak2u.com.my/details/ake-kota-kemuning-3749",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE KOTA WARISAN",
+      "directoryId": 3738,
+      "url": "https://explore.anak2u.com.my/details/ake-kota-warisan-3738",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE LORONG MAAROF, BANGSAR",
+      "directoryId": 3906,
+      "url": "https://explore.anak2u.com.my/details/ake-lorong-maarof-bangsar-3906",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE M RESIDENCE RAWANG",
+      "directoryId": 3748,
+      "url": "https://explore.anak2u.com.my/details/ake-m-residence-rawang-3748",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE Mutiara Heights",
+      "directoryId": 3702,
+      "url": "https://explore.anak2u.com.my/details/ake-mutiara-heights-3702",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE PARAGON UTAMA",
+      "directoryId": 3657,
+      "url": "https://explore.anak2u.com.my/details/ake-paragon-utama-3657",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE PINGGIRAN USJ",
+      "directoryId": 3659,
+      "url": "https://explore.anak2u.com.my/details/ake-pinggiran-usj-3659",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE PJCC TAMAN MEDAN",
+      "directoryId": 3718,
+      "url": "https://explore.anak2u.com.my/details/ake-pjcc-taman-medan-3718",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE PLAZA SURIA",
+      "directoryId": 3750,
+      "url": "https://explore.anak2u.com.my/details/ake-plaza-suria-3750",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE PRIMA SRI GOMBAK",
+      "directoryId": 3758,
+      "url": "https://explore.anak2u.com.my/details/ake-prima-sri-gombak-3758",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE PUCHONG PRIMA BRANCH",
+      "directoryId": 3672,
+      "url": "https://explore.anak2u.com.my/details/ake-puchong-prima-branch-3672",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE PUNCAK ALAM",
+      "directoryId": 3733,
+      "url": "https://explore.anak2u.com.my/details/ake-puncak-alam-3733",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE Puncak Jalil",
+      "directoryId": 3683,
+      "url": "https://explore.anak2u.com.my/details/ake-puncak-jalil-3683",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE PUTRA HEIGHT (S23456)",
+      "directoryId": 3759,
+      "url": "https://explore.anak2u.com.my/details/ake-putra-height-s23456-3759",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE RANTAU PANJANG KLANG",
+      "directoryId": 3736,
+      "url": "https://explore.anak2u.com.my/details/ake-rantau-panjang-klang-3736",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE REEF, RAWANG",
+      "directoryId": 3746,
+      "url": "https://explore.anak2u.com.my/details/ake-reef-rawang-3746",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE RIMBAYU BLOSSOM",
+      "directoryId": 3751,
+      "url": "https://explore.anak2u.com.my/details/ake-rimbayu-blossom-3751",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SEKSYEN 9, SHAH ALAM (NEW)",
+      "directoryId": 3880,
+      "url": "https://explore.anak2u.com.my/details/ake-seksyen-9-shah-alam-new-3880",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SENTUL",
+      "directoryId": 3730,
+      "url": "https://explore.anak2u.com.my/details/ake-sentul-3730",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SENTUL POINT",
+      "directoryId": 3762,
+      "url": "https://explore.anak2u.com.my/details/ake-sentul-point-3762",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SETIA ALAM",
+      "directoryId": 3744,
+      "url": "https://explore.anak2u.com.my/details/ake-setia-alam-3744",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SETIA ECOHILL",
+      "directoryId": 3720,
+      "url": "https://explore.anak2u.com.my/details/ake-setia-ecohill-3720",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SETIA INDAH, SETIA ALAM",
+      "directoryId": 3661,
+      "url": "https://explore.anak2u.com.my/details/ake-setia-indah-setia-alam-3661",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SHAH ALAM, SECTION 13",
+      "directoryId": 3741,
+      "url": "https://explore.anak2u.com.my/details/ake-shah-alam-section-13-3741",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SHAH ALAM, SECTION 16",
+      "directoryId": 3715,
+      "url": "https://explore.anak2u.com.my/details/ake-shah-alam-section-16-3715",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SHAH ALAM, SECTION 19",
+      "directoryId": 3752,
+      "url": "https://explore.anak2u.com.my/details/ake-shah-alam-section-19-3752",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SHAH ALAM, SECTION 29",
+      "directoryId": 3732,
+      "url": "https://explore.anak2u.com.my/details/ake-shah-alam-section-29-3732",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SHAH ALAM, SECTION 3",
+      "directoryId": 3739,
+      "url": "https://explore.anak2u.com.my/details/ake-shah-alam-section-3-3739",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SHAH ALAM, SECTION 7",
+      "directoryId": 3743,
+      "url": "https://explore.anak2u.com.my/details/ake-shah-alam-section-7-3743",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SHAH ALAM, SECTION 9",
+      "directoryId": 3714,
+      "url": "https://explore.anak2u.com.my/details/ake-shah-alam-section-9-3714",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SOUTHVILLE CITY",
+      "directoryId": 3724,
+      "url": "https://explore.anak2u.com.my/details/ake-southville-city-3724",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SRI RAMPAI",
+      "directoryId": 3905,
+      "url": "https://explore.anak2u.com.my/details/ake-sri-rampai-3905",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SUBANG BESTARI",
+      "directoryId": 3742,
+      "url": "https://explore.anak2u.com.my/details/ake-subang-bestari-3742",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SUBANG BESTARI 2",
+      "directoryId": 3734,
+      "url": "https://explore.anak2u.com.my/details/ake-subang-bestari-2-3734",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SUBANG JAYA SS18",
+      "directoryId": 3713,
+      "url": "https://explore.anak2u.com.my/details/ake-subang-jaya-ss18-3713",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE SUNGAI UDANG",
+      "directoryId": 3716,
+      "url": "https://explore.anak2u.com.my/details/ake-sungai-udang-3716",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE TAMAN MULIA , BANDAR TUN RAZAK",
+      "directoryId": 3712,
+      "url": "https://explore.anak2u.com.my/details/ake-taman-mulia-bandar-tun-razak-3712",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE TAMAN RASMI JAYA, AMPANG",
+      "directoryId": 3665,
+      "url": "https://explore.anak2u.com.my/details/ake-taman-rasmi-jaya-ampang-3665",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE TAMAN SELAYANG",
+      "directoryId": 3666,
+      "url": "https://explore.anak2u.com.my/details/ake-taman-selayang-3666",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE TAMAN SRI MANJA PETALING JAYA",
+      "directoryId": 3670,
+      "url": "https://explore.anak2u.com.my/details/ake-taman-sri-manja-petaling-jaya-3670",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE TAMAN SRI UKAY",
+      "directoryId": 3663,
+      "url": "https://explore.anak2u.com.my/details/ake-taman-sri-ukay-3663",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE TAMAN WAWASAN PUCHONG",
+      "directoryId": 3694,
+      "url": "https://explore.anak2u.com.my/details/ake-taman-wawasan-puchong-3694",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE TTDI JAYA",
+      "directoryId": 3717,
+      "url": "https://explore.anak2u.com.my/details/ake-ttdi-jaya-3717",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE USJ 21",
+      "directoryId": 3753,
+      "url": "https://explore.anak2u.com.my/details/ake-usj-21-3753",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE WANGSA DELIMA",
+      "directoryId": 3707,
+      "url": "https://explore.anak2u.com.my/details/ake-wangsa-delima-3707",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE WANGSA MAJU",
+      "directoryId": 3708,
+      "url": "https://explore.anak2u.com.my/details/ake-wangsa-maju-3708",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AKE WANGSA MELAWATI",
+      "directoryId": 3656,
+      "url": "https://explore.anak2u.com.my/details/ake-wangsa-melawati-3656",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Childcare Centre Bandar Saujana Putra",
+      "directoryId": 2072,
+      "url": "https://explore.anak2u.com.my/details/al-baghdadi-childcare-centre-bandar-saujana-putra-2072",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Center Sungai Tangkas",
+      "directoryId": 2207,
+      "url": "https://explore.anak2u.com.my/details/tadika-albaghdadi-sg-tangkas-2207",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre (Bandar Teknologi)",
+      "directoryId": 2337,
+      "url": "https://explore.anak2u.com.my/details/apc-bandar-teknologi-2337",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre (Bangi Gateway)",
+      "directoryId": 2332,
+      "url": "https://explore.anak2u.com.my/details/apc-bangi-gateway-2332",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre (Kajang Utama)",
+      "directoryId": 2334,
+      "url": "https://explore.anak2u.com.my/details/apc-kajang-utama-2334",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre (Puncak Alam)",
+      "directoryId": 2261,
+      "url": "https://explore.anak2u.com.my/details/albaghdadi-puncakalam-2261",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre Alam Avenue",
+      "directoryId": 2123,
+      "url": "https://explore.anak2u.com.my/details/al-baghdadi-playtime-centre-alam-avenue-2123",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre Bandar Saujana Putra",
+      "directoryId": 2071,
+      "url": "https://explore.anak2u.com.my/details/al-baghdadi-playtime-centre-bandar-saujana-putra-2071",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre Bandar Tun Hussein Onn",
+      "directoryId": 2575,
+      "url": "https://explore.anak2u.com.my/details/albaghdadi-playtime-centre-2575",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre Batu 9",
+      "directoryId": 2574,
+      "url": "https://explore.anak2u.com.my/details/albaghdadi-playtime-centre-2574",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre Jalan Kebun",
+      "directoryId": 2124,
+      "url": "https://explore.anak2u.com.my/details/al-baghdadi-playtime-centre-jalan-kebun-2124",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Baghdadi Playtime Centre Jenjarom",
+      "directoryId": 2066,
+      "url": "https://explore.anak2u.com.my/details/al-baghdadi-playtime-centre-jenjarom-2066",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Fateh Integration Kindergarten Desa Latania",
+      "directoryId": 2506,
+      "url": "https://explore.anak2u.com.my/details/alfateh-integration-2506",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Fikh Orchard Kota Warisan - Tadika Warisan Anak Soleh",
+      "directoryId": 2877,
+      "url": "https://explore.anak2u.com.my/details/al-fikh-orchard-kota-warisan-tadika-warisan-anak-soleh-2877",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Hawi Education Centre",
+      "directoryId": 3400,
+      "url": null,
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Husna Childcare Centre",
+      "directoryId": 2646,
+      "url": "https://explore.anak2u.com.my/details/al-husna-2646",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Kauthar Eduqids",
+      "directoryId": 2292,
+      "url": "https://explore.anak2u.com.my/details/al-kauthar-eduqids-2292",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Kauthar Eduqids (Bukit Jelutong)",
+      "directoryId": 2298,
+      "url": "https://explore.anak2u.com.my/details/al-kauthar-eduqids-2298",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "AL KAUTHAR EDUQIDS PANDAN INDAH",
+      "directoryId": 3789,
+      "url": "https://explore.anak2u.com.my/details/al-kauthar-eduqids-pandan-indah-3789",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al Kauthar Eduqids Wangsa Delima Branch",
+      "directoryId": 2604,
+      "url": "https://explore.anak2u.com.my/details/al-kauthar-eduqids-2604",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al-Fatih Integrated Preschool",
+      "directoryId": 2586,
+      "url": "https://explore.anak2u.com.my/details/alfatih-preschool-2586",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Al-Kauthar Eduqids Sunway Mentari",
+      "directoryId": 3768,
+      "url": "https://explore.anak2u.com.my/details/al-kauthar-eduqids-sunway-mentari-3768",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Alami Montessori Childcare Centre",
+      "directoryId": 2980,
+      "url": "https://explore.anak2u.com.my/details/alami-montessori-childcare-centre-2980",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Albaghdadi Southville City",
+      "directoryId": 2172,
+      "url": "https://explore.anak2u.com.my/details/albaghdadi-southville-city-2172",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ALIMkids",
+      "directoryId": 2491,
+      "url": "https://explore.anak2u.com.my/details/alimkids-cyber-2491",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ALKAUTHAR EDUQIDS GAMUDA COVE",
+      "directoryId": 3934,
+      "url": "https://explore.anak2u.com.my/details/alkauthar-eduqids-gamuda-cove-3934",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Alkauthar Eduqids Kota Warisan",
+      "directoryId": 3790,
+      "url": "https://explore.anak2u.com.my/details/alkauthar-eduqids-kota-warisan-3790",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Alkauthar Eduqids Razak City",
+      "directoryId": 3883,
+      "url": "https://explore.anak2u.com.my/details/alkauthar-eduqids-razak-city-3883",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Alkhalaf Muslimkids",
+      "directoryId": 2191,
+      "url": "https://explore.anak2u.com.my/details/alkhalaf-muslimkids-2191",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Amadrya Kids Center Bangi Avenue",
+      "directoryId": 2999,
+      "url": "https://explore.anak2u.com.my/details/amadrya-kids-center-bangi-avenue-2999",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Amazing Seed Bandar Tun Hussein Onn",
+      "directoryId": 2054,
+      "url": "https://explore.anak2u.com.my/details/amazing-seed-2054",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Amazing Seed Puchong Prima",
+      "directoryId": 2551,
+      "url": "https://explore.anak2u.com.my/details/amazing-seed-puchong-prima-2551",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Amazing Seed Salak Tinggi",
+      "directoryId": 3769,
+      "url": "https://explore.anak2u.com.my/details/amazing-seed-salak-tinggi-3769",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Amazing Seed Semenyih",
+      "directoryId": 2438,
+      "url": "https://explore.anak2u.com.my/details/amazing-seed-2438",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Ammi Childcare Centre",
+      "directoryId": 2250,
+      "url": "https://explore.anak2u.com.my/details/ammi-childcare-centre-2250",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ANUGERAH BESTARI AMPANG JAYA",
+      "directoryId": 3868,
+      "url": "https://explore.anak2u.com.my/details/anugerah-bestari-ampang-jaya-3868",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ANUGERAH BESTARI HQ",
+      "directoryId": 3869,
+      "url": "https://explore.anak2u.com.my/details/anugerah-bestari-hq-3869",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ANUGERAH BESTARI MALURI",
+      "directoryId": 3870,
+      "url": "https://explore.anak2u.com.my/details/anugerah-bestari-maluri-3870",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ANUGERAH BESTARI MEMANDA",
+      "directoryId": 3853,
+      "url": "https://explore.anak2u.com.my/details/anugerah-bestari-memanda-3853",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ANUGERAH BESTARI MY LITTLE HEARTTHROBS",
+      "directoryId": 3854,
+      "url": "https://explore.anak2u.com.my/details/anugerah-bestari-my-little-heartthrobs-3854",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ANUGERAH BESTARI PANDAN INDAH",
+      "directoryId": 3855,
+      "url": "https://explore.anak2u.com.my/details/anugerah-bestari-pandan-indah-3855",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ANUGERAH BESTARI PANDAN JAYA",
+      "directoryId": 3856,
+      "url": "https://explore.anak2u.com.my/details/anugerah-bestari-pandan-jaya-3856",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ANUGERAH BESTARI PANDAN MAS",
+      "directoryId": 3871,
+      "url": "https://explore.anak2u.com.my/details/anugerah-bestari-pandan-mas-3871",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "ANUGERAH BESTARI TAMAN NIRWANA",
+      "directoryId": 3872,
+      "url": "https://explore.anak2u.com.my/details/anugerah-bestari-taman-nirwana-3872",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "APC Preschool & Pra Tahfiz",
+      "directoryId": 2606,
+      "url": "https://explore.anak2u.com.my/details/apc-wangsa-maju-2606",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "APC Southville City (Albaghdadi Playtime Centre)",
+      "directoryId": 3002,
+      "url": "https://explore.anak2u.com.my/details/apc-southville-city-albaghdadi-playtime-centre-3002",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Astas Setia Alam",
+      "directoryId": 2141,
+      "url": "https://explore.anak2u.com.my/details/astas-setia-alam-2141",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Atfaal Bestari Bandar Puteri Bangi Branch",
+      "directoryId": 2982,
+      "url": "https://explore.anak2u.com.my/details/atfaal-bestari-bandar-puteri-bangi-branch-2982",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Azzahra Islamic Playschool",
+      "directoryId": 2042,
+      "url": "https://explore.anak2u.com.my/details/azzahra-islamic-playschool-2042",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Babes & Tots Childcare Centre",
+      "directoryId": 2225,
+      "url": "https://explore.anak2u.com.my/details/babes-and-tots-2225",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Babies Town Child Care Centre @ The Corak",
+      "directoryId": 3962,
+      "url": "https://explore.anak2u.com.my/details/babies-town-child-care-centre-at-the-corak-3962",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Babies Town Childcare Centre",
+      "directoryId": 3786,
+      "url": "https://explore.anak2u.com.my/details/babies-town-childcare-centre-3786",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Bacalah Anakku Creativeplay Centre",
+      "directoryId": 2200,
+      "url": "https://explore.anak2u.com.my/details/bacalah-anakku-creativeplay-centre-2200",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Bear N Bunny Preschool",
+      "directoryId": 2585,
+      "url": "https://explore.anak2u.com.my/details/bearnbunny-preschool-2585",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Blooming Tots House Shah Alam",
+      "directoryId": 2879,
+      "url": "https://explore.anak2u.com.my/details/blooming-tots-house-shah-alam-2879",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Brain Champs Kindergarten & Childcare Centre",
+      "directoryId": 2599,
+      "url": "https://explore.anak2u.com.my/details/brain-champs-2599",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Brainy Bunch TTDI Grove",
+      "directoryId": 2683,
+      "url": "https://explore.anak2u.com.my/details/brainy-bunch-ttdi-grove-2683",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Brainy Bunch TTDI KL",
+      "directoryId": 2948,
+      "url": "https://explore.anak2u.com.my/details/brainy-bunch-ttdi-kl-2948",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "brainybunch pandan indah",
+      "directoryId": 2794,
+      "url": "https://explore.anak2u.com.my/details/brainybunch-pandan-indah-2794",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Bright Mukmin Bandar Bukit Mahkota",
+      "directoryId": 3001,
+      "url": "https://explore.anak2u.com.my/details/bright-mukmin-bandar-bukit-mahkota-3001",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Brightland Kindergarten",
+      "directoryId": 2662,
+      "url": "https://explore.anak2u.com.my/details/brightland-kindergarten-2662",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Brilliant Islamic Centre",
+      "directoryId": 2626,
+      "url": "https://explore.anak2u.com.my/details/bic-bangi-2626",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Brilliant Islamic Centre",
+      "directoryId": 2627,
+      "url": "https://explore.anak2u.com.my/details/bic-taman-desa-2627",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Brilliant Mind Kid Centre",
+      "directoryId": 2226,
+      "url": "https://explore.anak2u.com.my/details/bmkc-bandar-baru-bangi-2226",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Bungaraya Playschool",
+      "directoryId": 2804,
+      "url": "https://explore.anak2u.com.my/details/bungaraya-playschool-2804",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Caliph Wonderland Home Base Childcare Centre",
+      "directoryId": 2914,
+      "url": "https://explore.anak2u.com.my/details/caliph-wonderland-home-base-childcare-centre-2914",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Caliphs Heroes Creative Childcare Center",
+      "directoryId": 2306,
+      "url": "https://explore.anak2u.com.my/details/caliphs-heroes-2306",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Cawangan Little Genius Ukay Perdana (Tahun 2018)",
+      "directoryId": 2745,
+      "url": "https://explore.anak2u.com.my/details/cawangan-little-genius-ukay-perdana-tahun-2018-2745",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "CeriaKids Company",
+      "directoryId": 2664,
+      "url": "https://explore.anak2u.com.my/details/ceriakids-company-2664",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Children Islamic Centre (CIC)",
+      "directoryId": 2365,
+      "url": "https://explore.anak2u.com.my/details/tadika-cic-setapak-2365",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Children Islamic Centre (CIC)",
+      "directoryId": 2368,
+      "url": "https://explore.anak2u.com.my/details/tadika-cic-cyberjaya-2368",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Children Islamic Centre (CIC) Bangi Gateway",
+      "directoryId": 2369,
+      "url": "https://explore.anak2u.com.my/details/tadika-cic-gateway-2369",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Children Islamic Centre (CIC) Seksyen 9",
+      "directoryId": 2370,
+      "url": "https://explore.anak2u.com.my/details/tadika-cic-seksyen9-2370",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "CIC Bandar Seri Putra",
+      "directoryId": 2721,
+      "url": "https://explore.anak2u.com.my/details/cic-bandar-seri-putra-2721",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "CIC Suri Puteri",
+      "directoryId": 2722,
+      "url": "https://explore.anak2u.com.my/details/cic-suri-puteri-2722",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Cilik Mumtaz - Hillpark 3 Kajang",
+      "directoryId": 2727,
+      "url": "https://explore.anak2u.com.my/details/cilik-mumtaz-hillpark-3-kajang-2727",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "CLEVERLAND PLAYSCHOOL ALAM BUDIMAN",
+      "directoryId": 3844,
+      "url": "https://explore.anak2u.com.my/details/cleverland-playschool-alam-budiman-3844",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "CLEVERLAND PLAYSCHOOL CYBERJAYA",
+      "directoryId": 3848,
+      "url": "https://explore.anak2u.com.my/details/cleverland-playschool-cyberjaya-3848",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "CLEVERLAND PLAYSCHOOL ECO GRANDEUR",
+      "directoryId": 3846,
+      "url": "https://explore.anak2u.com.my/details/cleverland-playschool-eco-grandeur-3846",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "CLEVERLAND PLAYSCHOOL ELMINA GREEN",
+      "directoryId": 3847,
+      "url": "https://explore.anak2u.com.my/details/cleverland-playschool-elmina-green-3847",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "CLEVERLAND PLAYSCHOOL SAUJANA UTAMA",
+      "directoryId": 3843,
+      "url": "https://explore.anak2u.com.my/details/cleverland-playschool-saujana-utama-3843",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Daie Bestari",
+      "directoryId": 3017,
+      "url": "https://explore.anak2u.com.my/details/daie-bestari-3017",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Dhia Childcare Centre",
+      "directoryId": 2465,
+      "url": "https://explore.anak2u.com.my/details/dhia-childcare-2465",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Diamond Caliph Nursery",
+      "directoryId": 2146,
+      "url": "https://explore.anak2u.com.my/details/diamond-caliph-nursery-2146",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Durrah Play House",
+      "directoryId": 2093,
+      "url": "https://explore.anak2u.com.my/details/durrah-playhouse-2093",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "DURRAH PLAY HOUSE CHILD CARE CENTRE (BRANCH MAPLE)",
+      "directoryId": 3813,
+      "url": "https://explore.anak2u.com.my/details/durrah-play-house-child-care-centre-branch-maple-3813",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "E.L. Preschool - Bandar Seri Putra",
+      "directoryId": 2643,
+      "url": "https://explore.anak2u.com.my/details/el-preschool-2643",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Eduwis SS2, Petaling Jaya",
+      "directoryId": 2854,
+      "url": "https://explore.anak2u.com.my/details/eduwis-ss2-petaling-jaya-2854",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Ehsan Islamic Preschool",
+      "directoryId": 2321,
+      "url": "https://explore.anak2u.com.my/details/ehsan-islamic-preschool-2321",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Eight Virtues Montessori Preschool",
+      "directoryId": 3000,
+      "url": "https://explore.anak2u.com.my/details/eight-virtues-montessori-preschool-3000",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Eldora Childcare Centre",
+      "directoryId": 2518,
+      "url": "https://explore.anak2u.com.my/details/taska-eldora-2518",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "First Steps With Montessori",
+      "directoryId": 2600,
+      "url": "https://explore.anak2u.com.my/details/first-steps-2600",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Funshine Childcare Centre",
+      "directoryId": 3772,
+      "url": "https://explore.anak2u.com.my/details/funshine-childcare-centre-3772",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Generasi Genius Puncak Alam",
+      "directoryId": 2717,
+      "url": "https://explore.anak2u.com.my/details/generasi-genius-puncak-alam-2717",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Genius Aulad",
+      "directoryId": 2659,
+      "url": "https://explore.anak2u.com.my/details/genius-aulad-2659",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Genius Aulad Cyberjaya",
+      "directoryId": 2997,
+      "url": "https://explore.anak2u.com.my/details/genius-aulad-cyberjaya-2997",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Genius Care Childcare & Education",
+      "directoryId": 2648,
+      "url": "https://explore.anak2u.com.my/details/genius-care-2648",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Grace Tiny Tots Childcare",
+      "directoryId": 2487,
+      "url": "https://explore.anak2u.com.my/details/grace-tiny-tots-2487",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Hatimurni Tadika Alfikh Orchard",
+      "directoryId": 2519,
+      "url": "https://explore.anak2u.com.my/details/tadika-hatimurni-2519",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "I-Inter Kidz Brain Builder Preschool",
+      "directoryId": 2380,
+      "url": "https://explore.anak2u.com.my/details/tadika-sri-angkasa-2380",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Ibnu Soleh Edu Center",
+      "directoryId": 2051,
+      "url": "https://explore.anak2u.com.my/details/taska-ibnu-soleh-2051",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "IBrain Islamic Kids Center",
+      "directoryId": 2212,
+      "url": "https://explore.anak2u.com.my/details/ibrain-islamic-kids-center-2212",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "IMAN JUNIOR SMART CENTRE",
+      "directoryId": 2052,
+      "url": "https://explore.anak2u.com.my/details/iman-junior-smart-centre-2052",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Iman Junior Smart Centre",
+      "directoryId": 2517,
+      "url": "https://explore.anak2u.com.my/details/iman-junior-2517",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Iman Kids Childcare Centre, Southville City (1-3 YEARS)",
+      "directoryId": 3904,
+      "url": "https://explore.anak2u.com.my/details/iman-kids-childcare-centre-southville-city-1-3-years-3904",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Iman Kids Kindergarten, Southville City (4-6 YEARS)",
+      "directoryId": 3903,
+      "url": "https://explore.anak2u.com.my/details/iman-kids-kindergarten-southville-city-4-6-years-3903",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Iman Kids Kindergarten, Sungai Tangkas (4-6 YEARS)",
+      "directoryId": 3943,
+      "url": "https://explore.anak2u.com.my/details/iman-kids-kindergarten-sungai-tangkas-4-6-years-3943",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Insan Pintar Preschool & Playschool",
+      "directoryId": 2652,
+      "url": "https://explore.anak2u.com.my/details/insan-pintar-2652",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Intans Childcare Centre",
+      "directoryId": 2106,
+      "url": "https://explore.anak2u.com.my/details/intans-childcare-centre-2106",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "INTANS CHILDCARE CENTRE",
+      "directoryId": 3812,
+      "url": "https://explore.anak2u.com.my/details/intans-childcare-centre-3812",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Integrated Preschool Cahayaku Legacy As Siddiq",
+      "directoryId": 2274,
+      "url": "https://explore.anak2u.com.my/details/integrated-preschool-cahayaku-2274",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "JOYS CHILD CARE CENTRE (SERI KEMBANGAN)",
+      "directoryId": 3933,
+      "url": "https://explore.anak2u.com.my/details/joys-child-care-centre-seri-kembangan-3933",
+      "directoryState": 3,
+      "keywordHits": [
+        "harian"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "JOYS CHILD CARE CENTRE BANDAR SUNWAY",
+      "directoryId": 3399,
+      "url": "https://explore.anak2u.com.my/details/joys-child-care-centre-bandar-sunway-3399",
+      "directoryState": 3,
+      "keywordHits": [
+        "harian"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "JOYS CHILD CARE CENTRE SRI GOMBAK",
+      "directoryId": 3398,
+      "url": "https://explore.anak2u.com.my/details/joys-child-care-centre-sri-gombak-3398",
+      "directoryState": 3,
+      "keywordHits": [
+        "harian"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "KAFFAH KIDS SHAH ALAM",
+      "directoryId": 3619,
+      "url": "https://explore.anak2u.com.my/details/kaffah-kids-shah-alam",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Khalifah Garden",
+      "directoryId": 2979,
+      "url": "https://explore.anak2u.com.my/details/khalifah-garden-2979",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Khalifah treasure child care centre",
+      "directoryId": 3013,
+      "url": "https://explore.anak2u.com.my/details/khalifah-treasure-child-care-centre-3013",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Kidana Kindy",
+      "directoryId": 2896,
+      "url": "https://explore.anak2u.com.my/details/kidana-2896",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Kiddie Cove Childcare Centre",
+      "directoryId": 2383,
+      "url": "https://explore.anak2u.com.my/details/taska-kiddie-cove-2383",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Kiddo Academy Bandar Puteri Bangi",
+      "directoryId": 2413,
+      "url": "https://explore.anak2u.com.my/details/kiddo-academy-bandar-puteri-bangi-2413",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Kiddy Hive Early Learning Centre",
+      "directoryId": 3877,
+      "url": "https://explore.anak2u.com.my/details/kiddy-hive-early-learning-centre-3877",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Kidstime Setia Alam",
+      "directoryId": 2665,
+      "url": "https://explore.anak2u.com.my/details/kidstime-setia-alam-2665",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Kizzu Kids Puncak Alam",
+      "directoryId": 2862,
+      "url": "https://explore.anak2u.com.my/details/kizzu-kids-puncak-alam-2862",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Kizzu Kids Setia Alam",
+      "directoryId": 2866,
+      "url": "https://explore.anak2u.com.my/details/kizzu-kids-setia-alam-2866",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Kizzu Kids Therapy Center Shah Alam (HQ)",
+      "directoryId": 2869,
+      "url": "https://explore.anak2u.com.my/details/kizzu-kids-therapy-center-shah-alam-hq-2869",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "KOZYCUBS CHILDCARE CENTER",
+      "directoryId": 3882,
+      "url": "https://explore.anak2u.com.my/details/kozycubs-childcare-center-3882",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Krecious House",
+      "directoryId": 2923,
+      "url": "https://explore.anak2u.com.my/details/krecious-house-2923",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Krista ",
+      "directoryId": 2922,
+      "url": "https://explore.anak2u.com.my/details/krista-bukit-jalil-2922",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Krista Pandan Perdana Kindergarten",
+      "directoryId": 3010,
+      "url": "https://explore.anak2u.com.my/details/krista-pandan-perdana-kindergarten-3010",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Krista Pusat Komersial Koi",
+      "directoryId": 2087,
+      "url": "https://explore.anak2u.com.my/details/krista-pusat-komersial-koi-2087",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Krista Setia Alam",
+      "directoryId": 2661,
+      "url": "https://explore.anak2u.com.my/details/krista-setia-alam-2661",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Lil Footprints Infant and Childcare Centre",
+      "directoryId": 2917,
+      "url": "https://explore.anak2u.com.my/details/lil-footprints-infant-and-childcare-centre-2917",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little 'Abd Semenyih - Tadika Didik An Nur",
+      "directoryId": 2502,
+      "url": "https://explore.anak2u.com.my/details/little-abdul-2502",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LITTLE ANGELS CHILD CARE CENTRE",
+      "directoryId": 3782,
+      "url": "https://explore.anak2u.com.my/details/little-angels-child-care-centre-3782",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LITTLE AURORA CHILDCARE CENTRE",
+      "directoryId": 2040,
+      "url": "https://explore.anak2u.com.my/details/little-aurora-childcare-centre-2040",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LITTLE BRAINEE CHILD CARE CENTRE BRANCH PERMATA",
+      "directoryId": 3629,
+      "url": "https://explore.anak2u.com.my/details/little-brainee-child-care-centre-branch-permata-3629",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LITTLE BRAINEE DK CHILD CARE CENTRE",
+      "directoryId": 3628,
+      "url": "https://explore.anak2u.com.my/details/little-brainee-dk-child-care-centre-3628",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Brilliant Childcare",
+      "directoryId": 2384,
+      "url": "https://explore.anak2u.com.my/details/taska-little-brilliant-2384",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Brilliant Childcare Centre@Wirajaya",
+      "directoryId": 3765,
+      "url": "https://explore.anak2u.com.my/details/little-brilliant-childcare-centre-at-wirajaya-3765",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Alam Nusantara",
+      "directoryId": 2966,
+      "url": "https://explore.anak2u.com.my/details/little-caliphs-alam-nusantara-2966",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Alam Nusantara",
+      "directoryId": 2389,
+      "url": "https://explore.anak2u.com.my/details/tadika-lc-alam-nusantara-2389",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Ampang Point",
+      "directoryId": 2558,
+      "url": "https://explore.anak2u.com.my/details/little-capliphs-2558",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Bandar Baru Selayang",
+      "directoryId": 2395,
+      "url": "https://explore.anak2u.com.my/details/tadika-lc-bbs-2395",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Bandar Putra Permai - Tadika Bahtera Khalifah",
+      "directoryId": 2620,
+      "url": "https://explore.anak2u.com.my/details/bahtera-khalifah-2620",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Bandar Sri Permaisuri",
+      "directoryId": 2545,
+      "url": "https://explore.anak2u.com.my/details/little-caliphs-bandar-sri-permaisuri-2545",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Banjaria Court",
+      "directoryId": 2396,
+      "url": "https://explore.anak2u.com.my/details/tadika-lc-banjaria-court-2396",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Dengkil",
+      "directoryId": 2635,
+      "url": "https://explore.anak2u.com.my/details/lc-dengkil-2635",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Jalan Ipoh",
+      "directoryId": 2550,
+      "url": "https://explore.anak2u.com.my/details/little-caliphs-jalan-ipoh-2550",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Kampung Nakhoda",
+      "directoryId": 2397,
+      "url": "https://explore.anak2u.com.my/details/tadika-lc-kampung-nakhoda-2397",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Kindergarten Tadika Sungai Buloh",
+      "directoryId": 2753,
+      "url": "https://explore.anak2u.com.my/details/little-caliphs-kindergarten-tadika-sungai-buloh-2753",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Playschool Laman Seri Seksyen 13",
+      "directoryId": 3802,
+      "url": "https://explore.anak2u.com.my/details/little-caliphs-playschool-laman-seri-seksyen-13-3802",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Playschool Taska Seksyen 19",
+      "directoryId": 3923,
+      "url": "https://explore.anak2u.com.my/details/little-caliphs-playschool-taska-seksyen-19-3923",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Playschool Taska Sungai Buloh",
+      "directoryId": 3922,
+      "url": "https://explore.anak2u.com.my/details/little-caliphs-playschool-taska-sungai-buloh-3922",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Setia Alam",
+      "directoryId": 2391,
+      "url": "https://explore.anak2u.com.my/details/tadika-lc-setia-alam-2391",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Caliphs Taman Budi",
+      "directoryId": 2967,
+      "url": "https://explore.anak2u.com.my/details/little-caliphs-taman-budi-2967",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Castle Playschool",
+      "directoryId": 2492,
+      "url": "https://explore.anak2u.com.my/details/little-castle-school-2492",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Clever Damansara",
+      "directoryId": 2775,
+      "url": "https://explore.anak2u.com.my/details/little-clever-damansara-2775",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Creche The Park",
+      "directoryId": 2933,
+      "url": "https://explore.anak2u.com.my/details/little-creche-the-park-2933",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Eclipse Child Care Centre",
+      "directoryId": 3972,
+      "url": "https://explore.anak2u.com.my/details/little-eclipse-child-care-centre-3972",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LITTLE EMPIRE CHILDCARE CENTRE (LECC) PUNCAK ALAM",
+      "directoryId": 3775,
+      "url": "https://explore.anak2u.com.my/details/little-empire-childcare-centre-lecc-puncak-alam-3775",
+      "directoryState": 3,
+      "keywordHits": [
+        "flexi"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "Little Empire Playschool Bandar Puteri",
+      "directoryId": 2569,
+      "url": "https://explore.anak2u.com.my/details/little-empire-2569",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Empire Playschool Bayuemas",
+      "directoryId": 2570,
+      "url": "https://explore.anak2u.com.my/details/little-empire-2570",
+      "directoryState": 3,
+      "keywordHits": [
+        "flexi"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "Little Empire Playschool Kemaris Avenue Rawang",
+      "directoryId": 3636,
+      "url": "https://explore.anak2u.com.my/details/little-empire-childcare-centre-kemaris-3636",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Empire Playschool Kemaris Avenue Rawang (LECC)",
+      "directoryId": 3892,
+      "url": "https://explore.anak2u.com.my/details/little-empire-playschool-kemaris-avenue-rawang-lecc-3892",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Empire Playschool Kota Emerald",
+      "directoryId": 3635,
+      "url": "https://explore.anak2u.com.my/details/little-empire-childcare-centre-kota-emerald-3635",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Empire Playschool KPJ Klang",
+      "directoryId": 3781,
+      "url": "https://explore.anak2u.com.my/details/little-empire-playschool-kpj-klang-3781",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Empire Preschool (Tadika Empayar Junior)",
+      "directoryId": 3633,
+      "url": "https://explore.anak2u.com.my/details/tadika-empayar-junior-3633",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Empire Preschool (Tadika Genius Kreatif)",
+      "directoryId": 3637,
+      "url": "https://explore.anak2u.com.my/details/tadika-genius-kreatf-3637",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Empire Puncak Alam Child Care Centre (Fasa 2)",
+      "directoryId": 3900,
+      "url": "https://explore.anak2u.com.my/details/little-empire-puncak-alam-child-care-centre-fasa-2-3900",
+      "directoryState": 3,
+      "keywordHits": [
+        "flexi"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "Little Feetrah Childcare",
+      "directoryId": 2588,
+      "url": "https://explore.anak2u.com.my/details/little-feetrah-2588",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Genius Bandar Melawati",
+      "directoryId": 2747,
+      "url": "https://explore.anak2u.com.my/details/little-genius-bandar-melawati-2747",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Genius Setiawangsa",
+      "directoryId": 2746,
+      "url": "https://explore.anak2u.com.my/details/little-genius-setiawangsa-2746",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Genius Setiawangsa 2",
+      "directoryId": 2748,
+      "url": "https://explore.anak2u.com.my/details/cawangan-little-genius-setiawangsa-tahun-2018-2748",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LITTLE KHAFI CHILD CARE CENTRE",
+      "directoryId": 3940,
+      "url": "https://explore.anak2u.com.my/details/little-khafi-child-care-centre-3940",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LITTLE KHALEEFA CHILD CARE CENTRE",
+      "directoryId": 3794,
+      "url": "https://explore.anak2u.com.my/details/little-khaleefa-child-care-centre-3794",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LITTLE KIDS CHILD CARE CENTRE",
+      "directoryId": 3800,
+      "url": "https://explore.anak2u.com.my/details/little-kids-child-care-centre-3800",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Kingdom Kota Damansara",
+      "directoryId": 2680,
+      "url": "https://explore.anak2u.com.my/details/little-kingdom-kota-damansara-2680",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Pearls Nursery",
+      "directoryId": 2587,
+      "url": "https://explore.anak2u.com.my/details/little-pearls-2587",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Ra'id",
+      "directoryId": 2536,
+      "url": "https://explore.anak2u.com.my/details/little-raid-2536",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Ra'id",
+      "directoryId": 2427,
+      "url": "https://explore.anak2u.com.my/details/little-raid-2427",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Tots Excel",
+      "directoryId": 3016,
+      "url": "https://explore.anak2u.com.my/details/little-tots-excel-3016",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Tulips Montessori Kindergarten",
+      "directoryId": 2060,
+      "url": "https://explore.anak2u.com.my/details/little-tulips-montessori-kindergarten-2060",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Little Unais Preschool Putra Kajang",
+      "directoryId": 3787,
+      "url": "https://explore.anak2u.com.my/details/little-unais-preschool-putra-kajang-3787",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Lollikids Montessori Preschool and Daycare",
+      "directoryId": 3884,
+      "url": "https://explore.anak2u.com.my/details/lollikids-montessori-preschool-and-daycare-3884",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LUKIDZ",
+      "directoryId": 3797,
+      "url": "https://explore.anak2u.com.my/details/lukidz-3797",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "LUKIDZ Preschool BSP",
+      "directoryId": 3817,
+      "url": "https://explore.anak2u.com.my/details/lukidz-preschool-bsp-3817",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Mentari Alwani Kids Centre",
+      "directoryId": 2507,
+      "url": "https://explore.anak2u.com.my/details/mentari-alwani-2507",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Meraki Kids (Playschool) Childcare Centre",
+      "directoryId": 2252,
+      "url": "https://explore.anak2u.com.my/details/meraki-kids-childcare-centre-2252",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Meraki Kids Playschool (Kota Emerald Branch)",
+      "directoryId": 2669,
+      "url": "https://explore.anak2u.com.my/details/meraki-kids-playschool-kota-emerald-rawang-2669",
+      "directoryState": 3,
+      "keywordHits": [
+        "flexi"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "MIEMALS CHILDCARE CENTRE",
+      "directoryId": 3866,
+      "url": "https://explore.anak2u.com.my/details/miemals-childcare-centre-3866",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "MIEMALS CHILDCARE CENTRE",
+      "directoryId": 3867,
+      "url": "https://explore.anak2u.com.my/details/miemals-childcare-centre-3867",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Mighty Kids",
+      "directoryId": 2704,
+      "url": "https://explore.anak2u.com.my/details/mighty-kids-2704",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Mighty Kids",
+      "directoryId": 2952,
+      "url": "https://explore.anak2u.com.my/details/mighty-kids-2952",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Millipede Playschool",
+      "directoryId": 2803,
+      "url": "https://explore.anak2u.com.my/details/millipede-playschool-2803",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "MNAZ Child Care Centre",
+      "directoryId": 3891,
+      "url": "https://explore.anak2u.com.my/details/mnaz-child-care-centre-3891",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Montessori Grow Daycare",
+      "directoryId": 3899,
+      "url": "https://explore.anak2u.com.my/details/montessori-grow-daycare-3899",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Morning Glory Child Care Centre",
+      "directoryId": 2916,
+      "url": "https://explore.anak2u.com.my/details/morning-glory-child-care-centre-2916",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Munchkin Childcare Centre",
+      "directoryId": 2624,
+      "url": "https://explore.anak2u.com.my/details/munchkin-childcare-2624",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "NiH C&K Center",
+      "directoryId": 2034,
+      "url": "https://explore.anak2u.com.my/details/taska-ibnu-soleh-nih-ck-center-2034",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Nimblebee Setia Alam",
+      "directoryId": 2666,
+      "url": "https://explore.anak2u.com.my/details/nimblebee-setia-alam-2666",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "NimbleBee Vista Alam",
+      "directoryId": 2622,
+      "url": "https://explore.anak2u.com.my/details/nimblebee-vista-alam-2622",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Noble Kids Kota Damansara",
+      "directoryId": 2865,
+      "url": "https://explore.anak2u.com.my/details/noble-kids-kota-damansara-2865",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Nuha Kids Care Holistic Therapy & Special Education",
+      "directoryId": 2186,
+      "url": "https://explore.anak2u.com.my/details/nuha-kids-care-holistic-therapy-2186",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Nur Kristal",
+      "directoryId": 2723,
+      "url": "https://explore.anak2u.com.my/details/nur-kristal-2723",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Nurin Bestari",
+      "directoryId": 2063,
+      "url": "https://explore.anak2u.com.my/details/nurin-bestari-2063",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "OWL Baby and ChildCare Centre",
+      "directoryId": 2578,
+      "url": "https://explore.anak2u.com.my/details/owl-baby-and-childcare-centre-2578",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "PASTI Al Hafiz Taman Melati Mastika",
+      "directoryId": 2549,
+      "url": "https://explore.anak2u.com.my/details/pasti-al-hafiz-2549",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "PASTI At Taqwa",
+      "directoryId": 2755,
+      "url": "https://explore.anak2u.com.my/details/pasti-at-taqwa-2755",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "PASTI Mesra Al Ikhwan",
+      "directoryId": 2320,
+      "url": "https://explore.anak2u.com.my/details/pasti-mesra-alikhwan-2320",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Peterana Kindergarten",
+      "directoryId": 2703,
+      "url": "https://explore.anak2u.com.my/details/peterana-kindergarten-2703",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Pipiko Playland Child Care Centre",
+      "directoryId": 3952,
+      "url": "https://explore.anak2u.com.my/details/pipiko-playland-child-care-centre-3952",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "PraSekolah Islam Al Ridha",
+      "directoryId": 2571,
+      "url": "https://explore.anak2u.com.my/details/islam-al-ridha-2571",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Pristine Baby Care",
+      "directoryId": 2996,
+      "url": "https://explore.anak2u.com.my/details/pristine-baby-care-2996",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "PUSAT DIDIKAN TUNAS MUKMIN",
+      "directoryId": 2050,
+      "url": "https://explore.anak2u.com.my/details/pusat-didikan-tunas-mukmin-2050",
+      "directoryState": 13,
+      "keywordHits": [
+        "harian"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "Q DEES Bukit Rahman Putra",
+      "directoryId": 2752,
+      "url": "https://explore.anak2u.com.my/details/q-dees-bukit-rahman-putra-2752",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Q-Dees Ampang, Bukit Indah",
+      "directoryId": 2797,
+      "url": "https://explore.anak2u.com.my/details/q-dees-ampang-bukit-indah-2797",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Qdees Bukit Puchong",
+      "directoryId": 2687,
+      "url": "https://explore.anak2u.com.my/details/qdees-bukit-puchong-2687",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Qdees Kota Damansara",
+      "directoryId": 2756,
+      "url": "https://explore.anak2u.com.my/details/qdees-kota-damansara-2756",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Qdees Southville City",
+      "directoryId": 2985,
+      "url": "https://explore.anak2u.com.my/details/qdees-southville-city-2985",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "QKidz Kindergarten",
+      "directoryId": 1937,
+      "url": "https://explore.anak2u.com.my/details/qkidz-kindergarten-1937",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Qowie Junior Kindergarten",
+      "directoryId": 2452,
+      "url": "https://explore.anak2u.com.my/details/qowie-junior-kindergarten-2452",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Qowie Junior Playschool",
+      "directoryId": 2453,
+      "url": "https://explore.anak2u.com.my/details/qowie-junior-playschool-2453",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Rangkaian Tadika Amal Hidayah",
+      "directoryId": 2743,
+      "url": "https://explore.anak2u.com.my/details/rangkaian-tadika-amal-hidayah-2743",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Raudhah Montessori Centre",
+      "directoryId": 2601,
+      "url": "https://explore.anak2u.com.my/details/raudhah-montessori-2601",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Safinatun Najah Playschool",
+      "directoryId": 2456,
+      "url": "https://explore.anak2u.com.my/details/safinatun-najah-2456",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Sea Pearl Child Care",
+      "directoryId": 2913,
+      "url": "https://explore.anak2u.com.my/details/sea-pearl-child-care-2913",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Smart Centre",
+      "directoryId": 3907,
+      "url": "https://explore.anak2u.com.my/details/smart-centre-3907",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Smart Edukids Preschool",
+      "directoryId": 2686,
+      "url": "https://explore.anak2u.com.my/details/smart-edukids-preschool-2686",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Smart Minda Play School & Play Group",
+      "directoryId": 2874,
+      "url": "https://explore.anak2u.com.my/details/smart-minda-play-school-play-group-2874",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Smart Soleh",
+      "directoryId": 2959,
+      "url": "https://explore.anak2u.com.my/details/smart-soleh-2959",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Smart Soleh Subang Bestari",
+      "directoryId": 2446,
+      "url": "https://explore.anak2u.com.my/details/smart-soleh-2446",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Stay N Play Playschool and Childcare Centre",
+      "directoryId": 2411,
+      "url": "https://explore.anak2u.com.my/details/staynplay-childcare-2411",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Sunshine Fun Child Care Centre",
+      "directoryId": 3764,
+      "url": "https://explore.anak2u.com.my/details/sunshine-fun-child-care-centre-3764",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Ta'teh child care",
+      "directoryId": 2796,
+      "url": "https://explore.anak2u.com.my/details/tateh-child-care-2796",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tabika Kemas Al-Biruni",
+      "directoryId": 2065,
+      "url": "https://explore.anak2u.com.my/details/tabika-kemas-albiruni-2065",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika & Taska Integrasi Genius Khalifah   ",
+      "directoryId": 2529,
+      "url": "https://explore.anak2u.com.my/details/integrasi-genius-khalifah-2529",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika & Taska Integrasi Genius Khalifah",
+      "directoryId": 2707,
+      "url": "https://explore.anak2u.com.my/details/tadika-taska-integrasi-genius-khalifah-2707",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika & Taska Permata Cinta",
+      "directoryId": 2432,
+      "url": "https://explore.anak2u.com.my/details/permata-cinta-centre-2432",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika 3Q Mahkota Cheras",
+      "directoryId": 2485,
+      "url": "https://explore.anak2u.com.my/details/3q-mahkota-cheras-2485",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TADIKA AD DEEN KHALIFAH (DZUL IMAN BRANCH ALAM IMPIAN)",
+      "directoryId": 3873,
+      "url": "https://explore.anak2u.com.my/details/tadika-ad-deen-khalifah-dzul-iman-branch-alam-impian-3873",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Akhlak Aspirasi",
+      "directoryId": 2469,
+      "url": "https://explore.anak2u.com.my/details/akhlak-aspirasi-2469",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Al Baghdadi Playtime Centre (APC) Jenderam",
+      "directoryId": 2258,
+      "url": "https://explore.anak2u.com.my/details/tadika-APC-Jenderam-2258",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Al Falahin",
+      "directoryId": 2374,
+      "url": "https://explore.anak2u.com.my/details/tadika-alfalahin-2374",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Al Faqeh",
+      "directoryId": 2362,
+      "url": "https://explore.anak2u.com.my/details/tadika-alfaqeh-kl-2362",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Al Faqeh",
+      "directoryId": 2363,
+      "url": "https://explore.anak2u.com.my/details/tadika-alfaqeh-sb-2363",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Al Hidayah",
+      "directoryId": 2473,
+      "url": "https://explore.anak2u.com.my/details/alhidayah-bangsar-2473",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Al Wafiqah Seksyen 4",
+      "directoryId": 2523,
+      "url": "https://explore.anak2u.com.my/details/tadika-alwafiqah-bangi-2523",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TADIKA AL-BAGHDADI PLAYTIME CTR (APC TP7 UEP)",
+      "directoryId": 2316,
+      "url": "https://explore.anak2u.com.my/details/al-baghdadi-playtime-ctr-2316",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Al-Fikh",
+      "directoryId": 2702,
+      "url": "https://explore.anak2u.com.my/details/tadika-al-fikh-2702",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Alam Cahaya",
+      "directoryId": 2684,
+      "url": "https://explore.anak2u.com.my/details/tadika-alam-cahaya-2684",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TADIKA ALAMI ASASI MINDA",
+      "directoryId": 3879,
+      "url": "https://explore.anak2u.com.my/details/tadika-alami-asasi-minda-3879",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Alphanumeric Bestari",
+      "directoryId": 2467,
+      "url": "https://explore.anak2u.com.my/details/alphanumeric-bestari-2467",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika AMAL - Yayasan Amal Malaysia",
+      "directoryId": 2833,
+      "url": "https://explore.anak2u.com.my/details/tadika-amal-yayasan-amal-malaysia-2833",
+      "directoryState": 3,
+      "keywordHits": [
+        "harian"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "Tadika Amazing Seed Cyberjaya",
+      "directoryId": 2275,
+      "url": "https://explore.anak2u.com.my/details/amazing-seed-cyberjaya-2275",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Amazing Seed Semenyih",
+      "directoryId": 2714,
+      "url": "https://explore.anak2u.com.my/details/tadika-amazing-seed-semenyih-2714",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Anak Sayang",
+      "directoryId": 2486,
+      "url": "https://explore.anak2u.com.my/details/anak-sayang-2486",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Anakku Imtiyaz",
+      "directoryId": 2206,
+      "url": "https://explore.anak2u.com.my/details/tadika-anakku-imtiyaz-2206",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Anakku Pintar Soleh",
+      "directoryId": 2117,
+      "url": "https://explore.anak2u.com.my/details/tadika-anakku-pintar-soleh-2117",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Anggerik Cemerlang",
+      "directoryId": 2793,
+      "url": "https://explore.anak2u.com.my/details/tadika-anggerik-cemerlang-2793",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Angkasa Ilmu",
+      "directoryId": 2313,
+      "url": "https://explore.anak2u.com.my/details/tadika-angkasa-ilmu-2313",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika ApLus Kindergarten",
+      "directoryId": 2857,
+      "url": "https://explore.anak2u.com.my/details/tadika-aplus-kindergarten-2857",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Arif Minda Shah Alam",
+      "directoryId": 2951,
+      "url": "https://explore.anak2u.com.my/details/tadika-arif-minda-shah-alam-2951",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Atfal Imtiaz",
+      "directoryId": 3012,
+      "url": "https://explore.anak2u.com.my/details/tadika-atfal-imtiaz-3012",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Aulad Jannah",
+      "directoryId": 2169,
+      "url": "https://explore.anak2u.com.my/details/tadika-aulad-jannah-2169",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika bangsar south",
+      "directoryId": 4,
+      "url": "https://explore.anak2u.com.my/details/tadika-bangsar-south-4",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Bijak",
+      "directoryId": 2693,
+      "url": "https://explore.anak2u.com.my/details/tadika-bijak-2693",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Bijak Muslim",
+      "directoryId": 2109,
+      "url": "https://explore.anak2u.com.my/details/tadika-bijak-muslim-2109",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Bintang Genius",
+      "directoryId": 2069,
+      "url": "https://explore.anak2u.com.my/details/tadika-bintang-genius-2069",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Bintang Genius",
+      "directoryId": 2202,
+      "url": "https://explore.anak2u.com.my/details/tadika-bintang-genius-2202",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Cahaya Bestari",
+      "directoryId": 2230,
+      "url": "https://explore.anak2u.com.my/details/tadika-cahaya-bestari-2230",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Cahaya Bestari",
+      "directoryId": 2027,
+      "url": "https://explore.anak2u.com.my/details/tadika-cahaya-bestari-2027",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Cahaya Hati",
+      "directoryId": 2434,
+      "url": "https://explore.anak2u.com.my/details/tadika-cahaya-hati-2434",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Cahaya Impian Ilmu",
+      "directoryId": 2134,
+      "url": "https://explore.anak2u.com.my/details/tadika-cahaya-impian-ilmu-2134",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Cahaya Pelangi ",
+      "directoryId": 2254,
+      "url": "https://explore.anak2u.com.my/details/tadika-cahaya-pelangi-2254",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Cahaya Raudhah",
+      "directoryId": 2178,
+      "url": "https://explore.anak2u.com.my/details/tadika-cahaya-raudhah-2178",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Cendekia Suria",
+      "directoryId": 2138,
+      "url": "https://explore.anak2u.com.my/details/tadika-cendekia-suria-2138",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Cerdik Takwa (Ubudiyah)",
+      "directoryId": 2338,
+      "url": "https://explore.anak2u.com.my/details/tadika-cerdik-takwa-ubudiyah-2338",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Ceria Az-Zahrah",
+      "directoryId": 2496,
+      "url": "https://explore.anak2u.com.my/details/ceria-azzahrah-2496",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Cita Unggul",
+      "directoryId": 2860,
+      "url": "https://explore.anak2u.com.my/details/tadika-cita-unggul-2860",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika CLC",
+      "directoryId": 2557,
+      "url": "https://explore.anak2u.com.my/details/tadika-clc-2557",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Daie Bestari",
+      "directoryId": 2015,
+      "url": "https://explore.anak2u.com.my/details/tadika-daie-bestari-2015",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Daie Bestari Kajang",
+      "directoryId": 2145,
+      "url": "https://explore.anak2u.com.my/details/tadika-daie-bestari-2145",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Desa Pintar",
+      "directoryId": 2133,
+      "url": "https://explore.anak2u.com.my/details/tadika-desa-pintar-2133",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Dzul Iman",
+      "directoryId": 2605,
+      "url": "https://explore.anak2u.com.my/details/dzul-iman-2605",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Dzul Iman Bandar Bukit Mahkota",
+      "directoryId": 2300,
+      "url": "https://explore.anak2u.com.my/details/dzul-iman-mahkota-2300",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Dzul Iman Bandar Seri Putra",
+      "directoryId": 2299,
+      "url": "https://explore.anak2u.com.my/details/dzul-iman-putra-2299",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Dzul Iman Kota Warisan",
+      "directoryId": 2324,
+      "url": "https://explore.anak2u.com.my/details/tadika-dzul-iman-2324",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Dzul Iman Smart Khalifah Seksyen 2",
+      "directoryId": 2021,
+      "url": "https://explore.anak2u.com.my/details/tadika-dzul-iman-smart-khalifah-seksyen-2-2021",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Dzul Iman SS14",
+      "directoryId": 2315,
+      "url": "https://explore.anak2u.com.my/details/tadika-dzul-iman-ss14-2315",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Emaan Kindy",
+      "directoryId": 2421,
+      "url": "https://explore.anak2u.com.my/details/tadika-emaan-kindy-2421",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Emaan Kindy Alam Suria",
+      "directoryId": 2422,
+      "url": "https://explore.anak2u.com.my/details/tadika-emaan-alam-suria-2422",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Empayar Impianku",
+      "directoryId": 2142,
+      "url": "https://explore.anak2u.com.my/details/tadika-empayar-impianku-2142",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Enclave Junior",
+      "directoryId": 2193,
+      "url": "https://explore.anak2u.com.my/details/tadika-enclave-junior-2193",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Enderun",
+      "directoryId": 3941,
+      "url": "https://explore.anak2u.com.my/details/tadika-enderun-3941",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Epal Bestari",
+      "directoryId": 2366,
+      "url": "https://explore.anak2u.com.my/details/tadika-epal-bestari-2366",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Excel Kids",
+      "directoryId": 2073,
+      "url": "https://explore.anak2u.com.my/details/tadika-excel-kids-2073",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Excel Kids",
+      "directoryId": 2074,
+      "url": "https://explore.anak2u.com.my/details/tadika-excel-kids-2074",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Fitrah Ehsan Tahfiz 2 (KU)",
+      "directoryId": 2816,
+      "url": "https://explore.anak2u.com.my/details/tadika-fitrah-ehsan-tahfiz-2-ku-2816",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Generasi Genius - Setia Permai 2",
+      "directoryId": 2663,
+      "url": "https://explore.anak2u.com.my/details/tadika-generasi-genius-setia-permai-2-2663",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Generasi Genius Bandar Tasik Puteri",
+      "directoryId": 2682,
+      "url": "https://explore.anak2u.com.my/details/tadika-generasi-genius-bandar-tasik-puteri-2682",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Genius As-Safiyya",
+      "directoryId": 2671,
+      "url": "https://explore.anak2u.com.my/details/tadika-genius-as-safiyya-2671",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika genius as-safiyya",
+      "directoryId": 2672,
+      "url": "https://explore.anak2u.com.my/details/tadika-genius-as-safiyya-2672",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Genius Solihin",
+      "directoryId": 2375,
+      "url": "https://explore.anak2u.com.my/details/tadika-genius-solihin-bc-2375",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Genius Solihin",
+      "directoryId": 2376,
+      "url": "https://explore.anak2u.com.my/details/tadika-genius-solihin-sentul-2376",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Genius Solihin",
+      "directoryId": 2377,
+      "url": "https://explore.anak2u.com.my/details/tadika-genius-solihin-kepong-2377",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Genius Unik",
+      "directoryId": 2546,
+      "url": "https://explore.anak2u.com.my/details/tadika-genius-unik-2546",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Harmoni Genius",
+      "directoryId": 2101,
+      "url": "https://explore.anak2u.com.my/details/tadika-harmoni-genius-2101",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TADIKA HIFAA CILIK",
+      "directoryId": 2692,
+      "url": "https://explore.anak2u.com.my/details/tadika-hifaa-cilik-2692",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika I-Genius ",
+      "directoryId": 2392,
+      "url": "https://explore.anak2u.com.my/details/tadika-i-genius-2392",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Ideal Anakku",
+      "directoryId": 2783,
+      "url": "https://explore.anak2u.com.my/details/tadika-ideal-anakku-2783",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika IGenius",
+      "directoryId": 2302,
+      "url": "https://explore.anak2u.com.my/details/tadika-igenius-2302",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Ilmiah Bonda ",
+      "directoryId": 2247,
+      "url": "https://explore.anak2u.com.my/details/tadika-ilmiah-bonda-2247",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Ilmu Mahabbatul Aulad",
+      "directoryId": 2720,
+      "url": "https://explore.anak2u.com.my/details/tadika-ilmu-mahabbatul-aulad-2720",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Iman Minda Cerdas",
+      "directoryId": 2349,
+      "url": "https://explore.anak2u.com.my/details/tadika-iman-mc-2349",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Inspirasi Genius",
+      "directoryId": 1942,
+      "url": "https://explore.anak2u.com.my/details/tadika-inspirasi-genius-1942",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Intan Bestari",
+      "directoryId": 2644,
+      "url": "https://explore.anak2u.com.my/details/intan-bestari-2464",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Intanku Genius",
+      "directoryId": 2203,
+      "url": "https://explore.anak2u.com.my/details/tadika-intanku-genius-2203",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Integrasi Islam (Restu Kids)",
+      "directoryId": 2081,
+      "url": "https://explore.anak2u.com.my/details/tadika-integrasi-islam-2081",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Integrasi Seri Jasmine",
+      "directoryId": 2593,
+      "url": "https://explore.anak2u.com.my/details/seri-jasmine-2593",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Intelek Gemilang",
+      "directoryId": 2897,
+      "url": "https://explore.anak2u.com.my/details/tadika-intelek-gemilang-2897",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Islam Aliyyah cawangan Bandar Tasik Puteri",
+      "directoryId": 2676,
+      "url": "https://explore.anak2u.com.my/details/tadika-islam-aliyyah-cawangan-bandar-tasik-puteri-2676",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Islam Aliyyah cawangan Bandar Tasik Puteri",
+      "directoryId": 2677,
+      "url": "https://explore.anak2u.com.my/details/tadika-islam-aliyyah-cawangan-bandar-tasik-puteri-2677",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Islam Alliyah KP",
+      "directoryId": 2673,
+      "url": "https://explore.anak2u.com.my/details/tadika-islam-alliyah-kp-2673",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Islam Bangi",
+      "directoryId": 2335,
+      "url": "https://explore.anak2u.com.my/details/tadika-islam-bangi-2335",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Islam Kajang",
+      "directoryId": 2381,
+      "url": "https://explore.anak2u.com.my/details/tadika-islam-kajang-2381",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Islam Khairaa Saujana Rawang",
+      "directoryId": 2679,
+      "url": "https://explore.anak2u.com.my/details/tadika-islam-khairaa-saujana-rawang-2679",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Islam Nur Anis",
+      "directoryId": 2080,
+      "url": "https://explore.anak2u.com.my/details/tadika-islam-nur-anis-2080",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Islam Zahra Al Banna",
+      "directoryId": 2845,
+      "url": "https://explore.anak2u.com.my/details/tadika-islam-zahra-al-banna-2845",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Kalam Bistari Ceria",
+      "directoryId": 2099,
+      "url": "https://explore.anak2u.com.my/details/tadika-kalam-bistari-ceria-2099",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Kanak kanak Ceria",
+      "directoryId": 2043,
+      "url": "https://explore.anak2u.com.my/details/tadika-kanak-kanak-ceria-2043",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Kanak-kanak Ceria",
+      "directoryId": 2307,
+      "url": "https://explore.anak2u.com.my/details/tadika-kanak2-ceria-2307",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Kancil",
+      "directoryId": 2521,
+      "url": "https://explore.anak2u.com.my/details/tadika-kancil-2521",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Kasih Setia",
+      "directoryId": 2963,
+      "url": "https://explore.anak2u.com.my/details/tadika-kasih-setia-2963",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Kastil Stutong",
+      "directoryId": 2892,
+      "url": "https://explore.anak2u.com.my/details/tadika-kastil-stutong-2892",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Khalifah Cahaya Pelangi",
+      "directoryId": 2358,
+      "url": "https://explore.anak2u.com.my/details/tadika-khalifah-cahaya-pelangi-2358",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Khalifah Celik Genius",
+      "directoryId": 2336,
+      "url": "https://explore.anak2u.com.my/details/tadika-khalifah-celik-genius-2336",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Khalifah Insaniah (KICDC)",
+      "directoryId": 2359,
+      "url": "https://explore.anak2u.com.my/details/tadika-khalifah-insaniah-2359",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Khalifah Insaniah (KICDC)",
+      "directoryId": 2795,
+      "url": "https://explore.anak2u.com.my/details/tadika-khalifah-insaniah-2795",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Khalifah Soleh",
+      "directoryId": 2017,
+      "url": "https://explore.anak2u.com.my/details/tadika-khalifah-soleh-2017",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Khaula Cerdik",
+      "directoryId": 2983,
+      "url": "https://explore.anak2u.com.my/details/tadika-khaula-cerdik-2983",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Kuasa Junior",
+      "directoryId": 2463,
+      "url": "https://explore.anak2u.com.my/details/kuasa-junior-2463",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Kuasa Junior",
+      "directoryId": 2464,
+      "url": "https://explore.anak2u.com.my/details/kuasa-junior-2464",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Laman Genius",
+      "directoryId": 3779,
+      "url": "https://explore.anak2u.com.my/details/tadika-laman-genius-3779",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Laman Pintar",
+      "directoryId": 2188,
+      "url": "https://explore.anak2u.com.my/details/tadika-laman-pintar-2188",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Literasi Junior",
+      "directoryId": 2045,
+      "url": "https://explore.anak2u.com.my/details/tadika-literasi-junior-2045",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Little Da'i Genius Seria 88 Setia Alam",
+      "directoryId": 2690,
+      "url": "https://explore.anak2u.com.my/details/tadika-little-dai-genius-seria-88-setia-alam-2690",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Little Daie",
+      "directoryId": 2466,
+      "url": "https://explore.anak2u.com.my/details/little-daie-2466",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Little Footprints",
+      "directoryId": 2554,
+      "url": "https://explore.anak2u.com.my/details/tadika-little-footprints-2554",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Little Honey Bee",
+      "directoryId": 2590,
+      "url": "https://explore.anak2u.com.my/details/little-honey-bee-2590",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Little Jannah (Bandar Puteri)",
+      "directoryId": 2310,
+      "url": "https://explore.anak2u.com.my/details/little-jannah-puteri-2310",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Little Jannah (Salak Tinggi)",
+      "directoryId": 2308,
+      "url": "https://explore.anak2u.com.my/details/little-jannah-salak-2308",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Little Jannah (Southville)",
+      "directoryId": 2309,
+      "url": "https://explore.anak2u.com.my/details/little-jannah-southville-2309",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Little Thinkers KOTA Puteri",
+      "directoryId": 2853,
+      "url": "https://explore.anak2u.com.my/details/tadika-little-thinkers-kota-puteri-2853",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Manja Pintar",
+      "directoryId": 2509,
+      "url": "https://explore.anak2u.com.my/details/manja-pintar-2509",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TADIKA MEKAR MINDA",
+      "directoryId": 3823,
+      "url": "https://explore.anak2u.com.my/details/tadika-mekar-minda-3823",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Mukmin Junior 1 (Cahayaku Legacy)",
+      "directoryId": 2424,
+      "url": "https://explore.anak2u.com.my/details/tadika-mukmin-junior1-2424",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Mukmin Junior 2 (Cahayaku Legacy)",
+      "directoryId": 2425,
+      "url": "https://explore.anak2u.com.my/details/tadika-mukmin-junior2-2425",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Murni Raya",
+      "directoryId": 2706,
+      "url": "https://explore.anak2u.com.my/details/tadika-murni-raya-2706",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Nadi Aspirasi",
+      "directoryId": 2981,
+      "url": "https://explore.anak2u.com.my/details/tadika-nadi-aspirasi-2981",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Nasyrah",
+      "directoryId": 2497,
+      "url": "https://explore.anak2u.com.my/details/nasyrah-bangi-2497",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Nur Gemilang",
+      "directoryId": 2678,
+      "url": "https://explore.anak2u.com.my/details/tadika-nur-gemilang-2678",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TADIKA NUR MUKMIN (APC SEKSYEN 3)",
+      "directoryId": 2632,
+      "url": "https://explore.anak2u.com.my/details/tadika-nur-mukmin-2632",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Nurani Pintar",
+      "directoryId": 2148,
+      "url": "https://explore.anak2u.com.my/details/tadika-nurani-pintar-2148",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Permata Comel",
+      "directoryId": 2325,
+      "url": "https://explore.anak2u.com.my/details/tadika-permata-comel-2325",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Permata Zara",
+      "directoryId": 2271,
+      "url": "https://explore.anak2u.com.my/details/tadika-permata-zara-2271",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Permata Zara",
+      "directoryId": 2272,
+      "url": "https://explore.anak2u.com.my/details/tadika-permata-zara-2272",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Pra Tahfiz Genius Al Fikr",
+      "directoryId": 2266,
+      "url": "https://explore.anak2u.com.my/details/tpt-alfikr-2266",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Rohani",
+      "directoryId": 2842,
+      "url": "https://explore.anak2u.com.my/details/tadika-rohani-2842",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Rohani Unggul",
+      "directoryId": 2139,
+      "url": "https://explore.anak2u.com.my/details/tadika-rohani-unggul-2139",
+      "directoryState": 3,
+      "keywordHits": [
+        "harian"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "Tadika Rumah Si Kecil, Seksyen 7",
+      "directoryId": 2164,
+      "url": "https://explore.anak2u.com.my/details/tadika-rumah-si-kecil-seksyen7-2164",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Sang Kancil Cerdik",
+      "directoryId": 2460,
+      "url": "https://explore.anak2u.com.my/details/sang-kancil-cerdik-2460",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Sari Ilmu",
+      "directoryId": 2630,
+      "url": "https://explore.anak2u.com.my/details/tadika-sari-ilmu-2630",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Seri Nekad",
+      "directoryId": 2758,
+      "url": "https://explore.anak2u.com.my/details/tadika-seri-nekad-2758",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Seri Zafran",
+      "directoryId": 2417,
+      "url": "https://explore.anak2u.com.my/details/tadika-seri-zafran-2417",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Setia Pintar",
+      "directoryId": 2390,
+      "url": "https://explore.anak2u.com.my/details/tadika-setia-pintar-2390",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Si Cilik Soleh",
+      "directoryId": 2476,
+      "url": "https://explore.anak2u.com.my/details/si-cilik-soleh-2476",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Sinar Bestari",
+      "directoryId": 2361,
+      "url": "https://explore.anak2u.com.my/details/tadika-sinar-bestari-2361",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Sinar Kejora - Pra Tahfiz Tmn Semenyih Mewah",
+      "directoryId": 2725,
+      "url": "https://explore.anak2u.com.my/details/tadika-sinar-kejora-pra-tahfiz-tmn-semenyih-mewah-2725",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Sinar Kejora Pra Tahfiz Bandar Tasik Kesuma",
+      "directoryId": 2731,
+      "url": "https://explore.anak2u.com.my/details/tadika-sinar-kejora-pra-tahfiz-bandar-tasik-kesuma-2731",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Sinar Kejora Pra Tahfiz Taman angkas indah",
+      "directoryId": 2730,
+      "url": "https://explore.anak2u.com.my/details/tadika-sinar-kejora-pra-tahfiz-taman-angkas-indah-2730",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Sinaran Intelek",
+      "directoryId": 2046,
+      "url": "https://explore.anak2u.com.my/details/tadika-sinaran-intelek-2046",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Sri Alam Mentari",
+      "directoryId": 3901,
+      "url": "https://explore.anak2u.com.my/details/tadika-sri-alam-mentari-3901",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Sri Panglima",
+      "directoryId": 2102,
+      "url": "https://explore.anak2u.com.my/details/tadika-sri-panglima-2102",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika St. Ronan",
+      "directoryId": 2548,
+      "url": "https://explore.anak2u.com.my/details/tadika-st-ronan-2548",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Super Cemerlang",
+      "directoryId": 2868,
+      "url": "https://explore.anak2u.com.my/details/tadika-super-cemerlang-2868",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Super Cemerlang",
+      "directoryId": 2394,
+      "url": "https://explore.anak2u.com.my/details/tadika-super-cemerlang-2394",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Tahfiz Al-Munir Cheras Indah",
+      "directoryId": 2513,
+      "url": "https://explore.anak2u.com.my/details/almunir-cheras-indah-2513",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Tahfiz Al-Munir Melawati",
+      "directoryId": 2512,
+      "url": "https://explore.anak2u.com.my/details/almunir-melawati-2512",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Tahfiz Kiddeen Meru",
+      "directoryId": 2393,
+      "url": "https://explore.anak2u.com.my/details/tadika-apc-meru-2393",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Talian Kasih",
+      "directoryId": 2697,
+      "url": "https://explore.anak2u.com.my/details/tadika-talian-kasih-2697",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Taska Hasanah Kids KL",
+      "directoryId": 2516,
+      "url": "https://explore.anak2u.com.my/details/hasanah-kids-2516",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TADIKA TASKA SINAR BONDA",
+      "directoryId": 1082,
+      "url": "https://explore.anak2u.com.my/details/tadika-sinar-bonda-1082",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Todak Kids",
+      "directoryId": 3803,
+      "url": "https://explore.anak2u.com.my/details/tadika-todak-kids-3803",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Tunas Bestari Seksyen 7",
+      "directoryId": 2668,
+      "url": "https://explore.anak2u.com.my/details/tadika-tunas-bestari-seksyen-7-2668",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Tunas Bestari Seksyen 7",
+      "directoryId": 2674,
+      "url": "https://explore.anak2u.com.my/details/tadika-tunas-bestari-seksyen-7-2674",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Tunas Ilmu Hulu Kelang",
+      "directoryId": 2856,
+      "url": "https://explore.anak2u.com.my/details/tadika-tunas-ilmu-2856",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika UIAM Danau Kota",
+      "directoryId": 2805,
+      "url": "https://explore.anak2u.com.my/details/tadika-uiam-danau-kota-2805",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Ummi Bestari Kota Damansara",
+      "directoryId": 2882,
+      "url": "https://explore.anak2u.com.my/details/tadika-ummi-bestari-kota-damansara-2882",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Usahajaya",
+      "directoryId": 2378,
+      "url": "https://explore.anak2u.com.my/details/tadika-usahajaya-2378",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Vista Cemerlang",
+      "directoryId": 2893,
+      "url": "https://explore.anak2u.com.my/details/tadika-vista-cemerlang-2893",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika Wildan Musthofa",
+      "directoryId": 2115,
+      "url": "https://explore.anak2u.com.my/details/tadika-wildan-musthofa-2115",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika/Taska Comel Sayang",
+      "directoryId": 2047,
+      "url": "https://explore.anak2u.com.my/details/tadikataska-comel-sayang-2047",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tadika/Taska Sayang Bonda",
+      "directoryId": 3384,
+      "url": "https://explore.anak2u.com.my/details/tadikataska-sayang-bonda-3384",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TadikabestariIkhlas TaskaummiMukhlis",
+      "directoryId": 2057,
+      "url": "https://explore.anak2u.com.my/details/tadikabestariikhlas-taskaummimukhlis-2057",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Abid Kids",
+      "directoryId": 2621,
+      "url": "https://explore.anak2u.com.my/details/abid-kids-2621",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Adalaff",
+      "directoryId": 2314,
+      "url": "https://explore.anak2u.com.my/details/taska-adalaff-2314",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Adam Uwais Kelana Jaya",
+      "directoryId": 2112,
+      "url": "https://explore.anak2u.com.my/details/taska-adam-uwais-kelana-jaya-2112",
+      "directoryState": 3,
+      "keywordHits": [
+        "ad-hoc"
+      ],
+      "review": "explicit_short_care"
+    },
+    {
+      "name": "Taska Afiqah Amniyah",
+      "directoryId": 2026,
+      "url": "https://explore.anak2u.com.my/details/taska-afiqah-amniyah-2026",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA AINUL IMAN",
+      "directoryId": 1036,
+      "url": "https://explore.anak2u.com.my/details/taska-ainul-iman-1036",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Al Abqari",
+      "directoryId": 2020,
+      "url": "https://explore.anak2u.com.my/details/taska-al-abqari-2020",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Al Amnan",
+      "directoryId": 2851,
+      "url": "https://explore.anak2u.com.my/details/taska-al-amnan-2851",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Al Fath Kids Childcare Centre",
+      "directoryId": 2371,
+      "url": "https://explore.anak2u.com.my/details/taska-alfath-jenjarom-2371",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Al Fath Kids Childcare Centre",
+      "directoryId": 2372,
+      "url": "https://explore.anak2u.com.my/details/taska-alfath-tpg-2372",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Al Fath Kids Childcare Centre",
+      "directoryId": 2373,
+      "url": "https://explore.anak2u.com.my/details/taska-alfath-sepang-2373",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Al Hannah Kajang Perdana",
+      "directoryId": 2741,
+      "url": "https://explore.anak2u.com.my/details/taska-al-hannah-kajang-perdana-2741",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Al imran",
+      "directoryId": 2965,
+      "url": "https://explore.anak2u.com.my/details/taska-al-imran-2965",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA AMADRYA",
+      "directoryId": 3811,
+      "url": "https://explore.anak2u.com.my/details/taska-amadrya-3811",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA AMADRYA",
+      "directoryId": 3824,
+      "url": "https://explore.anak2u.com.my/details/taska-amadrya-3824",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Amira",
+      "directoryId": 2767,
+      "url": "https://explore.anak2u.com.my/details/taska-amira-2767",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Ana",
+      "directoryId": 2972,
+      "url": "https://explore.anak2u.com.my/details/taska-ana-2972",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Anak Bestari Kelana Jaya",
+      "directoryId": 2474,
+      "url": "https://explore.anak2u.com.my/details/anak-bestari-2474",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAK PINTAR CAWANGAN HOSPITAL KUALA LUMPUR",
+      "directoryId": 3913,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-hospital-kuala-lumpur-3913",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAK PINTAR CAWANGAN HOSPITAL TUNKU AZIZAH",
+      "directoryId": 3914,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-hospital-tunku-azizah-3914",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAK PINTAR CAWANGAN IKKM PETALING JAYA",
+      "directoryId": 2780,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-ikkm-petaling-jaya-2780",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAK PINTAR CAWANGAN INSTITUT DIPLOMASI DAN HUBUNGAN LUAR NEGERI",
+      "directoryId": 3917,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-institut-diplomasi-dan-hubungan-luar-negeri-3917",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAK PINTAR CAWANGAN JABATAN KERJA RAYA, MENARA PJD",
+      "directoryId": 3912,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-jabatan-kerja-raya-menara-pjd-3912",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAK PINTAR CAWANGAN KDN DAMANSARA",
+      "directoryId": 2779,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-kdn-damansara-2779",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAK PINTAR CAWANGAN KEMENTERIAN KERJA RAYA",
+      "directoryId": 3918,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-kementerian-kerja-raya-3918",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAK PINTAR CAWANGAN TAMAN SINAR HARAPAN KUALA KUBU BHARU",
+      "directoryId": 2773,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-taman-sinar-harapan-kuala-kubu-bharu-2773",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAK PINTAR CAWANGAN TNBR",
+      "directoryId": 3911,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-tnbr-3911",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Anak Pintar Cawangan Uniten",
+      "directoryId": 2774,
+      "url": "https://explore.anak2u.com.my/details/taska-anak-pintar-cawangan-uniten-bangi-2774",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA ANAKKU SERI DAMANSARA",
+      "directoryId": 2735,
+      "url": "https://explore.anak2u.com.my/details/taska-anakku-seri-damansara-2735",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Antasya",
+      "directoryId": 2357,
+      "url": "https://explore.anak2u.com.my/details/taska-antasya-2357",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Anugerah Nur Kasih",
+      "directoryId": 2079,
+      "url": "https://explore.anak2u.com.my/details/taska-anugerahnurkasih-2079",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Ar Maryam",
+      "directoryId": 2053,
+      "url": "https://explore.anak2u.com.my/details/taska-ar-maryam-2053",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Ar-Riyadh",
+      "directoryId": 2174,
+      "url": "https://explore.anak2u.com.my/details/taska-ar-riyadh-2174",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska As-Shafiqah",
+      "directoryId": 2354,
+      "url": "https://explore.anak2u.com.my/details/taska-as-shafiqah-2354",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Aulad Bestari Ceria",
+      "directoryId": 2078,
+      "url": "https://explore.anak2u.com.my/details/taska-aulad-bestari-2078",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Aura Khalifah",
+      "directoryId": 2382,
+      "url": "https://explore.anak2u.com.my/details/taska-aura-khalifah-2382",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Aura Permata Bonda",
+      "directoryId": 2870,
+      "url": "https://explore.anak2u.com.my/details/taska-aura-permata-bonda-2870",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Awatif Bintang Kecil Dengkil",
+      "directoryId": 2726,
+      "url": "https://explore.anak2u.com.my/details/taska-awatif-bintang-kecil-dengkil-2726",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska BM Mutiara Hati Taman Keramat AU2",
+      "directoryId": 2742,
+      "url": "https://explore.anak2u.com.my/details/taska-bm-mutiara-hati-taman-keramat-au2-2742",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Bonda IQ Sara",
+      "directoryId": 2471,
+      "url": "https://explore.anak2u.com.my/details/bonda-iq-sara-2471",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Bondamama Spring Ville Ukay Perdana",
+      "directoryId": 2655,
+      "url": "https://explore.anak2u.com.my/details/bondamama-spring-ville-2655",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Bunga Lily",
+      "directoryId": 2534,
+      "url": "https://explore.anak2u.com.my/details/bunga-lily-2534",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Cahaya Hikmah",
+      "directoryId": 2681,
+      "url": "https://explore.anak2u.com.my/details/taska-cahaya-hikmah-2681",
+      "directoryState": 13,
+      "keywordHits": [
+        "harian"
+      ],
+      "review": "keyword_not_short_care"
+    },
+    {
+      "name": "TASKA CAHAYA MATA ANGKASA",
+      "directoryId": 3827,
+      "url": "https://explore.anak2u.com.my/details/taska-cahaya-mata-angkasa-3827",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Carlina",
+      "directoryId": 2356,
+      "url": "https://explore.anak2u.com.my/details/taska-carlina-2356",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Carlina",
+      "directoryId": 402,
+      "url": "https://explore.anak2u.com.my/details/taska-carlina-402",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Ceria & Harmoni",
+      "directoryId": 2688,
+      "url": "https://explore.anak2u.com.my/details/taska-ceria-harmoni-2688",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Ceritamu",
+      "directoryId": 2447,
+      "url": "https://explore.anak2u.com.my/details/taska-ceritamu-2447",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Cilik Arif",
+      "directoryId": 2859,
+      "url": "https://explore.anak2u.com.my/details/taska-cilik-arif-2859",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska D' Alam",
+      "directoryId": 2675,
+      "url": "https://explore.anak2u.com.my/details/taska-d-alam-2675",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska dan Tadika Nur Addin",
+      "directoryId": 2716,
+      "url": "https://explore.anak2u.com.my/details/taska-dan-tadika-nur-addin-2716",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA DESA KASIH CAWANGAN TAMAN REKO MUTIARA",
+      "directoryId": 2728,
+      "url": "https://explore.anak2u.com.my/details/taska-desa-kasih-cawangan-taman-reko-mutiara-2728",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska DesaKasih",
+      "directoryId": 1711,
+      "url": "https://explore.anak2u.com.my/details/taska-desakasih-1711",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Dirumah Afiqah Amniyah",
+      "directoryId": 2303,
+      "url": "https://explore.anak2u.com.my/details/taska-dirumah-afiqah-amniyah-2303",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Dirumah Permata Fatihah Playschool",
+      "directoryId": 2224,
+      "url": "https://explore.anak2u.com.my/details/tr-permata-fatihah-playschool-2224",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA DR Z & TADIKA PROGRESIF PREMIER",
+      "directoryId": 3826,
+      "url": "https://explore.anak2u.com.my/details/taska-dr-z-tadika-progresif-premier-3826",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Dunia Khalifah Cilik",
+      "directoryId": 2290,
+      "url": "https://explore.anak2u.com.my/details/taska-dunia-khalifah-cilik-2290",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Durrani Mutiaraku",
+      "directoryId": 2423,
+      "url": "https://explore.anak2u.com.my/details/taska-durrani-mutiaraku-2423",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA Durratun MARWA",
+      "directoryId": 2642,
+      "url": "https://explore.anak2u.com.my/details/durratun-marwa-2462",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA EDORA RAFFLESIA CAWANGAN 1",
+      "directoryId": 3814,
+      "url": "https://explore.anak2u.com.my/details/taska-edora-rafflesia-cawangan-1-3814",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA EDORA RAFFLESIA CAWANGAN 2",
+      "directoryId": 3815,
+      "url": "https://explore.anak2u.com.my/details/taska-edora-rafflesia-cawangan-2-3815",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Emaan Playland",
+      "directoryId": 2420,
+      "url": "https://explore.anak2u.com.my/details/taska-emaan-playland-2420",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Fantasia & Pjkk Sinar Fantasia",
+      "directoryId": 2881,
+      "url": "https://explore.anak2u.com.my/details/taska-fantasia-pjkk-sinar-fantasia-2881",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Fantasia Alam Nature Playschool",
+      "directoryId": 2319,
+      "url": "https://explore.anak2u.com.my/details/taska-fantasia-alam-nature-playschool-2319",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA I Aulad",
+      "directoryId": 2878,
+      "url": "https://explore.anak2u.com.my/details/taska-i-aulad-2878",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Ibu Elisa",
+      "directoryId": 2694,
+      "url": "https://explore.anak2u.com.my/details/taska-ibu-elisa-2694",
+      "directoryState": 13,
+      "keywordHits": [
+        "harian",
+        "sementara"
+      ],
+      "review": "explicit_short_care"
+    },
+    {
+      "name": "TASKA ILHAM PINTAR IMAN",
+      "directoryId": 3818,
+      "url": "https://explore.anak2u.com.my/details/taska-ilham-pintar-iman-3818",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Iman Minda Cerdas",
+      "directoryId": 2350,
+      "url": "https://explore.anak2u.com.my/details/taska-iman-mc-2350",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA Impian Ecohill TIE",
+      "directoryId": 2715,
+      "url": "https://explore.anak2u.com.my/details/taska-impian-ecohill-tie-2715",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Innara",
+      "directoryId": 2114,
+      "url": "https://explore.anak2u.com.my/details/taska-innara-2114",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Islam Aliyyah  caw2 Kota Puteri",
+      "directoryId": 2700,
+      "url": "https://explore.anak2u.com.my/details/taska-islam-aliyyah-caw2-kota-puteri-2700",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Islam Aliyyah Cawangan Tasik Puteri",
+      "directoryId": 2701,
+      "url": "https://explore.anak2u.com.my/details/taska-islam-aliyyah-cawangan-tasik-puteri-2701",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Joys Child Care Centre",
+      "directoryId": 2096,
+      "url": "https://explore.anak2u.com.my/details/taska-joys-child-care-centre-2096",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Juara KD",
+      "directoryId": 2885,
+      "url": "https://explore.anak2u.com.my/details/taska-juara-kd-2885",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Kasih Manis",
+      "directoryId": 2759,
+      "url": "https://explore.anak2u.com.my/details/taska-kasih-manis-2759",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA Keluarga Impian",
+      "directoryId": 2968,
+      "url": "https://explore.anak2u.com.my/details/taska-keluarga-impian-2968",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska lemon",
+      "directoryId": 2801,
+      "url": "https://explore.anak2u.com.my/details/taska-lemon-2801",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Little Imtiaz",
+      "directoryId": 2504,
+      "url": "https://explore.anak2u.com.my/details/little-imtiaz-2504",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA MAMA ATTAR",
+      "directoryId": 3842,
+      "url": "https://explore.anak2u.com.my/details/taska-mama-attar-3842",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA MAMA ATTAR 2",
+      "directoryId": 3865,
+      "url": "https://explore.anak2u.com.my/details/taska-mama-attar-2-3865",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Mama Kids",
+      "directoryId": 2553,
+      "url": "https://explore.anak2u.com.my/details/taska-mama-kids-2553",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Mama Noni",
+      "directoryId": 2667,
+      "url": "https://explore.anak2u.com.my/details/taska-mama-noni-2667",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA MAWAR",
+      "directoryId": 2689,
+      "url": "https://explore.anak2u.com.my/details/taska-mawar-2689",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Miftahil Jannah",
+      "directoryId": 2740,
+      "url": "https://explore.anak2u.com.my/details/taska-miftahil-jannah-2740",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Montessori Generasi Cemerlang",
+      "directoryId": 3783,
+      "url": "https://explore.anak2u.com.my/details/taska-montessori-generasi-cemerlang-3783",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska MummyBonda",
+      "directoryId": 2998,
+      "url": "https://explore.anak2u.com.my/details/taska-mummybonda-2998",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Mutiara Cilik",
+      "directoryId": 2835,
+      "url": "https://explore.anak2u.com.my/details/taska-mutiara-cilik-2835",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Nur Budi",
+      "directoryId": 2144,
+      "url": "https://explore.anak2u.com.my/details/taska-nur-budi-2144",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA NUR HIDAYU",
+      "directoryId": 533,
+      "url": "https://explore.anak2u.com.my/details/taska-nur-hidayu-533",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Nur Hidayu & Pusat Jagaan Nur Hidayu",
+      "directoryId": 3028,
+      "url": "https://explore.anak2u.com.my/details/taska-nur-hidayu-pusat-jagaan-nur-hidayu-3028",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Nur Qaseh Fatin",
+      "directoryId": 2719,
+      "url": "https://explore.anak2u.com.my/details/taska-nur-qaseh-fatin-2719",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA NURIN BESTARI",
+      "directoryId": 2738,
+      "url": "https://explore.anak2u.com.my/details/taska-nurin-bestari-2738",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA PENYAYANG BAKTI",
+      "directoryId": 2872,
+      "url": "https://explore.anak2u.com.my/details/taska-penyayang-bakti-2872",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Permata Al Hijrah",
+      "directoryId": 2251,
+      "url": "https://explore.anak2u.com.my/details/taska-permata-alhijrah-2251",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Permata Budi",
+      "directoryId": 2284,
+      "url": "https://explore.anak2u.com.my/details/taska-permata-budi-2284",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA PERMATA GENIUS",
+      "directoryId": 3804,
+      "url": "https://explore.anak2u.com.my/details/taska-permata-genius-3804",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA PERMATA GENIUS 2",
+      "directoryId": 3816,
+      "url": "https://explore.anak2u.com.my/details/taska-permata-genius-2-3816",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Permata Ibnu Khaldun 2",
+      "directoryId": 2871,
+      "url": "https://explore.anak2u.com.my/details/taska-permata-ibnu-khaldun-2-2871",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Permata Ibnu Khaldun 3",
+      "directoryId": 2937,
+      "url": "https://explore.anak2u.com.my/details/taska-permata-ibnu-khaldun-3-2937",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Permata Ibnu Khaldun HQ",
+      "directoryId": 2875,
+      "url": "https://explore.anak2u.com.my/details/taska-permata-ibnu-khaldun-hq-2875",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA PERMATA NURQASEH",
+      "directoryId": 3805,
+      "url": "https://explore.anak2u.com.my/details/taska-permata-nurqaseh-3805",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA QASEEH DURRANI",
+      "directoryId": 3953,
+      "url": "https://explore.anak2u.com.my/details/taska-qaseeh-durrani-3953",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Qaseh Kirana",
+      "directoryId": 3650,
+      "url": "https://explore.anak2u.com.my/details/taska-qaseh-kirana-3650",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA QASEH NURI",
+      "directoryId": 3936,
+      "url": "https://explore.anak2u.com.my/details/taska-qaseh-nuri-3936",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Qaseh Suri",
+      "directoryId": 2493,
+      "url": "https://explore.anak2u.com.my/details/qaseh-suri-2493",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Raedi Montessori",
+      "directoryId": 2503,
+      "url": "https://explore.anak2u.com.my/details/taska-raedi-2503",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Raedi Montessori",
+      "directoryId": 2800,
+      "url": "https://explore.anak2u.com.my/details/taska-raedi-montessori-2800",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Rania Junior's",
+      "directoryId": 2222,
+      "url": "https://explore.anak2u.com.my/details/taska-rania-junior-2222",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Rumah Kecilku Bandar Bukit Raja",
+      "directoryId": 2950,
+      "url": "https://explore.anak2u.com.my/details/taska-rumah-kecilku-bandar-bukit-raja-2950",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Seri Genius Shah Alam",
+      "directoryId": 2104,
+      "url": "https://explore.anak2u.com.my/details/taska-seri-genius-shah-alam-2104",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska seri Kinrara & Tadika sri Kinrara Ria",
+      "directoryId": 2031,
+      "url": "https://explore.anak2u.com.my/details/taska-seri-kinrara-tadika-sri-kinrara-ria-2031",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA SEWANGI KASTURI",
+      "directoryId": 950,
+      "url": "https://explore.anak2u.com.my/details/taska-sewangi-kasturi-950",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA SINAR BONDA",
+      "directoryId": 985,
+      "url": "https://explore.anak2u.com.my/details/taska-sinar-bonda-985",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA SRI PINANG",
+      "directoryId": 3806,
+      "url": "https://explore.anak2u.com.my/details/taska-sri-pinang-3806",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Suria Ceria",
+      "directoryId": 2649,
+      "url": "https://explore.anak2u.com.my/details/suria-ceria-2649",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA SURIA HAYATI",
+      "directoryId": 1408,
+      "url": "https://explore.anak2u.com.my/details/taska-suria-hayati-1408",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Tadika ABCDEF",
+      "directoryId": 3397,
+      "url": null,
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Tadika Permata DD",
+      "directoryId": 2565,
+      "url": "https://explore.anak2u.com.my/details/taska-tadika-permata-dd-2565",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Tiflun Genius",
+      "directoryId": 2880,
+      "url": "https://explore.anak2u.com.my/details/taska-tiflun-genius-2880",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Titian Kasih",
+      "directoryId": 3780,
+      "url": "https://explore.anak2u.com.my/details/taska-titian-kasih-3780",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Tulip",
+      "directoryId": 2900,
+      "url": "https://explore.anak2u.com.my/details/taska-tulip-2900",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA TUNAS ILMU Hulu Kelang",
+      "directoryId": 2855,
+      "url": "https://explore.anak2u.com.my/details/taska-tunas-ilmu-2855",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Ubudiyah",
+      "directoryId": 2340,
+      "url": "https://explore.anak2u.com.my/details/taska-ubudiyah-2340",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Umi Mama Meru",
+      "directoryId": 2419,
+      "url": "https://explore.anak2u.com.my/details/taska-umi-mama-meru-2419",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Ummi Pelangi Qaseh",
+      "directoryId": 3014,
+      "url": "https://explore.anak2u.com.my/details/taska-ummi-pelangi-qaseh-3014",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Ummu Yasir",
+      "directoryId": 2732,
+      "url": "https://explore.anak2u.com.my/details/taska-ummu-yasir-2732",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA WISMA FGV",
+      "directoryId": 3951,
+      "url": "https://explore.anak2u.com.my/details/taska-wisma-fgv-3951",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taska Zanjabil Salsabila",
+      "directoryId": 2699,
+      "url": "https://explore.anak2u.com.my/details/taska-zanjabil-salsabila-2699",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKA/TADIKA MAHKOTA IDAMAN PUNCAK ALAM",
+      "directoryId": 2886,
+      "url": "https://explore.anak2u.com.my/details/taskatadika-mahkota-idaman-puncak-alam-2886",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taski Abim Bonda Bestari",
+      "directoryId": 2709,
+      "url": "https://explore.anak2u.com.my/details/taski-abim-bonda-bestari-2709",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taski Bestari Al HIkmah",
+      "directoryId": 2954,
+      "url": "https://explore.anak2u.com.my/details/taski-bestari-al-hikmah-2954",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Taski Bestari Inayah",
+      "directoryId": 2708,
+      "url": "https://explore.anak2u.com.my/details/taski-bestari-inayah-2708",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TASKI SAIDATINA ZAINAB",
+      "directoryId": 2344,
+      "url": "https://explore.anak2u.com.my/details/taski-saidatina-zainab-2344",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "The Children Garden",
+      "directoryId": 2858,
+      "url": "https://explore.anak2u.com.my/details/the-children-garden-2858",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "The City Kindergarten",
+      "directoryId": 2482,
+      "url": "https://explore.anak2u.com.my/details/the-city-kindergarten-2482",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "The Curious Cubs Child Care Centre",
+      "directoryId": 3938,
+      "url": "https://explore.anak2u.com.my/details/the-curious-cubs-child-care-centre-3938",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "THREE LITTLE BIE CHILD CARE CENTRE",
+      "directoryId": 3822,
+      "url": "https://explore.anak2u.com.my/details/three-little-bie-child-care-centre-3822",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TIGK BANDAR PUTERA 2",
+      "directoryId": 3026,
+      "url": "https://explore.anak2u.com.my/details/tigk-bandar-putera-2-3026",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TIM Preschool",
+      "directoryId": 2656,
+      "url": "https://explore.anak2u.com.my/details/tim-preschool-2656",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tiny Blossoms Childcare Centre",
+      "directoryId": 3793,
+      "url": "https://explore.anak2u.com.my/details/tiny-blossoms-childcare-centre-3793",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tiny Scholars Child Care Centre",
+      "directoryId": 3799,
+      "url": "https://explore.anak2u.com.my/details/tiny-scholars-child-care-centre-3799",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TinyFeet Childcare Centre",
+      "directoryId": 2341,
+      "url": "https://explore.anak2u.com.my/details/tinyfeet-childcare-2341",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TKC Playschool",
+      "directoryId": 2293,
+      "url": "https://explore.anak2u.com.my/details/tkc-playschool-2293",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "TOTS HOOD CHILDCARE CENTRE",
+      "directoryId": 3874,
+      "url": "https://explore.anak2u.com.my/details/tots-hood-childcare-centre-3874",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Transform Us Childcare Centre & Kindergarten",
+      "directoryId": 2431,
+      "url": "https://explore.anak2u.com.my/details/transformus-centre-2431",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tree Dolphin Childcare Centre",
+      "directoryId": 2598,
+      "url": "https://explore.anak2u.com.my/details/tree-dolphin-2598",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Tulip Tots Child Care",
+      "directoryId": 2103,
+      "url": "https://explore.anak2u.com.my/details/tulip-tots-child-care-2103",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Ubestari International",
+      "directoryId": 2461,
+      "url": "https://explore.anak2u.com.my/details/ubestari-international-2461",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Ubestari International Denai Alam",
+      "directoryId": 2462,
+      "url": "https://explore.anak2u.com.my/details/ubestari-international-2462",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Ulul Albab Kids",
+      "directoryId": 2597,
+      "url": "https://explore.anak2u.com.my/details/ulul-albab-bangi-2597",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Wendy Montessori Kindergarten\r\n",
+      "directoryId": 2908,
+      "url": "https://explore.anak2u.com.my/details/wendy-montessori-preschool-2908",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Wisma TKC Playschool",
+      "directoryId": 3488,
+      "url": "https://explore.anak2u.com.my/details/wisma-tkc-playschool-3488",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Wonder Years Preschool",
+      "directoryId": 2184,
+      "url": "https://explore.anak2u.com.my/details/wonder-years-preschool-2184",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Woodieland",
+      "directoryId": 2705,
+      "url": "https://explore.anak2u.com.my/details/woodieland-2705",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "YELAOSHR",
+      "directoryId": 3809,
+      "url": "https://explore.anak2u.com.my/details/yelaoshr-3809",
+      "directoryState": 13,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    },
+    {
+      "name": "Yellow Submarine Preschool of Arts",
+      "directoryId": 2501,
+      "url": "https://explore.anak2u.com.my/details/yellow-submarine-2501",
+      "directoryState": 3,
+      "keywordHits": [],
+      "review": "no_explicit_keyword"
+    }
+  ]
+}

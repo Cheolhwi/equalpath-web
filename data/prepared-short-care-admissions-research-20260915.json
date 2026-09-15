@@ -1,0 +1,446 @@
+{
+  "summary": {
+    "baseRelease": "web_79f1397603c1e28325955f64",
+    "release": "admissions_0491ecfc8d5a33852ba698e9",
+    "hash": "0491ecfc8d5a33852ba698e94f3c53982fb2bb9282aa1738f36663625dbbb52b",
+    "count": 14,
+    "expectedPriorRelease": "admissions_e480fff022a03f57e29e68d8",
+    "published": 6,
+    "added": 1,
+    "retained": 13,
+    "preparedAt": "2026-09-15T05:29:49.749Z"
+  },
+  "records": [
+    {
+      "provider_id": "provider_048d12e84516f211fc58acceef1",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "TASKA PONDOK INDAH",
+        "basis": "The provider programme directory identifies Taska Pondok Indah; its drop-in page names 16A Jalan Kenari 1, Puchong Jaya, matching the imported branch address."
+      },
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "hourly",
+        "drop_in"
+      ],
+      "wording": "Hourly drop-in care is advertised at this Puchong Jaya branch, now called Lullabee. Contact the centre to arrange a short visit and check the minimum stay, age accepted and price.",
+      "question": "Can I book a few hours at your Puchong Jaya branch on this date, and what is the minimum stay and total price?",
+      "sources": [
+        {
+          "label": "Lullabee — hourly drop-in",
+          "url": "https://www.lullabee.com.my/showproducts/productid/6370391/hourly-drop-in/",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:44:50.017Z",
+          "sourceDate": null,
+          "snapshotHash": "aa45921651c424694c661663a72eb06b70d5f57d129372863592d2aff104a754",
+          "captureMethod": "public_http"
+        },
+        {
+          "label": "Lullabee / Taska Pondok Indah — programme directory",
+          "url": "https://www.lullabee.com.my/ourproducts/cid/642545/cat/hourly-dropin/",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:44:50.713Z",
+          "sourceDate": null,
+          "snapshotHash": "98e3dcd251c2f14aba6e6d37b511899e9d4e5501ff4920dd27433ed2469a3ec7",
+          "captureMethod": "public_http"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_05ae2bd1eaed1fbc438f3c4fc57",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "TREE DOPLHIN CHILD CARE CENTRE",
+        "basis": "Kiddy123 article identifies Tree Dolphin in Ara Damansara, matching the branch already linked to this provider."
+      },
+      "status": "programme_only",
+      "scope": "branch",
+      "service_types": [
+        "flexi"
+      ],
+      "wording": "Flexi-care and weekend care are advertised. The article does not say whether a new child can attend for a single short visit; some services refer to enrolled children and siblings.",
+      "question": "Can a child who is not enrolled attend your flexi-care for just a few hours?",
+      "sources": [
+        {
+          "label": "Kiddy123 — Tree Dolphin care options",
+          "url": "https://www.kiddy123.com/article/tree-dolphin-childcare-centre-ara-damansara-3/",
+          "kind": "public_directory",
+          "retrievedAt": "2026-09-14T19:45:15.969Z",
+          "sourceDate": "2025-08-02",
+          "snapshotHash": "81ffe6ebb5785b5c0b957ab9b21abd6fb772ee914dc0bd4815acd129bbbab7da",
+          "captureMethod": "public_http"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_1c9df519e489a6da1a3659dfb02",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "LITTLE FEETRAH CHILD CARE CENTRE",
+        "basis": "The employer profile names Little Feetrah Child Care Centre at No. 2 Jalan 8/3, Bandar Baru Bangi, matching the imported name and street address."
+      },
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "drop_in"
+      ],
+      "wording": "The centre advertises drop-in care alongside regular care in its employer profile. Session length, advance notice and current prices are not listed.",
+      "question": "Can my child attend for just a few hours on this date, and how much notice do you need?",
+      "sources": [
+        {
+          "label": "Little Feetrah — employer profile",
+          "url": "https://www.maukerja.my/company/little-feetrah-child-care-centre",
+          "kind": "employer_profile",
+          "retrievedAt": "2026-09-14T19:49:54.268161+00:00",
+          "sourceDate": null,
+          "snapshotHash": "b59753a873e0a158ef78adcd0c8e3dd4db5b5e0e590eb9312b1cc12ee758e5ae",
+          "captureMethod": "rendered_browser_excerpt"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_20ed0d1ee2778f7b998a54cd236",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "HUMAN STAR CHILD CARE CENTRE",
+        "basis": "Official site identifies the Kuala Lumpur nursery at Lalaport, matching the imported branch. The notice is explicitly for Kuala Lumpur."
+      },
+      "status": "paused",
+      "scope": "branch",
+      "service_types": [
+        "admissions_pause"
+      ],
+      "wording": "The centre announced on 4 September 2026 that its Kuala Lumpur nursery is not accepting new enrolments. It does not clarify whether temporary visits are also paused; contact the centre before planning a visit.",
+      "question": "Your website says new enrolments are paused. Are one-off short care visits also unavailable?",
+      "sources": [
+        {
+          "label": "Human StarChild — Kuala Lumpur admissions notice",
+          "url": "https://humanstarchild.com/",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:45:14.426Z",
+          "sourceDate": "2026-09-04",
+          "snapshotHash": "74098ee4f4b5f5aaf29e3723cabbfa0f13d8949b77109d3dbf5b59203a2d8d6c",
+          "captureMethod": "public_http"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_57987832b49511aad3a52391f1b",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "LITTLE WHALE CHILDCARE CENTRE",
+        "basis": "Exact Little Whale branch name and Lot 4-1 Kiara Plaza, Jalan Semenyih address match."
+      },
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "hourly"
+      ],
+      "wording": "Hourly care is listed for this branch. Ask about the minimum stay, advance booking and the price for your visit.",
+      "question": "Can I arrange hourly care on this date, and what is the minimum stay and total price?",
+      "sources": [
+        {
+          "label": "CariSchool — Little Whale care options",
+          "url": "https://www.carischools.com/school/little-whale-child-care-centre-selangor",
+          "kind": "public_directory",
+          "retrievedAt": "2026-09-14T19:49:54.267979+00:00",
+          "sourceDate": null,
+          "snapshotHash": "3c1c45a167f314564f1e990a8ee327608271e13717f910501af1d1f1bb907987",
+          "captureMethod": "rendered_browser_excerpt"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_6608d9c70e9c6ad94b4600b1e22",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "TASKA ADAM UWAIS",
+        "basis": "The existing TASKA ADAM UWAIS record and Anak2U profile both identify No.8 Jalan SS5B/3, Kelana Jaya. The branch-specific description expressly includes non-enrolled children. Update only admission evidence and sources; retain the existing registration, contact, ages, hours and fees."
+      },
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "occasional",
+        "drop_in"
+      ],
+      "wording": "The public profile explicitly offers ad-hoc care for children who are not enrolled. The service description was last updated in October 2019; ask whether ad-hoc places are still offered and agree this visit before travelling.",
+      "question": "Do you still accept children who are not enrolled for an ad-hoc visit, and is there a place for my child at these times?",
+      "requirements": [
+        "Reconfirm the ad-hoc option before travelling; the public description dates from 2019.",
+        "Agree the child’s age, visit hours and fee with the centre."
+      ],
+      "sources": [
+        {
+          "label": "Anak2U — Taska Adam Uwais ad-hoc childcare",
+          "kind": "public_directory",
+          "sourceDate": "2019-10-23",
+          "url": "https://explore.anak2u.com.my/details/taska-adam-uwais-kelana-jaya-2112",
+          "retrievedAt": "2026-09-15T05:16:39.509442+00:00",
+          "snapshotHash": "9bdbd6517050d3de37d37a764247e2065df1c0b68b3f33337b53cabd363fad9e",
+          "captureURL": "https://api-explore.anak2u.com.my/api/clients/details/taska-adam-uwais-kelana-jaya-2112",
+          "captureMethod": "published_page_asset"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_7617dd8dc6f837b9d9f170a9465",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "KLEVER CAPE CHILD CARE CENTRE",
+        "basis": "The existing register entry and the provider-linked listing share 63-G/63-1 Jalan PJU 5/20, Kota Damansara and 019-6197585. This updates its service evidence rather than creating a duplicate branch."
+      },
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "hourly",
+        "drop_in"
+      ],
+      "wording": "Hourly childcare is offered for ages 1–4, Monday–Friday 08:00–18:00. Parents can book care while running errands or attending meetings, without a long-term commitment. Ask about available slots, minimum stay and fees.",
+      "question": "Is there an hourly-care slot for my child’s age and these hours, and what is the minimum stay and price?",
+      "requirements": [
+        "The hourly-care programme is for children aged 1–4. Confirm the child’s age and session with the centre."
+      ],
+      "sources": [
+        {
+          "label": "KleverCape hourly care programme",
+          "kind": "provider_website",
+          "url": "https://klevercape.my/programe/",
+          "retrievedAt": "2026-09-14T20:32:02.093019+00:00",
+          "sourceDate": null,
+          "snapshotHash": "91e9561a64de72bec128046b96e72c604d187ebb31877ec3c046c1182e25a031"
+        },
+        {
+          "label": "KleverCape hours and hourly-care rules",
+          "kind": "provider_website",
+          "url": "https://klevercape.my/faqs/",
+          "retrievedAt": "2026-09-14T20:32:02.093387+00:00",
+          "sourceDate": null,
+          "snapshotHash": "d70eebd25b64804957f1adcdd5992c5c4ece876d77e9ebb5d557dec18261611a"
+        },
+        {
+          "label": "KleverCape branch address and phone",
+          "kind": "public_directory",
+          "url": "https://confinementcares.com/listing/klevercape",
+          "retrievedAt": "2026-09-14T20:36:42.851768+00:00",
+          "sourceDate": null,
+          "snapshotHash": "28e7ace5b7d9111d271ce8d39e56dcfef6460c928ed277f98b37f9cf2b2e36cd"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_8decab43ab4f3e21d046f9bd1d2",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "CHERIE HEARTS CHILD CARE CENTRE",
+        "basis": "Official branch page matches the imported Kota Kemuning branch address. The Flexi Care description is shared across the brand, without a branch-specific offer."
+      },
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "flexi"
+      ],
+      "wording": "Cherie Hearts advertises a few hours of Flexi Care for ages 2 months–6 years. Ask whether the Kota Kemuning branch offers it for a single visit and accepts new children for this service.",
+      "question": "Does your Kota Kemuning branch offer Flexi Care for a one-off visit, and can a new child attend on this date?",
+      "sources": [
+        {
+          "label": "Cherie Hearts — Flexi Care programme",
+          "url": "https://www.cheriehearts.com.my/programmes",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:44:56.903Z",
+          "sourceDate": null,
+          "snapshotHash": "e1d38062f51c5f9d4a9917466058cb11846389f90991a4344d61612722b201a3",
+          "captureMethod": "public_http"
+        },
+        {
+          "label": "Cherie Hearts — Kota Kemuning branch",
+          "url": "https://www.cheriehearts.com.my/branches/kota-kemuning",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:44:58.694Z",
+          "sourceDate": null,
+          "snapshotHash": "1984fb33ed189f7aa21f2445a1fe0f3b4ebdfa39175aeec01ea7fac614f4c574",
+          "captureMethod": "public_http"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_9bf9c5cf005742c633ea5954a42",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "KIDS CAMPUS CHILD CARE CENTRE",
+        "basis": "The official Kids Campus childcare page lists HTAR, Klang. The imported branch matches that campus location. Programme descriptions are shared and do not specify each campus."
+      },
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "hourly"
+      ],
+      "wording": "Kids Campus lists 2–3 hours of care from 10:00 for its preschool (ages 4–6) and transit (ages 5–15) programmes. Confirm availability at HTAR, Klang and whether a child can attend without regular enrolment.",
+      "question": "Does HTAR, Klang accept a new child for 2–3 hours, and does this option cover my child’s age?",
+      "sources": [
+        {
+          "label": "Kids Campus — hourly care programmes",
+          "url": "https://www.kidscampus.my/childcare/",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:45:09.406Z",
+          "sourceDate": null,
+          "snapshotHash": "c18ee7e0bd9c000d0e0eff3f852207466e6ef59eb5aa8c72f10cfbe3e7ecbe7e",
+          "captureMethod": "public_http"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_9c0bd03e329d0c94e9abf11085a",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "KIDS CAMPUS CHILD CARE CENTRE",
+        "basis": "The official Kids Campus childcare page lists Campus 7, Shah Alam. The imported branch matches that campus location. Programme descriptions are shared and do not specify each campus."
+      },
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "hourly"
+      ],
+      "wording": "Kids Campus lists 2–3 hours of care from 10:00 for its preschool (ages 4–6) and transit (ages 5–15) programmes. Confirm availability at Campus 7, Shah Alam and whether a child can attend without regular enrolment.",
+      "question": "Does Campus 7, Shah Alam accept a new child for 2–3 hours, and does this option cover my child’s age?",
+      "sources": [
+        {
+          "label": "Kids Campus — hourly care programmes",
+          "url": "https://www.kidscampus.my/childcare/",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:45:09.406Z",
+          "sourceDate": null,
+          "snapshotHash": "c18ee7e0bd9c000d0e0eff3f852207466e6ef59eb5aa8c72f10cfbe3e7ecbe7e",
+          "captureMethod": "public_http"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_aca4036ed9e9162d02bafe49beb",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "KIDS CAMPUS CHILD CARE CENTRE",
+        "basis": "The official Kids Campus childcare page lists Campus 6, Shah Alam. The imported branch matches that campus location. Programme descriptions are shared and do not specify each campus."
+      },
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "hourly"
+      ],
+      "wording": "Kids Campus lists 2–3 hours of care from 10:00 for its preschool (ages 4–6) and transit (ages 5–15) programmes. Confirm availability at Campus 6, Shah Alam and whether a child can attend without regular enrolment.",
+      "question": "Does Campus 6, Shah Alam accept a new child for 2–3 hours, and does this option cover my child’s age?",
+      "sources": [
+        {
+          "label": "Kids Campus — hourly care programmes",
+          "url": "https://www.kidscampus.my/childcare/",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:45:09.406Z",
+          "sourceDate": null,
+          "snapshotHash": "c18ee7e0bd9c000d0e0eff3f852207466e6ef59eb5aa8c72f10cfbe3e7ecbe7e",
+          "captureMethod": "public_http"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_c36825e25ecc65a6057036d5e50",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "ORANGE TREE ACADEMY CHILD CARE CENTRE",
+        "basis": "Official curriculum page lists the Wisma TA headquarters at Lot G-01, 1A Jalan SS20/1, matching the imported branch address."
+      },
+      "status": "programme_only",
+      "scope": "branch",
+      "service_types": [
+        "extended_care"
+      ],
+      "wording": "Extra care after the full-day programme and holiday care are available for an additional charge. The website does not establish standalone drop-in care for a new child.",
+      "question": "Do you accept a child for one-off care without enrolling in your regular preschool programme?",
+      "sources": [
+        {
+          "label": "Orange Tree — extended care options",
+          "url": "https://orangetreepreschool.com.my/curriculum/",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:45:12.404Z",
+          "sourceDate": null,
+          "snapshotHash": "7cc5be711295431e8f6620b026715fc86d969155227b49b488653807d50e5ff4",
+          "captureMethod": "public_http"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_faf113b11a3a39d973d7704e42c",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "TASKA BONDA MAMA SAYANG",
+        "basis": "The dated post names Taska Bonda Mama Sayang Sentrovue A, Jalan PPAJ 5, Alam Jaya, Puncak Alam, matching the imported branch name, building and street."
+      },
+      "status": "published",
+      "scope": "branch",
+      "service_types": [
+        "occasional"
+      ],
+      "wording": "A post dated 3 October 2025 advertises temporary weekday care while parents attend to errands. It asks parents to register first. Confirm that this option is still offered, the ages accepted and the minimum stay.",
+      "question": "Do you still offer temporary weekday care, and can I register my child for a few hours on this date?",
+      "sources": [
+        {
+          "label": "Bonda Mama Sayang — dated post on a public mirror",
+          "url": "https://www.schoolandcollegelistings.com/MY/Puncak-Alam/101855019147237/Taska-Bonda-Mama-Sayang-Sentrovue-A%2C-PP-Alam-Jaya%2C-Puncak-Alam%2C-Selangor",
+          "kind": "social_post_mirror",
+          "retrievedAt": "2026-09-14T19:45:17.151Z",
+          "sourceDate": "2025-10-03",
+          "snapshotHash": "8224adae14f7adbf0323d6ce16ea19404374181db2db138df560a6c1290f306e",
+          "captureMethod": "public_http"
+        }
+      ]
+    },
+    {
+      "provider_id": "provider_kpm_e568c0c0a13afedf16b7b6ea",
+      "base_release": "web_79f1397603c1e28325955f64",
+      "match": {
+        "status": "matched",
+        "catalogue_name": "TADIKA CERI HATI (CAWANGAN KOTA DAMANSARA)",
+        "basis": "Official branch page matches the imported Kota Damansara branch address. The Flexi Care description is shared across the brand, without a branch-specific offer."
+      },
+      "status": "programme_only",
+      "scope": "brand",
+      "service_types": [
+        "flexi"
+      ],
+      "wording": "Cherie Hearts advertises a few hours of Flexi Care for ages 2 months–6 years. Ask whether the Kota Damansara branch offers it for a single visit and accepts new children for this service.",
+      "question": "Does your Kota Damansara branch offer Flexi Care for a one-off visit, and can a new child attend on this date?",
+      "sources": [
+        {
+          "label": "Cherie Hearts — Flexi Care programme",
+          "url": "https://www.cheriehearts.com.my/programmes",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:44:56.903Z",
+          "sourceDate": null,
+          "snapshotHash": "e1d38062f51c5f9d4a9917466058cb11846389f90991a4344d61612722b201a3",
+          "captureMethod": "public_http"
+        },
+        {
+          "label": "Cherie Hearts — Kota Damansara branch",
+          "url": "https://www.cheriehearts.com.my/branches/kota-damansara",
+          "kind": "provider_website",
+          "retrievedAt": "2026-09-14T19:44:57.625Z",
+          "sourceDate": null,
+          "snapshotHash": "c71f79d5f6e5ec7d91369abb36237bfc31496c0c2a6b3700c5a8ae3350c1a715",
+          "captureMethod": "public_http"
+        }
+      ]
+    }
+  ]
+}

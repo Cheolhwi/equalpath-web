@@ -1,0 +1,44 @@
+{
+  "verifiedAt": "2026-09-15T05:32:03.433Z",
+  "additionsRelease": "additions_f9f3656649a9779c6348cd18",
+  "admissionsRelease": "admissions_0491ecfc8d5a33852ba698e9",
+  "before": 3135,
+  "after": 3137,
+  "added": 2,
+  "existingServiceUpdates": 1,
+  "publishedTemporaryCareBefore": 18,
+  "publishedTemporaryCareAfter": 21,
+  "unchangedProviders": 3134,
+  "existingOtherFieldsPreserved": true,
+  "heldUnchanged": true,
+  "publicBackend": true,
+  "checked": [
+    {
+      "id": "provider_6608d9c70e9c6ad94b4600b1e22",
+      "name": "TASKA ADAM UWAIS",
+      "phone": "011-1089 0381",
+      "feeEntries": 1,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    },
+    {
+      "id": "provider_709a1c3af749886ea08b7c5e4db",
+      "name": "Taska Ibu Elisa",
+      "phone": "016-375 7990",
+      "feeEntries": 0,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    },
+    {
+      "id": "provider_636b2a9c3d83d2b574befea79b3",
+      "name": "Edu Talent — Setia Alam Holiday Care",
+      "phone": "011-1196 9385",
+      "feeEntries": 0,
+      "servicePublished": true,
+      "visitRequirementsRetained": true,
+      "visibleOnNearbyPage": true
+    }
+  ]
+}
