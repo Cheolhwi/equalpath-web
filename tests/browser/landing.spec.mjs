@@ -56,7 +56,7 @@ test.beforeEach(async({page})=>{
       const el=document.querySelector('.care-scene');
       if(el?.dataset.sceneStatus==='ready'){
         const state=el.dataset.opening;
-        if(window.landingStates.at(-1)?.state!==state)window.landingStates.push({state,at:performance.now(),view:el.dataset.sceneView});
+        if(window.landingStates.at(-1)?.state!==state)window.landingStates.push({state,at:performance.now(),view:el.dataset.sceneView,artwork:el.dataset.artwork});
       }
     }).observe(document,{subtree:true,attributes:true,childList:true});
   });
@@ -69,12 +69,17 @@ test('landing starts as a collection, automatically raises a care card, and neve
   expect(await enter.evaluate(el=>getComputedStyle(el).outlineStyle)).toBe('none');
   const scene=page.locator('.care-scene');
   await expect(scene).toHaveAttribute('data-scene-status','ready',{timeout:60000});
-  await page.screenshot({path:out+'/landing-collection.png'});
   await expect(scene).toHaveAttribute('data-opening','complete',{timeout:15000});
   await expect(scene).toHaveAttribute('data-scene-view','detail');
+  // A software-rendered screenshot can outlast the slideshow dwell. Capture
+  // the initial card in the state observer, then pause before visual sampling.
+  await page.getByRole('button',{name:'Pause artwork slideshow'}).click();
+  const states=await page.evaluate(()=>window.landingStates);
+  expect(states.find(x=>x.state==='complete').artwork).toBe('read');
+  for(let i=0;i<4 && await scene.getAttribute('data-artwork')!=='read';i++)
+    await page.getByRole('button',{name:'Previous artwork'}).click();
   await expect(scene).toHaveAttribute('data-artwork','read');
   await page.screenshot({path:out+'/landing-raised.png'});
-  const states=await page.evaluate(()=>window.landingStates);
   expect(states.map(x=>x.state)).toEqual(['collection','lifting','complete']);
   expect(states[1].at-states[0].at).toBeGreaterThanOrEqual(250);
   expect(states[1].at-states[0].at).toBeLessThan(1500);
