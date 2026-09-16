@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   browser:
-    name: Saved choices and preparation journey
+    name: Browser journeys
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -27,6 +27,19 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+        env:
+          QA_EVIDENCE_DIR: .build/ci-evidence
+      - name: Save browser test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: browser-test-evidence
+          path: |
+            .build/browser-results
+            .build/ci-evidence
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: warn
 
   verify:
     name: Test, build and verify release

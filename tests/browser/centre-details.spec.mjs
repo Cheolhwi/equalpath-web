@@ -7,7 +7,7 @@ const source={label:'Published branch information',url:'https://example.com/cent
 async function openDetails(page,{conflict=true,missing=false}={}){
   const base=fixtureCatalog.items[0],p={...structuredClone(base),id:'centre-test',name:'Little Garden Childcare, Kota Damansara',mode:'live',age:{...base.age,rangeLabel:'2–6 years'},address:'12 Jalan Sepah Puteri, Kota Damansara, Selangor',feeRule:null,
     careWindows:[{days:['MON'],start:480,end:conflict?1020:1140,source}],lateRule:null,phone:missing?null:{display:'03-1234 5678',source},sourcePage:source.url,
-    fees:missing?[]:[{amount:650,basis:'month',kind:'programme',currency:'MYR',conditions:'Full-day programme. Meals charged separately.',source}],
+    fees:missing?[]:[{amount:65,basis:'day',kind:'programme',currency:'MYR',conditions:'Full-day programme. Meals charged separately.',source}],
     registration:{...base.registration,authority:'KPM',number:'TEST-123',official:false,until:null,from:null,source}};
   const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items:[p]})},drivingRoutes:async(_,rows)=>rows.map(x=>({...x,driving:missing?{state:'unavailable'}:{state:'available',minutes:8,distanceKm:3.2,source}}))});
   await page.route('**/api',async route=>route.fulfill({json:{ok:true,...await api(route.request().postDataJSON())}}));
@@ -18,7 +18,7 @@ async function openDetails(page,{conflict=true,missing=false}={}){
 test('details put useful facts and next action first, retain evidence and prioritise mismatches',async({page})=>{
   const dialog=await openDetails(page);
   await expect(dialog.locator('.centre-metrics dt')).toHaveText(['Care end time','Age','Drive from pickup','Fee']);
-  await expect(dialog.locator('.centre-request')).toContainText('18:00');await expect(dialog.locator('.centre-metrics')).toContainText('MYR 650 / month');
+  await expect(dialog.locator('.centre-request')).toContainText('18:00');await expect(dialog.locator('.centre-metrics')).toContainText('MYR 65 / day');
   await expect(dialog.locator('.fit-check').first()).toHaveAttribute('data-condition-id','care');await expect(dialog.locator('.fit-check').first()).toHaveAttribute('open','');
   await expect(dialog.locator('.fit-check').first()).toContainText('17:00 · you need 18:00');
   await expect(dialog.getByRole('button',{name:'Prepare questions',exact:true})).toHaveCount(1);
