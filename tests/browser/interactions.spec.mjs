@@ -90,8 +90,8 @@ test("result cards reveal on first view without extra searches or hiding focused
   expect(calls.filter(x => x === "search")).toHaveLength(1);
 });
 
-test("touch screens retain native interaction and reduced motion leaves all cards readable", async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce", baseURL: "http://127.0.0.1:4191" });
+test("touch screens retain native interaction and reduced motion leaves all cards readable", async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce", baseURL });
   const page = await context.newPage();
   try {
     await start(page); await search(page);

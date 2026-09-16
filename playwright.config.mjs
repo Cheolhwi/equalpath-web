@@ -3,6 +3,15 @@ const port = process.env.PW_PORT || "4191";
 const baseURL = `http://127.0.0.1:${port}`;
 export default defineConfig({
   testDir: "./tests/browser",
+  projects: [
+    { name: "journeys", testIgnore: /landing(?:-loading)?\.spec\.mjs/ },
+    {
+      name: "landing", testMatch: /landing(?:-loading)?\.spec\.mjs/,
+      // Hosted runners render WebGL on the CPU. Keep the real scene and CSS
+      // viewport, but bound its framebuffer; local visual QA retains full DPI.
+      use: { deviceScaleFactor: process.env.CI ? 0.25 : 1 },
+    },
+  ],
   fullyParallel: false,
   workers: 1,
   timeout: 45000,
@@ -15,9 +24,12 @@ export default defineConfig({
     baseURL,
     viewport: { width: 1440, height: 1000 },
     reducedMotion: "reduce",
-    // The full browser uses modern headless mode. The legacy headless shell
-    // forces software WebGL and stalls on the actual landing scene.
+    // Use the full browser; Linux CI uses Mesa OpenGL on a virtual display.
     channel: process.env.PW_CHANNEL || "chromium",
+    headless: process.env.PW_HEADED !== "1",
+    launchOptions: { args: process.env.PW_ANGLE
+      ? ["--use-gl=angle", `--use-angle=${process.env.PW_ANGLE}`, "--ignore-gpu-blocklist"]
+      : [] },
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },

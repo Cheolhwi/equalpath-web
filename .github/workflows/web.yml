@@ -26,8 +26,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:browser
+      - name: Run browser journeys with software OpenGL
+        run: xvfb-run -a sh -c 'node scripts/check-browser-renderer.mjs && npm run test:browser'
         env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          PW_HEADED: "1"
+          PW_ANGLE: gl
           QA_EVIDENCE_DIR: .build/ci-evidence
       - name: Save browser test evidence
         if: always()
