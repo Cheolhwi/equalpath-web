@@ -1,0 +1,47 @@
+{
+  "verifiedAt": "2026-09-16T04:34:33.198Z",
+  "results": [
+    {
+      "action": "health",
+      "careType": "regular",
+      "durationMs": 4845,
+      "available": 3036
+    },
+    {
+      "action": "search",
+      "careType": "regular",
+      "durationMs": 1123,
+      "count": 20,
+      "total": 379,
+      "available": 3036
+    },
+    {
+      "action": "search",
+      "careType": "short_term",
+      "durationMs": 6422,
+      "count": 10,
+      "total": 12,
+      "available": 101
+    },
+    {
+      "action": "details",
+      "careType": "short_term",
+      "durationMs": 74,
+      "count": 1,
+      "available": 101
+    },
+    {
+      "action": "compare",
+      "careType": "short_term",
+      "durationMs": 145,
+      "count": 2,
+      "available": 101
+    }
+  ],
+  "version": "web_79f1397603c1e28325955f64:service-review-2026-09-13-v7:hours_07097222eb15319e14097448:services_93cc3b562c6e94ee19a475f0:fees_9e6b8a50381b09144e1b4299:admissions_0491ecfc8d5a33852ba698e9:additions_f9f3656649a9779c6348cd18:profiles_de193ab0981745497c2fea47",
+  "databaseProbe": {
+    "status": 402,
+    "type": "limit_databases_reads_exceeded"
+  },
+  "searchWorksWithoutDatabaseQuota": true
+}

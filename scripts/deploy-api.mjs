@@ -38,6 +38,7 @@ for (const f of [
   "server/fixtures.mjs",
   "server/providers.mjs",
   "server/appwrite-store.mjs",
+  "server/published-catalog.mjs",
   "server/hours-overlay.mjs",
   "server/services-overlay.mjs",
   "server/admissions-overlay.mjs",
@@ -54,6 +55,8 @@ for (const f of [
   "server/data/provenance-index.json",
   "server/data/reviewed-fees.json",
   "server/data/boundary-source.json",
+  "server/data/catalog-snapshot.json.gz",
+  "server/data/catalog-snapshot.meta.json",
 ])
   cpSync(resolve(root, f), resolve(path, f));
 writeFileSync(
@@ -68,6 +71,8 @@ writeFileSync(
 // Import the isolated package before any remote mutation: local source files
 // must not mask a missing runtime dependency in the uploaded function.
 await import(pathToFileURL(resolve(path, "server/function.mjs")).href);
+const { createPublishedStore } = await import(pathToFileURL(resolve(path, "server/published-catalog.mjs")).href);
+await createPublishedStore().catalog();
 if (!process.argv.includes("--deploy")) {
   console.log(
     JSON.stringify({

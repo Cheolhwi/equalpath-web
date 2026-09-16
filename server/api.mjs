@@ -23,10 +23,11 @@ import {
 import { feesForCare } from "../shared/result-summary.mjs";
 import { regionAt, regions, distanceKm } from "./geography.mjs";
 import { fixtureCatalog, demoPickup } from "./fixtures.mjs";
-import { createStore, ServiceError } from "./appwrite-store.mjs";
+import { ServiceError } from "./appwrite-store.mjs";
+import { createPublishedStore } from "./published-catalog.mjs";
 import { createPlaceSearch } from "./places.mjs";
 import { createDrivingRoutes } from "./driving.mjs";
-export function createAPI({ store = createStore(), placeSearch = createPlaceSearch(), reverseGeocode = placeSearch.reverse, drivingRoutes = createDrivingRoutes() } = {}) {
+export function createAPI({ store = createPublishedStore(), placeSearch = createPlaceSearch(), reverseGeocode = placeSearch.reverse, drivingRoutes = createDrivingRoutes() } = {}) {
   return async function handle(body) {
     if (!body || typeof body !== "object" || Array.isArray(body))
       throw new ServiceError("INVALID_REQUEST", 400);

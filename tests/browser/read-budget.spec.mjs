@@ -1,0 +1,50 @@
+import { test, expect } from "@playwright/test";
+import { createAPI } from "../../server/api.mjs";
+import { mkdirSync } from "node:fs";
+
+const out = process.env.QA_EVIDENCE_DIR || ".build/read-budget";
+mkdirSync(out, { recursive: true });
+for (const width of [1440, 390]) test(`published catalogue works without TablesDB on ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 950 });
+  const errors = [], responses = [];
+  page.on("pageerror", error => errors.push(error.message));
+  const api = createAPI({ reverseGeocode: null, drivingRoutes: async (_, rows) => rows.map(p => ({ ...p, driving: { state: "unavailable" } })) });
+  await page.route("**/api", async route => {
+    const body = route.request().postDataJSON();
+    const result = await api(body);
+    responses.push({ action: body.action, result });
+    await route.fulfill({ json: { ok: true, ...result } });
+  });
+  await page.addInitScript(() => {
+    localStorage.setItem("equalpath:tour:v1", JSON.stringify({ version: 1, status: "skipped" }));
+    const pickup = { lat: 3.134, lng: 101.6863, label: "KL Sentral" };
+    localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, zoom: 13, center: pickup, pickup }));
+  });
+  await page.goto("/#discover");
+  await expect(page.locator(".nearby-card")).toHaveCount(20);
+  await page.getByRole("button", { name: "Find care options", exact: true }).click();
+  await expect(page.locator(".provider-row")).toHaveCount(20);
+  const regular = responses.filter(x => x.action === "search").at(-1).result;
+  expect(regular.collection.total).toBe(3036);
+  await page.locator(".provider-row").first().getByRole("button", { name: /^View details for/ }).click();
+  await expect(page.locator(".centre-metrics")).toBeVisible();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
+  for (const index of [0, 1]) await page.locator(".provider-row").nth(index).getByRole("button", { name: /^Compare / }).click();
+  await page.getByRole("button", { name: "Compare childcare", exact: true }).click();
+  await expect(page.locator(".comparison-scroll table")).toBeVisible();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
+  await page.getByRole("button", { name: "Edit request", exact: true }).click();
+  await page.getByRole("radio", { name: "Yes, short-term care" }).check();
+  await page.locator("#service-date").fill("2026-09-21");
+  await page.locator("#deadline").fill("13:00");
+  await page.locator("#care-end").fill("17:00");
+  await page.getByRole("button", { name: "Find care options", exact: true }).click();
+  await expect(page.locator(".provider-row")).toHaveCount(10);
+  const short = responses.filter(x => x.action === "search").at(-1).result;
+  expect(short.collection.total).toBe(101);
+  expect(short.items.every(p => p.distanceKm <= 5 && !regular.items.some(r => r.id === p.id))).toBe(true);
+  await expect(page.locator(".results-toolbar")).toContainText("within 5 km");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: `${out}/published-catalogue-${width}.png` });
+  expect(errors).toEqual([]);
+});

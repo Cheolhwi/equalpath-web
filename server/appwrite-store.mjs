@@ -17,6 +17,7 @@ export class ServiceError extends Error {
 }
 const query = (method, attribute, values) =>
   JSON.stringify({ method, ...(attribute ? { attribute } : {}), values });
+// Publication/export adapter only. User-facing API handlers use published-catalog.mjs.
 export function createStore({ fetcher = fetch, now = Date.now } = {}) {
   let cache = null,
     checked = 0,

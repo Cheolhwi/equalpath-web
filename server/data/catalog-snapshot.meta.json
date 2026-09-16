@@ -1,0 +1,42 @@
+{
+  "schema": "equalpath-published-catalog-v1",
+  "sha256": "0b2034f3785c44b622a22d7e051b45d48105338edd09e62e0736e17054b4a1bc",
+  "bytes": 19487205,
+  "compressedBytes": 1411505,
+  "release": "web_79f1397603c1e28325955f64",
+  "version": "web_79f1397603c1e28325955f64:service-review-2026-09-13-v7:hours_07097222eb15319e14097448:services_93cc3b562c6e94ee19a475f0:fees_9e6b8a50381b09144e1b4299:admissions_0491ecfc8d5a33852ba698e9:additions_f9f3656649a9779c6348cd18:profiles_de193ab0981745497c2fea47",
+  "providers": 3137,
+  "held": 417,
+  "shortCareProviders": 101,
+  "source": {
+    "kind": "verified-published-archive",
+    "capturedAt": "2026-09-15T06:15:12.567+00:00",
+    "files": {
+      "source/short-care-import-20260915/manifest-after.json": "0820441a8b154d5641a73b0db495b9e1759a273ab5d837f0c0bbd529a3b6dbce",
+      "prepared/catalog.json": "0a763b998e2732cbce9c41f064e11abf7e02bff2c02eedde777a73f901699ee2",
+      "receipts/web_79f1397603c1e28325955f64.json": "b1d1af048bbfd3ffcde376a610d3f13c55956f81e25ae60a0388573a9897c922",
+      "prepared/summary.json": "97aee767d683cf22937bc911ccd06d4810cdb46dfc44c323491743dbc828b322",
+      "hours-coverage-20260913/prepared-hours.json": "c9e1a7de25040edec3c98da485caa0a78329a51b1d191f0c83e8611d80fcb776",
+      "hours-coverage-20260913/publication-receipt.json": "028d90f714cea651cbef9e5684e170b4d9c1f84bb67b2b21d80f72f5efdbb588",
+      "source/services-20260913/prepared-services.json": "8eb059e5015c62c51da137ee3d8f0d9f0f175e007f6cb964c3e3bc7dc340abac",
+      "source/services-20260913/publication-receipt.json": "05e417eadd6414199eb722404e2ab27ea068dc13c7b105fe09860d55b72790bb",
+      "source/directory-fees-20260913/prepared-fees.json": "26d265139f6c330af9e80b470b62ed2dbbe6c90356ebcd1ac5e807038aa23fa2",
+      "source/directory-fees-20260913/publication-receipt.json": "5b5465efcaf7ab2a252f122dd902f6a71df954504f7b4e13621a7e0139b7f75d",
+      "source/short-care-100-20260915/prepared-admissions.json": "c19d539dcc32799ea977b4e3829522ae85e762d24e7fac4c2385a92cf653c463",
+      "source/short-care-100-20260915/admissions-publication-receipt.json": "62155c14e38c72b5514fc24c68c30b1e78fbec21efc9d98d51cf14febf9f2cd9",
+      "source/short-care-100-20260915/prepared-additions.json": "2f3cb6d428373614e92995cbf90a0ebca701418cd7eb73d0037a810c51420a10",
+      "source/short-care-100-20260915/additions-publication-receipt.json": "cab8ffb7321324daa9e60e23eb5f2b3b438df4f7ebdc4d1712153a66f1da5d34",
+      "source/short-care-import-20260915/prepared-profiles.json": "b7e413655df57d13aa2b9b1b7ec3a73d72de31056724837e17b5cec8d9e1cb6a",
+      "source/short-care-import-20260915/publication-receipt.json": "738269b539618c76b3974a02da260dcf7116f15bf1cb626734451660a9e98900"
+    },
+    "manifestSHA256": "63e0f0ca0ecd8e66c7c82dcfc59f0901769a16a245cf3a69ef107930fc7785c1",
+    "componentKeys": {
+      "hoursKey": "hours_07097222eb15319e14097448:07097222eb15319e14097448bc55e2b3ab48d32953524fe84f516d7b1ac3cb95:170",
+      "servicesKey": "services_93cc3b562c6e94ee19a475f0:93cc3b562c6e94ee19a475f07cebbcb784ce70e0192f348260484e367448a9a8:1136",
+      "feesKey": "fees_9e6b8a50381b09144e1b4299:9e6b8a50381b09144e1b4299760e60f5f80f257e5d6eea73754ffaa7be688469:3146",
+      "admissionsKey": "admissions_0491ecfc8d5a33852ba698e9:0491ecfc8d5a33852ba698e94f3c53982fb2bb9282aa1738f36663625dbbb52b:14",
+      "additionsKey": "additions_f9f3656649a9779c6348cd18:f9f3656649a9779c6348cd18bb4c92c328c60fce3eef07559792714fdd070b3b:15",
+      "profilesKey": "profiles_de193ab0981745497c2fea47:de193ab0981745497c2fea47d484e4113d7df72dfe203ea2247ee2c4d801bedd:101"
+    }
+  }
+}
