@@ -161,13 +161,14 @@ test('a cold landing prepares artwork before entry and needs no image request du
   await page.getByRole('button',{name:'Pause artwork slideshow'}).click();
   await page.evaluate(()=>{
     window.entryImageFrames=[];
+    const preloadedImage=document.querySelector('.entrance-art:not([hidden]) img');
     let started=false;
     const sample=()=>{
       const phase=document.querySelector('.experience')?.dataset.introPhase;
       if(phase==='entering'){
         started=true;
         const image=document.querySelector('.entrance-art:not([hidden]) img');
-        window.entryImageFrames.push({complete:image?.complete,width:image?.naturalWidth,visibility:image&&getComputedStyle(image).visibility});
+        window.entryImageFrames.push({complete:image?.complete,width:image?.naturalWidth,visibility:image&&getComputedStyle(image).visibility,sameImage:image===preloadedImage});
       }
       if(!(started&&phase==='ready'))requestAnimationFrame(sample);
     };
@@ -177,8 +178,9 @@ test('a cold landing prepares artwork before entry and needs no image request du
   await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
   const frames=await page.evaluate(()=>window.entryImageFrames);
-  expect(frames.length).toBeGreaterThan(2);
-  expect(frames.every(frame=>frame.complete&&frame.width>0&&frame.visibility==='visible')).toBe(true);
+  // Assert every frame the browser actually presents, not a minimum GPU FPS.
+  expect(frames.length).toBeGreaterThan(0);
+  expect(frames.every(frame=>frame.complete&&frame.width>0&&frame.visibility==='visible'&&frame.sameImage)).toBe(true);
   expect(lateRequests).toBe(0);
   await expect(page.locator('#pickup-search')).toBeFocused();
 });
