@@ -40,7 +40,8 @@ async function captureEntry(page, artwork = 'play', suffix = '') {
   expect(reveal.right).toBeGreaterThan(0);expect(reveal.right).toBeLessThan(100);
   expect(reveal.landingOpacity).toBe(0);expect(reveal.overflow).toBe(false);
   await page.screenshot({path:out+`/entry-reveal${suffix}.png`});
-  await page.clock.runFor(ENTRANCE_DURATION_MS+32);
+  // CSS stages are sampled above; jump to completion instead of replaying every WebGL frame.
+  await page.clock.fastForward(ENTRANCE_DURATION_MS+32);
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
   await expect(page.locator('.entrance-curtain')).toBeHidden();
   await expect(page.locator('.equalpath')).not.toHaveAttribute('inert','');
@@ -137,7 +138,7 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   await expect(page.locator('.landing')).toHaveAttribute('data-load-state','ready',{timeout:60000});
   await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
   await page.getByRole('button',{name:'BACK TO YOUR OPTIONS',exact:true}).click();
-  await page.clock.runFor(ENTRANCE_DURATION_MS+32);
+  await page.clock.fastForward(ENTRANCE_DURATION_MS+32);
   await expect(page.locator('#pickup-search')).toHaveValue('Petaling Jaya');
   await page.clock.resume();
   await expect(page.locator('#pickup-search')).toBeFocused();
