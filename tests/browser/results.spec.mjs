@@ -1,3 +1,4 @@
+import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog } from "../../server/fixtures.mjs";
@@ -10,7 +11,7 @@ async function setup(page, calls, routing=true, coLocated=false, extraItems=[]){
   await page.route("**/api",async route=>{const b=route.request().postDataJSON();calls.push(b);await route.fulfill({json:{ok:true,...await api(b)}});});
 }
 test("zooming and repeated dragging never query; reopening loads the saved neighbourhood once",async({page})=>{
-  const calls=[];await setup(page,calls);await page.goto("/#discover");await expect(page.locator(".nearby-card").first()).toBeVisible();
+  const calls=[];await setup(page,calls);await page.goto("/#discover");await openSearch(page);await expect(page.locator(".nearby-card").first()).toBeVisible();
   const before=calls.filter(c=>c.action==="nearby").length;
   for(let i=0;i<4;i++)await page.getByRole("button",{name:"Zoom out",exact:true}).click();
   await expect.poll(async()=>Number(await page.locator(".map-region").getAttribute("data-map-zoom"))).toBeLessThan(12);
@@ -31,9 +32,9 @@ test("zooming and repeated dragging never query; reopening loads the saved neigh
 });
 async function search(page,regular=false){
   await page.addInitScript(()=>localStorage.setItem("equalpath:map:v1:live",JSON.stringify({version:1,center:{lat:3.139,lng:101.6869},zoom:13,pickup:{id:"demo-pickup",label:"KL Sentral",lat:3.139,lng:101.6869}})));
-  await page.goto(regular?"/#discover":"/?care=short_term#discover");
+  await page.goto(regular?"/?care=regular#discover":"/?care=short_term#discover");await openSearch(page);
   if(!regular){await page.locator("#service-date").fill("2026-09-22");await page.locator("#deadline").fill("16:00");await page.locator("#care-end").fill("18:00");}
-  await page.locator("#age").selectOption("4");await page.locator("#transport").selectOption("institution");await page.getByRole("button",{name:"Find care options",exact:true}).click();
+  await revealPreferences(page); await chooseAge(page, "4");await revealPreferences(page); await page.locator("#transport").selectOption("institution");await chooseAge(page); await page.getByRole("button",{name:"Find childcare",exact:true}).click();await openResults(page);
   await expect(page.locator(".provider-row").first()).toBeVisible();
 }
 test("search offers only 5 or 10 km and the map and count exclude distant or unlocated centres",async({page})=>{
@@ -50,11 +51,11 @@ test("search offers only 5 or 10 km and the map and count exclude distant or unl
   await page.screenshot({path:dir+"/radius-desktop.png"});
   await page.setViewportSize({width:390,height:844});await page.locator(".results-toolbar").scrollIntoViewIfNeeded();
   await page.screenshot({path:dir+"/radius-mobile.png"});
-  await page.getByRole("button",{name:/Edit request/}).click();
+  await page.getByRole("button",{name:/Change search/}).click();
   await page.locator(".search-refinements summary").click();
   await expect(page.locator("#radius option")).toHaveText(["Within 5 km","Within 10 km"]);
   await page.locator("#radius").selectOption("5");
-  await page.getByRole("button",{name:/Update results/}).click();
+  await page.getByRole("button",{name:/Update results/}).click();await openResults(page);
   await expect(page.locator(".results-toolbar strong")).toHaveText("9");
   await expect(page.locator(".results-toolbar > div > span")).toHaveText("centres within 5 km");
   await expect(page.locator(".provider-row")).toHaveCount(9);
@@ -64,11 +65,11 @@ test("search offers only 5 or 10 km and the map and count exclude distant or unl
 test("result cards show drive time and fee basis, while conflicts stay below other results on desktop and mobile",async({page})=>{
   const calls=[];await setup(page,calls);await search(page);
   const row=page.locator(".provider-row").first();await expect(row).toContainText("About 8 min by car");await expect(row).toContainText("estimated total");
-  await expect(row.locator(".row-facts > span")).toHaveText(["Age","Drive from pickup","Fee"]);
-  await expect(row.locator(".row-kicker > span").last()).toHaveText("5.5 km by road");
+  await expect(row.locator(".row-facts > span")).toHaveText(["Age","Drive","Fee"]);
+  await expect(row).not.toContainText("5.5 km by road");
   await expect(row.locator(".suggestion-tag")).toHaveText("Suggested first");
   await expect(row.locator(".state-pill")).toBeVisible();
-  await expect(row).not.toContainText("Care end time");
+  await expect(row).not.toContainText("Care ends at");
   await expect(row).not.toContainText("straight-line");
   await expect(row).not.toContainText("without live traffic");
   await expect(row.locator(".row-note")).toHaveCount(0);
@@ -78,23 +79,26 @@ test("result cards show drive time and fee basis, while conflicts stay below oth
   const mapIds=await page.locator(".provider-pin.suggested").evaluateAll(pins=>pins.map(p=>p.dataset.providerId).sort());
   const listIds=await page.locator(".provider-row.suggested").evaluateAll(rows=>rows.map(p=>p.dataset.providerId).sort());
   expect(mapIds).toEqual(listIds);await expect(page.locator(".provider-row.suggested.lower-priority")).toHaveCount(0);
+  await page.getByRole("button",{name:"Close search panel",exact:true}).click();
   const other=page.locator(".provider-pin:not(.suggested)").first();await other.click();await expect(other).toHaveAttribute("aria-pressed","true");await expect(page.locator(".provider-pin.suggested")).toHaveCount(3);
+  await openResults(page);
   await page.locator(".discovery-panel").evaluate(el=>el.scrollTop=el.querySelector(".provider-row").offsetTop-el.offsetTop-24);
   await page.screenshot({path:dir+"/results-desktop.png"});
   await page.setViewportSize({width:390,height:844});await row.scrollIntoViewIfNeeded();
   await page.screenshot({path:dir+"/results-mobile.png"});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
-  await page.getByRole("button",{name:"Map",exact:true}).click();
+  await page.getByRole('button',{name:'Close search panel'}).click();
+  await page.getByRole("button",{name:"Fit pickup and results",exact:true}).click();
   await expect.poll(async()=>page.locator(".provider-pin.suggested").evaluateAll(pins=>pins.every(pin=>{const r=pin.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=105&&r.bottom<innerHeight-65;}))).toBe(true);
   await page.screenshot({path:dir+"/suggestions-mobile.png"});
-  await page.getByRole("button",{name:"Search & results",exact:true}).click();
+  await openResults(page);
   await expect(page.locator(".provider-row").filter({hasText:"Demo · Cloud Care"})).toHaveCount(0);
 });
 test("route outage keeps results and published prices, without fake drive estimates",async({page})=>{
   const calls=[];await setup(page,calls,false);await search(page);
   await expect(page.locator(".provider-row").first()).toContainText("Driving time unavailable");
-  await expect(page.locator(".provider-row").first().locator(".row-facts > span")).toHaveText(["Age","Drive from pickup","Fee"]);
-  await expect(page.locator(".provider-row").first().locator(".row-kicker > span").last()).toHaveText("Distance unavailable");
+  await expect(page.locator(".provider-row").first().locator(".row-facts > span")).toHaveText(["Age","Drive","Fee"]);
+  await expect(page.locator(".provider-row").first()).not.toContainText("km by road");
   await expect(page.locator(".provider-row").first()).not.toContainText("0 min");
 });
 test("mobile map previews leave room for the map and open the selected centre", async ({page}) => {
@@ -105,22 +109,20 @@ test("mobile map previews leave room for the map and open the selected centre", 
   const calls = []; await setup(page, calls, true, false, [provider]); await search(page);
   const pin = page.locator(`.provider-pin[data-provider-id="${provider.id}"]`);
   await pin.click();
-  const preview = page.locator(".map-preview"), compact = page.locator(".map-preview-compact");
-  await expect(compact).toBeHidden();
-  await expect(preview.getByText(provider.address, {exact:true})).toBeVisible();
+  const preview = page.locator(`.map-centre-card[data-provider-id="${provider.id}"]:not(.leaving)`), compact = preview.getByRole("button", {name:`View details for ${provider.name}`});
+  await expect(preview).toContainText(provider.name);
   await page.screenshot({path:dir+"/preview-desktop.png"});
   await page.setViewportSize({width:393,height:852});
-  await page.getByRole("button", {name:"Map",exact:true}).click();
   const searches = calls.filter(c=>["nearby","search"].includes(c.action)).length;
   for (const width of [393, 320]) {
     await page.setViewportSize({width,height:740});
     await expect(compact).toBeVisible();
     await expect(compact).toHaveAccessibleName(`View details for ${provider.name}`);
-    await expect(compact).toContainText("About 8 min by car");
-    await expect(compact).toContainText("Fee: MYR 40–60 / hour");
-    await expect(preview.locator(".map-preview-expanded")).toBeHidden();
+    await expect(preview).toContainText("About 8 min by car");
+    await expect(preview).toContainText("Fee: MYR 40–60 / hour");
+    await expect(preview.locator(".map-card-actions button")).toHaveCount(3);
     const box = await preview.boundingBox(), map = await page.locator(".map-wrap").boundingBox();
-    expect(box.height).toBeLessThan(140);
+    expect(box.height).toBeLessThan(200);
     expect(box.height / map.height).toBeLessThan(.25);
     expect(box.x).toBeGreaterThanOrEqual(0); expect(box.x+box.width).toBeLessThanOrEqual(width);
     expect(box.y+box.height).toBeLessThan((await page.locator(".map-bottom").boundingBox()).y);
@@ -131,16 +133,16 @@ test("mobile map previews leave room for the map and open the selected centre", 
   const dialog = page.getByRole("dialog"); await expect(dialog).toBeVisible();
   await expect(dialog).toContainText(provider.name);
   await dialog.getByRole("button", {name:"Close dialog"}).click();
-  await page.getByRole("button", {name:"Search & results",exact:true}).click();
+  await openResults(page);
   await page.locator(`.provider-row[data-provider-id="${provider.id}"]`).getByRole("button", {name:`Compare ${provider.name}`,exact:true}).click();
-  await page.getByRole("button", {name:"Map",exact:true}).click();
+  await page.getByRole('button',{name:'Close search panel'}).click();
   const box = await preview.boundingBox();
   expect(box.y+box.height).toBeLessThan((await page.locator(".compare-tray").boundingBox()).y);
   await page.screenshot({path:dir+"/preview-mobile-compare.png"});
 });
 test("co-located suggested centres stay distinct and individually selectable on the mobile map",async({page})=>{
   await page.setViewportSize({width:390,height:844});await setup(page,[],true,true);await search(page);
-  await page.getByRole("button",{name:"Map",exact:true}).click();
+  await page.getByRole('button',{name:'Close search panel'}).click();
   const pins=page.locator(".provider-pin.suggested");await expect(pins).toHaveCount(3);
   await expect.poll(async()=>pins.evaluateAll(xs=>xs.every((x,i)=>xs.slice(i+1).every(y=>{const a=x.getBoundingClientRect(),b=y.getBoundingClientRect();return a.right<b.left||b.right<a.left||a.bottom<b.top||b.bottom<a.top;})))).toBe(true);
   for(let i=0;i<3;i++){await pins.nth(i).click();await expect(pins.nth(i)).toHaveAttribute("aria-pressed","true");}

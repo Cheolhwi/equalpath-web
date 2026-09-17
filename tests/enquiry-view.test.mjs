@@ -40,7 +40,7 @@ test("copied message follows selected order and keeps visit context, without int
   const message = enquiryMessage(p, request, selected);
   assert.match(message, /Mon, 14 Sept 2026/);
   assert.ok(message.includes(p.name)); assert.ok(message.includes(demoPickup.label));
-  assert.ok(message.includes("Collect by: 13:00\nCare until: 18:00"));
+  assert.ok(message.includes("Leave pickup address by: 13:00\nPick up from childcare at: 18:00"));
   assert.ok(message.indexOf(selected[0].text) < message.indexOf(selected[1].text));
   assert.ok(!message.includes(rows.find(q => q.id === "capacity").text));
   assert.ok(!message.includes(selected[1].check.reason));
@@ -51,7 +51,26 @@ test("fee question distinguishes a validated visit estimate from monthly rates a
   const other = structuredClone(fixtureProviders[1]);
   other.age.alternative = { wording: "3–5 years", source: { label: "Other age source", url: "https://example.com/age" } };
   const rows = enquiryView(hydrated(other), request);
-  assert.match(rows.find(q => q.id === "fees").text, /one-off visit cost in total/);
+  assert.match(rows.find(q => q.id === "fees").text, /short visit cost in total/);
   assert.match(rows.find(q => q.id === "age").text, /different age ranges/);
   assert.match(rows.find(q => q.id === "age").check.reason, /another source lists/);
+});
+
+test("service questions use everyday words while keeping booking and care requirements available", () => {
+  const cases = [
+    ["Do you still accept children who are not enrolled for an ad-hoc visit, and is there a place for my child at these times?", ["Reconfirm the service before travelling; its description dates from 2019."], /still offer childcare for a few hours/],
+    ["Can you accept this short-term visit with the required notice, and which session and daily price apply?", ["Book at least one week in advance.", "Half-day care uses 08:00–12:00."], /How early will I need to book/],
+    ["Can I book supervised drop-off for my child’s age and these hours, and what is the total price?", ["Book child care separately; a playground ticket does not include supervision."], /look after my child while I leave/],
+    ["Can you supervise my child for this 1–3-hour visit, with the required notice and toilet-training requirements?", ["Book at least one day in advance.", "Children need to be toilet trained."], /1–3 hours.*book.*toilet without help/],
+  ];
+  for (const [question, requirements, plainMeaning] of cases) {
+    const provider = structuredClone(fixtureProviders[0]);
+    provider.admission = { value: true, question, requirements };
+    const p = hydrated(provider), row = enquiryView(p, request).find(q => q.id === "admission");
+    assert.match(row.text, plainMeaning);
+    assert.doesNotMatch(row.text, /ad-hoc|enrolled|slot|supervised|toilet-training/);
+    for (const requirement of requirements) assert.ok(row.why.includes(requirement));
+    assert.equal(p.admission.question, question);
+    assert.ok(enquiryMessage(p, request, [row]).includes(row.text));
+  }
 });

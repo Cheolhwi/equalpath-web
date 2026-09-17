@@ -1,3 +1,4 @@
+import { chooseAge, openResults, openSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { mkdirSync } from "node:fs";
@@ -20,9 +21,10 @@ for (const width of [1440, 390]) test(`published catalogue works without TablesD
     const pickup = { lat: 3.134, lng: 101.6863, label: "KL Sentral" };
     localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, zoom: 13, center: pickup, pickup }));
   });
-  await page.goto("/#discover");
+  await page.goto("/?care=regular#discover");await openSearch(page);
   await expect(page.locator(".nearby-card")).toHaveCount(20);
-  await page.getByRole("button", { name: "Find care options", exact: true }).click();
+  await chooseAge(page);
+  await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
   await expect(page.locator(".provider-row")).toHaveCount(20);
   const regular = responses.filter(x => x.action === "search").at(-1).result;
   expect(regular.collection.total).toBe(3036);
@@ -30,15 +32,15 @@ for (const width of [1440, 390]) test(`published catalogue works without TablesD
   await expect(page.locator(".centre-metrics")).toBeVisible();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   for (const index of [0, 1]) await page.locator(".provider-row").nth(index).getByRole("button", { name: /^Compare / }).click();
-  await page.getByRole("button", { name: "Compare childcare", exact: true }).click();
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();
   await expect(page.locator(".comparison-scroll table")).toBeVisible();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
-  await page.getByRole("button", { name: "Edit request", exact: true }).click();
-  await page.getByRole("radio", { name: "Yes, short-term care" }).check();
+  await page.getByRole("button", { name: "Change search", exact: true }).click();
+  await page.getByRole("radio", { name: "Short time" }).check();
   await page.locator("#service-date").fill("2026-09-21");
   await page.locator("#deadline").fill("13:00");
   await page.locator("#care-end").fill("17:00");
-  await page.getByRole("button", { name: "Find care options", exact: true }).click();
+  await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
   await expect(page.locator(".provider-row")).toHaveCount(10);
   const short = responses.filter(x => x.action === "search").at(-1).result;
   expect(short.collection.total).toBe(101);

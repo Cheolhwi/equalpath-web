@@ -35,7 +35,7 @@ export function formatFee(f) {
   return `${f.verification==='area_estimate'?'Estimated ':''}${f.amount==null&&f.max==null?'From ':''}${f.currency||'MYR'} ${money(min)}${Number.isFinite(max)&&max>min?'–'+money(max):''}${period(f.basis)}`;
 }
 export function feeSummary(p) {
-  if (p.cost?.available) return { label: `${p.cost.currency || "MYR"} ${money(p.cost.total)} estimated total`, note: "For these care hours; see the breakdown in details." };
+  if (p.cost?.available) return { label: `${p.cost.currency || "MYR"} ${money(p.cost.total)} estimated total`, note: "For these care hours. Open fee details to see what is included." };
   const fees = feesForCare(p);
   const primary = fees.filter(f => !feeExtra(f));
   const listed = primary.length ? primary : fees;
@@ -51,7 +51,7 @@ export function feeSummary(p) {
     const [currency, basis, status] = key.split("|");
     return `${status === 'area_estimate' ? 'Estimated ' : status === 'estimate' ? 'Est. ' : ''}${formatFee({currency,basis,min,max:open?null:max})}`;
   });
-  return labels.length ? { label: `${primary.length ? '' : 'Extras: '}${labels.slice(0, 2).join(" · ")}`, note: p.careType==='short_term' ? 'Ask about the minimum stay and any extra charges.' : fees.every(f=>f.verification==='area_estimate')?'Area budget reference; ask the centre for its quote.':`${labels.length > 2 ? "More rates in details. " : ""}Published programme rates; ask about one-off care.` } : { label: "Ask the centre", note: p.careType==='short_term' ? "Short-stay price not listed." : "No published fee found." };
+  return labels.length ? { label: `${primary.length ? '' : 'Extras: '}${labels.slice(0, 2).join(" · ")}`, note: p.careType==='short_term' ? 'Ask about the minimum stay and any extra charges.' : fees.every(f=>f.verification==='area_estimate')?'Estimated from nearby centres. Ask this centre for its price.':`${labels.length > 2 ? "More rates in details. " : ""}Listed fees. Ask what is included.` } : { label: "Ask the centre", note: p.careType==='short_term' ? "Short-stay price not listed." : "No published fee found." };
 }
 export function drivingLabel(driving) {
   return driving?.state === "available" ? `About ${driving.minutes} min by car` : "Driving time unavailable";

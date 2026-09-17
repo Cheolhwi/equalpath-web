@@ -1,3 +1,4 @@
+import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
 import {test,expect} from '@playwright/test';
 import {createAPI} from '../../server/api.mjs';
 import {fixtureCatalog} from '../../server/fixtures.mjs';
@@ -14,7 +15,7 @@ test('short-stay price changes result/map/comparison priority and registration i
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/?care=short_term#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await page.goto('/?care=short_term#discover');await openSearch(page);await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await revealPreferences(page); await page.locator('#transport').selectOption('self');await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','higher');
   await page.getByRole('combobox',{name:'Order search results',exact:true}).click();await page.getByRole('option',{name:'Lowest fee',exact:true}).click();
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','lowest');
@@ -28,6 +29,7 @@ test('short-stay price changes result/map/comparison priority and registration i
   await expect(conflictPin).toHaveAttribute('aria-description',/don’t match/);
   expect(await conflictPin.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe(await page.locator('.provider-pin[data-provider-id="unknown"]').evaluate(el=>getComputedStyle(el).backgroundColor));
   await conflictPin.click();await expect(conflictPin).toHaveAttribute('aria-pressed','true');
+  await openResults(page);
   await expect(page.getByRole('button',{name:'Select Test conflict',exact:true})).toHaveAttribute('aria-pressed','true');
   await expect(page.locator('#card-lowest .registration-badge')).toHaveCount(0);
   await page.locator('#card-budget .row-facts').last().click();
@@ -44,13 +46,14 @@ test('short-stay price changes result/map/comparison priority and registration i
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.keyboard.press('Escape');
   for(const id of ['higher','budget','lowest'])await page.getByRole('button',{name:`Compare Test ${id}`,exact:true}).click();
-  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/COMPARE/}).click();
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();
   await expect(page.getByRole('combobox',{name:'Comparison priority'})).toHaveText('Nearest first');
   await expect(page.getByRole('dialog')).not.toContainText(/straight.line/i);
-  const locations=page.locator('.comparison-scroll tr').filter({has:page.getByText('Location',{exact:true})});
+  await page.getByRole('button',{name:'More details',exact:true}).click();
+  const locations=page.locator('.comparison-scroll tr').filter({has:page.getByText('Address',{exact:true})});
   await expect(locations).toHaveCount(1);
   await expect(locations).not.toContainText(/\bkm\b/);
-  await expect(page.locator('.comparison-scroll')).toContainText('3 km by road');
+  await expect(page.locator('.comparison-scroll tr[data-fact="drive"]')).toContainText('About 8 min');
   await expect(page.locator('.comparison-scroll')).not.toContainText('/ month');
   await page.getByRole('combobox',{name:'Comparison priority',exact:true}).click();await page.getByRole('option',{name:'Lowest fee',exact:true}).click();
   await expect(page.locator('th.comparison-best')).toHaveCount(1);await expect(page.locator('th.comparison-best')).toHaveAttribute('data-provider-id','lowest');
@@ -71,7 +74,7 @@ test('nearby conflicts stay in a full 10-centre page and remain selectable on th
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/?care=short_term#discover');await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await page.locator('#transport').selectOption('self');await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await page.goto('/?care=short_term#discover');await openSearch(page);await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await revealPreferences(page); await page.locator('#transport').selectOption('self');await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);
   await expect(page.locator('.provider-row')).toHaveCount(10);
   await expect(page.locator('.provider-row').last()).toHaveAttribute('data-provider-id','near-0');
   const firstIds=await page.locator('.provider-row').evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort());
@@ -79,6 +82,7 @@ test('nearby conflicts stay in a full 10-centre page and remain selectable on th
   await expect(page.locator('.provider-pin')).toHaveCount(10);
   const conflictPin=page.locator('.provider-pin.conflict');await expect(conflictPin).toHaveCount(1);
   await conflictPin.click();await expect(conflictPin).toHaveAttribute('aria-pressed','true');
+  await openResults(page);
   await expect(page.getByRole('button',{name:'Select Nearby 0',exact:true})).toHaveAttribute('aria-pressed','true');
   await page.getByRole('combobox',{name:'Order search results',exact:true}).click();await page.getByRole('option',{name:'Lowest fee',exact:true}).click();
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','near-9');
@@ -100,7 +104,7 @@ test('nearby conflicts stay in a full 10-centre page and remain selectable on th
   await page.getByRole('button',{name:'Previous',exact:true}).click();await expect(page.locator('.provider-row')).toHaveCount(10);
   await page.getByRole('button',{name:'Previous',exact:true}).click();
   await expect(page.locator('.pagination')).toContainText('1–10 / 26');
-  await page.setViewportSize({width:390,height:844});await page.getByRole('button',{name:'Map',exact:true}).click();
+  await page.setViewportSize({width:390,height:844});await page.getByRole('button',{name:'Close search panel'}).click();
   await expect(page.locator('.provider-pin.conflict')).toHaveCount(1);
   await page.screenshot({path:out+'/nearest-page-conflict-mobile.png'});
 });

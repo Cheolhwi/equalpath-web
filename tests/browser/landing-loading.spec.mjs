@@ -96,7 +96,8 @@ test("waiting is optional and a direct search link never mounts the artwork load
   await page.getByRole("button", { name: "FIND CHILDCARE", exact: true }).click();
   await expect(page.locator(".experience")).toHaveAttribute("data-intro-phase", "ready");
   await expect(page.locator(".landing-loader")).toHaveCount(0);
-  await expect(page.locator("#pickup-search")).toBeFocused();
+  await expect(page.locator(".equalpath")).toBeFocused();
+  await expect(page.locator("#pickup-search")).not.toBeFocused();
   await page.reload();
   await expect(page.locator(".landing")).toHaveCount(0);
   await expect(page.locator("#pickup-search")).toBeVisible();

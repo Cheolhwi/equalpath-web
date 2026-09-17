@@ -1,0 +1,224 @@
+/* The map's quiet, rounded controls continue through every task surface.
+   Keep content opaque enough to read; glass belongs to the outer controls. */
+.map-first .map-tools-overlay > .map-quick-actions {
+  display: flex; align-items: stretch; flex-wrap: wrap; gap: 8px;
+  width: fit-content; max-width: 100%;
+}
+.map-first .map-quick-actions > button { min-height: 46px; margin: 0; }
+.map-results-short { display: none; }
+.map-first .map-quick-actions .map-saved-shortcut {
+  gap: 9px; padding: 8px 14px; max-width: 240px; border-radius: 18px; text-align: left;
+}
+.map-saved-shortcut > svg { flex-shrink: 0; color: var(--accent); }
+.map-saved-shortcut > span { min-width: 0; }
+.map-saved-label { display: flex; align-items: center; gap: 7px; font-size: 13px; line-height: 1.4; }
+.map-saved-label small { display: grid; place-items: center; min-width: 18px; height: 18px; border-radius: 50%; background: var(--soft); font-size: 11px; }
+.map-saved-shortcut strong { display: block; max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; font-size: 13px; font-weight: 600; }
+.map-saved-shortcut:has(strong) .map-saved-label { font-size: 11px; color: var(--muted); }
+
+.equalpath.map-first dialog:not(.tour-dialog) {
+  --surface-pad: 28px;
+  width: min(620px, calc(100vw - 40px)); max-width: calc(100vw - 40px);
+  max-height: calc(100dvh - 40px); border: 1px solid var(--rule); border-radius: 26px;
+  background: var(--bg); color: var(--ink);
+  box-shadow: 0 24px 80px #1e2a2440, 0 2px 8px #1e2a2414;
+  overflow: hidden;
+}
+.equalpath.map-first dialog.wide { width: min(1100px, calc(100vw - 48px)); }
+.equalpath.map-first dialog.saved-dialog { width: min(820px, calc(100vw - 40px)); }
+.map-first dialog::backdrop { background: #202b2448; backdrop-filter: blur(7px); }
+.equalpath.map-first dialog .dialog-content { padding: 0; display: flex; flex-direction: column; max-height: inherit; }
+.equalpath.map-first dialog .dialog-body { overflow-y: auto; min-height: 0; padding: 24px var(--surface-pad) var(--surface-pad); scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
+.equalpath.map-first dialog .dialog-top {
+  position: relative; top: auto; z-index: 5; flex-shrink: 0;
+  align-items: flex-start; gap: 16px;
+  margin: 0;
+  padding: 22px var(--surface-pad) 18px; background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+}
+.dialog-heading { min-width: 0; flex: 1; }
+.dialog-kicker { display: block; margin-bottom: 7px; color: var(--accent); font-size: 10px; font-weight: 600; letter-spacing: .09em; }
+.equalpath.map-first .dialog-title-row { margin: 0; align-items: center; gap: 10px; }
+.equalpath.map-first .dialog-title-row h2 { flex: 1; min-width: 0; margin: 0; font-size: 27px; line-height: 1.22; letter-spacing: -.6px; overflow-wrap: anywhere; }
+.equalpath.map-first .dialog-top > button {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  width: auto; flex-shrink: 0; min-height: 44px; padding: 8px 12px;
+  border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); font-size: 14px;
+}
+.map-first dialog .dialog-top > button:hover { background: var(--soft); border-color: var(--accent); }
+.map-first dialog :is(.primary, .secondary) { border-radius: 999px; padding-inline: 18px; }
+.map-first dialog .primary { background: var(--nav-selected); color: var(--nav-selected-text); border-color: transparent; }
+.map-first dialog .primary:hover { filter: brightness(.95); }
+.map-first dialog :is(.secondary[aria-pressed="true"], .secondary:hover) { background: var(--soft); border-color: var(--accent); }
+.map-first dialog :is(input:not([type="checkbox"], [type="radio"]), select, textarea) { border-radius: 12px; }
+.map-first dialog :is(.error-box, .notice-panel, .save-explanation, .dialog-context, .request-context, .care-journey) { border-radius: 14px; }
+.map-first dialog .empty-state { align-items: center; gap: 10px; padding: 20px 12px 26px; border: 0; text-align: center; }
+.map-first dialog .empty-state > svg { box-sizing: content-box; padding: 18px; border-radius: 22px; background: var(--soft); color: var(--accent); margin-bottom: 4px; }
+.map-first dialog .empty-state h3 { font-size: 22px; line-height: 1.35; }
+.map-first dialog .empty-state p { font-size: 15px; max-width: 32ch; margin: 0 auto 8px; }
+.map-first dialog .empty-state .primary { margin: 0 auto; }
+.map-first dialog .select-menu-trigger { border-radius: 12px; }
+.map-first dialog .theme-buttons { border-radius: 999px; padding: 4px; background: var(--soft); }
+.map-first dialog .theme-buttons button { border: 0; border-radius: 999px; }
+.map-first :is(.select-menu-popup, .registration-popover) { border-radius: 14px; background: var(--paper); }
+.map-first .select-menu-option { border-radius: 9px; }
+
+/* Centre information reads as four facts and one clear next step. */
+.map-first .centre-metrics { background: none; border: 0; gap: 10px; }
+.map-first .centre-metrics > div { border: 1px solid var(--rule); border-radius: 18px; background: var(--paper); padding: 16px; }
+.map-first .centre-metrics > div:last-child { border-right: 1px solid var(--rule); }
+.map-first .centre-metrics dt { color: var(--muted); }
+.map-first .centre-metrics dt > svg { color: var(--accent); }
+.map-first .centre-next { top: 110px; }
+.map-first .centre-next-card { padding: 20px; border-radius: 20px; background: var(--soft); border: 1px solid var(--rule); }
+.map-first .centre-next-card h3 { font-size: 20px; }
+.map-first .centre-shortlist { padding: 4px; background: var(--paper); border: 1px solid var(--rule); border-radius: 999px; }
+.map-first .centre-shortlist .secondary { border: 0; padding-inline: 8px; }
+.map-first .centre-fit .fit-verdict { border-radius: 14px; border-left-width: 3px; }
+.map-first .centre-layout > :is(.centre-fees, .centre-hours, .centre-evidence) { border: 1px solid var(--rule); border-radius: 16px; padding: 0 16px; background: var(--paper); }
+.map-first .centre-layout { row-gap: 14px; }
+.map-first .centre-layout > details > summary { min-height: 54px; }
+.map-first .centre-layout > details[open] { padding-bottom: 14px; }
+.map-first .centre-request { border: 0; border-radius: 12px; background: var(--soft); padding: 2px 14px; }
+
+/* Comparison keeps aligned rows; quieter column cards replace the dense grid. */
+.map-first .compare-sort { padding: 10px 14px; margin: 0 0 18px; border-radius: 18px; background: var(--soft); gap: 8px 18px; }
+.map-first .compare-sort .compare-more { margin: 0 0 0 auto; padding: 4px 10px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); font-size: 14px; }
+.map-first .compare-sort .compare-order-note { flex-basis: 100%; border-top: 1px solid var(--rule); }
+.map-first .compare-sort .compare-order-note > summary { min-height: 36px; font-size: 12px; }
+.map-first .comparison-scroll { border-radius: 18px; border: 1px solid var(--rule); background: var(--paper); padding-bottom: 0; }
+.map-first .comparison-scroll table { border-collapse: separate; border-spacing: 0; }
+.map-first .comparison-scroll :is(th, td) { border: 0; border-bottom: 1px solid var(--rule); padding: 16px; }
+.map-first .comparison-scroll :is(th, td) + :is(th, td) { border-left: 1px solid var(--rule); }
+.map-first .comparison-scroll tr:last-child > * { border-bottom: 0; }
+.map-first .comparison-scroll thead th { background: var(--paper); vertical-align: top; }
+.map-first .comparison-scroll thead th.comparison-best { background: var(--soft); box-shadow: inset 0 3px var(--accent); }
+.map-first .comparison-scroll th:first-child { width: 130px; background: var(--bg); }
+.map-first .comparison-scroll h3 { font-size: 18px; line-height: 1.4; }
+.map-first .comparison-scroll .remove-compare { display: grid; place-items: center; width: 44px; min-height: 44px; margin: -7px -7px 5px 8px; border-radius: 50%; background: var(--bg); }
+.map-first .comparison-scroll .remove-compare:hover { background: var(--soft); }
+.map-first .comparison-best-tag { border: 0; border-radius: 999px; background: var(--paper); padding: 6px 9px; font-size: 12px; }
+.map-first .comparison-scroll .compare-contact { font-size: 14px; min-height: 44px; padding: 8px 12px; }
+.map-first dialog .state-pill { border-radius: 999px; }
+
+/* Saved items use the same segmented navigation and contained cards. */
+.map-first .saved-tabs { display: inline-flex; width: fit-content; max-width: 100%; padding: 5px; gap: 4px; margin: 0 0 16px; border: 1px solid var(--rule); border-radius: 999px; background: var(--soft); }
+.map-first .saved-tabs button { padding: 8px 17px; border: 0; border-radius: 999px; font-size: 15px; }
+.map-first .saved-tabs button[aria-pressed="true"] { background: var(--nav-selected); color: var(--nav-selected-text); }
+.map-first .saved-tabs button[aria-pressed="true"] em { color: inherit; }
+.map-first .saved-row { border: 1px solid var(--rule); border-radius: 18px; padding: 20px; margin-bottom: 12px; background: var(--paper); }
+.map-first .saved-row h3 { font-size: 20px; }
+.map-first .saved-row .saved-actions > button:not(.secondary) { border-radius: 999px; padding-inline: 12px; }
+.map-first .saved-row .saved-actions > button:not(.secondary):hover { background: var(--soft); }
+.map-first .save-explanation { padding: 12px 16px; }
+.map-first .saved-library > .save-explanation { margin-bottom: 0; padding: 0; border-radius: 0; }
+
+/* Contact and preparation share the same card edges and action hierarchy. */
+.map-first .contact-first .enquiry-send { border: 1px solid var(--rule); border-radius: 20px; }
+.equalpath.map-first .call-link { border-radius: 999px; }
+.equalpath.map-first .contact-first .call-link { justify-content: center; padding: 12px 18px; background: var(--nav-selected); color: var(--nav-selected-text); }
+.map-first .question-editor { border: 1px solid var(--rule); border-radius: 16px; padding-inline: 16px; background: var(--paper); }
+.map-first .question-editor[open] { padding-bottom: 16px; }
+.map-first .contact-first .enquiry-next { border-radius: 18px; background: var(--soft); border: 0; padding: 18px 20px; }
+.map-first .preparation-visual .preparation-plan { border: 1px solid var(--rule); border-radius: 22px; }
+.map-first .ready-plan-note > span { border-radius: 999px; background: var(--paper); }
+.map-first .ready-item { border-radius: 18px; overflow: hidden; }
+.map-first .ready-item.is-ready { box-shadow: inset 0 0 0 1px var(--accent); }
+.map-first .ready-support { border: 1px solid var(--rule); border-radius: 16px; background: var(--paper); padding-inline: 16px; }
+.map-first .preparation-visual .time-value-button { border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); padding: 5px 9px; }
+.map-first .provider-row { border-radius: 18px; margin: 10px 12px; border: 1px solid var(--rule); background: var(--paper); }
+.map-first .provider-row.selected { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.map-first .provider-row .row-actions button { border-radius: 999px; }
+.equalpath.map-first .discovery-panel { --panel-pad: 22px; padding: var(--panel-pad) var(--panel-pad) 80px; }
+.equalpath.map-first .discovery-panel .intro {
+  top: calc(-1 * var(--panel-pad)); margin: calc(-1 * var(--panel-pad)) calc(-1 * var(--panel-pad)) 20px; padding: 18px var(--panel-pad) 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.map-first .provider-row .row-actions { gap: 6px; }
+.map-first .provider-row .row-actions > button:not(:last-child) { border: 1px solid var(--rule); background: var(--bg); }
+.map-first .provider-row .row-actions > button[aria-pressed="true"] { background: var(--soft); border-color: var(--accent); }
+.map-first .provider-row :is(.state-pill, .suggestion-tag) { border-radius: 999px; }
+
+/* Clear, separate card actions. The whole card is not a nested button. */
+.map-first .map-centre-card { display: flex; flex-direction: column; }
+.map-first .map-centre-card-main { flex: 1; min-height: 0; height: auto; padding: 14px 36px 10px 44px; gap: 5px; justify-content: center; }
+.map-first .map-centre-card-main strong { flex-shrink: 0; }
+.map-first .map-card-fee { padding: 0; }
+.map-card-actions { display: grid; grid-template-columns: .85fr 1.15fr 1fr; flex-shrink: 0; gap: 6px; padding: 10px; border-top: 1px solid var(--rule); }
+.map-card-actions button { display: flex; align-items: center; justify-content: center; gap: 4px; min-width: 0; min-height: 44px; padding: 5px; border: 1px solid var(--rule); border-radius: 11px; background: var(--paper); font-size: 12px; font-weight: 600; transition: background 140ms ease, border-color 140ms ease, box-shadow 140ms ease; }
+.map-card-actions button svg { flex-shrink: 0; }
+.map-card-actions button:hover { border-color: var(--accent); background: var(--soft); box-shadow: 0 2px 5px #26362514; }
+.map-card-actions button:active { box-shadow: inset 0 1px 3px #26362526; }
+.map-card-actions button:is([aria-pressed="true"], .is-saved) { background: var(--soft); border-color: var(--accent); color: var(--ink); }
+.map-card-actions .map-card-details { background: var(--nav-selected); color: var(--nav-selected-text); border-color: transparent; }
+.map-card-actions .map-card-details:hover { background: var(--ink); color: var(--paper); }
+.map-card-rail { position: absolute; left: 0; right: 0; display: flex; gap: 12px; padding: 0 12px 8px; overflow-x: auto; overflow-y: hidden; pointer-events: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 12px; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+.map-card-rail .map-centre-card { position: relative; flex-shrink: 0; scroll-snap-align: start; box-shadow: 0 2px 6px #26362520; }
+.map-card-rail.narrow-rail { right: 60px; }
+
+@media (max-width: 760px) {
+  .equalpath.map-first dialog:not(.tour-dialog), .equalpath.map-first dialog.wide {
+    --surface-pad: 18px; max-width: calc(100vw - 16px); width: calc(100vw - 16px);
+    max-height: calc(100dvh - 20px); border-radius: 22px;
+  }
+  .equalpath.map-first dialog .dialog-top { gap: 10px; padding-top: 16px; padding-bottom: 14px; }
+  .equalpath.map-first dialog .dialog-body { padding-top: 18px; }
+  .equalpath.map-first .discovery-panel { --panel-pad: 16px; }
+  .equalpath.map-first .discovery-panel .intro { padding: 16px; margin-bottom: 18px; }
+  .map-first .map-centre-card-main { padding: 10px 30px 8px 38px; gap: 4px; }
+  .map-card-actions { gap: 5px; padding: 8px; }
+  .equalpath.map-first .dialog-title-row h2 { font-size: 23px; letter-spacing: -.4px; }
+  .equalpath.map-first .dialog-top > button { padding: 8px; }
+  .equalpath.map-first .dialog-top > button span { display: none; }
+  .equalpath.map-first .dialog-top > button { width: 44px; }
+  .map-first .centre-metrics { gap: 8px; }
+  .map-first .centre-metrics > div { padding: 13px; border-radius: 15px; }
+  .map-first .centre-next { position: static; }
+  .map-first .comparison-scroll th:first-child { width: 110px; }
+  .map-first .comparison-scroll :is(th, td) { padding: 12px; }
+  .map-first .comparison-scroll h3 { font-size: 16px; }
+  .map-first .compare-sort { padding: 10px; gap: 8px; }
+  .map-first .compare-sort .compare-more { margin-left: 0; }
+  .map-first .saved-row { padding: 16px; }
+}
+@media (max-width: 560px) {
+  .map-first .map-tools-overlay > .map-quick-actions { display: grid; grid-template-columns: 44px repeat(2,minmax(0,1fr)); width: 100%; gap: 6px; }
+  .map-first .map-quick-actions > button { min-width: 0; }
+  .map-first .map-quick-actions > button:first-child { flex-direction: column; gap: 0; padding: 4px; font-size: 11px; line-height: 1.35; }
+  .map-results-label { display: none; }
+  .map-results-short { display: inline; }
+  .map-first .map-quick-actions .map-saved-shortcut { min-height: 44px; max-width: none; width: 100%; padding: 6px 8px; gap: 5px; border-radius: 16px; }
+  .map-saved-label, .map-saved-shortcut:has(strong) .map-saved-label { font-size: 11px; white-space: nowrap; }
+  .map-saved-label small { display: none; }
+  .map-saved-shortcut strong { font-size: 12px; line-height: 1.25; }
+  .map-centre-card.compact-height strong { flex-shrink: 0; }
+  .map-centre-card.compact-height .map-card-fee { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .map-first .comparison-scroll table { width: calc(88px + var(--compare-count) * (100vw - 146px)); min-width: calc(88px + var(--compare-count) * (100vw - 146px)); }
+  .map-first .comparison-scroll th:first-child { width: 88px; position: sticky; left: 0; z-index: 2; }
+}
+@media (prefers-contrast: more), (forced-colors: active) {
+  .map-first dialog { border-color: var(--ink); }
+  .map-first dialog :is(.primary, .saved-tabs button[aria-pressed="true"]) { border: 1px solid currentColor; }
+}
+@media (max-width: 560px) and (max-height: 650px) {
+  .map-first .dock-options { padding: 4px; }
+  .map-first .dock-options .search-chip,
+  .map-first .dock-options .time-input .search-chip { min-height: 44px; padding-block: 2px; }
+}
+@media (max-width: 350px) {
+  .map-card-actions button { flex-direction: column; gap: 1px; padding: 3px 1px; }
+  .map-card-actions { grid-template-columns: 1fr 1.1fr 1fr; }
+}
+@media print {
+  .equalpath.map-first dialog .dialog-top { position: static; }
+  .equalpath.map-first dialog .dialog-content { display: block; max-height: none; }
+  .equalpath.map-first dialog .dialog-body { overflow: visible; }
+}
+
+/* On short phones the Compare action remains in the fixed main navigation.
+   Avoid a duplicate floating tray covering the centre's action buttons. */
+@media (max-width: 760px) and (max-height: 650px) {
+  .equalpath.map-first.mobile-map .compare-tray { display: none; }
+  .map-first .map-quick-actions > button,
+  .map-first .map-quick-actions .map-saved-shortcut { height: 44px; min-height: 44px; padding-block: 3px; }
+}

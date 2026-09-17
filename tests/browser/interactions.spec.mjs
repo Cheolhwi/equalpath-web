@@ -1,3 +1,4 @@
+import { chooseAge, openResults, openSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import { createAPI } from "../../server/api.mjs";
@@ -22,14 +23,14 @@ async function start(page) {
     localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, zoom: 13,
       center: { lat: 3.139, lng: 101.6869 }, pickup: { id: null, label: "KL Sentral", lat: 3.139, lng: 101.6869 } }));
   });
-  await page.goto("/?care=short_term#discover");
+  await page.goto("/?care=short_term#discover");await openSearch(page);
   return calls;
 }
 async function search(page) {
   await page.locator("#service-date").fill("2026-09-14");
   await page.locator("#deadline").fill("13:00");
   await page.locator("#care-end").fill("17:00");
-  await page.getByRole("button", { name: "Find care options", exact: true }).click();
+  await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
   await expect(page.locator(".provider-row")).toHaveCount(8);
 }
 
@@ -38,7 +39,7 @@ test("circle pointer works above dialogs without blocking clicks and restores na
   const errors = []; page.on("pageerror", e => errors.push(e.message));
   await start(page);
   const pointer = page.locator(".care-pointer");
-  const saved = page.getByRole("button", { name: /03.*SAVED/ });
+  const saved = page.getByRole("button", { name: /^Saved(?: \d+)?$/ });
   await saved.hover();
   await expect(pointer).toBeVisible();
   expect(await pointer.evaluate(el => el.matches(":popover-open"))).toBe(true);
@@ -58,6 +59,7 @@ test("circle pointer works above dialogs without blocking clicks and restores na
   await page.locator("#pickup-search").hover();
   await expect(page.locator("html")).not.toHaveAttribute("data-equalpath-cursor", "true");
   expect(await page.locator("#pickup-search").evaluate(el => getComputedStyle(el).cursor)).not.toBe("none");
+  await page.getByRole("button", { name: "Close search panel" }).click();
   await page.locator(".map-canvas canvas").hover({ position: { x: 100, y: 500 } });
   await expect(pointer).not.toBeVisible();
   await saved.hover(); await expect(pointer).toBeVisible();
@@ -111,7 +113,7 @@ test("dialogs fade out with their backdrop before removal for every dismissal ro
   const calls = await start(page);
   await page.clock.install();
   await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
-  const saved = page.locator(".app-header nav button").filter({ hasText: "SAVED" });
+  const saved = page.locator(".app-header nav button").filter({ hasText: "Saved" });
   const dialog = page.locator("dialog");
   for (const method of ["close", "escape", "backdrop", "return"]) {
     if (method === "backdrop") await page.setViewportSize({ width: 390, height: 844 });
@@ -144,7 +146,7 @@ test("dialogs fade out with their backdrop before removal for every dismissal ro
       await page.clock.runFor(32);
     }
     await expect(dialog).toHaveCount(0);
-    await expect(saved).toBeFocused();
+    await expect(saved, `Restore opener after ${method}`).toBeFocused();
   }
   expect(calls.filter(x => x === "search")).toHaveLength(0);
 });
@@ -152,7 +154,7 @@ test("dialogs fade out with their backdrop before removal for every dismissal ro
 test("quick dismissal does not flash opaque, and reduced motion closes immediately", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await start(page);
-  await page.getByRole("button", { name: /03.*SAVED/ }).click();
+  await page.getByRole("button", { name: /^Saved(?: \d+)?$/ }).click();
   const dialog = page.locator("dialog");
   const enteringOpacity = await dialog.evaluate(el => {
     const a = el.getAnimations().find(a => a.animationName === "care-surface-appear");
@@ -164,7 +166,7 @@ test("quick dismissal does not flash opaque, and reduced motion closes immediate
   expect(await dialog.evaluate(el => Number(el.style.getPropertyValue("--dialog-exit-opacity")))).toBeCloseTo(enteringOpacity, 3);
   await expect(dialog).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.getByRole("button", { name: /03.*SAVED/ }).click();
+  await page.getByRole("button", { name: /^Saved(?: \d+)?$/ }).click();
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   expect(await dialog.count()).toBe(0);

@@ -1,3 +1,4 @@
+import { chooseAge, openSearch, openResults } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog } from "../../server/fixtures.mjs";
@@ -11,12 +12,18 @@ async function mock(page, calls=[]) {
 const tour=(page)=>page.locator(".tour-dialog");
 const next=async(page)=>{await tour(page).getByRole("button",{name:"Next",exact:true}).click();};
 async function start(page) {
+  if (!(await tour(page).isVisible())) await page.getByRole("button",{name:"Quick tour",exact:true}).click();
   await expect(tour(page)).toBeVisible();
   await tour(page).getByRole("button",{name:"Show me around",exact:true}).click();
   await expect(page.locator("#pickup-search")).toHaveValue("KL Sentral · tutorial");
 }
-test("first entry offers an immediate Skip; dismissal survives reload and Quick tour replays",async({page})=>{
+test("first entry opens the map without a tutorial; optional Quick tour can be skipped and replayed",async({page})=>{
   await mock(page);await page.goto("/#discover");
+  await expect(page.locator(".discovery-panel")).not.toBeVisible();
+  await openSearch(page);
+  await expect(page.getByRole("radio",{name:"Short time",exact:true})).toBeChecked();
+  await expect(tour(page)).toHaveCount(0);
+  await page.getByRole("button",{name:"Quick tour",exact:true}).click();
   await expect(tour(page)).toBeVisible();
   await expect(tour(page).getByRole("button",{name:"Skip",exact:true})).toBeVisible();
   await page.screenshot({path:`${evidence}/tour-welcome.png`});
@@ -45,10 +52,10 @@ test("guided sample uses the actual form, search, checks, comparison and questio
   await page.screenshot({path:`${evidence}/tour-questions.png`});
   await tour(page).getByRole("button",{name:"Find childcare",exact:true}).click();
   await expect(tour(page)).toHaveCount(0);await expect(page.locator(".tour-behind")).toHaveCount(0);
-  await expect(page.locator("#pickup-search")).toHaveValue("My pickup point");await expect(page.locator("#deadline")).toHaveCount(0);await expect(page.getByRole("radio",{name:"No, regular care"})).toBeChecked();
+  await expect(page.locator("#pickup-search")).toHaveValue("My pickup point");await openSearch(page);await expect(page.locator("#deadline")).toHaveValue("");await expect(page.getByRole("radio",{name:"Short time"})).toBeChecked();
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:map:v1:live")))).toEqual(memory);
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:tour:v1")))).toEqual({version:1,status:"completed"});
-  await page.reload();await expect(page.locator(".nearby-card").first()).toBeVisible();
+  await page.reload();await openSearch(page);await expect(page.locator(".nearby-card").first()).toBeVisible();
   await expect(tour(page)).toHaveCount(0);
 });
 test("mobile walkthrough stays on screen with visible highlights and respects reduced motion",async({page})=>{
@@ -64,9 +71,8 @@ test("mobile walkthrough stays on screen with visible highlights and respects re
     expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(391);expect(box.y+box.height).toBeLessThanOrEqual(845);
     await page.screenshot({path:`${evidence}/tour-mobile-${step}.png`});
     if(step===5) {
-      await tour(page).getByRole("button",{name:"Centre 2",exact:true}).click();
-      await expect.poll(()=>page.locator(".tour-behind .comparison-scroll").evaluate(el=>el.scrollLeft)).toBeGreaterThan(100);
-      await page.screenshot({path:`${evidence}/tour-mobile-compare-second.png`});
+      await expect(page.locator('.tour-behind .comparison-scroll thead th[data-provider-id]:visible')).toHaveCount(2);
+      await page.screenshot({path:`${evidence}/tour-mobile-compare-pair.png`});
     }
     if(step<6)await next(page);
   }
@@ -80,8 +86,9 @@ test("mobile walkthrough stays on screen with visible highlights and respects re
   await page.keyboard.press("Escape");await expect(tour(page)).toHaveCount(0);
 });
 test("skip during an in-flight example restores results and cannot be overwritten by the late response",async({page})=>{
-  await mock(page);await page.goto("/?mode=demo#discover");
-  await page.getByRole("button",{name:"Find care options",exact:true}).click();
+  await mock(page);await page.goto("/?mode=demo#discover");await openSearch(page);
+  await chooseAge(page); await page.getByRole("button",{name:"Find childcare",exact:true}).click();
+  await openResults(page);
   await expect(page.locator(".provider-row").first()).toBeVisible();
   const before=await page.locator(".provider-row").allTextContents();
   let release;const held=new Promise(r=>{release=r;});
@@ -90,7 +97,7 @@ test("skip during an in-flight example restores results and cannot be overwritte
   await page.getByRole("button",{name:"Quick tour",exact:true}).click();await start(page);await next(page);await next(page);
   await expect(tour(page)).toContainText("Running the example");
   await tour(page).getByRole("button",{name:"Skip tour",exact:true}).click();release();
-  await page.getByRole("button",{name:"Edit request",exact:true}).click();
+  await page.getByRole("button",{name:"Change search",exact:true}).click();
   await expect(page.getByRole("button",{name:"Update results",exact:true})).toBeEnabled();
   await expect(page.locator("#deadline")).toHaveValue("16:00");
   await expect.poll(()=>page.locator(".provider-row").allTextContents()).toEqual(before);
@@ -104,7 +111,7 @@ test("failed example can be retried; blocked storage and keyboard skip keep the 
   await tour(page).getByRole("button",{name:"Retry example",exact:true}).click();
   await expect(tour(page).getByRole("button",{name:"Next",exact:true})).toBeEnabled();
   await page.keyboard.press("Escape");await expect(tour(page)).toHaveCount(0);
-  await expect(page.locator("#deadline")).toHaveCount(0);await expect(page.getByRole("radio",{name:"No, regular care"})).toBeChecked();
+  await openSearch(page);await expect(page.locator("#deadline")).toHaveValue("");await expect(page.getByRole("radio",{name:"Short time"})).toBeChecked();
   await expect(page.locator("#pickup-search")).toHaveValue("");
-  await expect(page.getByRole("button",{name:"Find care options",exact:true})).toBeEnabled();
+  await expect(page.getByRole("button",{name:"Find childcare",exact:true})).toBeEnabled();
 });

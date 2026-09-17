@@ -1,26 +1,26 @@
 import baseStyle from "./base-map.json";
 export const palette = {
   light: {
-    bg: "#e8e5e1",
-    land: "#e1ded7",
-    park: "#d1d6c6",
-    water: "#b8c8c7",
-    road: "#faf8f3",
-    edge: "#bdb9b0",
-    ink: "#66675f",
-    building: "#d8d4ca",
-    rail: "#a28b71",
+    bg: "#f0efe8",
+    land: "#eeede5",
+    park: "#dce3ce",
+    water: "#cbdad5",
+    road: "#fffefa",
+    edge: "#d6d4c9",
+    ink: "#737b6c",
+    building: "#e3e2d7",
+    rail: "#b7b39f",
   },
   dark: {
-    bg: "#202c30",
-    land: "#28353a",
-    park: "#2d403b",
-    water: "#17262c",
-    road: "#536268",
-    edge: "#334349",
-    ink: "#b4bfbc",
-    building: "#344449",
-    rail: "#ad9574",
+    bg: "#252e29",
+    land: "#29362e",
+    park: "#324638",
+    water: "#253c3b",
+    road: "#46594b",
+    edge: "#354639",
+    ink: "#b8c6af",
+    building: "#354336",
+    rail: "#8f9980",
   },
 };
 export function makeStyle(theme = "light", labels = true) {
@@ -46,7 +46,7 @@ export function makeStyle(theme = "light", labels = true) {
             : p.land;
       if (/building/.test(id)) {
         l.paint["fill-outline-color"] = p.building;
-        l.paint["fill-opacity"] = 0.45;
+        l.paint["fill-opacity"] = 0.3;
       }
     }
     if (l.type === "line") {
@@ -57,7 +57,7 @@ export function makeStyle(theme = "light", labels = true) {
           : /casing|boundary|subtle/.test(id)
             ? p.edge
             : p.road;
-      if (/railway/.test(id)) l.paint["line-opacity"] = 0.5;
+      if (/railway/.test(id)) l.paint["line-opacity"] = 0.35;
       if (/boundary/.test(id)) l.paint["line-opacity"] = 0.35;
     }
     if (l.type === "symbol") {
@@ -74,7 +74,9 @@ export function makeStyle(theme = "light", labels = true) {
       l.paint["text-color"] = p.ink;
       l.paint["text-halo-color"] = p.bg;
       l.paint["text-halo-width"] = 1.3;
-      l.paint["text-opacity"] = /highway/.test(id) ? 0.75 : 0.9;
+      l.paint["text-opacity"] = /highway/.test(id) ? 0.65 : 0.88;
+      // Keep neighbourhood names useful; minor place labels arrive when zoomed in.
+      if (/poi|housenumber/.test(id)) l.minzoom = Math.max(l.minzoom ?? 0, 15);
     }
   }
   return {

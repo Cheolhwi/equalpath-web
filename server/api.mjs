@@ -35,7 +35,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
     if (!["live", "demo"].includes(mode))
       throw new ServiceError("INVALID_MODE", 400);
     if (
-      !["health", "places", "reverse", "nearby", "search", "details", "compare"].includes(
+      !["health", "places", "reverse", "nearby", "search", "details", "compare", "recommendations"].includes(
         body.action,
       )
     )
@@ -157,6 +157,21 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
         businessHoursDay: dated ? new Intl.DateTimeFormat("en", {weekday:"long", timeZone:"UTC"}).format(new Date(request.date + "T12:00:00Z")) : null,
       };
     };
+    if (body.action === "recommendations") {
+      // Fetch current public facts, never accept saved snapshots or inferred fit.
+      // Activity weights/timestamps remain in the browser; this boundary only
+      // receives the public IDs whose attributes need refreshing.
+      const ids = body.seedIds ?? [];
+      if (!Array.isArray(ids) || ids.length > 100 || new Set(ids).size !== ids.length || ids.some(id => typeof id !== 'string' || !id.length || id.length > 160))
+        throw new ServiceError('INVALID_SELECTION', 400);
+      const q = request.query.toLowerCase();
+      const candidates = items.filter(p => withinRadius(request.pickup, p.location, request.radius) &&
+        (!q || [p.name, p.registeredName, p.address, p.district].join(' ').toLowerCase().includes(q)))
+        .map(hydrate).filter(p => !p.fit.counts.conflict && (request.includeUnknown || p.fit.conditions.filter(c => c.id !== 'transfer').every(c => c.state !== 'unknown')))
+        .sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
+      return { ...meta, request, items: candidates.slice(0, 100), total: candidates.length, limit: 100,
+        seeds: items.filter(p => ids.includes(p.id)), checkedAt: new Date().toISOString() };
+    }
     if (body.action === "search") {
       const q = request.query.toLowerCase();
       let candidates = items

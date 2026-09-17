@@ -5,22 +5,21 @@ import "./tour.css";
 
 const steps = [
   { title: "Find care in a few steps", icon: MapPin },
-  { title: "Choose a pickup place", target: ".pickup-field", icon: MapPin, body: "Search an address, station or landmark. Short names and small typos work too. You can also choose a point on the map." },
-  { title: "Set your care hours", target: "[data-tour='care-times']", icon: Clock3, body: "Choose a date. Collect by is the latest pickup time; Care until is when you’ll collect your child from the new centre. Age and pickup preference are optional." },
-  { title: "Explore nearby centres", target: ".map-canvas", icon: Search, body: "Select a pin or a centre in the list. Add your care details, then choose Check conditions to see whether it fits." },
-  { title: "Read the condition checks", target: ".condition-list", icon: CheckCircle2, body: "We’ve opened an example centre. Green means a detail matches; red means a conflict. Amber means you need to ask the centre. Open the source links when you want to check the evidence." },
-  { title: "Compare your options", target: ".comparison-scroll", icon: Scale, body: "We’ve added two examples to Compare. Look across the columns to compare hours, distance, fees and pickup. In your own search, use + Compare to select up to three centres." },
-  { title: "Get ready to contact", target: ".question-list", icon: MessageCircle, body: "These questions come from the selected centre and your care details. Choose what to ask and copy the list. Use the centre’s listed phone or WhatsApp when you’re ready. You can also save it or create a pickup checklist." },
+  { title: "Choose a pickup address", target: ".pickup-field", icon: MapPin, body: "Enter an address, or choose it on the map." },
+  { title: "Set your care hours", target: "[data-tour='care-times']", icon: Clock3, body: "Set when your child leaves the pickup address and when you pick them up from childcare." },
+  { title: "See nearby centres", target: ".map-canvas", icon: Search, body: "Choose a centre to see fees, ages and care hours." },
+  { title: "Check this centre", target: ".condition-list", icon: CheckCircle2, body: "✓ Matches · ! Doesn’t match · ? Ask the centre. Tap a check for details." },
+  { title: "Compare your options", target: ".comparison-scroll", icon: Scale, body: "Tap Compare on 2 or 3 centres. See their fees and services side by side." },
+  { title: "Get ready to contact", target: ".enquiry-contact", icon: MessageCircle, body: "Call or message the centre to ask if your child can come. There’s a message you can use." },
 ];
 
 
 export default function GettingStarted({ onClose, onStep, reduced }) {
   const [step, setStep] = useState(0), [picked, setPicked] = useState(false),
     [layout, setLayout] = useState(() => ({ card: tourPlacement(null, { width: innerWidth, height: innerHeight }, 420), target: null })),
-    [working, setWorking] = useState(false), [error, setError] = useState(""), [retry, setRetry] = useState(0), [previewColumn, setPreviewColumn] = useState(0);
+    [working, setWorking] = useState(false), [error, setError] = useState(""), [retry, setRetry] = useState(0);
   const dialog = useRef(null), card = useRef(null), heading = useRef(null);
   const current = steps[step], Icon = current.icon;
-  useEffect(() => { if (step !== 5) setPreviewColumn(0); }, [step]);
   useEffect(() => {
     dialog.current.showModal();
     return () => dialog.current?.close();
@@ -38,7 +37,7 @@ export default function GettingStarted({ onClose, onStep, reduced }) {
       frame = requestAnimationFrame(() => {
         const element = current.target ? document.querySelector(current.target) : null;
         const r = element?.getBoundingClientRect();
-        const boundary = element?.closest(".tour-behind, .discovery-panel, .map-wrap")?.getBoundingClientRect();
+        const boundary = element?.closest(".dialog-body, .tour-behind, .discovery-panel, .map-wrap")?.getBoundingClientRect();
         const top = Math.max(8, r?.top ?? 0, boundary?.top ?? 0), left = Math.max(8, r?.left ?? 0, boundary?.left ?? 0);
         const right = Math.min(innerWidth - 8, r?.right ?? 0, boundary?.right ?? innerWidth), bottom = Math.min(innerHeight - 8, r?.bottom ?? 0, boundary?.bottom ?? innerHeight);
         const target = r && right > left && bottom > top ? { top, left, right, bottom, width: right - left, height: bottom - top } : null;
@@ -52,7 +51,7 @@ export default function GettingStarted({ onClose, onStep, reduced }) {
         const r = el.getBoundingClientRect(), p = panel.getBoundingClientRect();
         panel.scrollTop += r.top - p.top - 20;
       }
-      const detail = el?.closest(".tour-behind");
+      const detail = el?.closest(".dialog-body");
       if (detail) detail.scrollTop += el.getBoundingClientRect().top - detail.getBoundingClientRect().top - 20;
       heading.current?.focus({ preventScroll: true });
       card.current?.scrollTo({ top: 0 });
@@ -74,17 +73,12 @@ export default function GettingStarted({ onClose, onStep, reduced }) {
       {step > 0 && <div className="tour-progress" aria-label={`Step ${step} of 6`}>{steps.slice(1).map((_, i) => <span key={i} className={i < step ? "done" : ""} />)}</div>}
       <div className="tour-icon"><Icon size={24} strokeWidth={1.4} /></div>
       <h2 id="tour-title" ref={heading} tabIndex={-1}>{current.title}</h2>
-      <p id="tour-description">{step === 0 ? "We’ll fill in sample details and run through finding, comparing and contacting childcare. Then you can start your own search." : current.body}</p>
-      {step === 0 && <><ol className="tour-route"><li><MapPin size={17} /><span>Choose a place & time</span></li><li><CheckCircle2 size={17} /><span>Check & compare centres</span></li><li><MessageCircle size={17} /><span>Prepare your questions</span></li></ol><p className="tour-hint">About a minute. Skip anytime. Your search stays as it is.</p></>}
-      {step === 1 && <div className="tour-example"><small>TRY AN EXAMPLE</small><div className="tour-search-example"><Search size={15} />KL sentrl</div><button className="tour-place-example" onClick={() => setPicked(true)} aria-pressed={picked}><MapPin size={17} /><span><strong>KL Sentral</strong><small>Kuala Lumpur</small></span>{picked ? <Check size={17} /> : <ArrowRight size={17} />}</button>{picked && <p className="tour-feedback" role="status">Place selected. Next, choose your hours.</p>}</div>}
-      {step === 2 && <div className="tour-example"><small>EXAMPLE · SAME DAY</small><div className="tour-times"><div><small>Collect by</small><strong>13:00</strong><span>Pick up from the first place</span></div><ArrowRight size={18}/><div><small>Care until</small><strong>18:00</strong><span>Collect from the new centre</span></div></div></div>}
+      <p id="tour-description">{step === 0 ? "Try an example: find care, compare centres, then ask if they can take your child." : current.body}</p>
+      {step === 0 && <><ol className="tour-route"><li><MapPin size={17} /><span>Choose an address & time</span></li><li><CheckCircle2 size={17} /><span>Check & compare centres</span></li><li><MessageCircle size={17} /><span>Contact the centre</span></li></ol><p className="tour-hint">About a minute. Skip anytime. Your search stays as it is.</p></>}
+      {step === 1 && <div className="tour-example"><small>TRY AN EXAMPLE</small><div className="tour-search-example"><Search size={15} />KL sentrl</div><button className="tour-place-example" onClick={() => setPicked(true)} aria-pressed={picked}><MapPin size={17} /><span><strong>KL Sentral</strong><small>Kuala Lumpur</small></span>{picked ? <Check size={17} /> : <ArrowRight size={17} />}</button>{picked && <p className="tour-feedback" role="status">Address selected. Next, choose your hours.</p>}</div>}
+      {step === 2 && <div className="tour-example"><small>EXAMPLE · SAME DAY</small><div className="tour-times"><div><small>Leave this address by</small><strong>13:00</strong><span>From the pickup address</span></div><ArrowRight size={18}/><div><small>Pick up from childcare at</small><strong>18:00</strong><span>From the childcare centre</span></div></div></div>}
       {working && <p className="tour-feedback" role="status">Running the example…</p>}
       {error && <p className="tour-error" role="alert">{error} <button className="text-link" onClick={() => setRetry((v) => v + 1)}>Retry example</button></p>}
-      {step === 5 && !working && !error && <div className="tour-mobile-columns">{["Centre 1", "Centre 2"].map((label, i) => <button key={label} className="secondary" aria-pressed={previewColumn === i} onClick={() => {
-        setPreviewColumn(i);
-        const table = document.querySelector(".tour-behind .comparison-scroll");
-        table?.scrollTo({ left: i ? table.scrollWidth - table.clientWidth : 0, behavior: reduced ? "instant" : "smooth" });
-      }}>{label}<ArrowRight size={13}/></button>)}</div>}
       <div className="tour-actions"><button className="tour-back" onClick={() => step ? setStep((s) => s - 1) : onClose("skipped")}>{step ? <><ArrowLeft size={15}/>Back</> : "Skip"}</button><button className="primary" disabled={working || !!error} onClick={next}>{step === 0 ? "Show me around" : step === 6 ? "Find childcare" : "Next"}<ArrowRight size={16}/></button></div>
     </section>
   </dialog>;

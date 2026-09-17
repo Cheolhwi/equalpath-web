@@ -70,6 +70,10 @@ test("cold Function instances serve health, nearby, searches, details and compar
     const compare = await api({ action: "compare", request, ids: short.items.slice(0, 3).map(p => p.id), version: short.version });
     assert.equal(compare.items.length, 3);
     assert.equal(compare.version, metadata.version);
+    const recommendations = await api({ action: 'recommendations', request, seedIds: [short.items[0].id] });
+    assert.equal(recommendations.version, metadata.version);
+    assert.equal(recommendations.seeds[0].id, short.items[0].id);
+    assert.ok(recommendations.items.every(p => p.fit.counts.conflict === 0 && p.distanceKm <= 5));
   }
   assert.equal(network.mock.callCount(), 0);
 });

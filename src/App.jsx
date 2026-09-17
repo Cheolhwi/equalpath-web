@@ -8,7 +8,6 @@ import {
   SlidersHorizontal,
   Scale,
   List,
-  Map as MapIcon,
   Check,
   X,
   RotateCcw,
@@ -16,8 +15,17 @@ import {
   Moon,
   Info,
   CircleHelp,
+  Bookmark,
+  ClipboardList,
+  Building2,
+  Users,
+  ChevronDown,
 } from "lucide-react";
+import Recommendations from "./Recommendations.jsx";
+import useInterests from "./useInterests.js";
+import Comparison from "./Comparison.jsx";
 import MapCanvas from "./MapCanvas.jsx";
+import MapSearchDock from "./MapSearchDock.jsx";
 import Dialog from "./Dialog.jsx";
 import DialogPresence from "./DialogPresence.jsx";
 import SelectMenu, { sortOptions } from "./SelectMenu.jsx";
@@ -26,7 +34,6 @@ import CareTypeChoice from "./CareTypeChoice.jsx";
 import {
   ProviderCard,
   Details,
-  Comparison,
   Status,
   RegistrationBadge,
   OrderingNote,
@@ -37,12 +44,16 @@ import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
 import Enquiry from "./Enquiry.jsx";
+import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import GettingStarted from "./GettingStarted.jsx";
-import { tourSeen, saveTour } from "../shared/tour.mjs";
-import { feeSummary, drivingLabel } from "../shared/result-summary.mjs";
+import { saveTour } from "../shared/tour.mjs";
+import { feeSummary } from "../shared/result-summary.mjs";
+import { assess, costFor, enquiries } from "../shared/conditions.mjs";
 import {
   SavedLibrary,
   SavedSearchReminder,
+  SavedCentreReminder,
+  MapSavedShortcuts,
   FavouriteEditor,
   TemplateEditor,
   SavedChanges,
@@ -58,14 +69,14 @@ import {
 } from "../shared/saved.mjs";
 const EMPTY = [];
 const initial = () => ({
-  careType: new URLSearchParams(location.search).get("care") === "short_term" ? "short_term" : "regular",
+  careType: new URLSearchParams(location.search).get("care") === "regular" ? "regular" : "short_term",
   pickup: null,
-  date: new URLSearchParams(location.search).get("care") === "short_term" ? todayKL() : "",
+  date: new URLSearchParams(location.search).get("care") === "regular" ? "" : todayKL(),
   deadline: "",
   end: "",
   age: "",
   transport: "",
-  radius: searchRadius(MAX_SEARCH_RADIUS_KM, new URLSearchParams(location.search).get("care")),
+  radius: searchRadius(MAX_SEARCH_RADIUS_KM, new URLSearchParams(location.search).get("care") === "regular" ? "regular" : "short_term"),
   query: "",
   includeUnknown: true,
   includeConflicts: true,
@@ -131,7 +142,7 @@ export default function App({
     [questionSelection, setQuestionSelection] = useState({}),
     [dialogBusy, setDialogBusy] = useState(false),
     [dialogError, setDialogError] = useState(null),
-    [mobilePane, setMobilePane] = useState("list"),
+    [mobilePane, setMobilePane] = useState("map"),
     [choosing, setChoosing] = useState(false),
     [theme, setTheme] = useState("light"),
     [labels, setLabels] = useState(true),
@@ -150,9 +161,14 @@ export default function App({
     [reusePlace, setReusePlace] = useState(null),
     [preparation, setPreparation] = useState(null);
   const [tourOpen, setTourOpen] = useState(false);
+  const interests = useInterests(mode, tourOpen);
+  useEffect(() => {
+    if (dialog === 'details' && profile?.p && !dialogBusy && !tourOpen) interests.record([profile.p], 'view');
+  }, [dialog, profile, dialogBusy, tourOpen, interests.record]);
+  const [searchFocus, setSearchFocus] = useState(null), [dockHeight, setDockHeight] = useState(150);
   const [pickupQueryReset, setPickupQueryReset] = useState(null);
   const [pickupAddress, setPickupAddress] = useState(null), [addressRetry, setAddressRetry] = useState(0);
-  const tourOffered = useRef(false), tourSnapshot = useRef(null), tourData = useRef(null), tourSequence = useRef(0), startTourRef = useRef(null);
+  const tourSnapshot = useRef(null), tourData = useRef(null), tourSequence = useRef(0);
   const reuseSeq = useRef(0);
   const mapView = useRef(DEFAULT_MAP), rememberedPickup = useRef(null);
   const requestSeq = useRef(0),
@@ -241,10 +257,11 @@ export default function App({
     setFailure(null);
     setReusePlace({
       state: "pending",
-      message: "Loading your saved pickup place…",
+      message: "Loading your saved pickup address…",
     });
     setFormOpen(true);
-    setMobilePane("list");
+    setMobilePane("map");
+    setSearchFocus({ field: isShortCare(next) ? "date" : "age", at: Date.now() });
     close();
     try {
       const response = await requestAPI(mode === "live" ? {
@@ -263,14 +280,14 @@ export default function App({
         setReusePlace({
           state: "invalid",
           message:
-            "This saved pickup place could not be matched to the current directory. Select the public place again; its saved value has not been replaced.",
+            "We couldn’t find this saved address. Search for it again or choose it on the map. Your saved address is kept.",
         });
     } catch {
       if (seq === reuseSeq.current)
         setReusePlace({
           state: "invalid",
           message:
-            "We couldn’t check your saved pickup place. Try loading this search again or choose the place on the map.",
+            "We couldn’t check your saved pickup address. Try loading this search again or choose the address on the map.",
         });
     }
   };
@@ -286,7 +303,8 @@ export default function App({
     setErrors(isShortCare({ careType }) ? { date: "Choose a new date to check this centre." } : {});
     setFailure(null);
     setFormOpen(true);
-    setMobilePane("list");
+    setMobilePane("map");
+    setSearchFocus({ field: isShortCare({careType}) ? "date" : "age", at: Date.now() });
     close();
   };
   useEffect(() => {
@@ -319,7 +337,7 @@ export default function App({
         },
         deadline: "16:00",
         end: "18:00",
-        age: "4",
+        age: "4-6",
         transport: "institution",
       });
     return () => {
@@ -342,6 +360,9 @@ export default function App({
   }, [mode, draft.careType, browseCenter, results, nearbyReload, tourOpen]);
   useEffect(() => {
     const key = (e) => {
+      if (e.key === "Escape" && !e.defaultPrevented && !dialog && !tourOpen && mobilePane === "list" && !document.querySelector('dialog[open], [role="dialog"], [role="listbox"]')) {
+        setMobilePane("map"); requestAnimationFrame(() => document.querySelector(".map-search-launch")?.focus({ preventScroll: true })); return;
+      }
       if (
         introPhase === "ready" &&
         e.key === "/" &&
@@ -350,13 +371,13 @@ export default function App({
       ) {
         e.preventDefault();
         setFormOpen(true);
-        setMobilePane("list");
-        setTimeout(() => document.getElementById("pickup-search")?.focus(), 0);
+        setMobilePane("map");
+        setSearchFocus({field:"pickup", at:Date.now()});
       }
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [dialog, introPhase]);
+  }, [dialog, introPhase, tourOpen, mobilePane]);
   const rememberMap = (view, pickup = rememberedPickup.current) => {
     if (tourOpen) return;
     mapView.current = view;
@@ -364,6 +385,7 @@ export default function App({
     try { writeMapMemory(window.localStorage, mode, { ...view, pickup }); } catch { /* Map still works without storage. */ }
   };
   const showPickup = (pickup) => {
+    setPickupQueryReset({ value: pickup.label });
     const view = { center: { lat: pickup.lat, lng: pickup.lng }, zoom: 13 };
     rememberMap(view, pickup);
     setMapTarget(view);
@@ -399,9 +421,9 @@ export default function App({
   };
   const dirty = results && fingerprint(draft) !== fingerprint(results.request),
     activeRequest = results?.request,
-    items = results?.items ?? nearby?.items ?? EMPTY,
-    active = items.find((p) => p.id === selected);
+    items = results?.items ?? nearby?.items ?? EMPTY;
   const switchMode = (next) => {
+    setPickupQueryReset(null);
     requestSeq.current++;
     dialogSeq.current++;
     reuseSeq.current++;
@@ -424,7 +446,7 @@ export default function App({
     setEnquiry(null);
     setQuestionSelection({});
     setChoosing(false);
-    setMobilePane("list");
+    setMobilePane("map");
     const u = new URL(location.href);
     u.searchParams.set("mode", next);
     u.hash = "";
@@ -433,13 +455,17 @@ export default function App({
   const search = async (e, page = 0, override = null) => {
     e?.preventDefault?.();
     const request = override ?? draft,
-      issues = requestErrors(request);
+      issues = requestErrors(request, { requireAge: true });
     if (reusePlace) issues.pickup = reusePlace.message;
     setErrors(issues);
     if (Object.keys(issues).length) {
       setFormOpen(true);
       setTimeout(
-        () => document.querySelector('[aria-invalid="true"]')?.focus(),
+        () => {
+          const field = ["pickup", "date", "age", "deadline", "end"].find(key => issues[key]);
+          if (mobilePane === "map") setSearchFocus({ field, at: Date.now() });
+          else document.querySelector('[aria-invalid="true"]')?.focus();
+        },
         0,
       );
       return;
@@ -467,10 +493,10 @@ export default function App({
       const editedWhilePending =
         fingerprint(draftRef.current) !== fingerprint(request);
       if (!editedWhilePending) setDraft(r.request);
-      setSelected(r.items[0]?.id ?? null);
+      setSelected(null);
       setFormOpen(editedWhilePending);
       setHealth(r);
-      setMobilePane("list");
+      if (!(override && results && scenario(request) === scenario(results.request))) setMobilePane("map");
       listRef.current?.scrollTo({ top: 0 });
       if (savedResult) {
         setProfile({
@@ -502,12 +528,7 @@ export default function App({
   };
   const select = (id, fromMap = false) => {
     setSelected(id);
-    if (fromMap) {
-      document.getElementById("card-" + id)?.scrollIntoView({
-        block: "nearest",
-        behavior: reduced ? "instant" : "smooth",
-      });
-    }
+    if (fromMap) setMobilePane("map");
   };
   const toggleCompare = (id) => {
     if (compareIds.includes(id))
@@ -520,9 +541,10 @@ export default function App({
       setBrowseSelection(p);
       setSelected(p.id);
       setFormOpen(true);
-      setMobilePane("list");
-      notify(isShortCare(draft) ? "Add your pickup place and care hours to check this centre." : "Choose your location and preferences to check this centre.");
-      setTimeout(() => document.getElementById(draft.pickup ? isShortCare(draft) ? "deadline" : "age" : "pickup-search")?.focus(), 0);
+      setMobilePane("map");
+      setSearchFocus({field: draft.pickup ? isShortCare(draft) ? "deadline" : "age" : "pickup", at:Date.now()});
+      notify(isShortCare(draft) ? "Choose an address, age and times first." : "Choose an address and age first.");
+      setTimeout(() => document.getElementById(draft.pickup ? isShortCare(draft) ? "deadline" : "pickup-search" : "pickup-search")?.focus(), 0);
       return;
     }
     setProfile({ p, request: activeRequest });
@@ -544,7 +566,7 @@ export default function App({
         request: { ...activeRequest, sort },
         version: results.version,
       });
-      if (seq === dialogSeq.current) { setComparison(r); setCompareSort(r.request.sort); }
+      if (seq === dialogSeq.current) { setComparison(r); setCompareSort(r.request.sort); interests.record(r.items, 'compare'); }
     } catch (e) {
       if (seq === dialogSeq.current) setDialogError(e);
     } finally {
@@ -564,9 +586,22 @@ export default function App({
     setDialog("enquiry");
   };
   const startPreparation = (p, request = activeRequest) => {
-    setPreparation({ p, request });
+    setPreparation(previous => ({ p, request, sourceRequest:
+      previous?.p.id === p.id && scenario(previous.request) === scenario(request)
+        ? previous.sourceRequest ?? previous.request : request }));
     setDialogError(null);
     setDialog("preparation");
+  };
+  const changePreparationTimes = ({ deadline, end }) => {
+    setPreparation(current => {
+      if (!current || !isShortCare(current.request)) return current;
+      const request = { ...current.request, deadline, end };
+      if (Object.keys(requestErrors(request)).length) return current;
+      // Only times change: reuse the centre's loaded facts and assess the new plan.
+      const fit = assess(current.p, request);
+      const p = { ...current.p, fit, cost: costFor(current.p, request), enquiries: enquiries(current.p, request, fit) };
+      return { ...current, p, request, sourceRequest: current.sourceRequest ?? current.request };
+    });
   };
   const refreshPreparation = async () => {
     if (!activeRequest || !preparation) return;
@@ -581,7 +616,7 @@ export default function App({
         request: activeRequest,
       });
       if (seq === dialogSeq.current)
-        setPreparation({ p: r.items[0], request: r.request });
+        setPreparation({ p: r.items[0], request: r.request, sourceRequest: r.request });
     } catch (e) {
       if (seq === dialogSeq.current) setDialogError(e);
     } finally {
@@ -596,14 +631,12 @@ export default function App({
   };
   const startTour = () => {
     if (tourOpen || busy || dialogBusy || reusePlace?.state === "pending") return;
-    tourOffered.current = true;
     tourSnapshot.current = { draft, results, selected, compareIds, comparison, compareSort, profile, enquiry, questionSelection, formOpen, mobilePane, choosing, errors, failure, reopening, reusePlace, mapTarget: mapView.current, pickupQuery: document.querySelector("#pickup-search")?.value ?? draft.pickup?.label ?? "", panelScroll: document.querySelector(".discovery-panel")?.scrollTop ?? 0 };
     tourData.current = null;
     requestSeq.current++; dialogSeq.current++; reuseSeq.current++;
     setBusy(false); setDialogBusy(false); setDialog(null); setChoosing(false);
     setTourOpen(true);
   };
-  startTourRef.current = startTour;
   const finishTour = (status) => {
     tourSequence.current++;
     setBusy(false);
@@ -631,7 +664,7 @@ export default function App({
     setDialog(null); setFormOpen(true); setErrors({}); setFailure(null); setReopening(null); setReusePlace(null);
     setMobilePane(step === 3 ? "map" : "list");
     if (step === 0) return;
-    const example = { ...initial(), careType: "short_term", pickup: { id: "demo-pickup", label: "KL Sentral · tutorial", lat: 3.1341, lng: 101.6865 }, date: todayKL(), deadline: "13:00", end: "18:00", age: "4", transport: "self" };
+    const example = { ...initial(), careType: "short_term", pickup: { id: "demo-pickup", label: "KL Sentral · tutorial", lat: 3.1341, lng: 101.6865 }, date: todayKL(), deadline: "13:00", end: "18:00", age: "4-6", transport: "self" };
     setDraft({ ...example, ...(step === 1 ? { deadline: "", end: "", age: "", transport: "" } : {}) });
     setMapTarget({ center: { lat: 3.139, lng: 101.6869 }, zoom: 13 });
     if (step < 3) { setResults(null); setSelected(null); setCompareIds([]); return; }
@@ -656,14 +689,7 @@ export default function App({
       setEnquiry({ p: garden, request: r.request }); setDialog("enquiry");
     } finally { if (seq === tourSequence.current) setBusy(false); }
   };
-  useEffect(() => {
-    if (introPhase !== "ready" || mode !== "live" || dialog || tourOpen || tourOffered.current || busy || reusePlace?.state === "pending") return;
-    let seen = false;
-    try { seen = tourSeen(window.localStorage); } catch { /* A blocked store behaves like a first visit. */ }
-    if (seen) { tourOffered.current = true; return; }
-    const timer = setTimeout(() => startTourRef.current?.(), 400);
-    return () => clearTimeout(timer);
-  }, [introPhase, mode, dialog, tourOpen, busy, reusePlace]);
+  // Search is ready immediately. The user can open Quick tour when they need it.
   useEffect(() => {
     if (tourOpen && introPhase !== "ready") finishTour("skipped");
   }, [introPhase]);
@@ -672,13 +698,14 @@ export default function App({
   const retryDialog = () => loadComparison();
   return (
     <main
-      className={`equalpath ${theme} mobile-${mobilePane}`}
+      className={`equalpath map-first ${theme} mobile-${mobilePane}`}
+      tabIndex={-1}
       data-reduced={reduced}
       data-mode={tourOpen ? "demo" : mode}
       inert={introPhase !== "ready"}
       aria-hidden={introPhase !== "ready" || undefined}
     >
-      <a className="skip-link" href="#request-form">
+      <a className="skip-link" href="#request-form" onClick={() => { setMobilePane("map"); setSearchFocus({field:"pickup",at:Date.now()}); }}>
         Skip to your request
       </a>
       <header className="app-header">
@@ -687,12 +714,12 @@ export default function App({
           aria-label="EqualPath home"
           onClick={() => {
             close();
-            setMobilePane("list");
+            setMobilePane("map");
             onHome?.();
           }}
         >
           <strong>
-            EQUALPATH<span>／</span>
+            EQUALPATH
           </strong>
           <small>CHILDCARE IN KL & SELANGOR</small>
         </button>
@@ -701,27 +728,28 @@ export default function App({
             className={!dialog ? "active" : ""}
             onClick={() => {
               close();
-              setMobilePane("list");
+              setFormOpen(true); setMobilePane("map"); setSearchFocus({field:"pickup", at:Date.now()});
             }}
           >
-            <small>01</small>DISCOVER
+            <Search size={18} aria-hidden="true" />Find care
           </button>
           <button
             data-tour="compare"
             className={dialog === "compare" ? "active" : ""}
             onClick={() => loadComparison()}
           >
-            <small>02</small>COMPARE <em>{compareIds.length}</em>
+            <Scale size={18} aria-hidden="true" />Compare {compareIds.length > 0 && <em>{compareIds.length}</em>}
           </button>
           <button
             className={dialog === "saved" ? "active" : ""}
             onClick={() => {
               close();
               reloadLibrary();
+              setSavedTab(library.favourites.length || !library.templates.length ? "favourites" : "templates");
               setDialog("saved");
             }}
           >
-            <small>03</small>SAVED <em>{library.favourites.length + library.templates.length}</em>
+            <Bookmark size={18} aria-hidden="true" />Saved {library.favourites.length + library.templates.length > 0 && <em>{library.favourites.length + library.templates.length}</em>}
           </button>
           <button
             className={dialog === "preparation" ? "active" : ""}
@@ -730,7 +758,7 @@ export default function App({
               setDialog("preparation");
             }}
           >
-            <small>04</small>PREPARE
+            <ClipboardList size={18} aria-hidden="true" />Checklist
           </button>
         </nav>
         <div className="header-end">
@@ -748,35 +776,40 @@ export default function App({
       </header>
       <aside
         className="discovery-panel"
+        id="search-panel"
+        inert={mobilePane !== "list" || undefined}
+        aria-hidden={mobilePane !== "list" || undefined}
         aria-label="Find care for this request"
       >
+        {(mobilePane === "list" || tourOpen) && <>
         <div className="intro">
           <h1>Find childcare</h1>
-          <p>Find care near you, with the options you need.</p>
+          <button className="close-search-panel" aria-label="Close search panel" onClick={() => { setMobilePane("map"); requestAnimationFrame(() => document.querySelector(".map-search-launch")?.focus({ preventScroll: true })); }}><X size={21} /></button>
         </div>
         {tourOpen && <p className="demo-notice">Tutorial · fictional centres and sample details. Your search will be restored when you finish or skip.</p>}
         {mode === "demo" && (
           <p className="demo-notice">
-            Controlled examples — fictional providers, times and prices for
-            trying daytime and evening care.{" "}
+            Demo · fictional centres and prices.{" "}
             <button onClick={() => switchMode("live")}>
               Back to real centres
             </button>
           </p>
         )}
+        {!tourOpen && <SavedCentreReminder favourites={library.favourites}
+          onChoose={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }} />}
         {!tourOpen && <SavedSearchReminder templates={library.templates} onReuse={useTemplate}
           onChoose={() => { setSavedTab("templates"); setDialog("saved"); }}
           disabled={busy || reusePlace?.state === "pending"} />}
-        <div className="request-heading">
-          <strong>YOUR CARE PREFERENCES</strong>
+        <div className={`request-heading ${results ? "" : "request-heading-empty"}`}>
+          {results && <strong>Your search</strong>}
           {results && (
             <button onClick={() => setFormOpen((v) => !v)}>
-              {formOpen ? "Hide form" : "Edit request"}{" "}
+              {formOpen ? "Show results" : "Change search"}{" "}
               <SlidersHorizontal size={13} />
             </button>
           )}
         </div>
-        {browseSelection && !results && <p className="notice-panel">Checking {browseSelection.name}. Add your care details below.</p>}
+        {browseSelection && !results && <p className="notice-panel">To check {browseSelection.name}, fill in the times below.</p>}
         {!formOpen && activeRequest && (
           <div className="compact-request">
             <p>
@@ -787,21 +820,21 @@ export default function App({
             {isShortCare(activeRequest) && <div>
               <strong>{activeRequest.date}</strong>
               <span>
-                By {activeRequest.deadline} → until {activeRequest.end}
+                Leave {activeRequest.deadline} → Pick up {activeRequest.end}
               </span>
             </div>}
             <small>
               {activeRequest.age === ""
-                ? "Age unspecified"
+                ? "Age not chosen"
                 : activeRequest.age === "0"
                   ? "Under 1 year"
                   : `Age ${activeRequest.age}`}{" "}
               ·{" "}
               {activeRequest.transport === "self"
-                ? "I’ll arrange transport"
+                ? "I’ll handle pickup"
                 : activeRequest.transport === "institution"
                   ? "Centre pickup"
-                  : "Pickup not specified"}
+                  : "Pickup not chosen"}
             </small>
           </div>
         )}
@@ -809,7 +842,7 @@ export default function App({
           <div className="notice-panel">
             <strong>Rechecking {reopening.name}</strong>
             <p>
-              {isShortCare(draft) ? "Choose a new date to check this centre." : "Check your preferences and search to see this centre’s latest details."}
+              {isShortCare(draft) ? "Choose a new date to check this centre." : "Check your choices, then search again."}
             </p>
             <button className="text-link" onClick={() => setReopening(null)}>
               Back to a new search
@@ -824,7 +857,7 @@ export default function App({
             {reusePlace.message}
           </p>
         )}
-        {isShortCare(draft) && !tourOpen && mode === "live" && <p className="short-care-notice">Coursework demo · a separate collection of 101 centres. Confirm short stays with the centre.</p>}
+
         <form
           id="request-form"
           onSubmit={search}
@@ -834,6 +867,9 @@ export default function App({
           <CareTypeChoice value={draft.careType} onChange={value => setField("careType", value)} />
 
           <PlaceInput
+            hideLabel
+            onQueryChange={value => setPickupQueryReset({value})}
+            label={isShortCare(draft) ? "Where will your child leave from?" : "Where do you need care?"}
             queryReset={pickupQueryReset}
             active={introPhase === "ready" && !dialog && !tourOpen}
             mode={mode}
@@ -843,16 +879,17 @@ export default function App({
             onMap={() => {
               setChoosing(true);
               setMobilePane("map");
-              notify("Choose your pickup place on the map.");
+              setToast("");
             }}
           />
           {pickupAddress && <p className="pickup-address-status" role="status">
             {pickupAddress === "loading" ? "Finding the nearby street…" : <>Street address unavailable. Your selected location is kept. <button type="button" className="text-link" onClick={()=>setAddressRetry(n=>n+1)}>Retry address</button></>}
           </p>}
-          {isShortCare(draft) && <div data-tour="care-times">
+          {isShortCare(draft) && <div data-tour="care-times" className="care-time-fields">
+          <div className="care-day-age">
           <div className="field">
             <label htmlFor="service-date">
-              Date <span>Malaysia time</span>
+              Date
             </label>
             <input
               id="service-date"
@@ -868,12 +905,15 @@ export default function App({
               </small>
             )}
           </div>
-          <div className="field-pair">
+
+          <AgeRangeChoice compact value={draft.age} onChange={value => setField("age", value)} error={errors.age} />
+          </div>
+          <div className="field-pair care-time-endpoints">
             <div className="field">
-              <label htmlFor="deadline">Collect by</label>
+              <label htmlFor="deadline"><MapPin size={19} aria-hidden="true" />When will your child leave?</label>
               <TimeInput
                 id="deadline"
-                label="Collect by"
+                label="When will your child leave?"
                 value={draft.deadline}
                 onChange={(value) => setField("deadline", value)}
                 invalid={!!errors.deadline}
@@ -884,10 +924,10 @@ export default function App({
               )}
             </div>
             <div className="field">
-              <label htmlFor="care-end">Care until</label>
+              <label htmlFor="care-end"><Building2 size={19} aria-hidden="true" />When will you pick up your child?</label>
               <TimeInput
                 id="care-end"
-                label="Care until"
+                label="When will you pick up your child?"
                 value={draft.end}
                 onChange={(value) => setField("end", value)}
                 invalid={!!errors.end}
@@ -899,44 +939,29 @@ export default function App({
             </div>
           </div>
           </div>}
-          <div className="field-pair">
-            <div className="field">
-              <label htmlFor="age">
-                Child’s age <span>Optional</span>
-              </label>
-              <select
-                id="age"
-                value={draft.age}
-                onChange={(e) => setField("age", e.target.value)}
-                aria-invalid={!!errors.age}
-              >
-                <option value="">Not specified</option>
-                <option value="0">Under 1 year</option>
-                {[1, 2, 3, 4, 5, 6].map((n) => (
-                  <option key={n} value={n}>
-                    {n} {n === 1 ? "year" : "years"}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {!isShortCare(draft) && <AgeRangeChoice value={draft.age} onChange={value => setField("age", value)} error={errors.age} />}
+          <details className="optional-preferences">
+            <summary><Users size={17} aria-hidden="true" /><span>Pickup help <small>{draft.transport === "self" ? "I’ll handle it" : draft.transport === "institution" ? "The centre" : "Optional"}</small></span><ChevronDown size={16} aria-hidden="true" /></summary>
+          <div>
             <div className="field">
               <label htmlFor="transport">
-                Pickup preference <span>Optional</span>
+                Who handles pickup?
               </label>
               <select
                 id="transport"
                 value={draft.transport}
                 onChange={(e) => setField("transport", e.target.value)}
               >
-                <option value="">Not specified</option>
-                <option value="institution">Centre pickup</option>
-                <option value="self">I'll arrange delivery</option>
+                <option value="">Not sure yet</option>
+                <option value="institution">The centre</option>
+                <option value="self">I’ll handle it</option>
               </select>
             </div>
           </div>
+          </details>
           <details className="search-refinements">
             <summary>
-              Refine the search <PlusIcon />
+              More filters <PlusIcon />
             </summary>
             <div className="field">
               <label htmlFor="provider-query">Centre name or area</label>
@@ -944,7 +969,7 @@ export default function App({
                 id="provider-query"
                 value={draft.query}
                 onChange={(e) => setField("query", e.target.value)}
-                placeholder="Optional name / neighbourhood"
+                placeholder="Centre name or area"
               />
             </div>
             <div className="field">
@@ -1000,21 +1025,22 @@ export default function App({
                   ? "Check saved centre"
                   : results
                     ? "Update results"
-                    : "Find care options"}
+                    : "Find childcare"}
                 <ArrowRight size={18} />
               </>
             )}
           </button>
-          <p className="form-foot">
-            No account needed. Search with your preferences.
-          </p>
+
         </form>
         <div className="request-save-actions">
-          <button
+          {(results || draft.pickup) && <button
             className="text-link"
             onClick={() => editTemplate({ ...draft }, null)}
           >
             Save this search
+          </button>}
+          <button className="text-link" onClick={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }}>
+            Saved centres{library.favourites.length > 0 && ` (${library.favourites.length})`}
           </button>
           <button className="text-link" onClick={() => { setSavedTab("templates"); setDialog("saved"); }}>
             Saved searches
@@ -1022,7 +1048,7 @@ export default function App({
         </div>
         {failure && (
           <div className="error-box" role="alert">
-            <strong>Search unavailable</strong>
+            <strong>We couldn’t load centres</strong>
             <p>{errorMessage(failure)}</p>
             <button className="text-link" onClick={() => search(null)}>
               Retry search <RotateCcw size={13} />
@@ -1032,12 +1058,12 @@ export default function App({
         {results && (dirty || busy) && (
           <div className="earlier-results" role="status">
             <strong>
-              {busy ? "Updating results…" : "Showing the earlier request"}
+              {busy ? "Updating results…" : "Your search has changed"}
             </strong>
             <p>{requestCaption(results.request)}</p>
-            {!busy && (
+            {!busy && !formOpen && (
               <button onClick={() => search(null)}>
-                Apply edited request <ArrowRight size={12} />
+                Update results <ArrowRight size={12} />
               </button>
             )}
           </div>
@@ -1167,13 +1193,13 @@ export default function App({
         ) : (
           <div className="before-results nearby-results" aria-busy={nearbyBusy}>
             <h2>Nearby childcare</h2>
-            <p>{mapRestored ? "Back to your last map location." : "Explore centres around the map location."} {isShortCare(draft) ? "Add care hours to check whether they fit." : "Choose your preferences to find a match."}</p>
+            {!draft.pickup && <p>Enter an address above to find childcare nearby.</p>}
             {nearbyBusy && <p role="status">Finding nearby centres…</p>}
-            {nearbyError && <p role="status">{errorMessage(nearbyError)} <button className="text-link" onClick={() => setNearbyReload((v) => v + 1)}>Retry nearby centres</button></p>}
+            {nearbyError && !failure && <p role="status">{errorMessage(nearbyError)} <button className="text-link" onClick={() => setNearbyReload((v) => v + 1)}>Retry nearby centres</button></p>}
             {!nearbyBusy && nearby && <p>{nearby.total} centres within {nearby.radius} km · showing {nearby.items.length}</p>}
-            {!nearbyBusy && nearby?.total === 0 && <p>No centres nearby. Choose another pickup place.</p>}
-            {items.map((p) => <button key={p.id} id={"card-" + p.id} className={`nearby-card ${selected === p.id ? "selected" : ""}`} onClick={() => select(p.id)} aria-label={`Select ${p.name}`} aria-pressed={selected === p.id}>
-              <strong>{p.name}</strong><span>{[p.district, p.region].filter(Boolean).join(" · ")}</span><span>Fees · {feeSummary(p).label}</span>
+            {!nearbyBusy && nearby?.total === 0 && <p>No centres nearby. Choose another pickup address.</p>}
+            {items.map((p) => <button key={p.id} id={"card-" + p.id} className={`nearby-card ${selected === p.id ? "selected" : ""}`} onClick={() => openDetails(p)} aria-label={`Select ${p.name}`} aria-pressed={selected === p.id}>
+              <strong>{p.name}</strong><span>{[p.district, p.region].filter(Boolean).join(" · ")}</span><span>Fees · {feeSummary(p).label}</span><span className="nearby-action">View centre <ArrowRight size={16} /></span>
             </button>)}
           </div>
         )}
@@ -1183,11 +1209,32 @@ export default function App({
             ? "Fictional examples"
             : health && !health.unavailable
               ? `${health.available.toLocaleString()} centres in the directory`
-              : "Loading the directory…"}
+              : health?.unavailable ? "Centre information unavailable" : "Loading centres…"}
           <button onClick={() => setDialog("sources")}>Data & sources</button>
         </footer>
+        </>}
       </aside>
       <div className="map-wrap">
+        {!choosing && !tourOpen && mobilePane === "map" && <div className="map-tools-overlay">
+          <MapSearchDock draft={draft} setField={setField} errors={errors} onSearch={search} busy={busy} results={results} dirty={dirty}
+            mode={mode} active={introPhase === "ready" && !dialog && !tourOpen} queryReset={pickupQueryReset}
+            onQueryChange={value => setPickupQueryReset({value})}
+            onPanel={() => { setFormOpen(true); setMobilePane("list"); }}
+            onMap={() => { setChoosing(true); setMobilePane("map"); }} submitRef={submitRef}
+            focusRequest={searchFocus} onHeight={setDockHeight}
+            onSave={() => editTemplate({ ...draft }, null)}
+            onSavedSearches={() => { reloadLibrary(); setSavedTab("templates"); setDialog("saved"); }}
+            notice={reusePlace?.message || (reopening ? `Choose a new date for ${reopening.name}.` : results?.total === 0 ? "No centres found. Try another address or change the filters." : browseSelection && !results ? `Add your search details for ${browseSelection.name}.` : mode === "demo" ? "Demo · fictional centres" : "")}
+            failure={failure} onRetry={() => search(null)} addressStatus={pickupAddress} onRetryAddress={() => setAddressRetry(n => n + 1)} />
+          <div className="map-quick-actions">
+            <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>
+            <MapSavedShortcuts library={library}
+              onCentres={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }}
+              onSearches={() => { reloadLibrary(); setSavedTab("templates"); setDialog("saved"); }} />
+          </div>
+          {nearbyError && !failure && <p className="map-search-status" role="status">Centres could not load<button onClick={() => setNearbyReload(v => v + 1)}>Retry</button></p>}
+        </div>}
+
         <MapCanvas
           key={mode}
           items={items}
@@ -1197,84 +1244,54 @@ export default function App({
             if (tourOpen) return;
             rememberMap(view);
           }}
-          onChoose={() => { setChoosing(true); setMobilePane("map"); }}
-          onCancel={() => { setChoosing(false); setMobilePane("list"); }}
+          onCancel={() => { setChoosing(false); setMobilePane("map"); }}
           pickup={
             choosing ? draft.pickup : (activeRequest?.pickup ?? draft.pickup)
           }
           selected={selected}
+          showSuggestions={!!results && !dirty && !busy}
+          onOpen={openDetails}
+          onSave={(p) => editFavourite(p, null)}
+          onCompare={(id) => {
+            if (activeRequest) toggleCompare(id);
+            else {
+              const centre = items.find(p => p.id === id);
+              if (centre) openDetails(centre);
+            }
+          }}
+          savedIds={library.favourites.map(p => p.id)}
+          compareIds={compareIds}
+          onClosePreview={() => setSelected(null)}
+          hasCompare={compareIds.length > 0}
+          topInset={dockHeight + 6}
+          cardsVisible={mobilePane === "map" && !dirty && !busy}
+          onShowList={() => { setFormOpen(!results); setMobilePane("list"); }}
           onSelect={select}
           onPick={(p) => {
             setField("pickup", p);
             setChoosing(false);
-            setMobilePane("list");
+            setMobilePane("map");
             setFormOpen(true);
             notify(
-              "Pickup selected. Finding the nearby street address…",
+              "Location selected. Finding the street address…",
             );
           }}
           choosing={choosing}
           theme={theme}
           reduced={reduced}
           labels={labels}
-          visible={mobilePane === "map"}
+          visible={true}
           onStatus={setMapStatus}
           introPhase={introPhase}
           introArea={introArea}
           introReduced={introReduced}
         />
-        {active && !choosing && (
-          <div className={`map-preview${compareIds.length ? " has-compare" : ""}`}>
-            <button
-              className="map-preview-compact"
-              aria-label={`View details for ${active.name}`}
-              onClick={() => openDetails(active)}
-            >
-              <strong>{active.name}</strong>
-              <ArrowUpRight size={17} aria-hidden="true" />
-              <span>{drivingLabel(active.driving)}</span>
-              <span>Fee: {feeSummary(active).label}</span>
-            </button>
-            <div className="map-preview-expanded">
-              <span className="eyebrow">SELECTED CENTRE</span>
-              <h3>{active.name}</h3>
-              <p>
-                {active.address || `${active.district} · ${active.region}`}
-              </p>
-              {active.fit && <p>{drivingLabel(active.driving)} · Fees: {feeSummary(active).label}</p>}
-              <div className="map-preview-actions">
-                {active.fit ? <Status
-                  state={active.fit.counts.conflict ? "conflict" : "unknown"}
-                /> : null}
-                <button onClick={() => openDetails(active)}>
-                  {active.fit ? "Check conditions" : "Check this centre"} <ArrowUpRight size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="mobile-view-switch">
-        <button
-          aria-pressed={mobilePane === "list"}
-          onClick={() => setMobilePane("list")}
-        >
-          <List size={17} />
-          Search & results
-        </button>
-        <button
-          aria-pressed={mobilePane === "map"}
-          onClick={() => setMobilePane("map")}
-        >
-          <MapIcon size={17} />
-          Map
-        </button>
       </div>
       {compareIds.length > 0 && (
         <div className="compare-tray">
-          <span>{compareIds.length} / 3 selected</span>
-          <button onClick={() => loadComparison()}>
-            Compare childcare <ArrowRight size={16} />
+          <span className="compare-tray-count"><Scale size={18} aria-hidden="true" /><strong>{compareIds.length}</strong> {compareIds.length === 1 ? "centre" : "centres"}</span>
+          <button className="compare-tray-open" onClick={() => loadComparison()}>
+            Compare <ArrowRight size={16} />
           </button>
           <button
             aria-label="Clear comparison"
@@ -1289,14 +1306,16 @@ export default function App({
       )}
       {toast && (
         <div className="toast" role="status">
-          {toast}
+          <Info size={23} aria-hidden="true" />
+          <span>{toast}</span>
+          <button aria-label="Close message" onClick={() => setToast("")}><X size={18} /></button>
         </div>
       )}
       <DialogPresence immediate={reduced || introReduced || tourOpen}>
       {dialog && (
         <Dialog
           tourBehind={tourOpen}
-          className={dialog === "details" ? "centre-dialog" : dialog === "preparation" ? "preparation-dialog" : dialog === "enquiry" ? "enquiry-dialog" : ""}
+          className={dialog === "details" ? "centre-dialog" : `${dialog}-dialog`}
           titleAccessory={dialog === "details" && profile ? <RegistrationBadge p={profile.p} /> : null}
           title={
             dialog === "saved"
@@ -1306,13 +1325,13 @@ export default function App({
                 : dialog === "save-template"
                   ? "Save this search"
                   : dialog === "preparation"
-                    ? "Get ready for care"
+                    ? "Get ready for child care"
                     : dialog === "details"
                       ? profile?.p.name
                       : dialog === "compare"
                         ? "Compare childcare"
                         : dialog === "enquiry"
-                          ? "Questions for the centre"
+                          ? "Contact the centre"
                           : dialog === "settings"
                             ? "Display settings"
                             : dialog === "ordering"
@@ -1321,18 +1340,18 @@ export default function App({
           }
           kicker={
             dialog === "preparation"
-              ? "YOUR VISIT"
+              ? "CHECKLIST"
               : ["saved", "save-template", "save-favourite"].includes(dialog)
                 ? "YOUR SAVED ITEMS"
                 : dialog === "details"
                   ? "CENTRE DETAILS"
                   : dialog === "enquiry"
-                    ? "BEFORE YOU GET IN TOUCH"
+                    ? "CONTACT"
                     : dialog === "compare"
-                      ? "YOUR SHORTLIST"
-                      : "EQUALPATH / INFORMATION"
+                      ? "COMPARE"
+                      : "INFORMATION"
           }
-          wide={["compare", "details", "preparation", "saved", "enquiry"].includes(dialog)}
+          wide={["details", "saved", "enquiry"].includes(dialog) || (dialog === "compare" && compareIds.length >= 2) || (dialog === "preparation" && !!preparation)}
           onClose={close}
         >
           {dialog === "saved" && (
@@ -1353,6 +1372,11 @@ export default function App({
                 }))
               }
               onDiscover={close}
+              suggestions={<Recommendations mode={mode} library={library} interests={interests}
+                request={!dirty ? activeRequest : null}
+                onDiscover={() => { close(); setFormOpen(true); setMobilePane('list'); }}
+                onSave={item => { if (saveFavourite(item)) notify('Centre saved.'); }}
+                onOpen={(p, request) => { setProfile({ p, request }); setSelected(p.id); setDialogError(null); setDialog('details'); }} />}
             />
           )}
           {dialog === "save-favourite" && saveEditor && (
@@ -1388,10 +1412,12 @@ export default function App({
                 )}
                 <div inert={dialogBusy || undefined}>
                   <Preparation
-                    key={preparation.p.id + scenario(preparation.request)}
+                    key={preparation.p.id + scenario(preparation.sourceRequest ?? preparation.request)}
                     p={preparation.p}
                     request={preparation.request}
                     currentRequest={activeRequest}
+                    sourceRequest={preparation.sourceRequest ?? preparation.request}
+                    onTimesChange={changePreparationTimes}
                     onEnquiry={() =>
                       prepare(preparation.p, preparation.request)
                     }
@@ -1468,8 +1494,8 @@ export default function App({
                 <h3>{compareIds.length === 1 ? "Add one more option" : "Find a few options first"}</h3>
                 <p>
                   {compareIds.length === 1
-                    ? "You’ve selected one childcare option. Choose another to compare fees, care hours and pickup."
-                    : "Tap Compare on two or three childcare options to see them side by side."}
+                    ? "Tap Compare on one more centre."
+                    : "Tap Compare on 2 or 3 centres."}
                 </p>
                 <button className="primary" onClick={close}>
                   Find childcare <ArrowRight size={16} />
@@ -1493,9 +1519,6 @@ export default function App({
                 )}
                 {comparison && (
                   <>
-                    <p className="dialog-context">
-                      {requestCaption(comparison.request)}
-                    </p>
                     {requestChanged && (
                       <p className="notice">
                         Your search details have changed. Update your search to compare options for your new plans.
@@ -1515,7 +1538,7 @@ export default function App({
                         onRemove={removeCompare}
                         onPrepare={(p) => prepare(p, comparison.request)}
                         sort={compareSort}
-                        date={comparison.request.date}
+                        request={comparison.request}
                         ordering={comparison.ordering}
                         onSort={(v) => {
                           setCompareSort(v);
@@ -1538,6 +1561,7 @@ export default function App({
           {dialog === "enquiry" && enquiry && (
             <>
               <Enquiry
+                showQuestions={tourOpen}
                 key={enquiry.p.id + scenario(enquiry.request)}
                 p={enquiry.p}
                 request={enquiry.request}
@@ -1561,7 +1585,7 @@ export default function App({
               <p>
                 When a detail is missing, that centre appears after those with
                 information we can compare. This order doesn’t rate care quality
-                or guarantee a place.
+                or mean the centre can take your child.
               </p>
               <p>
                 The list and map show the same results. Centres we can’t locate
@@ -1643,10 +1667,9 @@ export default function App({
                 own source links and retrieval dates.
               </p>
               <p>
-                Published care end times are used for this check. Specific care
-                schedules and date exceptions take precedence. Transport
-                coverage and actual acceptance are checked separately. Road-network
-                drive times are estimates; live vacancy is not inferred.
+                We check the listed care hours for your date. Ask the centre
+                about pickup and whether they can take your child.
+                Driving times are estimates and do not include current traffic.
               </p>
               <p>
                 Geographic checks use a versioned{" "}
@@ -1665,17 +1688,19 @@ export default function App({
                 sent only for the current query. There is no parent account,
                 child identity form or automatic contact. This browser remembers
                 your last map location and pickup point, plus any centres and
-                templates you save. Dates and child ages are not saved automatically.
-                Place searches use OpenStreetMap data through Photon; map tiles
+                searches you save. Dates and child ages are not saved automatically.
+                Viewed and compared centre IDs are remembered here to help suggest other centres.
+                In Saved → For you → How suggestions work, you can turn viewing history off or clear it.
+                Address searches use OpenStreetMap data through Photon; map tiles
                 come from the map provider.
                 Driving estimates send only pickup and centre coordinates to the
                 OSRM routing service. They use road data without live traffic.
                 <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noreferrer"> OSRM / OpenStreetMap routing</a> · <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noreferrer">Fix the map</a>.
               </p>
               <p>
-                Registration and historical listings do not prove present
-                availability, suitability or care quality. Contact the specific
-                institution to confirm the arrangement.
+                A registration record or an old listing does not show whether
+                a centre can take your child now, or how good the care is.
+                Check with the centre before your child goes.
               </p>
               <button
                 className="secondary"
@@ -1683,7 +1708,7 @@ export default function App({
               >
                 {mode === "live"
                   ? "Try demo centres"
-                  : "Return to real directory"}
+                  : "Back to real centres"}
                 <ArrowRight size={15} />
               </button>
             </div>

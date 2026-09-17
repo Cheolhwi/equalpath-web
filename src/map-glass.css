@@ -1,0 +1,224 @@
+/* Quiet glass surfaces and compact floating navigation. Keep map-card position
+   and motion rules separate: the material must not move a geographic anchor. */
+.equalpath.map-first {
+  --glass-fill: #f8faf6;
+  --glass-thick: #fcfdf9;
+  --glass-edge: #ffffffad;
+  --glass-rim: #37493420;
+  --glass-highlight: #ffffff9c;
+  --glass-shadow: 0 4px 16px #25332214, 0 1px 3px #2533220a;
+  --glass-text: #303b2e;
+  --glass-muted: #566150;
+  --glass-hover: #e4eade80;
+  --glass-selected: #e4ebdc;
+  --glass-filter: blur(20px) saturate(1.1);
+  --nav-selected: #3f513c;
+  --nav-selected-text: #fcfff8;
+}
+.equalpath.map-first.dark {
+  --glass-fill: #28322b;
+  --glass-thick: #2d372e;
+  --glass-edge: #d8e5d32e;
+  --glass-rim: #111d134a;
+  --glass-highlight: #e2efda24;
+  --glass-shadow: 0 4px 16px #06100938, 0 1px 3px #06100926;
+  --glass-text: #f0f3e9;
+  --glass-muted: #c1cbb7;
+  --glass-hover: #bbcfab20;
+  --glass-selected: #43513a;
+  --nav-selected: #c1d3ab;
+  --nav-selected-text: #273123;
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .equalpath.map-first { --glass-fill: #fcfdf8cc; --glass-thick: #fcfdf9ed; }
+  .equalpath.map-first.dark { --glass-fill: #253028dc; --glass-thick: #2b352ce8; }
+}
+.map-first :is(.app-header > .wordmark, .app-header > nav, .header-end,
+  .dock-address-row, .dock-options, .map-centre-card, .map-quick-actions button,
+  .map-tools button, .map-choose, .dock-popover, .compact-place .place-results,
+  .map-pick-confirm, .map-search-status),
+.map-first > .time-picker {
+  --muted: var(--glass-muted);
+  color: var(--glass-text);
+  background: var(--glass-surface, var(--glass-fill));
+  border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: var(--glass-filter);
+  backdrop-filter: var(--glass-filter);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 0 0 1px var(--glass-rim), var(--glass-shadow);
+}
+/* Three small navigation groups leave the map visible between them. */
+.equalpath.map-first .map-wrap { grid-row: 1 / -1; top: 0; }
+.equalpath.map-first .app-header {
+  grid-row: 1; grid-column: 1; align-self: start;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  gap: 16px; height: 56px; margin: 14px 16px 0; padding: 0;
+  border: 0; background: transparent; pointer-events: none; z-index: 8;
+}
+.map-first .app-header > * { pointer-events: auto; }
+.equalpath.map-first .wordmark {
+  width: auto; min-height: 56px; padding: 9px 17px; border-radius: 20px;
+  justify-self: start;
+}
+.map-first .wordmark strong { font-size: 24px; }
+.map-first .wordmark small { font-size: 8px; margin-top: 5px; letter-spacing: .12em; }
+.equalpath.map-first .app-header nav {
+  height: 56px; gap: 2px; padding: 5px; margin: 0; border-radius: 999px;
+}
+.equalpath.map-first .app-header nav button {
+  justify-content: center; min-height: 44px; padding: 8px 14px;
+  font-size: 14px; border-radius: 999px;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.map-first .app-header nav button::after { display: none; }
+.map-first .app-header nav button:hover { background: var(--glass-hover); }
+.map-first .app-header nav button.active { background: var(--nav-selected); color: var(--nav-selected-text); }
+.map-first .app-header nav em { border: 0; border-radius: 50%; background: #81937026; font-size: 11px; }
+.equalpath.map-first .header-end {
+  justify-self: end; gap: 0; margin: 0; padding: 5px; border-radius: 999px;
+}
+.map-first .header-end > button { border: 0; border-radius: 50%; }
+.map-first .header-end > button:hover { background: var(--glass-hover); }
+.map-first .header-end > .quick-tour-button { border-radius: 999px; }
+.map-first .map-tools-overlay { top: 84px; }
+.map-first .map-tools { top: 84px; }
+.map-first .discovery-panel { top: 84px; }
+/* The address and search choices are separate, light control strips. Menus are
+   siblings of these blur surfaces so their backdrop can still sample the map. */
+.map-first .map-search-dock {
+  padding: 0; border: 0; border-radius: 0; box-shadow: none; background: none;
+  z-index: 1;
+}
+.map-first .dock-address-row { position: relative; z-index: 2; padding: 6px 12px; border-radius: 20px; }
+.map-first .dock-address-row .dock-panel-toggle { background: transparent; border-radius: 50%; }
+.map-first .dock-address-row .dock-panel-toggle:hover { background: var(--glass-hover); }
+.map-first .dock-address-row .location-search {
+  background: transparent; border-color: transparent; border-radius: 12px;
+}
+.map-first .dock-address-row .location-search:focus-within { background: var(--paper); border-color: var(--accent); }
+.map-first .dock-options { position: relative; z-index: 1; padding: 5px; margin-top: 8px; border-radius: 20px; }
+.map-first .dock-options .search-chip {
+  min-height: 54px; border-radius: 14px;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.map-first .dock-options .search-chip:hover { background: var(--glass-hover); border-color: transparent; }
+.map-first .dock-options .search-chip:is(.active, [aria-expanded="true"]) {
+  background: var(--glass-selected); border-color: var(--glass-rim);
+}
+.map-first .dock-options .search-chip.invalid { background: var(--red-bg); border-color: var(--red); }
+.map-first .dock-find {
+  border-radius: 12px; background: var(--nav-selected); color: var(--nav-selected-text);
+  min-height: 44px; font-size: 14px; line-height: 1.2;
+  box-shadow: inset 0 1px 0 #ffffff24; border: 1px solid transparent;
+}
+.map-first .dock-find:hover { background: color-mix(in srgb, var(--nav-selected) 92%, var(--ink)); }
+.map-first .map-centre-card {
+  --glass-surface: var(--glass-thick);
+  border-radius: 16px;
+}
+.map-first .map-centre-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 6px 22px #25332226;
+}
+.map-first .map-centre-card-main { border-radius: inherit; }
+.map-first .map-centre-card-close { border-radius: 50%; }
+.map-first .map-centre-card-close:hover { background: var(--glass-hover); }
+.map-first .map-tools button { border-radius: 50%; }
+.map-first :is(.map-tools button, .map-quick-actions button, .map-choose):hover {
+  border-color: var(--accent); background: var(--glass-thick);
+}
+.map-first :is(.dock-popover, .compact-place .place-results,
+  .map-pick-confirm, .map-search-status),
+.map-first > .time-picker {
+  --glass-surface: var(--glass-thick);
+  border-radius: 16px;
+}
+.map-first .dock-popover :is(input, select),
+.map-first > .time-picker :is(.time-picker-option, .time-picker-done) { border-radius: 10px; }
+.map-first .map-search-status { margin-top: 8px; }
+.map-first :is(.dock-feedback, .dock-changed) {
+  width: fit-content; max-width: 100%; margin: 6px 0 0; padding: 5px 12px;
+  border-radius: 12px; background: var(--glass-thick); color: var(--glass-text);
+}
+.map-first .dock-feedback.field-error { color: var(--red); }
+/* A restrained fill response inspired by Obsidian UI's Arrow Fill Button.
+   Labels and hit areas stay still; geographic marker transforms stay owned by MapLibre. */
+.map-first .geolocation-control button::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: var(--glass-selected); border-radius: inherit;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 220ms cubic-bezier(.2,.7,.2,1);
+}
+.map-first .geolocation-control button:focus-visible::before { transform: scaleX(1); }
+.map-first .geolocation-control button:active::before { transform: scaleX(1); }
+.map-first :is(.map-card-details, .compare-tray-open, .dock-find) > svg { transition: transform 180ms ease; }
+.map-first :is(.map-card-details, .compare-tray-open, .dock-find):focus-visible > svg { transform: translateX(3px); }
+@media (hover: hover) {
+  .map-first .geolocation-control button:hover:not(:disabled)::before { transform: scaleX(1); }
+  .map-first :is(.map-card-details, .compare-tray-open, .dock-find):hover > svg { transform: translateX(3px); }
+}
+.map-first .map-center-pin > svg { animation: location-pin-in 240ms ease-out both; }
+.map-first .map-pick-confirm { animation: location-confirm-in 180ms ease-out both; }
+@keyframes location-pin-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes location-confirm-in { from { opacity: 0; } to { opacity: 1; } }
+.map-first[data-reduced="true"] .geolocation-control button::before { transition: none; }
+.map-first[data-reduced="true"] :is(.map-card-details, .compare-tray-open, .dock-find) > svg { transition: none; transform: none; }
+.map-first[data-reduced="true"] :is(.map-center-pin > svg, .map-pick-confirm) { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .map-first .geolocation-control button::before { transition: none; }
+  .map-first :is(.map-card-details, .compare-tray-open, .dock-find) > svg { transition: none; transform: none; }
+  .map-first :is(.map-center-pin > svg, .map-pick-confirm) { animation: none; }
+}
+@media (max-width: 1100px) and (min-width: 761px) {
+  .equalpath.map-first .app-header { gap: 10px; }
+  .equalpath.map-first .app-header nav button { padding-inline: 11px; font-size: 13px; }
+  .map-first .wordmark strong { font-size: 21px; }
+  .map-first .wordmark small, .map-first .quick-tour-button span { display: none; }
+}
+@media (max-width: 760px) {
+  .equalpath.map-first .app-header {
+    display: flex; gap: 2px; height: 56px; margin: 8px 10px 0; padding: 3px;
+    background: var(--glass-fill); border: 1px solid var(--glass-edge); border-radius: 999px;
+    -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter);
+    box-shadow: 0 0 0 1px var(--glass-rim), var(--glass-shadow);
+  }
+  .equalpath.map-first .app-header > :is(.wordmark, nav, .header-end) {
+    background: none; border: 0; box-shadow: none;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  .equalpath.map-first .wordmark { min-width: 27px; width: 27px; min-height: 44px; padding: 0; }
+  .map-first .wordmark::before { width: 25px; height: 25px; }
+  .equalpath.map-first .app-header nav { display: flex; flex: 1; height: 48px; padding: 0; gap: 1px; }
+  .equalpath.map-first .app-header nav button {
+    flex: 1; min-width: 44px; min-height: 46px; padding: 4px 2px;
+    flex-direction: column; gap: 2px; font-size: 10px;
+  }
+  .map-first .app-header nav em { top: 1px; right: 1px; min-width: 13px; line-height: 13px; font-size: 9px; }
+  .equalpath.map-first .header-end { padding: 0; gap: 0; }
+  .map-first .header-end > button { min-width: 44px; width: 44px; padding: 9px; }
+  .map-first .header-end > button svg { width: 17px; height: 17px; }
+  .map-first .map-tools-overlay { top: 74px; }
+  .map-first .discovery-panel { top: 74px; }
+  .map-first .map-tools { top: auto; }
+  .map-first .dock-address-row { padding: 5px; gap: 2px; }
+  .map-first .dock-find { padding: 5px 10px; }
+  .map-first .dock-options { padding: 5px; margin-top: 6px; border-radius: 18px; }
+  .map-first .dock-options .search-chip { min-height: 48px; border-radius: 12px; }
+  .map-first .dock-options > .time-input { border-top-color: var(--glass-rim); }
+  .map-first .dock-options .time-input .search-chip { min-height: 54px; }
+  .map-first .map-centre-card.compact-height { border-radius: 13px; }
+}
+@media (max-width: 360px) {
+  .equalpath.map-first .app-header { margin-inline: 8px; padding-inline: 2px; }
+}
+.map-first[data-reduced="true"] :is(.dock-options .search-chip, .app-header nav button) { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .map-first :is(.dock-options .search-chip, .app-header nav button) { transition: none; }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
+  .equalpath.map-first, .equalpath.map-first.dark {
+    --glass-fill: var(--paper); --glass-thick: var(--paper); --glass-filter: none;
+    --glass-edge: var(--ink); --glass-text: var(--ink); --glass-muted: var(--ink);
+    --glass-selected: var(--soft); --glass-hover: var(--soft);
+    --nav-selected: var(--ink); --nav-selected-text: var(--paper);
+  }
+}

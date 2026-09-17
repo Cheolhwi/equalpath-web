@@ -23,7 +23,10 @@ export default function Dialog({
     return () => { dialog.close(); if (!tourBehind && previous?.isConnected) previous.focus?.({ preventScroll: true }); };
   }, [tourBehind]);
   useEffect(() => {
-    if (ref.current) ref.current.scrollTop = 0;
+    if (ref.current) {
+      ref.current.scrollTop = 0;
+      ref.current.querySelector('.dialog-body')?.scrollTo(0, 0);
+    }
   }, [title, kicker]);
   useLayoutEffect(() => {
     const dialog = ref.current;
@@ -55,13 +58,15 @@ export default function Dialog({
     >
       <div className="dialog-content" inert={closing || undefined}>
         <div className="dialog-top">
-          <span>{kicker}</span>
+          <div className="dialog-heading">
+            <span className="dialog-kicker">{kicker}</span>
+            <div className="dialog-title-row"><h2 id={titleId}>{title}</h2>{titleAccessory}</div>
+          </div>
           <button onClick={onClose} aria-label="Close dialog">
-            <X size={20} />
+            <X size={20} /><span>Close</span>
           </button>
         </div>
-        {titleAccessory ? <div className="dialog-title-row"><h2 id={titleId}>{title}</h2>{titleAccessory}</div> : <h2 id={titleId}>{title}</h2>}
-        {children}
+        <div className="dialog-body">{children}</div>
       </div>
     </dialog>
   );

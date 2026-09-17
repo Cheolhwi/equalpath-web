@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-09-16T04:33:10.255Z",
+  "created_at": "2026-09-17T04:22:05.979Z",
   "function": "web-provider-query",
-  "deployment": "6aaa1c03d4d35146b9b2",
+  "deployment": "6aab6aec227ecbf299be",
   "status": "ready",
   "execute": [
     "any"
@@ -10,5 +10,7 @@
   "logging": false,
   "owner_resources_accessed": false,
   "production_domains_changed": false,
-  "verified_at": "2026-09-16T04:34:00.308Z"
+  "verified_at": "2026-09-17T04:27:19.632Z",
+  "recommendations_status": 200,
+  "recommendation_candidates": 11
 }

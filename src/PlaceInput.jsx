@@ -18,6 +18,12 @@ export default function PlaceInput({
   active = true,
   idPrefix = "pickup",
   queryReset,
+  label = "Pickup address",
+  hideLabel = false,
+  compact = false,
+  onQueryChange,
+  leading,
+  trailing,
 }) {
   const [query, setQuery] = useState(value?.label ?? ""),
     [options, setOptions] = useState([]),
@@ -77,7 +83,7 @@ export default function PlaceInput({
         onChange(p);
         setQuery(p.label);
         setGeoMessage(
-          `Location found${p.accuracy ? " · approximately " + p.accuracy + " m accuracy" : ""}. Use this only if it is the intended pickup place. KL / Selangor is checked on search.`,
+          "Address found. Check it before you search.",
         );
       }
     } catch (e) {
@@ -108,7 +114,7 @@ export default function PlaceInput({
         setOptions(r.items);
         if (!r.items.length)
           setMessage(
-            "No places found in KL or Selangor. Try a shorter name or choose on the map.",
+            "No address found in KL or Selangor. Try a shorter name or choose on the map.",
           );
       }
     } catch {
@@ -125,26 +131,29 @@ export default function PlaceInput({
     stopLocating();
     setBusy(false);
     setGeoMessage("");
-    setQuery(value?.label ?? "");
+    setQuery(queryReset?.value ?? value?.label ?? "");
     setOptions([]);
     setOpen(false);
   }, [mode]);
   return (
-    <div className="field pickup-field">
-      <label htmlFor={idPrefix + "-search"}>
-        Pickup place <span>Required</span>
+    <div className={`field pickup-field${compact ? " compact-place" : ""}`}>
+      <label htmlFor={idPrefix + "-search"} className={hideLabel ? "sr-only" : undefined}>
+        {label}
       </label>
+      <div className="place-search-row">
+      {leading}
       <div className={`location-search ${error ? "invalid" : ""}`}>
         <MapPin size={17} />
         <input
           id={idPrefix + "-search"}
           aria-invalid={!!error}
           aria-describedby={error ? idPrefix + "-error" : idPrefix + "-help"}
-          placeholder="Search an address, station or place"
+          placeholder="e.g. KL Sentral"
           value={query}
           onChange={(e) => {
             stopLocating();
             setQuery(e.target.value);
+            onQueryChange?.(e.target.value);
             onChange(null);
             setOptions([]);
             setOpen(false);
@@ -162,77 +171,66 @@ export default function PlaceInput({
         />
         <button
           type="button"
-          aria-label="Find pickup place"
+          aria-label="Find address"
           onClick={() => find(query)}
           disabled={busy}
         >
           {busy ? <span className="spinner" /> : <Search size={17} />}
         </button>
       </div>
+      </div>
       {error && (
         <small className="field-error" id={idPrefix + "-error"}>
           {error}
         </small>
       )}
-      {value && (
+      {value && !compact && (
         <div className="chosen-place">
           <Check size={13} />
           <span>
-            {value.label}
-            <small>{value.region ?? "Region checked when you search"}</small>
+            {value.region ?? "Address selected"}
           </span>
         </div>
       )}
-      <div className="geolocation-control">
+      <div className="geolocation-control" role="group" aria-label="Choose your location">
+        {onMap && <button className="choose-location" type="button" onClick={() => {
+          token.current++;
+          stopLocating();
+          setBusy(false);
+          setOpen(false);
+          onMap();
+        }}><MapPin size={18} aria-hidden="true" /><span>Choose your location</span></button>}
         <button type="button" onClick={locate} disabled={geoBusy}>
-          <LocateFixed size={14} />
-          {geoBusy
+          <LocateFixed size={18} aria-hidden="true" />
+          <span>{geoBusy
             ? "Locating…"
             : geoFailed
               ? "Retry my location"
-              : "Use my location"}
+              : "Use my location"}</span>
         </button>
-        {geoBusy ? (
+      </div>
+      {trailing && <div className="place-submit">{trailing}</div>}
+      {(geoMessage || geoBusy) && <div className="location-feedback">
+        {geoMessage && <p role="status">{geoMessage}</p>}
+        {geoBusy && (
           <button
             type="button"
             onClick={() => {
               token.current++;
               stopLocating();
               setGeoMessage(
-                "Location cancelled. Search a place or choose on the map.",
+                "Location cancelled. Search an address or choose on the map.",
               );
             }}
           >
             Cancel location
           </button>
-        ) : (
-          <span>With your permission</span>
         )}
-      </div>
-      {geoMessage && (
-        <p className="location-feedback" role="status">
-          {geoMessage}
-        </p>
-      )}
-      <div className="location-help" id={idPrefix + "-help"}>
-        <span>Choose a public place in KL or Selangor</span>
-        <button
-          disabled={!onMap}
-          type="button"
-          onClick={() => {
-            token.current++;
-            stopLocating();
-            setBusy(false);
-            onMap?.();
-          }}
-        >
-          {onMap ? "Choose on map" : "Choose a place above"}{" "}
-          <ArrowUpRight size={12} />
-        </button>
-      </div>
+      </div>}
+      <span className="sr-only" id={idPrefix + "-help"}>Choose a school, station or other public address in KL or Selangor.</span>
       {open && (
         <div className="place-results" aria-label="Pickup search results">
-          {busy && <p role="status">Finding places…</p>}
+          {busy && <p role="status">Finding addresses…</p>}
           {!busy &&
             options.map((p) => (
               <button
@@ -252,14 +250,14 @@ export default function PlaceInput({
               </button>
             ))}
           {message && <p role="status">{message}</p>}
-          {mode === "live" && <p className="place-attribution">Partial names and small typos are OK. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap</a> · <a href="https://photon.komoot.io/" target="_blank" rel="noreferrer">Photon</a></p>}
+          {mode === "live" && <p className="place-attribution"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap</a> · <a href="https://photon.komoot.io/" target="_blank" rel="noreferrer">Photon</a></p>}
           {!busy && (
             <button
               type="button"
               className="close-options"
               onClick={() => setOpen(false)}
             >
-              Close place results
+              Close address results
             </button>
           )}
         </div>

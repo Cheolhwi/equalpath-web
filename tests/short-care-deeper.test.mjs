@@ -33,7 +33,10 @@ test('published restricted services retain their practical questions, even thoug
   assert.equal(condition.state,'unknown');assert.equal(condition.reason,p.admission.wording);
   const qs=enquiries(p,r,fit);assert.ok(qs.some(q=>q.id==='admission'));assert.ok(qs.some(q=>q.id==='capacity'));
   const view=enquiryView({...p,fit,enquiries:qs},r).find(q=>q.id==='admission');
-  assert.ok(view.text.includes(p.admission.question));assert.equal(view.why,p.admission.requirements.join(' '));
+  // The readable question may be simplified; source wording and every service
+  // restriction remain in the linked check and explanation.
+  assert.equal(view.check.question,p.admission.question);
+  assert.ok(view.text.endsWith('?'));assert.equal(view.why,p.admission.requirements.join(' '));
   assert.equal(p.admission.sameDayAcceptance,'unknown');
  }
 });

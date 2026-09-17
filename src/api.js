@@ -63,7 +63,7 @@ export const errorMessage = (e) =>
   e?.code === "FACTS_CHANGED"
     ? "Centre details have changed. Search again to see the latest information."
     : e?.code === "OUTSIDE_SERVICE_AREA"
-      ? "Choose a pickup place in Kuala Lumpur or Selangor. Putrajaya and other states are outside our service area."
+      ? "Choose an address in Kuala Lumpur or Selangor. We do not cover Putrajaya or other states."
       : e?.code === "PLACE_UNAVAILABLE"
-        ? "This centre is no longer in the directory. Go back to the results to choose another."
-        : "Search isn’t available right now. Your details and previous results are still here. Please try again.";
+        ? "This centre is no longer listed. Choose another centre from the results."
+        : "Please try again. Your search details are kept.";

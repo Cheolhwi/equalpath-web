@@ -1,14 +1,26 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import { LocateFixed, Plus, Minus, RotateCcw, MapPin } from "lucide-react";
 import { DEFAULT_MAP } from "../shared/map-memory.mjs";
 import { makeStyle } from "./map-style.js";
 import { entranceCamera } from "./entrance.js";
+import MapCards from "./MapCards.jsx";
 export default function MapCanvas({
   items = [],
   pickup,
   selected,
   onSelect,
+  onOpen,
+  onSave,
+  onCompare,
+  savedIds,
+  compareIds,
+  onClosePreview,
+  showSuggestions = false,
+  cardsVisible = true,
+  hasCompare = false,
+  topInset = 148,
+  onShowList,
   onPick,
   choosing,
   theme,
@@ -19,7 +31,6 @@ export default function MapCanvas({
   viewTarget = DEFAULT_MAP,
   autoFit = true,
   onViewChange,
-  onChoose,
   onCancel,
   introPhase = "ready",
   introArea = 0,
@@ -31,7 +42,6 @@ export default function MapCanvas({
     lastView = useRef(viewTarget),
     selectionStart = useRef(null),
     markers = useRef([]),
-    suggestedMarkers = useRef([]),
     latest = useRef({
       items,
       pickup,
@@ -42,6 +52,7 @@ export default function MapCanvas({
       introArea,
       cameraReduced: reduced || introReduced,
     }),
+    [dismissedCards, setDismissedCards] = useState([]),
     [retry, setRetry] = useState(0),
     [status, setStatus] = useState("loading"),
     [camera, setCamera] = useState({ pitch: 0, bearing: 0, zoom: viewTarget.zoom, ...viewTarget.center });
@@ -51,34 +62,38 @@ export default function MapCanvas({
     onPick,
     choosing,
     onSelect,
+    selected,
+    onClosePreview,
     introPhase,
     introArea,
     autoFit,
     onViewChange,
     viewTarget,
+    topInset,
     cameraReduced: reduced || introReduced,
   };
-  const spreadSuggestions = (m) => {
-    const entries = suggestedMarkers.current.map(x => ({ ...x, point: m.project([x.location.lng, x.location.lat]) }));
-    const seen = new Set();
-    for (const first of entries) {
-      if (seen.has(first)) continue;
-      const group = [first]; seen.add(first);
-      for (let i = 0; i < group.length; i++) for (const other of entries) {
-        if (!seen.has(other) && Math.hypot(group[i].point.x-other.point.x, group[i].point.y-other.point.y) < 120) { seen.add(other); group.push(other); }
-      }
-      const center = { x: group.reduce((n,x)=>n+x.point.x,0)/group.length, y: group.reduce((n,x)=>n+x.point.y,0)/group.length };
-      group.forEach((x,i) => {
-        const angle = group.length === 2 ? i*Math.PI : -Math.PI/6+i*2*Math.PI/group.length;
-        const offset = group.length === 1 ? [0,0] : [center.x+Math.cos(angle)*45-x.point.x, center.y+Math.sin(angle)*45-x.point.y];
-        x.marker.setOffset(offset);
-        const el=x.marker.getElement(); el.classList.toggle("spread-pin",group.length>1);
-        el.style.setProperty("--stem-length",`${Math.hypot(...offset)}px`);
-        el.style.setProperty("--stem-angle",`${Math.atan2(-offset[1],-offset[0])}rad`);
+  // Exact shared addresses need separate hit targets. Offsets depend only on
+  // stable centre IDs, so zooming/selecting cannot make pins switch places.
+  const pinOffsets = useMemo(() => {
+    const groups = new Map(), offsets = new Map();
+    for (const p of items.filter(p => p.location)) {
+      const key = `${p.location.lat},${p.location.lng}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(p);
+    }
+    for (const group of groups.values()) {
+      group.sort((a, b) => a.id.localeCompare(b.id));
+      group.forEach((p, i) => {
+        const ring = Math.floor(i / 6), count = Math.min(6, group.length - ring * 6);
+        const angle = -Math.PI / 2 + (i % 6) * 2 * Math.PI / count;
+        offsets.set(p.id, group.length === 1 ? [0, 0] : [Math.cos(angle) * 60 * (ring + 1), Math.sin(angle) * 60 * (ring + 1)]);
       });
     }
-  };
+    return offsets;
+  }, [items]);
+  useEffect(() => { setDismissedCards([]); }, [items, showSuggestions]);
   const fit = ({ immediate = false } = {}) => {
+    setDismissedCards([]);
     const m = map.current;
     if (!m) return;
     if (latest.current.introPhase === "welcome") return;
@@ -106,10 +121,10 @@ export default function MapCanvas({
     const height = m.getContainer().clientHeight;
     m.fitBounds(bounds, {
       padding: {
-        top: Math.min(compact ? 175 : 140, height * 0.26),
-        bottom: Math.min(compact ? 310 : 220, height * 0.4),
-        left: 55,
-        right: 65,
+        top: Math.min(latest.current.topInset + 50, height * 0.55),
+        bottom: Math.min(compact ? 110 : 100, height * 0.2),
+        left: compact ? 48 : 150,
+        right: compact ? 48 : 150,
       },
       maxZoom: 14.4,
       duration: immediate || latest.current.cameraReduced ? 0 : 650,
@@ -148,7 +163,6 @@ export default function MapCanvas({
       if (alive) setStatus((s) => (s === "ready" ? s : "error"));
     }, 22000);
     m.on("move", () => {
-      spreadSuggestions(m);
       if (alive)
         setCamera({
           pitch: m.getPitch(),
@@ -184,13 +198,15 @@ export default function MapCanvas({
       }
     });
     m.on("click", (e) => {
-      if (
-        latest.current.choosing &&
-        !e.originalEvent.target.closest?.(".provider-pin")
-      )
+      // Only a click on the map itself dismisses a selected centre. MapLibre
+      // distinguishes a click from dragging; overlay controls and pins stay active.
+      if (e.originalEvent?.target !== m.getCanvas()) return;
+      if (latest.current.choosing)
         m.easeTo({ center: e.lngLat, duration: latest.current.cameraReduced ? 0 : 200 });
+      else if (latest.current.introPhase === "ready" && latest.current.selected)
+        latest.current.onClosePreview?.();
     });
-    const ro = new ResizeObserver(() => m.resize());
+    const ro = new ResizeObserver(() => { m.resize(); setCamera(c => ({ ...c })); });
     ro.observe(host.current);
     return () => {
       alive = false;
@@ -198,7 +214,6 @@ export default function MapCanvas({
       ro.disconnect();
       markers.current.forEach((x) => x.remove());
       markers.current = [];
-      suggestedMarkers.current = [];
       m.remove();
       map.current = null;
     };
@@ -214,7 +229,6 @@ export default function MapCanvas({
     if (!m) return;
     markers.current.forEach((x) => x.remove());
     markers.current = [];
-    suggestedMarkers.current = [];
     items
       .filter((p) => p.location)
       .forEach((p, i) => {
@@ -238,24 +252,22 @@ export default function MapCanvas({
           e.stopPropagation();
           latest.current.onSelect(p.id, true);
         };
-        const marker = new maplibregl.Marker({ element: el })
+        const marker = new maplibregl.Marker({ element: el, offset: pinOffsets.get(p.id) })
             .setLngLat([p.location.lng, p.location.lat])
             .addTo(m);
         markers.current.push(marker);
-        if (p.suggested) suggestedMarkers.current.push({ marker, location: p.location });
       });
-    spreadSuggestions(m);
     if (pickup && !choosing) {
       const el = document.createElement("div");
       el.className = "pickup-pin";
-      el.textContent = "P";
-      el.title = "Pickup: " + pickup.label;
-      el.setAttribute("aria-label", "Pickup: " + pickup.label);
+      el.textContent = "You";
+      el.title = "Your chosen location: " + pickup.label;
+      el.setAttribute("aria-label", "Your chosen location: " + pickup.label);
       markers.current.push(
         new maplibregl.Marker({
           element: el,
           anchor: "bottom",
-          offset: [0, -19],
+          offset: [0, -10],
         })
           .setLngLat([pickup.lng, pickup.lat])
           .addTo(m),
@@ -305,9 +317,23 @@ export default function MapCanvas({
     });
     return () => cancelAnimationFrame(frame);
   }, [introPhase, introArea, retry, reduced, introReduced]);
+  useEffect(() => {
+    const p = items.find(p => p.id === selected);
+    if (!p?.location || !map.current || choosing) return;
+    map.current.easeTo({ center: [p.location.lng, p.location.lat], padding: { top: 130, bottom: 40, left: 0, right: 0 }, duration: reduced ? 0 : 420 });
+  }, [selected]);
+  const m = map.current;
+  const width = host.current?.clientWidth ?? 0, height = host.current?.clientHeight ?? 0;
+  const picked = items.find(p => p.id === selected);
+  const cardItems = picked ? [picked] : showSuggestions ? items.filter(p => p.suggested).slice(0, 3).filter(p => !dismissedCards.includes(p.id)) : [];
+  const entries = m && width && cardsVisible && !choosing ? cardItems.filter(p => p.location).map(p => {
+    const point = m.project([p.location.lng, p.location.lat]);
+    const [dx, dy] = pinOffsets.get(p.id) ?? [0, 0];
+    return { x: point.x + dx, y: point.y + dy, id: p.id, p, selected: p.id === selected, index: items.findIndex(item => item.id === p.id) + 1 };
+  }).filter(p => p.x >= 0 && p.x <= width && p.y >= 0 && p.y <= height) : [];
   return (
     <section
-      className={`map-region ${choosing ? "choosing" : ""}`}
+      className={`map-region ${choosing ? "choosing" : ""}${entries.length ? " has-point-cards" : ""}`}
       aria-label="Flat childcare map"
       data-map-status={status}
       data-map-pitch={camera.pitch}
@@ -321,25 +347,24 @@ export default function MapCanvas({
         {choosing ? <p className="map-pick-hint">Drag the map to move the pin.</p> : <>
           <div className="map-legend" aria-label="Map legend">
             <span>{items.filter(p => p.location).length} centres</span>
-            {pickup && <span><b className="map-legend-pickup">P</b> Pickup</span>}
+            {pickup && <span><b className="map-legend-pickup">You</b> Your location</span>}
             {items.some(p => p.suggested) && <span className="map-suggestion-legend"><b>★</b> Suggested first</span>}
-          </div>
-          <div className="map-actions">
-            <button className="map-choose secondary" onClick={onChoose}><MapPin size={15} />Choose pickup here</button>
           </div>
         </>}
       </div>
       {choosing ? <>
         <div className="map-center-pin" aria-hidden="true"><MapPin size={40} fill="currentColor" /></div>
         <div className="map-pick-confirm">
-          <strong>Pickup location</strong>
-          <small>{camera.lat?.toFixed(5)}, {camera.lng?.toFixed(5)}</small>
+          <strong><MapPin size={20} aria-hidden="true" />Choose your location</strong>
+          <p>Move the map to place the pin.</p>
+          <details><summary>Map coordinates</summary><small>{camera.lat?.toFixed(5)}, {camera.lng?.toFixed(5)}</small></details>
           <div><button className="secondary" onClick={onCancel}>Cancel</button><button className="primary" onClick={() => {
             const c = map.current?.getCenter();
             if (c) onPick({ id: null, label: "Selected location", lat: c.lat, lng: c.lng });
           }}>Use this location</button></div>
         </div>
       </> : null}
+      <MapCards entries={entries} pins={m ? items.filter(p => p.location).map(p => { const point = m.project([p.location.lng, p.location.lat]); const [dx, dy] = pinOffsets.get(p.id) ?? [0, 0]; return { x: point.x + dx, y: point.y + dy }; }) : []} width={width} height={height} compact={width < 600} topInset={topInset} hasCompare={hasCompare} reduced={reduced || introReduced} onOpen={onOpen} onSave={onSave} onCompare={onCompare} savedIds={savedIds} compareIds={compareIds} onClose={id => selected ? onClosePreview() : setDismissedCards(ids => [...ids, id])} />
       <div className="map-tools">
         <button onClick={fit} aria-label="Fit pickup and results">
           <LocateFixed size={19} />
@@ -355,11 +380,10 @@ export default function MapCanvas({
         <span className="map-state">
           <i className={status} />
           {status === "ready"
-            ? "MAP READY"
+            ? "Map"
             : status === "error"
-              ? "MAP UNAVAILABLE"
-              : "LOADING MAP"}{" "}
-          · 2D
+              ? "Map unavailable"
+              : "Loading map…"}
         </span>
         <span>
           <a href="https://openfreemap.org/" target="_blank" rel="noreferrer">
@@ -389,6 +413,7 @@ export default function MapCanvas({
             <RotateCcw size={15} />
             Retry map
           </button>
+          <button className="primary" onClick={onShowList}>Show centres</button>
         </div>
       )}
     </section>

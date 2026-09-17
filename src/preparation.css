@@ -30,6 +30,14 @@
 .saved-search-reminder-heading { display: flex; align-items: center; gap: 8px; color: var(--accent); }
 .saved-search-reminder p { margin: 7px 0 10px; overflow-wrap: anywhere; }
 .saved-search-reminder .text-link { display: inline-flex; align-items: center; gap: 12px; min-height: 30px; font-weight: 600; }
+.saved-centre-reminder { margin: 14px 0 20px; }
+.saved-centre-reminder > button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 12px 14px; text-align: left; border: 1px solid var(--rule); background: var(--soft); }
+.saved-centre-reminder > button > svg { flex-shrink: 0; color: var(--accent); }
+.saved-centre-reminder > button > span { flex: 1; min-width: 0; }
+.saved-centre-reminder strong { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+.saved-centre-count { margin-left: 5px; }
+.saved-centre-reminder strong + span { display: block; font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+.saved-centre-reminder small { font-size: 13px; color: var(--muted); }
 .saved-pickup span { display: block; color: var(--muted); font-size: 11px; margin-bottom: 4px; }
 .saved-search-times { display: flex; flex-wrap: wrap; gap: 14px 32px; margin: 16px 0 0; }
 .saved-search-times dt { color: var(--muted); font-size: 11px; margin-bottom: 4px; }

@@ -44,6 +44,7 @@ The Appwrite response envelope is parsed from `responseBody`. Application errors
 | `search` | mode, request, page | 20 candidates per page, applied request, counts, condition checks, cost availability, ordering explanation |
 | `details` | mode, request, id, optional version | one branch, source facts, registration, conditions and questions |
 | `compare` | mode, request, 1–3 unique ids, optional version | independent branch facts assessed under the same request, ordered by the selected factor |
+| `recommendations` | mode, current request, up to 100 unique `seedIds` | up to 100 nearest conflict-free candidates inside the active care-type radius/filters, fresh public seed facts, total and catalogue version; no route calls or database reads |
 
 UI comparison requires at least two candidates. `mode` is exactly `live` or `demo`; data and IDs cannot cross modes. No publication, mutation, booking or messaging action exists.
 

@@ -100,12 +100,13 @@ export default function Experience() {
   }, [reduced, moving, finish]);
   useEffect(() => {
     // Immediate entry can remove the inert/hidden landing state in the same
-    // frame as the click. Focus only after the visible app has been painted.
+    // frame as the click. Start keyboard navigation at the app container,
+    // without activating the address field or opening a mobile keyboard.
     let id = requestAnimationFrame(() => {
       id = requestAnimationFrame(() => {
         if (phase === "ready")
           document
-            .getElementById("pickup-search")
+            .querySelector(".equalpath")
             ?.focus({ preventScroll: true });
         else if (phase === "welcome" && hasEntered.current)
           enterButton.current?.focus({ preventScroll: true });
@@ -168,7 +169,7 @@ export default function Experience() {
             <header className="landing-header">
               <div className="landing-brand">
                 <h1>
-                  EQUALPATH<span>／</span>
+                  EQUALPATH
                 </h1>
                 <p>FIND CHILDCARE</p>
               </div>
@@ -227,7 +228,7 @@ export default function Experience() {
           </svg>
           <div className="entrance-composition">
             <div className="entrance-brand">
-              <div className="entrance-wordmark">EQUALPATH<span>／</span></div>
+              <div className="entrance-wordmark">EQUALPATH</div>
               <div className="entrance-brand-rule" />
               <p>FIND CHILDCARE</p>
             </div>

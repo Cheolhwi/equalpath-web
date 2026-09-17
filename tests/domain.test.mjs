@@ -136,7 +136,7 @@ test("care end and applicable latest collection restrictions preserve conflicts"
   );
   assert.equal(
     assess(fixtureProviders[0], req).acceptance,
-    "Provider acceptance and availability remain unconfirmed.",
+    "Ask the centre if they can take your child.",
   );
 });
 test("monthly fees and missing extras do not generate fabricated hourly prices", () => {

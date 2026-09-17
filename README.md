@@ -29,7 +29,7 @@ As of 15 September 2026, the published catalogue contains 3,137 available centre
 5. Open each condition to see whether it is `supported`, a `conflict`, `unknown`, or a `reference`. Known conflicts are surfaced first.
 6. Compare up to three centres and sort by distance, fee, care-end time, or pickup service. If the selected priority lacks enough data, the app returns to Nearest first and explains why.
 7. Generate questions linked to the exact conditions that need confirmation. Phone, WhatsApp, and source-page actions are always opened explicitly by the user.
-8. Save centres or reusable search templates in the current browser, then refresh the published facts before using them again. Templates never restore a date or child age automatically.
+8. Save centres or reusable search templates in the current browser, then refresh the published facts before using them again. For you suggests up to three other centres from your saved and viewed centres, checked against the current search. Templates never restore a date or child age automatically.
 9. Create a `Get ready for care` checklist with a three-stop pickup plan, grouped questions, a packing list, and a printable or downloadable standalone HTML copy.
 
 First-time visitors receive a skippable, replayable walkthrough. Its example inputs run only in controlled demo mode, and the user's original search state is restored afterwards. The interface also supports keyboard navigation, reduced motion, responsive layouts, and a compact mobile map card.
@@ -49,7 +49,7 @@ First-time visitors receive a skippable, replayable walkthrough. Its example inp
 
 EqualPath requires no account and does not collect a child's name, date of birth, health information, or family relationships. By default, it does not save service dates, care times, age, results, or contact outcomes.
 
-Centres and templates are saved only after an explicit user action, remain in the current browser, and are separated between live and demo modes. The browser also keeps only the last map centre, zoom level, and confirmed pickup point. There is no cloud sync or automatic cross-device recovery.
+Centres and templates are saved only after an explicit user action, remain in the current browser, and are separated between live and demo modes. The browser also keeps only the last map centre, zoom level, and confirmed pickup point. Viewed and compared centre IDs, capped counts and activity dates are also kept locally for suggestions, without request locations, child ages or care times. Viewing history can be turned off or cleared in Saved → For you; saved items remain. There is no cloud sync or automatic cross-device recovery.
 
 The current implementation covers Epics 1–5: discovery, condition checks, comparison and contact preparation, browser-local reuse, and care-handover preparation. This represents 28 stories and 66 acceptance criteria from a full Revision 2.1 baseline of 46 stories and 114 acceptance criteria. Passing an implementation check does not mean that a provider fact or service has been independently confirmed.
 
@@ -72,7 +72,7 @@ The following are not implemented:
 | Local state | Browser local storage with live/demo separation |
 | Verification | Node test runner, Playwright, and production-bundle checks |
 
-`web-provider-query` exposes only `health`, `places`, `reverse`, `nearby`, `search`, `details`, and `compare`. It has no publication, mutation, booking, or messaging action, and it does not read owner data from the earlier iOS planner.
+`web-provider-query` exposes only `health`, `places`, `reverse`, `nearby`, `search`, `details`, `compare`, and `recommendations`. It has no publication, mutation, booking, or messaging action, and it does not read owner data from the earlier iOS planner.
 
 ## Local development
 

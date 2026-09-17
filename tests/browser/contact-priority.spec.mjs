@@ -1,3 +1,4 @@
+import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog, demoPickup } from "../../server/fixtures.mjs";
@@ -19,10 +20,10 @@ test("contact priority stays consistent across results, map and comparison, with
     localStorage.setItem("equalpath:tour:v1", '{"version":1,"status":"skipped"}');
     localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, center: pickup, zoom: 13, pickup }));
   }, { ...demoPickup, label: "KL Sentral" });
-  await page.goto("/?care=short_term#discover", { waitUntil: "domcontentloaded" });
+  await page.goto("/?care=short_term#discover", { waitUntil: "domcontentloaded" });await openSearch(page);
   await page.locator("#service-date").fill("2026-09-14"); await page.locator("#deadline").fill("13:00");
-  await page.locator("#care-end").fill("18:00"); await page.locator("#transport").selectOption("self");
-  await page.getByRole("button", { name: "Find care options", exact: true }).click();
+  await page.locator("#care-end").fill("18:00"); await revealPreferences(page); await page.locator("#transport").selectOption("self");
+  await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
   const suggested = page.locator(".provider-row.suggested");
   await expect(suggested).toHaveCount(2);
   expect(await suggested.evaluateAll(rows => rows.map(p => p.dataset.providerId))).toEqual(["p-8", "p-9"]);
@@ -38,7 +39,7 @@ test("contact priority stays consistent across results, map and comparison, with
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.screenshot({ path: `${out}/contacts-search-desktop.png` });
   for (const i of [1, 8, 9]) await page.getByRole("button", { name: `Compare Test centre ${i}`, exact: true }).click();
-  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /COMPARE/ }).click();
+  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /Compare/ }).click();
   await expect(page.locator("th.comparison-best")).toHaveAttribute("data-provider-id", "p-8");
   await expect(page.locator(".comparison-priority-message")).not.toContainText(/phone|WhatsApp|contact details/i);
   await page.getByRole("combobox", { name: "Comparison priority", exact: true }).click();
@@ -47,10 +48,10 @@ test("contact priority stays consistent across results, map and comparison, with
   await page.screenshot({ path: `${out}/contacts-comparison-desktop.png` });
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.getByRole("button", { name: "Map", exact: true }).click();
+  await page.getByRole('button',{name:'Close search panel'}).click();
   await expect(page.locator(".provider-pin.suggested")).toHaveCount(2);
   await page.screenshot({ path: `${out}/contacts-map-mobile.png` });
-  await page.getByRole("button", { name: "Search & results", exact: true }).click();
+  await openResults(page);
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await expect(page.locator(".provider-row")).toHaveCount(5);
   await expect(suggested).toHaveCount(3);

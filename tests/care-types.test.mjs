@@ -88,10 +88,10 @@ test('regular detail, question copy and printable preparation do not require or 
   assert.equal(p.cost.available,false);assert.equal(p.cost.total,undefined);
   assert.ok(!p.enquiries.some(q=>['admission','care','pickup','transfer'].includes(q.id)));
   const text=enquiryMessage(p,request,enquiryView(p,request));
-  assert.match(text,/regular childcare/);assert.doesNotMatch(text,/one-off|Invalid Date|undefined|Collect by:|Date:/);
+  assert.match(text,/long-term childcare/);assert.doesNotMatch(text,/one-off|Invalid Date|undefined|Leave pickup address by:|Date:/);
   const sheet=preparationFor(p,request),html=preparationHTML(sheet);
   assert.equal(sheet.date,null);assert.ok(sheet.sequence.every(s=>s.time===null));
-  assert.match(html,/Regular childcare/);assert.doesNotMatch(html,/Invalid Date|undefined/);
+  assert.match(html,/Long term/);assert.doesNotMatch(html,/Invalid Date|undefined/);
   const unspecified=assess(p,{...request,age:'',transport:''});
   assert.equal(unspecified.counts.unknown,0);
   const pickup=assess({...p,transport:{exists:true,coverage:{exhaustive:true}}},{...request,transport:'institution'});

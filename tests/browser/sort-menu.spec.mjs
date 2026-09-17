@@ -1,3 +1,4 @@
+import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import { createAPI } from "../../server/api.mjs";
@@ -30,12 +31,12 @@ async function start(page) {
       pickup: { id: null, label: "KL Sentral", lat: 3.139, lng: 101.6869 },
     }));
   });
-  await page.goto("/?care=short_term#discover");
+  await page.goto("/?care=short_term#discover");await openSearch(page);
   await page.locator("#service-date").fill("2026-09-14");
   await page.locator("#deadline").fill("13:00");
   await page.locator("#care-end").fill("17:00");
-  await page.locator("#transport").selectOption("self");
-  await page.getByRole("button", { name: "Find care options", exact: true }).click();
+  await revealPreferences(page); await page.locator("#transport").selectOption("self");
+  await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
   await expect(page.locator(".provider-row")).toHaveCount(3);
   return searches;
 }
@@ -95,7 +96,7 @@ test("sorting stays on small screens and Escape closes the menu without closing 
   await trigger.press("Escape");
   await page.setViewportSize({ width: 390, height: 844 });
   for (const name of ["A", "B"]) await page.getByRole("button", { name: `Compare Test Centre ${name}`, exact: true }).click();
-  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /COMPARE/ }).click();
+  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /Compare/ }).click();
   const priority = page.getByRole("combobox", { name: "Comparison priority", exact: true });
   await priority.click();
   await expect(menu).toBeVisible();
@@ -107,7 +108,7 @@ test("sorting stays on small screens and Escape closes the menu without closing 
   await expect(menu).toHaveCount(0);
   await priority.press("End");
   await priority.press("Enter");
-  await expect(priority).toHaveText("Centres with pickup first");
+  await expect(priority).toHaveText("Pickup service first");
   await page.setViewportSize({ width: 320, height: 700 });
   await priority.click();
   box = await menu.boundingBox();

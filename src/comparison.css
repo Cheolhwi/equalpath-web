@@ -1,0 +1,109 @@
+/* A short, aligned comparison. Extra evidence stays behind each fact. */
+.compare-visit { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 24px; padding: 14px 18px; border-radius: 18px; background: var(--soft); font-size: 14px; }
+.compare-visit > span { display: flex; align-items: center; gap: 7px; }
+.compare-visit svg { flex-shrink: 0; color: var(--accent); }
+.compare-address { margin-left: auto; }
+.compare-address[open] { flex-basis: 100%; margin-left: 0; }
+.compare-address > summary { display: flex; align-items: center; gap: 7px; width: fit-content; min-height: 32px; cursor: pointer; color: var(--muted); font-size: 13px; list-style: none; }
+.compare-address p { margin: 5px 0; }
+.compare-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+.compare-toolbar > p { margin: 0; font-size: 15px; }
+.compare-toolbar .compare-sort-control { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.compare-toolbar .select-menu-trigger { min-width: 180px; min-height: 44px; font-size: 14px; background: var(--paper); }
+.compare-pair { display: none; }
+.equalpath.map-first .compare-view .compare-table { overflow: visible; border: 1px solid var(--rule); border-radius: 18px; background: var(--paper); }
+.equalpath.map-first .compare-view table { width: 100%; min-width: 0; font-size: 15px; }
+.equalpath.map-first .compare-view table th:first-child { width: 120px; font-size: 14px; font-weight: 500; }
+.equalpath.map-first .compare-view table :is(th, td) { padding: 16px; }
+.equalpath.map-first .compare-view table tbody th { background: var(--bg); }
+.equalpath.map-first .compare-view table tbody th > svg { display: block; color: var(--accent); margin-bottom: 7px; }
+.equalpath.map-first .compare-view table thead th { position: sticky; top: -24px; z-index: 3; padding-bottom: 76px; border-bottom: 1px solid var(--rule); }
+.equalpath.map-first .compare-view table thead th:first-child { border-top-left-radius: 18px; }
+.equalpath.map-first .compare-view table thead th:last-child { border-top-right-radius: 18px; }
+.compare-centre-top { display: flex; align-items: center; justify-content: space-between; min-height: 36px; gap: 4px; margin: -8px -8px 4px 0; }
+.equalpath.map-first .compare-view .remove-compare { float: none; flex-shrink: 0; width: 44px; min-height: 44px; margin: 0; background: transparent; }
+.equalpath.map-first .compare-view .comparison-best-tag { margin: 0; padding: 4px 7px; font-size: 12px; color: var(--ink); background: var(--soft); }
+.equalpath.map-first .compare-view .comparison-best .comparison-best-tag { background: var(--paper); }
+.equalpath.map-first .compare-view h3 { margin: 0 0 14px; font-size: 18px; line-height: 1.35; font-weight: 650; }
+.equalpath.map-first .compare-view .compare-contact { position: absolute; bottom: 16px; left: 16px; display: flex; width: calc(100% - 32px); gap: 7px; justify-content: center; padding: 8px 12px; min-height: 44px; font-size: 14px; }
+.equalpath.map-first .compare-view td { font-size: 15px; line-height: 1.45; }
+.equalpath.map-first .compare-view td strong { font-weight: 600; font-size: inherit; }
+.compare-fact > summary { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; }
+.compare-fact > summary > svg { flex-shrink: 0; margin-top: 4px; color: var(--muted); }
+.compare-fact > summary span { display: flex; gap: 5px; align-items: flex-start; color: var(--muted); font-size: 12px; font-weight: 400; margin-top: 5px; }
+.compare-fact > summary span svg { flex-shrink: 0; margin-top: 2px; }
+.compare-fact.conflict > summary { color: var(--warning, #805715); }
+.compare-fact.conflict > summary span { color: inherit; }
+.compare-fact p { font-size: 13px; font-weight: 400; margin: 10px 0; }
+.compare-fact[open] > summary > svg, .compare-expand[aria-expanded="true"] > svg { transform: rotate(180deg); }
+.compare-view summary::-webkit-details-marker { display: none; }
+.equalpath.map-first .compare-view .compare-expand { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 16px auto; padding: 9px 20px; min-height: 44px; font-size: 14px; background: var(--paper); }
+.compare-footnote { color: var(--muted); text-align: center; font-size: 12px; line-height: 1.6; margin: 14px 0; }
+.compare-ranking { font-size: 12px; color: var(--muted); text-align: center; }
+.compare-ranking summary { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; cursor: pointer; }
+.compare-ranking p { margin: 6px 0; }
+
+/* Two complete columns on a phone. Pick another centre without sideways scrolling. */
+@media (max-width: 640px) {
+  .compare-visit { gap: 8px 14px; padding: 12px; font-size: 13px; }
+  .compare-address { margin-left: 0; }
+  .compare-toolbar { margin: 14px 0; }
+  .compare-toolbar > p { font-size: 14px; }
+  .compare-toolbar .compare-sort-control { flex-direction: row; width: 100%; justify-content: space-between; }
+  .compare-toolbar .compare-sort-control .select-menu { width: auto; }
+  .compare-pair { display: block; margin: 8px 0; }
+  .compare-pair > summary { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; color: var(--muted); font-size: 12px; cursor: pointer; list-style: none; }
+  .compare-pair > summary > span:last-child { display: flex; gap: 6px; align-items: center; color: var(--ink); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); }
+  .compare-pair > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-block: 8px; }
+  .compare-pair .select-menu { min-width: 0; }
+  .compare-pair .select-menu-trigger { width: 100%; padding: 8px; font-size: 12px; line-height: 1.3; min-height: 44px; }
+  .compare-pair .select-menu-trigger > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .equalpath.map-first .compare-view .compare-table { border-radius: 14px; }
+  .equalpath.map-first .compare-view table { display: block; width: 100%; min-width: 0; }
+  .compare-view colgroup { display: none; }
+  .equalpath.map-first .compare-view :is(thead, tbody) { display: block; }
+  .equalpath.map-first .compare-view tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .equalpath.map-first .compare-view table :is(th, td) { min-width: 0; width: auto; padding: 12px 10px; position: static; font-size: 14px; }
+  .equalpath.map-first .compare-view thead { position: sticky; top: -18px; z-index: 3; }
+  .equalpath.map-first .compare-view thead th:first-child { display: none; }
+  .equalpath.map-first .compare-view table thead th { position: relative; top: auto; padding-bottom: 68px; border-top-left-radius: 14px; border-top-right-radius: 14px; }
+  .equalpath.map-first .compare-view tbody th:first-child { grid-column: 1 / -1; display: flex; align-items: center; gap: 7px; width: auto; padding: 8px 10px; font-size: 13px; border-bottom: 1px solid var(--rule); }
+  .equalpath.map-first .compare-view table tbody th > svg { width: 15px; height: 15px; margin: 0; }
+  .equalpath.map-first .compare-view [data-mobile-hidden] { display: none; }
+  .equalpath.map-first .compare-view [data-provider-id]:not([data-mobile-hidden]) { grid-column: var(--mobile-column); grid-row: 2; }
+  .equalpath.map-first .compare-view thead [data-provider-id]:not([data-mobile-hidden]) { grid-row: 1; }
+  .equalpath.map-first .compare-view h3 { font-size: 15px; line-height: 1.4; margin-bottom: 12px; }
+  .equalpath.map-first .compare-view .comparison-best-tag { font-size: 11px; padding: 4px; }
+  .equalpath.map-first .compare-view .compare-contact { left: 10px; width: calc(100% - 20px); gap: 5px; font-size: 13px; padding: 8px; }
+  .compare-contact > svg:last-child { display: none; }
+  .compare-fact > summary { gap: 4px; }
+  .compare-fact > summary span { font-size: 12px; }
+}
+
+/* The two remaining map-bottom controls share the same quiet rounded shell. */
+.equalpath.map-first .compare-tray { gap: 12px; padding: 7px 8px 7px 16px; border: 1px solid var(--rule); border-radius: 999px; background: var(--glass-thick); color: var(--ink); backdrop-filter: blur(18px); box-shadow: 0 5px 22px #26362524; }
+.equalpath .compare-tray-count { display: flex; align-items: center; gap: 7px; font-size: 14px; letter-spacing: 0; white-space: nowrap; }
+.compare-tray-count svg { color: var(--accent); }
+.equalpath .compare-tray .compare-tray-open { min-height: 44px; padding: 10px 18px; font-size: 14px; font-weight: 600; border-radius: 999px; background: var(--nav-selected); color: var(--nav-selected-text); }
+.equalpath .compare-tray > button:last-child { width: 44px; min-height: 44px; padding: 0; border-radius: 50%; color: var(--muted); }
+.equalpath .compare-tray > button:last-child:hover { background: var(--soft); }
+.equalpath .map-pick-confirm { width: min(360px, calc(100% - 32px)); padding: 18px; border-radius: 22px; background: var(--paper); box-shadow: 0 8px 28px #26362524; }
+.equalpath .map-pick-confirm > strong { display: flex; align-items: center; gap: 8px; font-size: 18px; margin-bottom: 6px; }
+.map-pick-confirm > strong svg { color: var(--accent); }
+.map-pick-confirm > p { font-size: 14px; color: var(--muted); margin: 0 0 8px; }
+.map-pick-confirm > details { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+.map-pick-confirm > details > summary { cursor: pointer; min-height: 32px; display: flex; align-items: center; }
+.equalpath .map-pick-confirm button { border-radius: 999px; font-size: 14px; }
+.equalpath .map-pick-confirm .primary { background: var(--nav-selected); color: var(--nav-selected-text); }
+.equalpath:has(.map-pick-confirm) .compare-tray { visibility: hidden; pointer-events: none; }
+.equalpath .map-region.choosing .map-tools { top: 84px; bottom: auto; }
+.equalpath .map-region.choosing .map-pick-hint { display: none; }
+.equalpath .toast { display: flex; align-items: center; gap: 12px; top: 50%; left: 50%; transform: translate(-50%, -50%); width: max-content; max-width: min(420px, calc(100vw - 32px)); padding: 16px 12px 16px 20px; border: 1px solid var(--rule); border-radius: 22px; background: var(--paper); color: var(--ink); font-size: 15px; line-height: 1.5; box-shadow: 0 12px 48px #26362538; }
+.equalpath .toast > svg { flex-shrink: 0; color: var(--accent); }
+.equalpath .toast > button { display: grid; place-items: center; width: 44px; min-height: 44px; flex-shrink: 0; border-radius: 50%; }
+.equalpath .toast > button:hover { background: var(--soft); }
+@media (max-width: 420px) {
+  .equalpath.map-first .compare-tray { gap: 5px; padding-left: 12px; }
+  .equalpath .compare-tray-count { font-size: 13px; gap: 4px; }
+  .equalpath .compare-tray .compare-tray-open { padding-inline: 14px; }
+}

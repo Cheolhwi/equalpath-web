@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bookmark, ArrowRight, Trash2, Pencil, Save } from "lucide-react";
+import { Bookmark, Search, ArrowRight, Trash2, Pencil, Save } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
 import TimeInput from "./TimeInput.jsx";
 import CareTypeChoice from "./CareTypeChoice.jsx";
@@ -18,8 +18,9 @@ export function SaveExplanation() {
       <summary>About your saved items</summary>
       <p>
         Your saved childcare, notes and searches stay in this browser.
-        Searches keep the care type, public pickup place, pickup preference and any care times.
+        Searches keep the care type, public pickup address, pickup choice and any care times.
         Dates and child ages aren’t saved.
+        For you uses your saved centres and local viewing history to suggest other centres.
       </p>
       <p>
         Clearing browser data can remove these items. They won’t appear on
@@ -35,11 +36,36 @@ export function SavedSearchReminder({ templates, onReuse, onChoose, disabled }) 
     <div className="saved-search-reminder-heading"><Bookmark size={17} aria-hidden="true" />
       <strong>{single ? "Your saved search" : `${templates.length} saved searches`}</strong>
     </div>
-    <p>{single ? <>Use <strong>{templates[0].name}</strong>{isShortCare(templates[0]) ? " with a new date." : " to find childcare again."}</> : "Your saved preferences are ready to use again."}</p>
+    <p>{single ? <>Use <strong>{templates[0].name}</strong>{isShortCare(templates[0]) ? " with a new date." : " to find childcare again."}</> : "Your saved choices are ready to use again."}</p>
     <button type="button" className="text-link" disabled={disabled} onClick={() => single ? onReuse(templates[0]) : onChoose()}>
       {single ? "Use this search" : "Choose a saved search"}<ArrowRight size={15} aria-hidden="true" />
     </button>
   </section>;
+}
+export function SavedCentreReminder({ favourites, onChoose }) {
+  if (!favourites.length) return null;
+  return <section className="saved-centre-reminder" aria-label="Saved centres">
+    <button type="button" onClick={onChoose}>
+      <Bookmark size={19} aria-hidden="true" />
+      <span><strong>Saved centres <span className="saved-centre-count">{favourites.length}</span></strong>
+        <span>{favourites.at(-1).name}{favourites.length > 1 && <small> · {favourites.length - 1} more</small>}</span></span>
+      <ArrowRight size={18} aria-hidden="true" />
+    </button>
+  </section>;
+}
+export function MapSavedShortcuts({ library, onCentres, onSearches }) {
+  const latest = (items, key) => items.reduce((last, item) => !last || (item[key] ?? "") >= (last[key] ?? "") ? item : last, null);
+  return <>
+    {[
+      { label: "Saved centres", items: library.favourites, item: latest(library.favourites, "savedAt"), Icon: Bookmark, onClick: onCentres, id: "map-saved-centre" },
+      { label: "Saved searches", items: library.templates, item: latest(library.templates, "updatedAt"), Icon: Search, onClick: onSearches, id: "map-saved-search" },
+    ].map(({ label, items, item, Icon, onClick, id }) => <button key={id} className="map-saved-shortcut" onClick={onClick}
+      aria-label={`${label}${items.length ? ` (${items.length})` : ""}`} aria-describedby={item ? id : undefined} title={item?.name}>
+      <Icon size={17} aria-hidden="true" />
+      <span><span className="map-saved-label">{label}{items.length > 0 && <small>{items.length}</small>}</span>
+        {item && <strong id={id}>{item.name}</strong>}</span>
+    </button>)}
+  </>;
 }
 export function SavedLibrary({
   library,
@@ -53,15 +79,12 @@ export function SavedLibrary({
   onDiscover,
   tab,
   setTab,
+  suggestions,
 }) {
-  const entries = library[tab];
+  const dateKey = tab === "favourites" ? "savedAt" : "updatedAt";
+  const entries = [...(library[tab] ?? [])].reverse().sort((a, b) => (b[dateKey] ?? "").localeCompare(a[dateKey] ?? ""));
   return (
     <div className="saved-library">
-      <p className="dialog-lead">
-        {tab === "favourites"
-          ? "Your favourite childcare, ready when you need it."
-          : "Your saved preferences, ready to use again. Short stays need a new date."}
-      </p>
       {failure && (
         <div className="error-box" role="alert">
           <p>{failure}</p>
@@ -81,8 +104,10 @@ export function SavedLibrary({
         >
           Searches <em>{library.templates.length}</em>
         </button>
+        <button aria-pressed={tab === 'suggestions'} onClick={() => setTab('suggestions')}>For you</button>
       </div>
-      {!entries.length && (
+      {tab === 'suggestions' && suggestions}
+      {tab !== 'suggestions' && !entries.length && (
         <div className="empty-state">
           <Bookmark size={30} />
           <h3>
@@ -93,7 +118,7 @@ export function SavedLibrary({
           <p>
             {tab === "favourites"
               ? "Tap Save on any childcare option to keep it here."
-              : "Choose Save this search on Find childcare to keep your care preferences."}
+              : "Choose Save this search on Find childcare to keep your care choices."}
           </p>
           <button className="primary" onClick={onDiscover}>
             Find childcare <ArrowRight size={16} />
@@ -117,15 +142,15 @@ export function SavedLibrary({
             </>
           ) : (
             <>
-              <p className="saved-pickup"><span>Pickup place</span>{item.pickup?.label}</p>
+              <p className="saved-pickup"><span>{isShortCare(item) ? "Your child will leave from" : "Search near"}</span>{item.pickup?.label}</p>
               <p className="notice">{careTypeLabel(item)}</p>
               <dl className="saved-search-times">
-                {isShortCare(item) && <><div><dt>Collect by</dt><dd>{item.deadline || "Not set"}</dd></div>
-                <div><dt>Care until</dt><dd>{item.end || "Not set"}</dd></div></>}
+                {isShortCare(item) && <><div><dt>When will your child leave?</dt><dd>{item.deadline || "Not set"}</dd></div>
+                <div><dt>When will you pick up your child?</dt><dd>{item.end || "Not set"}</dd></div></>}
                 <div><dt>Pickup option</dt><dd>{item.transport === "institution"
                   ? "Centre pickup"
                   : item.transport === "self"
-                    ? "I’ll arrange transport"
+                    ? "I’ll handle pickup"
                     : "Not specified"}</dd></div>
               </dl>
             </>
@@ -192,7 +217,7 @@ export function FavouriteEditor({ p, existing, onSave, onCancel }) {
           maxLength={180}
           rows={3}
           onChange={(e) => setReason(e.target.value)}
-          placeholder="For example: convenient location"
+          placeholder="For example: near work"
         />
       </label>
       {error && (
@@ -258,10 +283,10 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
       />
       {isShortCare(draft) && <div className="field-pair">
         <div className="field">
-          <label htmlFor="template-deadline">Collect by</label>
+          <label htmlFor="template-deadline">When will your child leave?</label>
           <TimeInput
             id="template-deadline"
-            label="Template collect by"
+            label="Template when will your child leave?"
             value={draft.deadline}
             onChange={(value) => field("deadline", value)}
             invalid={!!errors.deadline}
@@ -272,10 +297,10 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
           )}
         </div>
         <div className="field">
-          <label htmlFor="template-care-end">Care until</label>
+          <label htmlFor="template-care-end">When will you pick up your child?</label>
           <TimeInput
             id="template-care-end"
-            label="Template care until"
+            label="Template when will you pick up your child?"
             value={draft.end}
             onChange={(value) => field("end", value)}
             invalid={!!errors.end}
@@ -285,18 +310,18 @@ export function TemplateEditor({ value, mode, onSave, onCancel }) {
         </div>
       </div>}
       <label className="field">
-        Pickup preference
+        Who handles pickup?
         <select
           value={draft.transport}
           onChange={(e) => field("transport", e.target.value)}
         >
           <option value="">Not specified</option>
-          <option value="self">I'll arrange transport</option>
+          <option value="self">I’ll handle it</option>
           <option value="institution">Centre pickup</option>
         </select>
       </label>
       <p className="notice">
-        {isShortCare(draft) ? "Next time, your pickup place and times will be ready. Choose a new date and add your child’s age if needed." : "Next time, your location and pickup preference will be ready. Add your child’s age if needed."}
+        {isShortCare(draft) ? "Next time, your pickup address and times will be ready. Choose a new date and add your child’s age if needed." : "Next time, your location and pickup choice will be ready. Add your child’s age if needed."}
       </p>
       {failure && (
         <p className="error-box" role="alert">

@@ -1,3 +1,4 @@
+import { chooseAge, openSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI, errorResponse } from "../../server/api.mjs";
 import { fixtureCatalog } from "../../server/fixtures.mjs";
@@ -19,10 +20,11 @@ async function mockAPI(page, calls, reverseGeocode=async point=>({pickup:{id:nul
 test("first visit shows nearby childcare without a request; partial place search is explicit and restores on reload", async ({ page }) => {
   const calls = []; await mockAPI(page,calls);
   await page.goto("/#discover");
+  await openSearch(page);
   await expect(page.locator(".nearby-card").first()).toBeVisible();
   await expect(page.locator(".provider-pin").first()).toBeVisible();
   expect(calls.some((c)=>c.action === "search")).toBe(false);
-  await expect(page.locator("#deadline")).toHaveCount(0);
+  await expect(page.locator("#deadline")).toHaveValue("");
   await expect(page.locator(".map-region")).toHaveAttribute("data-map-lat",/^3\.139/);
   await page.locator("#pickup-search").fill("KL sentrl");
   expect(calls.some((c)=>c.action === "places")).toBe(false);
@@ -32,7 +34,8 @@ test("first visit shows nearby childcare without a request; partial place search
   await expect(page.locator("#pickup-search")).toHaveValue("KL Sentral");
   await page.reload();
   await expect(page.locator("#pickup-search")).toHaveValue("KL Sentral");
-  await expect(page.locator("#deadline")).toHaveCount(0);
+  await openSearch(page);
+  await expect(page.locator("#deadline")).toHaveValue("");
   await expect(page.locator(".nearby-card").first()).toBeVisible();
   await expect(page.locator(".pickup-pin")).toBeVisible();
   await expect.poll(async()=>Number(await page.locator(".map-region").getAttribute("data-map-lat"))).toBeCloseTo(3.1341,4);
@@ -46,7 +49,7 @@ test("first visit shows nearby childcare without a request; partial place search
 test("drag map, confirm pickup, reload and keep the same point; cancellation leaves the pickup unchanged", async ({page})=>{
   const calls=[]; await mockAPI(page,calls); await page.goto("/#discover");
   await expect(page.locator(".provider-pin").first()).toBeVisible();
-  await page.getByRole("button",{name:"Choose pickup here"}).click();
+  await page.getByRole("button",{name:"Choose your location"}).click();
   const map=page.locator(".map-region"); const oldLng=Number(await map.getAttribute("data-map-lng"));
   const box=await page.locator(".map-canvas").boundingBox();
   await page.mouse.move(box.x+box.width*.55,box.y+box.height*.52);
@@ -57,7 +60,7 @@ test("drag map, confirm pickup, reload and keep the same point; cancellation lea
   await expect(page.locator("#pickup-search")).toHaveValue("Jalan Stesen Sentral, Kuala Lumpur");
   const pickup=await page.locator("#pickup-search").inputValue();
   await page.reload(); await expect(page.locator("#pickup-search")).toHaveValue(pickup);
-  await page.getByRole("button",{name:"Choose pickup here"}).click();
+  await page.getByRole("button",{name:"Choose your location"}).click();
   await page.getByRole("button",{name:"Zoom in",exact:true}).click();
   await page.getByRole("button",{name:"Cancel",exact:true}).click();
   await expect(page.locator("#pickup-search")).toHaveValue(pickup);
@@ -67,7 +70,8 @@ test("mobile pickup confirmation is visible, map stays flat and blocked storage 
   await page.setViewportSize({width:390,height:844});
   await page.addInitScript(()=>{ Storage.prototype.setItem=()=>{throw Error("blocked");}; });
   const calls=[]; await mockAPI(page,calls); await page.goto("/#discover");
-  await page.getByRole("button",{name:"Choose on map",exact:true}).click();
+  await openSearch(page);
+  await page.getByRole("button",{name:"Choose your location",exact:true}).click();
   await expect(page.locator(".map-center-pin")).toBeVisible();
   await expect(page.getByRole("button",{name:"Use this location",exact:true})).toBeInViewport();
   await expect(page.locator(".map-region")).toHaveAttribute("data-map-pitch","0");
@@ -94,7 +98,7 @@ test("pan and zoom do not query; choosing a pickup updates nearby centres", asyn
   await expect.poll(async()=>Number(await page.locator(".map-region").getAttribute("data-map-lng"))).toBeCloseTo(saved.center.lng,4);
   await expect(page.locator("#pickup-search")).toHaveValue("");
   const beforePickup=calls.filter(c=>c.action==="nearby").length;
-  await page.getByRole("button",{name:"Choose pickup here",exact:true}).click();
+  await page.getByRole("button",{name:"Choose your location",exact:true}).click();
   const pickBox=await page.locator(".map-canvas").boundingBox();
   await page.mouse.move(pickBox.x+pickBox.width*.55,pickBox.y+pickBox.height*.52);
   await page.mouse.down();await page.mouse.move(pickBox.x+pickBox.width*.55+70,pickBox.y+pickBox.height*.52,{steps:18});await page.mouse.up();
@@ -107,23 +111,24 @@ test("a nearby marker can lead to a dated condition check without pretending dis
   const calls=[]; await mockAPI(page,calls); await page.goto("/?care=short_term#discover");
   await expect(page.locator(".provider-pin").first()).toBeVisible();
   await page.locator(".provider-pin").first().click();
-  await expect(page.locator(".map-preview .state-pill")).toHaveCount(0);
-  await page.getByRole("button",{name:"Check this centre",exact:true}).click();
+  await expect(page.locator(".map-centre-card .state-pill")).toHaveCount(0);
+  await page.locator(".map-centre-card").getByRole("button",{name:/View details/}).click();
   await page.locator("#pickup-search").fill("KL sentrl");await page.locator("#pickup-search").press("Enter");
   await page.getByRole("button",{name:/KL Sentral Jalan Stesen/}).click();
   // Re-select the centre after choosing a different search location.
   await expect(page.locator(".provider-pin").first()).toBeVisible();await page.locator(".provider-pin").first().click();
-  await page.getByRole("button",{name:"Check this centre",exact:true}).click();
+  await page.locator(".map-centre-card").getByRole("button",{name:/View details/}).click();
+  await openSearch(page);
   await page.locator("#service-date").fill("2026-09-22"); await page.locator("#deadline").fill("13:00");await page.locator("#care-end").fill("17:00");
-  await page.getByRole("button",{name:"Find care options",exact:true}).click();
+  await chooseAge(page); await page.getByRole("button",{name:"Find childcare",exact:true}).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   expect(calls.filter(c=>c.action==="details").at(-1).request.end).toBe("17:00");
 });
 test("an address outage keeps the chosen point and can be retried without another nearby search",async({page})=>{
   let reverseCalls=0;const calls=[];
   await mockAPI(page,calls,async point=>++reverseCalls===1 ? {pickup:null} : {pickup:{...point,id:null,label:"Jalan Stesen Sentral, Kuala Lumpur"}});
-  await page.goto('/#discover');await expect(page.locator('.nearby-card').first()).toBeVisible();
-  await page.getByRole('button',{name:'Choose pickup here'}).click();await page.getByRole('button',{name:'Use this location',exact:true}).click();
+  await page.goto('/#discover');await expect(page.locator('.provider-pin').first()).toBeVisible();
+  await page.getByRole('button',{name:'Choose your location'}).click();await page.getByRole('button',{name:'Use this location',exact:true}).click();
   await expect(page.getByRole('button',{name:'Retry address',exact:true})).toBeVisible();
   const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('equalpath:map:v1:live')).pickup);
   await page.getByRole('button',{name:'Retry address',exact:true}).click();
@@ -135,8 +140,8 @@ test("an address outage keeps the chosen point and can be retried without anothe
 test("a late street lookup never overwrites a newly searched place",async({page})=>{
   let finish;const pending=new Promise(resolve=>finish=resolve);const calls=[];
   await mockAPI(page,calls,async point=>{await pending;return {pickup:{...point,label:'Old road',id:null}};});
-  await page.goto('/#discover');await expect(page.locator('.nearby-card').first()).toBeVisible();
-  await page.getByRole('button',{name:'Choose pickup here'}).click();await page.getByRole('button',{name:'Use this location',exact:true}).click();
+  await page.goto('/#discover');await expect(page.locator('.provider-pin').first()).toBeVisible();
+  await page.getByRole('button',{name:'Choose your location'}).click();await page.getByRole('button',{name:'Use this location',exact:true}).click();
   await expect.poll(()=>calls.some(c=>c.action==='reverse')).toBe(true);
   await page.locator('#pickup-search').fill('KL sentrl');await page.locator('#pickup-search').press('Enter');
   await page.getByRole('button',{name:/KL Sentral Jalan Stesen/}).click();finish();

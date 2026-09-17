@@ -1,3 +1,4 @@
+import { chooseAge, openResults, openSearch } from "./ui-helpers.mjs";
 import {test,expect} from '@playwright/test';
 import {createAPI} from '../../server/api.mjs';
 import {fixtureCatalog} from '../../server/fixtures.mjs';
@@ -11,13 +12,16 @@ for (const careType of ['regular', 'short_term']) test(`${careType}: listed KPM 
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,center:{lat:3.139,lng:101.6869},zoom:13,pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto(`/?care=${careType}#discover`);
-  if (careType === 'short_term') { await page.locator('#deadline').fill('13:00'); await page.locator('#care-end').fill('17:00'); }await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await page.goto(`/?care=${careType}#discover`);await openSearch(page);
+  await chooseAge(page);
+  if (careType === 'short_term') { await page.locator('#deadline').fill('13:00'); await page.locator('#care-end').fill('17:00'); }
+  await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);
   await expect(page.locator('.provider-row')).toContainText(careType === 'regular' ? 'MYR 350–490 / month' : 'Ask the centre');
   if (careType === 'short_term') await expect(page.locator('.provider-row')).not.toContainText('/ month');
   await expect(page.locator('.provider-row')).not.toContainText('MYR 80');
   await page.getByRole('button',{name:/View details for/}).click();
   const dialog=page.getByRole('dialog');
+  await dialog.locator('.centre-fees > summary').click();
   await dialog.locator('.centre-evidence > summary').click();
   await expect(dialog.getByRole('heading',{name:'KPM code listed',exact:true})).toBeVisible();
   await expect(dialog).toContainText('W5L0048');
@@ -44,10 +48,11 @@ test('area budget references stay labelled in search and details',async({page})=
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,center:{lat:3.139,lng:101.6869},zoom:13,pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/#discover');await page.getByRole('button',{name:'Find care options',exact:true}).click();
+  await page.goto('/?care=regular#discover');await openSearch(page);await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);
   await expect(page.locator('.provider-row')).toContainText('Estimated MYR 600–900 / month');
   await page.getByRole('button',{name:/View details for/}).click();
   const dialog=page.getByRole('dialog');
+  await dialog.locator('.centre-fees > summary').click();
   await expect(dialog.getByRole('heading',{name:'Estimated budget',exact:true})).toBeVisible();
   await expect(dialog.locator('.fee-line')).toContainText('Estimated MYR 600–900 / month');
   await expect(dialog.locator('.fee-line')).toContainText("not this centre's quote");

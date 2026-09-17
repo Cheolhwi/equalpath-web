@@ -200,10 +200,10 @@ test("5.2 / 5.4 handover questions belong to three parties and do not assert ass
     sheet.groups.map((g) => g.id),
     ["usual", "receiving", "transport"],
   );
-  assert.match(sheet.groups[2].party, /Confirm who is collecting/);
+  assert.match(sheet.groups[2].party, /Check who will pick up/);
   for (const id of ["release", "identity", "delay"])
     assert.ok(sheet.groups[0].questions.some((x) => x.id === id));
-  assert.match(sheet.notice, /does not authorise collection/);
+  assert.match(sheet.notice, /does not give permission to pick up/);
   assert.ok(
     !sheet.groups
       .flatMap((g) => g.questions)
@@ -237,12 +237,15 @@ test("5.6 standalone export preserves dates, contacts, draft, blank offline spac
   const p = await provider(r);
   p.phone = { display: "03 1234 5678", source: p.sources[0] };
   const sheet = preparationFor(p, r, "2026-09-13T10:00:00Z");
-  const html = preparationHTML(sheet, ["bag"]);
+  const html = preparationHTML(sheet, ["bag", "water"]);
+  assert.ok(html.includes("☑ Pack a bag with your child’s name."));
+  assert.ok(html.includes("☑ Pack a water bottle."));
+  assert.ok(html.includes("☐ Pack spare clothes."));
   for (const value of [
     "03 1234 5678",
     "2026-09-14",
     "2026-09-13T10:00:00Z",
-    "At the pickup place",
+    "At the pickup address",
     "Collector identification",
     "Health, allergy",
     "pickup permission",

@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
+import CareJourney from "./CareJourney.jsx";
 import useCardReveal from "./useCardReveal.js";
-import SelectMenu, { sortOptions } from "./SelectMenu.jsx";
 import {
   Bookmark,
   ClipboardList,
@@ -21,10 +21,10 @@ import {
   Car,
   Users,
   Wallet,
+  X,
 } from "lucide-react";
 import { todayKL, isShortCare } from "../shared/request.mjs";
 import { drivingLabel, feeSummary, formatFee, feesForCare } from "../shared/result-summary.mjs";
-import { bestForPriority } from "../shared/conditions.mjs";
 import { registrationBadge } from "../shared/registration.mjs";
 export function OrderingNote({ ordering, radius }) {
   if (!ordering) return null;
@@ -71,10 +71,10 @@ export function PublishedContacts({ p, compact = false }) {
     <>
       {p.phone && (
         <div className="published-contact">
-          <div className="call-link" aria-label="Institution phone">
+          <a className="call-link" aria-label={`Call ${p.name}`} href={`tel:${p.phone.display.replace(/[^+0-9]/g, "")}`}>
             <Phone size={19} />
-            {p.phone.display}
-          </div>
+            Call · {p.phone.display}
+          </a>
           <ContactSource source={p.phone.source} />
         </div>
       )}
@@ -94,15 +94,14 @@ export function PublishedContacts({ p, compact = false }) {
           <ContactSource source={contact.source} />
           {contact.scope === "website" && (
             <small className="notice">
-              General enquiry number; may cover more than one branch.
+              Website number · ask for this centre.
             </small>
           )}
         </div>
       ))}
       {!p.phone && !p.whatsapp?.length && (
         <p>
-          We couldn’t find a contact number for this branch. Check its
-          listing for other ways to get in touch.
+          No phone number listed. Try the centre’s website.
         </p>
       )}
     </>
@@ -174,13 +173,9 @@ export function ProviderCard({
       }}>
         <div className="row-kicker">
           <span>
-            {String(index + 1).padStart(2, "0")} / {p.category}
+            {p.district || p.category}
           </span>
-          <span>
-            {p.driving?.state === "available"
-              ? `${p.driving.distanceKm} km by road`
-              : "Distance unavailable"}
-          </span>
+
         </div>
         <div className="provider-heading">
           <button className="provider-select" aria-label={"Select " + p.name} aria-pressed={selected} onClick={onSelect}>
@@ -189,23 +184,23 @@ export function ProviderCard({
           <RegistrationBadge p={p} />
         </div>
         <div className="row-facts">
-          <span>Age</span>
-          <strong>{p.age?.rangeLabel ?? p.age?.wording ?? "Not listed"}</strong>
+          <span><Users size={16} aria-hidden="true" />Age</span>
+          <strong>{detailAgeLabel(p)}</strong>
         </div>
         <div className="row-facts">
-          <span>Drive from pickup</span>
+          <span><Car size={16} aria-hidden="true" />Drive</span>
           <strong>{drivingLabel(p.driving)}</strong>
         </div>
         <div className="row-facts">
-          <span>Fee</span>
+          <span><Wallet size={16} aria-hidden="true" />Fee</span>
           <strong>{fees.label}</strong>
         </div>
         <div className="row-status">
           {p.suggested && <span className="suggestion-tag"><Star size={12} fill="currentColor" />Suggested first</span>}
           <Status state={p.fit.counts.conflict ? "conflict" : "unknown"}>
             {p.fit.counts.conflict
-              ? `${p.fit.counts.conflict} ${p.fit.counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match`
-              : `${p.fit.counts.unknown} ${p.fit.counts.unknown === 1 ? "detail" : "details"} to confirm`}
+              ? `${p.fit.counts.conflict} ${p.fit.counts.conflict === 1 ? "issue" : "issues"} to check`
+              : "Ask the centre"}
           </Status>
         </div>
       </div>
@@ -229,7 +224,7 @@ export function ProviderCard({
           onClick={onDetail}
           aria-label={"View details for " + p.name}
         >
-          View details <ArrowUpRight size={16} />
+          View centre <ArrowRight size={16} />
         </button>
       </div>
     </article>
@@ -360,17 +355,17 @@ export function Costs({ p }) {
     </section>
   );
 }
-const detailAgeLabel = p => (p.age?.rangeLabel ?? p.age?.wording ?? "Not listed").replace(/\s*\(controlled example\)/i, "");
-const checkLabels = { care: "Care end time", age: "Age", admission: "Temporary care", transport: "Centre pickup", coverage: "Pickup area", pickup: "Collection time", transfer: "Travel & handover" };
+const detailAgeLabel = p => (p.age?.rangeLabel ?? p.age?.wording ?? "Not listed").replace(/\s*\(controlled example\)/i, "").replace(/(\d+) years? to under (\d+) years?/i, "$1–under $2 years");
+const checkLabels = { care: "Care ends at", age: "Age", admission: "Care for a few hours", transport: "Centre pickup", coverage: "Pickup area", pickup: "Pickup time", transfer: "Travel time" };
 function checkValue(c, p, request) {
   switch (c.id) {
     case "care": return `${p.careEndTimeLabel ?? p.businessHoursLabel ?? "Hours not listed"} · you need ${request.end}`;
     case "age": return detailAgeLabel(p);
-    case "admission": return p.admission?.value === true ? "One-off care listed" : p.admission?.value === false ? "One-off care not offered" : "Ask about a place for this date";
-    case "transport": return request.transport === "self" ? "You’ll arrange delivery" : p.transport?.exists === true ? "Pickup service listed" : p.transport?.exists === false ? "Centre pickup not offered" : "Pickup service not listed";
-    case "coverage": return request.transport === "self" ? "Centre pickup not needed" : c.state === "supported" ? "Your pickup place is covered" : c.state === "conflict" ? "Outside the listed pickup area" : "Confirm coverage of your pickup place";
-    case "pickup": return request.transport === "self" ? `You’ll arrange collection by ${request.deadline}` : `Collection needed by ${request.deadline}`;
-    case "transfer": return p.driving?.state === "available" ? `About ${p.driving.minutes} min driving + handover time` : "Confirm travel and handover time";
+    case "admission": return p.admission?.value === true ? "Care for a few hours listed" : p.admission?.value === false ? "Care for a few hours not offered" : "Ask if they can take your child on this date";
+    case "transport": return request.transport === "self" ? "You’ll handle pickup" : p.transport?.exists === true ? "Pickup service listed" : p.transport?.exists === false ? "Centre pickup not offered" : "Pickup service not listed";
+    case "coverage": return request.transport === "self" ? "Centre pickup not needed" : c.state === "supported" ? "Pickup from your address is listed" : c.state === "conflict" ? "Outside the listed pickup area" : "Ask if they can pick up from your address";
+    case "pickup": return request.transport === "self" ? `You’ll handle pickup by ${request.deadline}` : `Leave pickup address by ${request.deadline}`;
+    case "transfer": return p.driving?.state === "available" ? `About ${p.driving.minutes} min driving, plus time to drop off your child` : "Ask about driving and drop-off time";
     default: return c.label;
   }
 }
@@ -389,224 +384,55 @@ function CareSchedule({ p }) {
 export function Details({ p, request, onPrepare, onCompare, compared, onSave, saved, onPreparation }) {
   const counts = p.fit.counts, fees = feeSummary(p), badge = registrationBadge(p, todayKL());
   const shortCare = isShortCare(request);
-  const date = shortCare ? new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(request.date + "T12:00:00+08:00")) : "Regular childcare";
+  const date = shortCare ? new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(request.date + "T12:00:00+08:00")) : "Long term";
   const checks = [...p.fit.conditions].sort((a, b) => ({conflict:0,unknown:1,supported:2,reference:3}[a.state] - {conflict:0,unknown:1,supported:2,reference:3}[b.state]));
   const care = p.fit.conditions.find(c => c.id === "care");
+  const renderCheck = c => <details key={c.id} className={`fit-check ${c.state}`} data-condition-id={c.id} open={c.state === "conflict"}>
+    <summary><div><strong>{checkLabels[c.id] ?? c.label}</strong>{c.state === "conflict" && <span>{checkValue(c,p,request)}</span>}</div><Status state={c.state}>{c.statusLabel}</Status><ChevronDown size={15} className="disclosure-chevron" /></summary>
+    <div className="fit-check-explanation"><p>{c.reason}</p><SourceDisclosure source={c.source} extra={c.id === "age" && p.age?.alternative ? <SourceLink source={p.age.alternative.source} /> : null} /></div>
+  </details>;
   return <div className="centre-details">
     <div className="centre-identity"><span>{p.category} · {p.district}, {p.region}</span><p><MapPin size={14} />{p.address ?? "Exact address not listed"}</p></div>
     {p.mode === "demo" && <p className="demo-notice">Demo centre — fictional details.</p>}
-    <div className="centre-request" aria-label="Your visit">
-      <div><span>{shortCare ? "Your visit" : "Care type"}</span><strong>{date}</strong></div>
-      {shortCare && <><div><span>Collect by</span><strong>{request.deadline}</strong></div>
-      <ArrowRight size={16} aria-hidden="true" />
-      <div><span>Care until</span><strong>{request.end}</strong></div></>}
+    <details className="centre-request" aria-label="Your visit">
+      <summary>Your search · {date}<ChevronDown size={16} aria-hidden="true" /></summary>
       <p><MapPin size={13} /><span>From {request.pickup.label}</span></p>
-    </div>
+      {shortCare && <CareJourney request={request} centreName={p.name} />}
+    </details>
     <dl className={`centre-metrics ${shortCare ? "" : "regular-metrics"}`} aria-label="Key information">
-      {shortCare && <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care end time</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>}
-      <div><dt><Users size={15} />Age</dt><dd>{detailAgeLabel(p)}</dd><small>{p.age?.basis === "type_reference" ? "Official type range" : "Published age range"}</small></div>
-      <div><dt><Car size={15} />Drive from pickup</dt><dd>{p.driving?.state === "available" ? `About ${p.driving.minutes} min` : "Unavailable"}</dd><small>{p.driving?.state === "available" ? `${p.driving.distanceKm} km by road · no live traffic` : "Travel time couldn’t be checked"}</small></div>
-      <div className="metric-fee"><dt><Wallet size={15} />Fee</dt><dd>{fees.label}</dd><small>{p.cost?.available ? "For your selected care hours" : p.careType === "short_term" ? fees.note : p.fees?.every(f=>f.verification==='area_estimate') && p.fees.length ? "Area budget reference" : "Check the programme and extras"}</small></div>
+      {shortCare && <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care ends at</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>}
+      <div><dt><Users size={15} />Age</dt><dd>{detailAgeLabel(p)}</dd><small>{p.age?.basis === "type_reference" ? "Age guide for this centre type" : "Listed ages"}</small></div>
+      <div><dt><Car size={15} />Drive</dt><dd>{p.driving?.state === "available" ? `About ${p.driving.minutes} min` : "Ask the centre"}</dd><small>{p.driving?.state === "available" ? `${p.driving.distanceKm} km by road · no live traffic` : "Travel time couldn’t be checked"}</small></div>
+      <div className="metric-fee"><dt><Wallet size={15} />Fee</dt><dd>{fees.label}</dd><small>{p.cost?.available ? "For your selected care hours" : p.careType === "short_term" ? fees.note : p.fees?.every(f=>f.verification==='area_estimate') && p.fees.length ? "Estimated from nearby centres" : "Check what the fee includes"}</small></div>
     </dl>
     <div className="centre-layout">
       <section className="centre-fit centre-section" aria-label="Your care needs">
-        <div className="centre-section-heading"><h3>Your care needs</h3><span>{counts.supported} match · {counts.unknown} to check</span></div>
+        <div className="centre-section-heading"><h3>Before you choose</h3><span className="check-totals"><CheckCircle2 size={15} aria-hidden="true" />{counts.supported} match <HelpCircle size={15} aria-hidden="true" />{counts.unknown} to ask</span></div>
         <div className={`fit-verdict ${counts.conflict ? "conflict" : counts.unknown ? "unknown" : "supported"}`}>
           {counts.conflict ? <AlertTriangle size={19} /> : counts.unknown ? <HelpCircle size={19} /> : <CheckCircle2 size={19} />}
-          <div><strong>{counts.conflict ? `${counts.conflict} ${counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match` : counts.unknown ? "Check a few details with the centre" : "The listed details match your request"}</strong><p>{counts.conflict ? "Review these differences before you choose." : shortCare ? "Ask the centre to confirm a place for your date." : "Ask the centre about enrolment and places."}</p></div>
+          <div><strong>{counts.conflict ? `${counts.conflict} ${counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match` : counts.unknown ? "Ask the centre before you decide" : "The listed details match your request"}</strong><p>{counts.conflict ? "Check the issues below before arranging care." : shortCare ? "Ask if they can take your child on your date." : "Ask if your child can join."}</p></div>
         </div>
-        <div className="fit-checks condition-list">{checks.map(c=><details key={c.id} className={`fit-check ${c.state}`} data-condition-id={c.id} open={c.state === "conflict"}>
-          <summary><div><strong>{checkLabels[c.id] ?? c.label}</strong><span>{checkValue(c,p,request)}</span></div><Status state={c.state}>{c.statusLabel}</Status><ChevronDown size={15} className="disclosure-chevron" /></summary>
-          <div className="fit-check-explanation"><p>{c.reason}</p><SourceDisclosure source={c.source} extra={c.id === "age" && p.age?.alternative ? <SourceLink source={p.age.alternative.source} /> : null} /></div>
-        </details>)}</div>
+        <div className="fit-checks condition-list">{checks.filter(c => c.state === "conflict").map(renderCheck)}
+          {checks.some(c => c.state === "unknown") && <details className="unknown-checks"><summary><HelpCircle size={17} aria-hidden="true" />{counts.unknown} things to ask about<ChevronDown size={15} aria-hidden="true" /></summary>{checks.filter(c => c.state === "unknown").map(renderCheck)}</details>}
+          {checks.some(c => c.state === "supported" || c.state === "reference") && <details className="matched-checks"><summary><CheckCircle2 size={17} aria-hidden="true" />More details<ChevronDown size={15} aria-hidden="true" /></summary>{checks.filter(c => c.state === "supported" || c.state === "reference").map(renderCheck)}</details>}
+        </div>
       </section>
       <aside className="centre-next" aria-label="Contact and next steps">
-        <div className="centre-next-card"><span className="section-kicker">NEXT STEP</span><h3>Ask about a place</h3><p>{shortCare ? "Prepare what to ask for your date and care hours." : "Ask about enrolment, programmes and pickup."}</p>
-          <button className="primary" onClick={onPrepare}>Prepare questions <ArrowRight size={16} /></button>
+        <div className="centre-next-card"><h3>Next step</h3><p>Ask if your child can come.</p>
+          <button className="primary" onClick={onPrepare}>Contact the centre <ArrowRight size={16} /></button>
           <div className="centre-shortlist"><button className="secondary" aria-pressed={compared} onClick={onCompare}>{compared ? <Check size={15} /> : <Plus size={15} />}Compare</button><button className="secondary" aria-pressed={saved} onClick={onSave}><Bookmark size={15} />{saved ? "Saved centre" : "Save centre"}</button></div>
-          <div className="centre-contact"><h4>Contact the centre</h4><PublishedContacts p={p} compact />{p.sourcePage && <a className="centre-listing" href={p.sourcePage} target="_blank" rel="noreferrer">View centre listing <ArrowUpRight size={13} /></a>}</div>
-          <div className="centre-preparation"><h4>After you’ve spoken</h4><p>Plan pickup and what to bring.</p><button onClick={onPreparation}><ClipboardList size={15} />Create checklist<ArrowRight size={14} /></button></div>
+          <details className="centre-contact"><summary>Phone & website<ChevronDown size={16} aria-hidden="true" /></summary><PublishedContacts p={p} compact />{p.sourcePage && <a className="centre-listing" href={p.sourcePage} target="_blank" rel="noreferrer">More about this centre <ArrowUpRight size={13} /></a>}</details>
+          <div className="centre-preparation"><h4>After the centre says yes</h4><button onClick={onPreparation}><ClipboardList size={15} />Get ready for child care<ArrowRight size={14} /></button></div>
         </div>
       </aside>
-      <div className="centre-fees"><Costs p={p} /></div>
-      <CareSchedule p={p} />
+      <details className="centre-fees extra-details"><summary><Wallet size={18} aria-hidden="true" />Fees & extras<ChevronDown size={16} aria-hidden="true" /></summary><Costs p={p} /></details>
+      <details className="centre-hours extra-details"><summary><Clock3 size={18} aria-hidden="true" />Weekly opening hours<ChevronDown size={16} aria-hidden="true" /></summary><CareSchedule p={p} /></details>
       <details className="centre-evidence" open={badge?.state === "attention"}><summary><div><strong>Registration & sources</strong><span>{badge ? `${badge.authority} · ${badge.number}${badge.state === "attention" ? " · needs checking" : ""}` : "Where these details come from"}</span></div><ChevronDown size={17} className="disclosure-chevron" /></summary>
         <Registration p={p} />
-        <div className="centre-source-group"><h4>Address & travel</h4><p>{p.address ?? "Exact address not listed"}</p><SourceLink source={p.addressSource} />{p.driving?.source && <SourceLink source={p.driving.source} />}{!p.location && <p className="notice">We can’t place this centre on the map yet.</p>}</div>
+        <div className="centre-source-group"><h4>Address & travel</h4><p>{p.address ?? "Exact address not listed"}</p><SourceLink source={p.addressSource} />{p.driving?.source && <SourceLink source={p.driving.source} />}{!p.location && <p className="notice">We don’t have a map address for this centre yet.</p>}</div>
         {p.transport?.source && <div className="centre-source-group"><h4>Pickup service</h4><p>{p.transport.wording}</p><SourceLink source={p.transport.source} /></div>}
         {(p.notes ?? []).map((n,i)=><p className="notice" key={i}>{n}</p>)}
       </details>
     </div>
   </div>;
-}
-export function Comparison({
-  items,
-  onRemove,
-  onPrepare,
-  sort,
-  onSort,
-  ordering,
-  date,
-}) {
-  const best=bestForPriority(items,sort,date);
-  const rows = [
-    [
-      "One-off care",
-      (p) => p.fit.conditions.find((c) => c.id === "admission"),
-    ],
-    ["Age", (p) => p.fit.conditions.find((c) => c.id === "age")],
-    [
-      "Centre pickup",
-      (p) => p.fit.conditions.find((c) => c.id === "transport"),
-    ],
-    [
-      "Pickup coverage",
-      (p) => p.fit.conditions.find((c) => c.id === "coverage"),
-    ],
-    [
-      "Collect by",
-      (p) => p.fit.conditions.find((c) => c.id === "pickup"),
-    ],
-    ["Care until", (p) => p.fit.conditions.find((c) => c.id === "care")],
-    [
-      "Arrival time",
-      (p) => p.fit.conditions.find((c) => c.id === "transfer"),
-    ],
-  ].filter(([, get]) => items.some(p => get(p)));
-  return (
-    <>
-      <p className="dialog-lead">
-        Compare fees, care hours and pickup options side by side.
-      </p>
-      <div className="compare-sort">
-        <div className="compare-sort-control">
-          <span>Sort by</span>
-          <SelectMenu label="Comparison priority" value={sort} options={sortOptions(items[0]?.careType).filter(o => o.value !== "closing" || date)}
-            available={ordering?.available} unavailableReasons={ordering?.unavailableReasons} onChange={onSort} />
-        </div>
-        <OrderingNote ordering={ordering} />
-        <p className="comparison-priority-message" role="status">{best.message}</p>
-      </div>
-      <div className="comparison-scroll">
-        <table>
-          <colgroup><col />{items.map(p=><col key={p.id} className={best.ids.includes(p.id) ? "comparison-best-column" : undefined} />)}</colgroup>
-          <thead>
-            <tr>
-              <th>CARE DETAILS</th>
-              {items.map((p) => (
-                <th key={p.id} data-provider-id={p.id} className={best.ids.includes(p.id) ? "comparison-best" : undefined}>
-                  <button
-                    className="remove-compare"
-                    aria-label={"Remove " + p.name + " from comparison"}
-                    onClick={() => onRemove(p.id)}
-                  >
-                    Remove
-                  </button>
-                  {best.ids.includes(p.id) && <span className="comparison-best-tag"><Star size={12} fill="currentColor" />{best.label}</span>}
-                  <h3>{p.name}</h3>
-                  <small>
-                    {p.district} · {p.region}
-                  </small>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(([label, get]) => (
-              <tr key={label}>
-                <th>{label}</th>
-                {items.map((p) => {
-                  const c = get(p) ?? {state: "reference", statusLabel: "Not needed", reason: "This check does not apply to your preferences."};
-                  return (
-                    <td key={p.id}>
-                      <Status state={c.state}>{c.statusLabel}</Status>
-                      <p>{c.reason}</p>
-                      <SourceLink source={c.source} />
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-            <tr>
-              <th>Drive from pickup</th>
-              {items.map(p => <td key={p.id}>{drivingLabel(p.driving)}{p.driving?.state === "available" && <p>{p.driving.distanceKm} km by road · no live traffic</p>}</td>)}
-            </tr>
-            <tr>
-              <th>Location</th>
-              {items.map((p) => (
-                <td key={p.id}>
-                  {p.address || "Address not listed"}
-                </td>
-              ))}
-            </tr>
-            <tr>
-              <th>Care hours</th>
-              {items.map((p) => (
-                <td key={p.id}>
-                  {date ? p.careEndTimeLabel ?? p.businessHoursLabel : p.businessHours?.notes || "Hours not listed"}
-                </td>
-              ))}
-            </tr>
-            <tr>
-              <th>Registration</th>
-              {items.map((p) => (
-                <td key={p.id}>
-                  {p.registration.authority ? `${p.registration.authority} · ` : ''}
-                  {p.registration.number ?? "Not matched"}
-                  <p>
-                    {p.registration.until && p.registration.until < todayKL()
-                      ? "Recorded term ended; renewal unknown"
-                      : p.mode === "demo"
-                        ? "Demo centre"
-                        : p.registration.official
-                          ? "Registration record matched"
-                          : p.registration.authority === "KPM" && p.registration.number
-                            ? "KPM code listed by CariSchool"
-                          : "Registration not yet verified"}
-                  </p>
-                  <SourceLink source={p.registration.source} />
-                </td>
-              ))}
-            </tr>
-            <tr>
-              <th>Fees</th>
-              {items.map((p) => (
-                <td key={p.id}>
-                  {p.cost.available && <strong>{feeSummary(p).label}</strong>}
-                  {feesForCare(p).length
-                    ? feesForCare(p).map((f, i) => (
-                        <div key={i}>
-                          <strong>{feeLabel(f)}</strong>
-                          <p>{f.conditions}</p>
-                          <SourceLink source={f.source} />
-                        </div>
-                      ))
-                    : !p.cost.available && "Ask the centre for a price"}
-                  <p>
-                    {p.cost.available
-                      ? "View details for a cost estimate."
-                      : "Ask the centre about: " +
-                        p.cost.missing.join("; ") +
-                        "."}
-                  </p>
-                </td>
-              ))}
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>NEXT STEP</th>
-              {items.map((p) => (
-                <td key={p.id}>
-                  <button className="primary" onClick={() => onPrepare(p)}>
-                    Prepare questions <ArrowRight size={15} />
-                  </button>
-                </td>
-              ))}
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </>
-  );
 }

@@ -120,7 +120,8 @@ test('desktop entry preserves the app, shows the chosen artwork, and returns to 
   const originalApp=await page.locator('.equalpath').elementHandle();
   await captureEntry(page);
   expect(await originalApp.evaluate(el=>el===document.querySelector('.equalpath'))).toBe(true);
-  await expect(page.locator('#pickup-search')).toBeFocused();
+  await expect(page.locator('.equalpath')).toBeFocused();
+  await expect(page.locator('#pickup-search')).not.toBeFocused();
   await page.getByRole('button',{name:'EqualPath home',exact:true}).click();
   await expect(page.locator('.care-scene')).toHaveAttribute('data-opening','complete');
   await expect(page.locator('.care-scene')).toHaveAttribute('data-scene-view','detail');
@@ -131,7 +132,8 @@ test('mobile entry keeps the selected artwork visible through every curtain stag
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.goto('/');await selectArtwork(page,'grow');
   await captureEntry(page,'grow','-mobile');
-  await expect(page.locator('#pickup-search')).toBeFocused();
+  await expect(page.locator('.equalpath')).toBeFocused();
+  await expect(page.locator('#pickup-search')).not.toBeFocused();
 });
 test('reduced-motion mobile landing opens raised, with visible controls and keyboard focus preserved',async({page})=>{
   test.setTimeout(90000);await page.setViewportSize({width:390,height:844});
@@ -173,7 +175,8 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   await page.clock.fastForward(ENTRANCE_DURATION_MS+32);
   await expect(page.locator('#pickup-search')).toHaveValue('Petaling Jaya');
   await page.clock.resume();
-  await expect(page.locator('#pickup-search')).toBeFocused();
+  await expect(page.locator('.equalpath')).toBeFocused();
+  await expect(page.locator('#pickup-search')).not.toBeFocused();
   await expect(page.locator('.entrance-curtain')).toBeHidden();
   await page.screenshot({path:out+'/entry-mobile-ready.png'});
 });
@@ -215,7 +218,8 @@ test('a cold landing prepares artwork before entry and needs no image request du
   expect(frames.length).toBeGreaterThan(0);
   expect(frames.every(frame=>frame.complete&&frame.width>0&&frame.visibility==='visible'&&frame.sameImage)).toBe(true);
   expect(lateRequests).toBe(0);
-  await expect(page.locator('#pickup-search')).toBeFocused();
+  await expect(page.locator('.equalpath')).toBeFocused();
+  await expect(page.locator('#pickup-search')).not.toBeFocused();
 });
 
 test('unavailable artwork never shows an empty frame or blocks entry',async({page})=>{
@@ -225,5 +229,6 @@ test('unavailable artwork never shows an empty frame or blocks entry',async({pag
   await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
   await expect(page.locator('.entrance-curtain')).toHaveCount(0);
-  await expect(page.locator('#pickup-search')).toBeFocused();
+  await expect(page.locator('.equalpath')).toBeFocused();
+  await expect(page.locator('#pickup-search')).not.toBeFocused();
 });

@@ -1,6 +1,6 @@
-import { minutes, requestCaption, todayKL, isShortCare } from "./request.mjs";
+import { minutes, requestCaption, todayKL, isShortCare, ageBounds } from "./request.mjs";
 export const DRAFT_NOTICE =
-  "This is your draft plan. Confirm care and pickup permission with the centre. This sheet does not authorise collection.";
+  "This is your draft plan. Check care and pickup permission with the centre. This checklist does not give permission to pick up a child.";
 const prompt = (id, text) => ({
   id,
   text,
@@ -15,26 +15,26 @@ export function preparationFor(
   const span = shortCare ? minutes(request.end) - minutes(request.deadline) : 0;
   const transport =
     request.transport === "institution"
-      ? "Centre pickup requested"
+      ? "Ask the centre for pickup"
       : request.transport === "self"
-        ? "I’ll arrange transport"
+        ? "I’ll handle pickup"
         : "Choose who will handle pickup";
   const groups = [
     {
       id: "usual",
-      name: "At the pickup place",
+      name: "At the pickup address",
       party: request.pickup.label,
       contact: "Speak to the person handing over your child.",
       questions: [
         prompt(
           "release",
-          shortCare ? `Can my child be ready for pickup by ${request.deadline}?` : "What is the usual pickup routine?",
+          shortCare ? `Can my child be ready for pickup by ${request.deadline}?` : "How does pickup work each day?",
         ),
         prompt(
           "identity",
-          "What ID and permission does the collector need?",
+          "What ID and permission does the person picking up my child need?",
         ),
-        prompt("delay", "Who should we call if the collector is running late?"),
+        prompt("delay", "Who should we call if the person picking up my child is running late?"),
       ],
     },
     {
@@ -53,7 +53,7 @@ export function preparationFor(
         ),
         prompt(
           "final",
-          shortCare ? `Can I collect my child by ${request.end}? What happens if I’m late?` : "What are the usual collection times and late pickup rules?",
+          shortCare ? `Can I pick up my child at ${request.end}? What happens if I’m late?` : "What time is pickup each day? What happens if I’m late?",
         ),
         prompt(
           "private",
@@ -64,13 +64,13 @@ export function preparationFor(
     {
       id: "transport",
       name: "With the person driving",
-      party: "Confirm who is collecting your child",
+      party: "Check who will pick up your child",
       contact: transport,
       questions: [
         prompt(
           "collector",
           request.transport === "institution"
-            ? "Who will collect my child, and in which vehicle?"
+            ? "Who will pick up my child, and in which car?"
             : request.transport === "self"
               ? "Who will pick up my child and take them to the centre?"
               : "Who can help with pickup and drop-off?",
@@ -87,7 +87,9 @@ export function preparationFor(
     },
   ];
   const packing = [
-    prompt("bag", "Pack a labelled bag, spare clothes and a water bottle."),
+    prompt("bag", "Pack a bag with your child’s name."),
+    prompt("clothes", "Pack spare clothes."),
+    prompt("water", "Pack a water bottle."),
     prompt(
       "instructions",
       "Keep pickup instructions and contact numbers handy.",
@@ -104,7 +106,7 @@ export function preparationFor(
     packing.push(
       prompt("rest", "Ask whether to bring a comfort item for rest time."),
     );
-  if (request.age !== "" && request.age != null && Number(request.age) < 3)
+  if (request.age !== "" && request.age != null && ageBounds(request.age)[0] < 36)
     packing.push(
       prompt(
         "young",
@@ -126,7 +128,7 @@ export function preparationFor(
     packing.push(
       prompt(
         "self-items",
-        "Make sure the collector has the address and pickup instructions.",
+        "Make sure the person picking up my child has the address and pickup instructions.",
       ),
     );
   const published = (p.preparationRequirements ?? [])
@@ -139,17 +141,17 @@ export function preparationFor(
     }));
   const sequence = [
     {
-      title: "Pick up",
+      title: "Leave the pickup address",
       time: shortCare ? request.deadline : null,
       timeLabel: "By",
       place: request.pickup.label,
-      text: shortCare ? `${request.pickup.label} · collect by ${request.deadline}` : `Arrange pickup from ${request.pickup.label}`,
+      text: shortCare ? `${request.pickup.label} · leave by ${request.deadline}` : `Arrange pickup from ${request.pickup.label}`,
       basis: "Your request",
       detail:
-        "Agree who will collect your child and what they need to bring.",
+        "Agree who will pick up your child and what they need to bring.",
     },
     {
-      title: "Drop off",
+      title: "At childcare",
       time: null,
       timeLabel: "Arrival time",
       place: p.name,
@@ -162,13 +164,13 @@ export function preparationFor(
       detail: "Confirm the arrival time with the centre. Allow time for the drive after pickup.",
     },
     {
-      title: "Collect your child",
+      title: "Pick up from childcare",
       time: shortCare ? request.end : null,
-      timeLabel: "By",
+      timeLabel: "At",
       place: p.name,
-      text: shortCare ? `Collect from ${p.name} by ${request.end}` : `Agree collection from ${p.name}`,
+      text: shortCare ? `Pick up from ${p.name} at ${request.end}` : `Agree pickup from ${p.name}`,
       basis: "Your request",
-      detail: "Agree where to collect your child and what to do if you’re late.",
+      detail: "Agree where to pick up your child and what to do if you’re late.",
       source: p.careEndTimeSource ?? p.businessHours?.source,
     },
   ];
@@ -182,9 +184,9 @@ export function preparationFor(
     dateLabel: shortCare ? new Intl.DateTimeFormat("en-GB", {
       weekday: "short", day: "numeric", month: "short", year: "numeric",
       timeZone: "Asia/Kuala_Lumpur",
-    }).format(new Date(`${request.date}T12:00:00+08:00`)) : "Regular childcare",
+    }).format(new Date(`${request.date}T12:00:00+08:00`)) : "Long term",
     request: requestCaption(request),
-    interval: shortCare ? `Pickup by ${request.deadline} · Collect by ${request.end}` : "Your regular care arrangements",
+    interval: shortCare ? `Leave pickup address by ${request.deadline} · Pick up from childcare at ${request.end}` : "Your regular care arrangements",
     transport,
     groups,
     packing,
@@ -227,13 +229,13 @@ export function preparationHTML(sheet, checked = []) {
     `<ul${tickable ? ' class="checklist"' : ""}>${list.map((x) => `<li>${tickable ? selected.has(x.id) ? "☑ " : "☐ " : ""}${escape(x.text)}${sourceHTML(x.source)}</li>`).join("")}</ul>`;
   const groups = ["receiving", "usual", "transport"].map((id) => sheet.groups.find((g) => g.id === id));
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EqualPath checklist — ${escape(sheet.name)}</title><style>${preparationCSS}</style></head><body><main>
-  <p class="brand">EQUALPATH / YOUR VISIT${sheet.mode === "demo" ? " / FICTIONAL DEMO" : ""}</p><h1>Get ready for care</h1>
+  <p class="brand">EQUALPATH / YOUR VISIT${sheet.mode === "demo" ? " / FICTIONAL DEMO" : ""}</p><h1>Get ready for child care</h1>
   <div class="visit"><div><small>CARE AT</small><strong>${escape(sheet.name)}</strong></div><div><strong>${escape(sheet.dateLabel)}</strong>${sheet.date ? `<small>${escape(sheet.date)} · Malaysia time</small>` : ""}</div></div>
   <p class="notice">${escape(sheet.notice)}</p>
-  ${sheet.conflicts.length ? `<h2>Resolve before you go</h2>${items(sheet.conflicts.map((c) => ({ id: c.id, text: c.label + ": " + c.reason, source: c.source })), false)}` : ""}
-  <h2>Your pickup plan</h2><div class="plan">${sheet.sequence.map((x, i) => `<section class="step"><h3>${i + 1}. ${escape(x.title)}</h3><strong class="time">${x.time ? `By ${escape(x.time)}` : "Agree a time"}</strong><p class="place">${escape(x.place)}</p>${x.address ? `<p>${escape(x.address)}</p>` : ""}<p class="detail">${escape(x.detail)}</p></section>`).join("")}</div><p class="notice">${escape(sheet.transport)}</p>
-  <h2>Contact the centre</h2>${sheet.phone ? `<p>Telephone: ${escape(sheet.phone.display)}</p>` : ""}${sheet.whatsapp.map((x) => `<p>WhatsApp: ${escape(x.display)}${x.scope === "website" ? " (general enquiry; may cover several branches)" : ""}</p>`).join("")}${!sheet.phone && !sheet.whatsapp.length ? "<p>No contact number listed. Check the centre’s listing.</p>" : ""}<p class="notice">Keep the pickup contact and driver’s number handy too.</p>
-  <h2>01 / Confirm the arrangements</h2>${groups.map((g) => `<section class="party"><h3>${escape(g.name)}</h3><p>${escape(g.party)}</p>${items(g.questions, false)}</section>`).join("")}
+  ${sheet.conflicts.length ? `<h2>Check before you go</h2>${items(sheet.conflicts.map((c) => ({ id: c.id, text: c.label + ": " + c.reason, source: c.source })), false)}` : ""}
+  <h2>Your pickup plan</h2><div class="plan">${sheet.sequence.map((x, i) => `<section class="step"><h3>${i + 1}. ${escape(x.title)}</h3><strong class="time">${x.time ? `${escape(x.timeLabel)} ${escape(x.time)}` : "Agree a time"}</strong><p class="place">${escape(x.place)}</p>${x.address ? `<p>${escape(x.address)}</p>` : ""}<p class="detail">${escape(x.detail)}</p></section>`).join("")}</div><p class="notice">${escape(sheet.transport)}</p>
+  <h2>Contact the centre</h2>${sheet.phone ? `<p>Telephone: ${escape(sheet.phone.display)}</p>` : ""}${sheet.whatsapp.map((x) => `<p>WhatsApp: ${escape(x.display)}${x.scope === "website" ? " (website number; ask for this centre)" : ""}</p>`).join("")}${!sheet.phone && !sheet.whatsapp.length ? "<p>No contact number listed. Check the centre’s listing.</p>" : ""}<p class="notice">Keep the pickup contact and driver’s number handy too.</p>
+  <h2>01 / Check the plan</h2>${groups.map((g) => `<section class="party"><h3>${escape(g.name)}</h3><p>${escape(g.party)}</p>${items(g.questions, false)}</section>`).join("")}
   <h2>02 / Before you leave</h2>${items(sheet.packing)}${sheet.published.length ? `<h3>The centre also asks for</h3>${items(sheet.published)}` : '<p class="notice">Ask the centre if they need anything else.</p>'}
   <h2>Private details — fill in on paper</h2><p class="notice">Share these privately with the centre.</p>${["Collector identification / pickup permission", "Emergency contact", "Health, allergy or medication notes"].map((x) => `<section class="blank"><p>${escape(x)}</p><div class="line"></div></section>`).join("")}
   <section class="sources"><h3>About this checklist</h3><p class="notice">${sheet.date ? "Times and pickup choices come from your request. Arrival still needs to be agreed." : "Agree your usual hours and pickup arrangements with the centre."}</p>${sheet.sequence.filter(x => x.source).map(x => sourceHTML(x.source)).join("")}${sheet.phone ? sourceHTML(sheet.phone.source) : ""}${sheet.whatsapp.map(x => sourceHTML(x.source)).join("")}<small>Prepared ${escape(sheet.preparedAt)}</small><p class="notice">${escape(sheet.notice)}</p></section></main></body></html>`;
