@@ -15,9 +15,25 @@ concurrency:
 
 jobs:
   browser:
-    name: Browser journeys
+    name: Browser journeys (${{ matrix.project }} ${{ matrix.shard }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: journeys
+            shard: 1/3
+            evidence: journeys-1
+          - project: journeys
+            shard: 2/3
+            evidence: journeys-2
+          - project: journeys
+            shard: 3/3
+            evidence: journeys-3
+          - project: landing
+            shard: 1/1
+            evidence: landing
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
@@ -27,7 +43,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - name: Run browser journeys with software OpenGL
-        run: xvfb-run -a sh -c 'node scripts/check-browser-renderer.mjs && npm run test:browser'
+        run: xvfb-run -a sh -c 'node scripts/check-browser-renderer.mjs && npm run test:browser -- --project=${{ matrix.project }} --shard=${{ matrix.shard }}'
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
           PW_HEADED: "1"
@@ -37,7 +53,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: browser-test-evidence
+          name: browser-test-evidence-${{ matrix.evidence }}
           path: |
             .build/browser-results
             .build/ci-evidence

@@ -8,19 +8,27 @@ import { isShortCare, searchRadius, SHORT_CARE_RADIUS_KM, MAX_SEARCH_RADIUS_KM }
 
 const shortDate = date => date ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`)) : "Choose date";
 export default function MapSearchDock({ draft, setField, errors, onSearch, busy, results, dirty, mode, active, queryReset, onQueryChange, onMap, onPanel, submitRef, focusRequest, onHeight, onSave, onSavedSearches, notice, failure, onRetry, addressStatus, onRetryAddress }) {
-  const root = useRef(null), lastTrigger = useRef(null), options = useRef(null);
+  const root = useRef(null), lastTrigger = useRef(null), options = useRef(null), pendingFocus = useRef(null);
   const [part, setPart] = useState(null);
   const [menuPosition, setMenuPosition] = useState({});
   const short = isShortCare(draft);
-  const closeOptions = () => { setPart(null); requestAnimationFrame(() => lastTrigger.current?.focus({ preventScroll: true })); };
-  const toggle = (name, event) => { lastTrigger.current = event.currentTarget; setPart(p => p === name ? null : name); };
-  useEffect(() => {
+  const closeOptions = () => { pendingFocus.current = lastTrigger.current; setPart(null); };
+  const toggle = (name, event) => { pendingFocus.current = null; lastTrigger.current = event.currentTarget; setPart(p => p === name ? null : name); };
+  useLayoutEffect(() => {
     if (!focusRequest) return;
     const field = focusRequest.field;
     lastTrigger.current = root.current?.querySelector(`[data-field="${field}"]`);
+    pendingFocus.current = field === "pickup" ? "pickup-search" : field === "date" ? "service-date" : field === "end" ? "care-end" : field;
     setPart(["age", "date", "care", "more"].includes(field) ? field : null);
-    requestAnimationFrame(() => document.getElementById(field === "pickup" ? "pickup-search" : field === "date" ? "service-date" : field === "end" ? "care-end" : field)?.focus({ preventScroll: true }));
   }, [focusRequest]);
+  // The requested field may be inside a menu that has not mounted yet. Focus
+  // after that commit instead of racing the render with an animation frame.
+  useLayoutEffect(() => {
+    const target = typeof pendingFocus.current === "string" ? document.getElementById(pendingFocus.current) : pendingFocus.current;
+    if (!target?.isConnected) return;
+    target.focus({ preventScroll: true });
+    pendingFocus.current = null;
+  }, [part, focusRequest]);
   useEffect(() => { if (busy || !active) setPart(null); }, [busy, active]);
   useLayoutEffect(() => {
     const update = () => {

@@ -37,6 +37,7 @@ for(const width of [1440,390])test(`${width}px: changing to an area without quot
   const box=await page.getByRole('listbox').boundingBox();expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(width);expect(box.y+box.height).toBeLessThanOrEqual(900);
   await page.screenshot({path:`${out}/missing-fee-${width}.png`});await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'Change search',exact:true}).click();await page.getByRole('button',{name:'Update results',exact:true}).click();
+  await expect(page.locator('.map-search-dock')).toBeVisible();await openResults(page);
   await expect(sortMenu(page)).toHaveText('Nearest first');expect(calls.filter(c=>c.action==='search').at(-1).request.sort).toBe('distance');
 });
 
