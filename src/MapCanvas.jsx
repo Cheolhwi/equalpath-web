@@ -197,9 +197,22 @@ export default function MapCanvas({
         clearTimeout(timeout);
       }
     });
+    // Track the physical gesture too: a slow render can deliver MapLibre's
+    // click before its drag handler has processed the final move.
+    let pointerStart = null, dragged = false;
+    const pointerDown = e => { pointerStart = { x: e.clientX, y: e.clientY }; dragged = false; };
+    const pointerMove = e => {
+      if (pointerStart && Math.hypot(e.clientX - pointerStart.x, e.clientY - pointerStart.y) > 4) dragged = true;
+    };
+    const pointerUp = e => { pointerMove(e); pointerStart = null; };
+    const canvas = m.getCanvas();
+    canvas.addEventListener("pointerdown", pointerDown);
+    window.addEventListener("pointermove", pointerMove);
+    window.addEventListener("pointerup", pointerUp);
+    window.addEventListener("pointercancel", pointerUp);
     m.on("click", (e) => {
-      // Only a click on the map itself dismisses a selected centre. MapLibre
-      // distinguishes a click from dragging; overlay controls and pins stay active.
+      // Overlay controls and pins handle their own clicks.
+      if (dragged) return;
       if (e.originalEvent?.target !== m.getCanvas()) return;
       if (latest.current.choosing)
         m.easeTo({ center: e.lngLat, duration: latest.current.cameraReduced ? 0 : 200 });
@@ -212,6 +225,10 @@ export default function MapCanvas({
       alive = false;
       clearTimeout(timeout);
       ro.disconnect();
+      canvas.removeEventListener("pointerdown", pointerDown);
+      window.removeEventListener("pointermove", pointerMove);
+      window.removeEventListener("pointerup", pointerUp);
+      window.removeEventListener("pointercancel", pointerUp);
       markers.current.forEach((x) => x.remove());
       markers.current = [];
       m.remove();

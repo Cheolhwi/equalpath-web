@@ -102,17 +102,15 @@ export default function Experience() {
     // Immediate entry can remove the inert/hidden landing state in the same
     // frame as the click. Start keyboard navigation at the app container,
     // without activating the address field or opening a mobile keyboard.
-    let id = requestAnimationFrame(() => {
-      id = requestAnimationFrame(() => {
+    const id = setTimeout(() => {
         if (phase === "ready")
           document
             .querySelector(".equalpath")
             ?.focus({ preventScroll: true });
         else if (phase === "welcome" && hasEntered.current)
           enterButton.current?.focus({ preventScroll: true });
-      });
-    });
-    return () => cancelAnimationFrame(id);
+    }, 0);
+    return () => clearTimeout(id);
   }, [phase]);
   useEffect(() => {
     const keyboard = (e) => {

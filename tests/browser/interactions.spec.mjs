@@ -154,6 +154,9 @@ test("dialogs fade out with their backdrop before removal for every dismissal ro
 test("quick dismissal does not flash opaque, and reduced motion closes immediately", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await start(page);
+  // Freeze entrance at creation so CPU-rendered CI cannot finish the animation
+  // before the assertion obtains it. The closing animation still runs normally.
+  await page.addStyleTag({ content: 'dialog[open]:not([data-closing="true"]) { animation-play-state: paused !important; }' });
   await page.getByRole("button", { name: /^Saved(?: \d+)?$/ }).click();
   const dialog = page.locator("dialog");
   const enteringOpacity = await dialog.evaluate(el => {
