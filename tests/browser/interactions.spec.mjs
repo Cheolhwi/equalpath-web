@@ -154,9 +154,11 @@ test("dialogs fade out with their backdrop before removal for every dismissal ro
 test("quick dismissal does not flash opaque, and reduced motion closes immediately", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await start(page);
-  // Freeze entrance at creation so CPU-rendered CI cannot finish the animation
-  // before the assertion obtains it. The closing animation still runs normally.
-  await page.addStyleTag({ content: 'dialog[open]:not([data-closing="true"]) { animation-play-state: paused !important; }' });
+  await page.clock.install();
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  // Freeze both phases and the removal fallback while sampling their boundary.
+  // A slower worker must not remove the dialog between the two assertions.
+  await page.addStyleTag({ content: 'dialog[open], dialog[open]::backdrop { animation-play-state: paused !important; }' });
   await page.getByRole("button", { name: /^Saved(?: \d+)?$/ }).click();
   const dialog = page.locator("dialog");
   const enteringOpacity = await dialog.evaluate(el => {
@@ -167,6 +169,8 @@ test("quick dismissal does not flash opaque, and reduced motion closes immediate
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveAttribute("data-closing", "true");
   expect(await dialog.evaluate(el => Number(el.style.getPropertyValue("--dialog-exit-opacity")))).toBeCloseTo(enteringOpacity, 3);
+  await page.evaluate(() => document.getAnimations().filter(a => a.animationName?.endsWith("disappear")).forEach(a => a.finish()));
+  await page.clock.fastForward(500);
   await expect(dialog).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.getByRole("button", { name: /^Saved(?: \d+)?$/ }).click();

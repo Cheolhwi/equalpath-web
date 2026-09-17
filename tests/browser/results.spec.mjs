@@ -121,11 +121,12 @@ test("mobile map previews leave room for the map and open the selected centre", 
     await expect(preview).toContainText("About 8 min by car");
     await expect(preview).toContainText("Fee: MYR 40–60 / hour");
     await expect(preview.locator(".map-card-actions button")).toHaveCount(3);
-    const box = await preview.boundingBox(), map = await page.locator(".map-wrap").boundingBox();
-    expect(box.height).toBeLessThan(200);
-    expect(box.height / map.height).toBeLessThan(.25);
-    expect(box.x).toBeGreaterThanOrEqual(0); expect(box.x+box.width).toBeLessThanOrEqual(width);
-    expect(box.y+box.height).toBeLessThan((await page.locator(".map-bottom").boundingBox()).y);
+    // Resize swaps the desktop card for its mobile layout; measure the rendered
+    // replacement rather than a node that has just been hidden or removed.
+    await expect.poll(async () => {
+      const box = await preview.boundingBox(), map = await page.locator(".map-wrap").boundingBox(), footer = await page.locator(".map-bottom").boundingBox();
+      return !!(box && map && footer && box.height < 200 && box.height / map.height < .25 && box.x >= 0 && box.x + box.width <= width && box.y + box.height < footer.y);
+    }).toBe(true);
     await page.screenshot({path:`${dir}/preview-mobile-${width}.png`});
   }
   expect(calls.filter(c=>["nearby","search"].includes(c.action))).toHaveLength(searches);
@@ -136,8 +137,10 @@ test("mobile map previews leave room for the map and open the selected centre", 
   await openResults(page);
   await page.locator(`.provider-row[data-provider-id="${provider.id}"]`).getByRole("button", {name:`Compare ${provider.name}`,exact:true}).click();
   await page.getByRole('button',{name:'Close search panel'}).click();
-  const box = await preview.boundingBox();
-  expect(box.y+box.height).toBeLessThan((await page.locator(".compare-tray").boundingBox()).y);
+  await expect.poll(async () => {
+    const box = await preview.boundingBox(), tray = await page.locator(".compare-tray").boundingBox();
+    return !!(box && tray && box.y + box.height < tray.y);
+  }).toBe(true);
   await page.screenshot({path:dir+"/preview-mobile-compare.png"});
 });
 test("co-located suggested centres stay distinct and individually selectable on the mobile map",async({page})=>{
