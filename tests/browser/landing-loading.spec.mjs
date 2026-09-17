@@ -96,6 +96,13 @@ test("waiting is optional and a direct search link never mounts the artwork load
   await page.getByRole("button", { name: "FIND CHILDCARE", exact: true }).click();
   await expect(page.locator(".experience")).toHaveAttribute("data-intro-phase", "ready");
   await expect(page.locator(".landing-loader")).toHaveCount(0);
+  // Assert the app's DOM focus separately from the virtual display's active
+  // window. Linux headed workers can leave this newly created page unfocused.
+  await expect.poll(() => page.evaluate(() => ({
+    target: document.activeElement?.tagName,
+    inApp: document.activeElement?.matches('.equalpath'),
+  }))).toEqual({ target: 'MAIN', inApp: true });
+  await page.bringToFront();
   await expect(page.locator(".equalpath")).toBeFocused();
   await expect(page.locator("#pickup-search")).not.toBeFocused();
   await page.reload();
