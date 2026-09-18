@@ -242,7 +242,7 @@ test("an unselected address and conflicting times require correction", async ({ 
   await page.getByRole("button", { name: /Demo usual centre/ }).click();
   await page.locator("#care-end").fill("15:00");
   await chooseAge(page); await page
-    .getByRole("button", { name: "Update results", exact: true })
+    .getByRole("button", { name: "Find childcare", exact: true })
     .click();
   await expect(
     page.getByText("Choose a later pickup time on the same day.", {
@@ -320,6 +320,7 @@ test("preparation remains dated until explicitly regenerated for new times and t
   await page
     .getByRole("button", { name: "Update results", exact: true })
     .click();
+  await expect(page.locator(".discovery-panel")).not.toBeVisible();
   await openResults(page);
   await expect(
     page.getByRole("button", { name: "Change search", exact: true }),
