@@ -6,7 +6,7 @@ import "./tour.css";
 const steps = [
   { title: "Find childcare on the map", icon: MapPin },
   { title: "Choose your location", target: ".dock-address-row", icon: MapPin, body: "Type an address, tap Choose your location to place a pin, or use your phone’s location." },
-  { title: "Choose date, age and times", target: ".dock-options", icon: Clock3, body: "Go to childcare is when you leave this address. Pick up child is when you collect your child from the centre." },
+  { title: "Date, age and times", target: ".dock-options", icon: Clock3, body: "Set the date and age. Choose when to leave your address and when to collect your child." },
   { title: "Your results are on the map", target: ".mobile-search-summary, .map-centre-card:not(.leaving)", icon: Search, body: "Tap a numbered pin to see a centre. On a phone, the search tools fold away. Tap Change search to edit them." },
   { title: "Save or compare a centre", target: ".map-centre-card:not(.leaving) .map-card-actions", icon: Bookmark, body: "Tap Save to keep a centre in Saved. Tap Compare to see up to 3 centres side by side. Tap Details to learn more." },
   { title: "Check the centre’s details", target: ".condition-list", icon: CheckCircle2, body: "Tap Details on a map card to see fees, ages and care hours. Ask the centre about any details that need checking." },

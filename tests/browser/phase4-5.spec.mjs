@@ -80,22 +80,14 @@ test("questions belong to a selected centre and never appear in main navigation"
   await expect(nav.getByRole("button", { name: /enquir|questions/i })).toHaveCount(0);
 });
 
-test("save, reload, edit, reuse fresh request, inspect preparation, download, and remove", async ({
+test("save a centre, reload, edit its note, recheck, download preparation, and remove", async ({
   page,
 }) => {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await start(page);
   await save(page);
-  await page
-    .getByRole("button", { name: "Save this search", exact: true })
-    .click();
-  await page.getByText("About your saved items", { exact: true }).click();
-  await expect(page.getByText(/Clearing browser data can remove these items/)).toBeVisible();
-  await page.getByLabel("Search name").fill("Weekday pickup");
-  await page
-    .getByRole("button", { name: "Save search", exact: true })
-    .click();
+  await expect(page.getByRole("button", { name: "Save this search", exact: true })).toHaveCount(0);
   await page.reload({ waitUntil: "domcontentloaded" });
   await saved(page);
   await expect(
@@ -114,23 +106,7 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
     page.getByText("Near the usual centre", { exact: true }),
   ).toBeVisible();
   await page.screenshot({ path: `${evidenceDir}/saved-desktop.png` });
-  await page
-    .getByRole("button", { name: "Searches 1", exact: true })
-    .click();
-  await page.getByRole("dialog").getByRole("button", { name: "Use this search", exact: true }).click();
-  await openSearch(page);
-  await expect(page.locator("#service-date")).toHaveValue("");
-  await expect(page.locator("#age input:checked")).toHaveCount(0);
-  await expect(page.locator("#care-end")).toHaveValue("18:00");
-  await page.locator("#service-date").fill("2026-09-18");
-  await chooseAge(page); await page
-    .getByRole("button", { name: "Find childcare", exact: true })
-    .click();
-  await openResults(page);
-  await expect(
-    page.getByRole("button", { name: `Select ${institution}`, exact: true }),
-  ).toBeVisible();
-  await saved(page);
+  await expect(page.getByRole("button", { name: /^Searches / })).toHaveCount(0);
   await page
     .getByRole("button", { name: "Check for a new date", exact: true })
     .click();
@@ -214,26 +190,6 @@ test("save, reload, edit, reuse fresh request, inspect preparation, download, an
       exact: true,
     }),
   ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Searches 1", exact: true })
-    .click();
-  await page
-    .getByRole("button", { name: "Edit Weekday pickup", exact: true })
-    .click();
-  await page.getByLabel("Template when will you pick up your child?", { exact: true }).fill("19:00");
-  await page
-    .getByRole("button", { name: "Save search", exact: true })
-    .click();
-  await expect(page.locator(".saved-search-times > div").filter({ hasText: "When will you pick up your child?" }).locator("dd")).toHaveText("19:00");
-  await page
-    .getByRole("button", { name: "Remove Weekday pickup", exact: true })
-    .click();
-  await expect(
-    page.getByRole("heading", {
-      name: "No saved searches yet",
-      exact: true,
-    }),
-  ).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -275,58 +231,25 @@ test("failed local writes preserve candidate, previous reason and saved list", a
   ).toBeVisible();
 });
 
-test("unmatched saved place and conflicting times require correction, not silent replacement", async ({
-  page,
-}) => {
+test("an unselected address and conflicting times require correction", async ({ page }) => {
   await start(page);
-  await page
-    .getByRole("button", { name: "Save this search", exact: true })
-    .click();
-  await page
-    .getByRole("button", { name: "Save search", exact: true })
-    .click();
-  await page.route("**/api", async (route) => {
-    const b = route.request().postDataJSON();
-    if (b.action === "places")
-      await route.fulfill({ json: { ok: true, items: [] } });
-    else await route.continue();
-  });
-  await saved(page);
-  await page
-    .getByRole("button", { name: "Searches 1", exact: true })
-    .click();
-  await page.getByRole("dialog").getByRole("button", { name: "Use this search", exact: true }).click();
-  await openSearch(page);
-  await expect(
-    page.getByText(/We couldn’t find this saved address/).first(),
-  ).toBeVisible();
-  await expect(page.locator("#pickup-search")).toHaveValue(
-    "Demo usual centre · Kuala Lumpur",
-  );
-  await page.locator("#service-date").fill("2026-09-18");
-  await chooseAge(page); await page
-    .getByRole("button", { name: "Find childcare", exact: true })
-    .click();
-  await expect(page.locator("#pickup-search")).toHaveAttribute(
-    "aria-invalid",
-    "true",
-  );
-  await page.unroute("**/api");
+  await page.getByRole("button", { name: "Change search", exact: true }).click();
+  await page.locator("#pickup-search").fill("An address not selected yet");
+  await page.getByRole("button", { name: "Update results", exact: true }).click();
+  await expect(page.locator("#pickup-search")).toHaveAttribute("aria-invalid", "true");
   await page.locator("#pickup-search").fill("Demo usual");
-  await page
-    .getByRole("button", { name: "Find address", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Find address", exact: true }).click();
   await page.getByRole("button", { name: /Demo usual centre/ }).click();
   await page.locator("#care-end").fill("15:00");
   await chooseAge(page); await page
-    .getByRole("button", { name: "Find childcare", exact: true })
+    .getByRole("button", { name: "Update results", exact: true })
     .click();
   await expect(
     page.getByText("Choose a later pickup time on the same day.", {
       exact: true,
     }),
   ).toBeVisible();
-  await page.screenshot({ path: `${evidenceDir}/template-correction.png` });
+  await page.screenshot({ path: `${evidenceDir}/search-correction.png` });
 });
 
 test("reopened favourite reports changed source facts and preserves snapshot after refresh failure", async ({
