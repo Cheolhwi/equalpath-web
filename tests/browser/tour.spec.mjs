@@ -34,23 +34,26 @@ test("first entry opens the map without a tutorial; optional Quick tour can be s
   await expect(tour(page)).toHaveCount(0);
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:tour:v1")))).toEqual({version:1,status:"skipped"});
 });
-test("guided sample uses the actual form, search, checks, comparison and questions, then restores existing input",async({page})=>{
+test("guided sample uses map controls, cards, checks, comparison and contact, then restores existing input",async({page})=>{
   const calls=[];await mock(page,calls);
   const memory={version:1,center:{lat:3.15,lng:101.7},zoom:12,pickup:{id:null,label:"My pickup point",lat:3.15,lng:101.7}};
   await page.addInitScript((m)=>{localStorage.setItem("equalpath:map:v1:live",JSON.stringify(m));navigator.geolocation.getCurrentPosition=()=>{throw Error("Tour must not request location");};},memory);
   await page.goto("/#discover");await start(page);
   await expect(tour(page).locator(".tour-spotlight")).toBeVisible();
-  await next(page);await expect(page.locator("#deadline")).toHaveValue("13:00");await expect(page.locator("#care-end")).toHaveValue("18:00");
-  await next(page);await expect(page.locator(".provider-row")).not.toHaveCount(0);
+  await next(page);await expect(page.locator("#deadline")).toContainText("13:00");await expect(page.locator("#care-end")).toContainText("18:00");
+  await next(page);await expect(page.locator(".map-centre-card:not(.leaving)")).not.toHaveCount(0);
+  await expect(page.locator(".discovery-panel")).not.toBeVisible();
   await expect(tour(page).getByRole("button",{name:"Next",exact:true})).toBeEnabled();
   expect(calls.filter(b=>b.action==="search")).toEqual([expect.objectContaining({mode:"demo",request:expect.objectContaining({end:"18:00"})})]);
+  await next(page);await expect(page.locator(".map-card-actions").first()).toBeVisible();
+  await expect(tour(page)).toContainText("Tap Save to keep a centre in Saved");
   await next(page);await expect(page.locator(".tour-behind .condition-list")).toBeVisible();
   await page.screenshot({path:`${evidence}/tour-checks.png`});
   await next(page);await expect(page.locator(".tour-behind .comparison-scroll")).toContainText("Garden Learning House");
   await expect(page.locator(".tour-behind .comparison-scroll")).toContainText("Riverside Care");
   await next(page);await expect(page.locator(".tour-behind .question-list")).toBeVisible();
   await page.screenshot({path:`${evidence}/tour-questions.png`});
-  await tour(page).getByRole("button",{name:"Find childcare",exact:true}).click();
+  await tour(page).getByRole("button",{name:"Back to my map",exact:true}).click();
   await expect(tour(page)).toHaveCount(0);await expect(page.locator(".tour-behind")).toHaveCount(0);
   await expect(page.locator("#pickup-search")).toHaveValue("My pickup point");await openSearch(page);await expect(page.locator("#deadline")).toHaveValue("");await expect(page.getByRole("radio",{name:"Short time"})).toBeChecked();
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:map:v1:live")))).toEqual(memory);
@@ -58,28 +61,39 @@ test("guided sample uses the actual form, search, checks, comparison and questio
   await page.reload();await openSearch(page);await expect(page.locator(".nearby-card").first()).toBeVisible();
   await expect(tour(page)).toHaveCount(0);
 });
-test("mobile walkthrough stays on screen with visible highlights and respects reduced motion",async({page})=>{
-  await page.setViewportSize({width:390,height:844});await page.emulateMedia({reducedMotion:"no-preference"});
+for (const [width,height] of [[320,568],[390,844]]) test(`${width}: mobile walkthrough highlights the current map control and stays on screen`,async({page})=>{
+  await page.setViewportSize({width,height});await page.emulateMedia({reducedMotion:"no-preference"});
   await mock(page);await page.goto("/#discover");await start(page);
-  for(let step=1;step<=6;step++) {
+  expect(await tour(page).evaluate(el=>getComputedStyle(el,"::backdrop").backdropFilter)).toBe("none");
+  for(let step=1;step<=7;step++) {
     await expect(tour(page)).toHaveAttribute("data-step",String(step));
     await expect(tour(page).locator(".tour-spotlight")).toBeVisible();
-    await expect(tour(page).getByRole("button",{name:step===6?"Find childcare":"Next",exact:true})).toBeEnabled();
-    await expect.poll(async()=>{const b=await tour(page).locator(".tour-card").boundingBox();return b.y+b.height;}).toBeLessThanOrEqual(845);
+    await expect(tour(page).getByRole("button",{name:step===7?"Back to my map":"Next",exact:true})).toBeEnabled();
+    await expect.poll(async()=>{const b=await tour(page).locator(".tour-card").boundingBox();return b.y+b.height;}).toBeLessThanOrEqual(height+1);
+    if (step===3 || step===4) {
+      await expect(page.locator(".mobile-search-summary")).toBeVisible();
+      await expect(page.locator(".dock-form")).not.toBeVisible();
+      const target=step===3?".mobile-search-summary":".map-card-actions";
+      await expect.poll(async()=>{
+        const r=await page.locator(target).first().boundingBox(), s=await tour(page).locator(".tour-spotlight").boundingBox();
+        return Math.abs(s.y-(r.y-5))+Math.abs(s.height-(r.height+10));
+      }).toBeLessThan(3);
+    }
     await tour(page).evaluate(el=>Promise.all(el.getAnimations({subtree:true}).map(a=>a.finished.catch(()=>{}))));
     const box=await tour(page).locator(".tour-card").boundingBox();
-    expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(391);expect(box.y+box.height).toBeLessThanOrEqual(845);
-    await page.screenshot({path:`${evidence}/tour-mobile-${step}.png`});
-    if(step===5) {
+    expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(width+1);expect(box.y+box.height).toBeLessThanOrEqual(height+1);
+    await page.screenshot({path:`${evidence}/tour-mobile-${width}-${step}.png`});
+    if(step===6) {
       await expect(page.locator('.tour-behind .comparison-scroll thead th[data-provider-id]:visible')).toHaveCount(2);
       await page.screenshot({path:`${evidence}/tour-mobile-compare-pair.png`});
     }
-    if(step<6)await next(page);
+    if(step<7)await next(page);
   }
   await page.emulateMedia({reducedMotion:"reduce"});
   await expect(tour(page)).toHaveAttribute("data-reduced","true");
   expect(await tour(page).locator(".tour-spotlight").evaluate(el=>parseFloat(getComputedStyle(el).transitionDuration))).toBeLessThanOrEqual(.001);
-  await tour(page).getByRole("button",{name:"Find childcare",exact:true}).click();
+  await tour(page).getByRole("button",{name:"Back to my map",exact:true}).click();
+  expect(await page.evaluate(()=>localStorage.getItem("equalpath:interests:v1:live"))).toBeNull();
   await page.setViewportSize({width:320,height:568});
   await page.getByRole("button",{name:"Quick tour",exact:true}).click();
   await expect(tour(page).getByRole("button",{name:"Skip",exact:true})).toBeInViewport();

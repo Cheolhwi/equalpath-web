@@ -66,7 +66,7 @@ test("themed time selection preserves exact minutes, commits explicitly and keep
   expect(searches[0]).toMatchObject({ deadline: "09:30", end: "17:45" });
 });
 
-test("mobile and template pickers fit the viewport, respect dark mode and dismiss without closing their parent", async ({ page }) => {
+test("mobile pickers fit the viewport, respect dark mode and dismiss without closing their parent", async ({ page }) => {
   const errors = []; page.on("pageerror", (error) => errors.push(error.message));
   await page.setViewportSize({ width: 320, height: 568 });
   await start(page);
@@ -78,18 +78,10 @@ test("mobile and template pickers fit the viewport, respect dark mode and dismis
   expect(await popup.evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
   await page.screenshot({ path: `${out}/time-mobile.png` });
   await page.keyboard.press("Escape");
-  await page.getByRole("button", { name: "Save this search", exact: true }).click();
-  await page.getByRole("button", { name: "Choose template when will your child leave? time", exact: true }).click();
+  await page.getByRole("button", { name: "Choose when will your child leave? time", exact: true }).click();
   await choose(popup, "03", "05"); await page.keyboard.press("Escape");
-  await expect(page.getByRole("dialog", { name: "Save this search", exact: true })).toBeVisible();
-  await expect(page.getByLabel("Template when will your child leave?", { exact: true })).toHaveValue("13:00");
-  await page.getByRole("button", { name: "Choose template when will you pick up your child? time", exact: true }).click();
-  await choose(popup, "19", "43");
-  box = await popup.boundingBox(); expect(box.y + box.height).toBeLessThanOrEqual(568);
-  await page.screenshot({ path: `${out}/time-template-mobile.png` });
-  await popup.getByRole("button", { name: "Done", exact: true }).click();
-  await expect(page.getByLabel("Template when will you pick up your child?", { exact: true })).toHaveValue("19:43");
-  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
+  await expect(page.locator(".discovery-panel")).toBeVisible();
+  await expect(page.locator("#deadline")).toHaveValue("13:00");
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.getByRole("button", { name: "Display and data settings", exact: true }).click();
   await page.getByRole("button", { name: "Dark", exact: true }).click();
@@ -123,13 +115,8 @@ for (const width of [390,1440]) test(`${width}px: clicking outside saves the lat
   await page.locator('#deadline').fill(''); await trigger.click();
   await page.getByRole('heading',{name:'Find childcare',exact:true}).click();
   await expect(page.locator('#deadline')).toHaveValue('');
-  // The same outside-save behaviour works inside the saved-search dialog.
-  await page.locator('#deadline').fill('13:00');
-  await page.getByRole('button',{name:'Save this search',exact:true}).click();
-  await page.locator('#template-deadline').locator('..').getByRole('button').click();
-  await choose(popup,'14','26');
-  await page.getByRole('textbox',{name:'Search name',exact:true}).click();
-  await expect(popup).toHaveCount(0);
-  await expect(page.locator('#template-deadline')).toHaveValue('14:26');
-  await expect(page.getByRole('dialog',{name:'Save this search',exact:true})).toBeVisible();
+  await page.locator('#deadline').fill('14:26');
+  await page.getByRole('button',{name:'Close search panel'}).click();
+  await expect(page.locator('#deadline')).toContainText('14:26');
+  expect(searches).toHaveLength(0);
 });

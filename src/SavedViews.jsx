@@ -1,25 +1,19 @@
 import { useState } from "react";
-import { Bookmark, Search, ArrowRight, Trash2, Pencil, Save } from "lucide-react";
-import PlaceInput from "./PlaceInput.jsx";
-import TimeInput from "./TimeInput.jsx";
-import CareTypeChoice from "./CareTypeChoice.jsx";
+import { Bookmark, ArrowRight, Trash2, Pencil, Save } from "lucide-react";
 import {
-  template,
   favourite,
   compareFacts,
   factDescription,
   factDates,
 } from "../shared/saved.mjs";
-import { requestErrors, isShortCare, careTypeLabel } from "../shared/request.mjs";
+import { isShortCare } from "../shared/request.mjs";
 
 export function SaveExplanation() {
   return (
     <details className="save-explanation">
       <summary>About your saved items</summary>
       <p>
-        Your saved childcare, notes and searches stay in this browser.
-        Searches keep the care type, public pickup address, pickup choice and any care times.
-        Dates and child ages aren’t saved.
+        Your saved childcare and notes stay in this browser.
         For you uses your saved centres and local viewing history to suggest other centres.
       </p>
       <p>
@@ -28,19 +22,6 @@ export function SaveExplanation() {
       </p>
     </details>
   );
-}
-export function SavedSearchReminder({ templates, onReuse, onChoose, disabled }) {
-  if (!templates.length) return null;
-  const single = templates.length === 1;
-  return <section className="saved-search-reminder" aria-label="Saved search reminder">
-    <div className="saved-search-reminder-heading"><Bookmark size={17} aria-hidden="true" />
-      <strong>{single ? "Your saved search" : `${templates.length} saved searches`}</strong>
-    </div>
-    <p>{single ? <>Use <strong>{templates[0].name}</strong>{isShortCare(templates[0]) ? " with a new date." : " to find childcare again."}</> : "Your saved choices are ready to use again."}</p>
-    <button type="button" className="text-link" disabled={disabled} onClick={() => single ? onReuse(templates[0]) : onChoose()}>
-      {single ? "Use this search" : "Choose a saved search"}<ArrowRight size={15} aria-hidden="true" />
-    </button>
-  </section>;
 }
 export function SavedCentreReminder({ favourites, onChoose }) {
   if (!favourites.length) return null;
@@ -53,142 +34,41 @@ export function SavedCentreReminder({ favourites, onChoose }) {
     </button>
   </section>;
 }
-export function MapSavedShortcuts({ library, onCentres, onSearches }) {
-  const latest = (items, key) => items.reduce((last, item) => !last || (item[key] ?? "") >= (last[key] ?? "") ? item : last, null);
-  return <>
-    {[
-      { label: "Saved centres", items: library.favourites, item: latest(library.favourites, "savedAt"), Icon: Bookmark, onClick: onCentres, id: "map-saved-centre" },
-      { label: "Saved searches", items: library.templates, item: latest(library.templates, "updatedAt"), Icon: Search, onClick: onSearches, id: "map-saved-search" },
-    ].map(({ label, items, item, Icon, onClick, id }) => <button key={id} className="map-saved-shortcut" onClick={onClick}
-      aria-label={`${label}${items.length ? ` (${items.length})` : ""}`} aria-describedby={item ? id : undefined} title={item?.name}>
-      <Icon size={17} aria-hidden="true" />
-      <span><span className="map-saved-label">{label}{items.length > 0 && <small>{items.length}</small>}</span>
-        {item && <strong id={id}>{item.name}</strong>}</span>
-    </button>)}
-  </>;
+export function MapSavedShortcuts({ library, onCentres }) {
+  const item = library.favourites.reduce((last, next) => !last || (next.savedAt ?? "") >= (last.savedAt ?? "") ? next : last, null);
+  return <button className="map-saved-shortcut" onClick={onCentres}
+    aria-label={`Saved centres${library.favourites.length ? ` (${library.favourites.length})` : ""}`} aria-describedby={item ? "map-saved-centre" : undefined} title={item?.name}>
+    <Bookmark size={17} aria-hidden="true" />
+    <span><span className="map-saved-label">Saved centres{library.favourites.length > 0 && <small>{library.favourites.length}</small>}</span>
+      {item && <strong id="map-saved-centre">{item.name}</strong>}</span>
+  </button>;
 }
-export function SavedLibrary({
-  library,
-  failure,
-  onRetry,
-  onReuse,
-  onReopen,
-  onEditFavourite,
-  onEditTemplate,
-  onDelete,
-  onDiscover,
-  tab,
-  setTab,
-  suggestions,
-}) {
-  const dateKey = tab === "favourites" ? "savedAt" : "updatedAt";
-  const entries = [...(library[tab] ?? [])].reverse().sort((a, b) => (b[dateKey] ?? "").localeCompare(a[dateKey] ?? ""));
-  return (
-    <div className="saved-library">
-      {failure && (
-        <div className="error-box" role="alert">
-          <p>{failure}</p>
-          <button onClick={onRetry}>Try again</button>
-        </div>
-      )}
-      <div className="saved-tabs" role="group" aria-label="Saved item type">
-        <button
-          aria-pressed={tab === "favourites"}
-          onClick={() => setTab("favourites")}
-        >
-          Childcare <em>{library.favourites.length}</em>
-        </button>
-        <button
-          aria-pressed={tab === "templates"}
-          onClick={() => setTab("templates")}
-        >
-          Searches <em>{library.templates.length}</em>
-        </button>
-        <button aria-pressed={tab === 'suggestions'} onClick={() => setTab('suggestions')}>For you</button>
-      </div>
-      {tab === 'suggestions' && suggestions}
-      {tab !== 'suggestions' && !entries.length && (
-        <div className="empty-state">
-          <Bookmark size={30} />
-          <h3>
-            {tab === "favourites"
-              ? "Save childcare you like"
-              : "No saved searches yet"}
-          </h3>
-          <p>
-            {tab === "favourites"
-              ? "Tap Save on any childcare option to keep it here."
-              : "Choose Save this search on Find childcare to keep your care choices."}
-          </p>
-          <button className="primary" onClick={onDiscover}>
-            Find childcare <ArrowRight size={16} />
-          </button>
-        </div>
-      )}
-      {entries.map((item) => (
-        <article className="saved-row" key={item.id}>
-          {tab === "favourites" && <div className="section-kicker">{item.category} · {item.region}</div>}
-          <h3>{item.name}</h3>
-          {tab === "favourites" ? (
-            <>
-              {item.reason && <p>{item.reason}</p>}
-              <small>
-                Saved {item.savedAt?.slice(0, 10)}
-              </small>
-              <details className="saved-source-dates"><summary>When were these details checked?</summary>
-                <small>Details saved {item.snapshot?.capturedAt?.slice(0, 10) ?? "date unavailable"}</small>
-                <small>{factDates(item.snapshot?.facts)}</small>
-              </details>
-            </>
-          ) : (
-            <>
-              <p className="saved-pickup"><span>{isShortCare(item) ? "Your child will leave from" : "Search near"}</span>{item.pickup?.label}</p>
-              <p className="notice">{careTypeLabel(item)}</p>
-              <dl className="saved-search-times">
-                {isShortCare(item) && <><div><dt>When will your child leave?</dt><dd>{item.deadline || "Not set"}</dd></div>
-                <div><dt>When will you pick up your child?</dt><dd>{item.end || "Not set"}</dd></div></>}
-                <div><dt>Pickup option</dt><dd>{item.transport === "institution"
-                  ? "Centre pickup"
-                  : item.transport === "self"
-                    ? "I’ll handle pickup"
-                    : "Not specified"}</dd></div>
-              </dl>
-            </>
-          )}
-          <div className="saved-actions">
-            <button
-              className="secondary"
-              onClick={() =>
-                tab === "favourites" ? onReopen(item) : onReuse(item)
-              }
-            >
-              {tab === "favourites"
-                ? isShortCare(item) ? "Check for a new date" : "Check centre"
-                : "Use this search"}{" "}
-              <ArrowRight size={15} />
-            </button>
-            <button
-              aria-label={`Edit ${item.name}`}
-              onClick={() =>
-                tab === "favourites"
-                  ? onEditFavourite(item)
-                  : onEditTemplate(item)
-              }
-            >
-              <Pencil size={15} /> Edit
-            </button>
-            <button
-              aria-label={`Remove ${item.name}`}
-              onClick={() => onDelete(tab, item.id)}
-            >
-              <Trash2 size={15} /> Remove
-            </button>
-          </div>
-        </article>
-      ))}
-      <SaveExplanation />
+export function SavedLibrary({ library, failure, onRetry, onReopen, onEditFavourite, onDelete, onDiscover, tab, setTab, suggestions }) {
+  const entries = [...library.favourites].reverse().sort((a, b) => (b.savedAt ?? "").localeCompare(a.savedAt ?? ""));
+  return <div className="saved-library">
+    {failure && <div className="error-box" role="alert"><p>{failure}</p><button onClick={onRetry}>Try again</button></div>}
+    <div className="saved-tabs" role="group" aria-label="Saved item type">
+      <button aria-pressed={tab === "favourites"} onClick={() => setTab("favourites")}>Childcare <em>{library.favourites.length}</em></button>
+      <button aria-pressed={tab === "suggestions"} onClick={() => setTab("suggestions")}>For you</button>
     </div>
-  );
+    {tab === "suggestions" ? suggestions : <>
+      {!entries.length && <div className="empty-state"><Bookmark size={30} /><h3>Save childcare you like</h3>
+        <p>Tap Save on any childcare option to keep it here.</p>
+        <button className="primary" onClick={onDiscover}>Find childcare <ArrowRight size={16} /></button></div>}
+      {entries.map(item => <article className="saved-row" key={item.id}>
+        <div className="section-kicker">{item.category} · {item.region}</div><h3>{item.name}</h3>
+        {item.reason && <p>{item.reason}</p>}<small>Saved {item.savedAt?.slice(0, 10)}</small>
+        <details className="saved-source-dates"><summary>When were these details checked?</summary>
+          <small>Details saved {item.snapshot?.capturedAt?.slice(0, 10) ?? "date unavailable"}</small><small>{factDates(item.snapshot?.facts)}</small></details>
+        <div className="saved-actions">
+          <button className="secondary" onClick={() => onReopen(item)}>{isShortCare(item) ? "Check for a new date" : "Check centre"} <ArrowRight size={15} /></button>
+          <button aria-label={`Edit ${item.name}`} onClick={() => onEditFavourite(item)}><Pencil size={15} />Edit</button>
+          <button aria-label={`Remove ${item.name}`} onClick={() => onDelete("favourites", item.id)}><Trash2 size={15} />Remove</button>
+        </div>
+      </article>)}
+    </>}
+    <SaveExplanation />
+  </div>;
 }
 export function FavouriteEditor({ p, existing, onSave, onCancel }) {
   const [reason, setReason] = useState(existing?.reason ?? ""),
@@ -229,109 +109,6 @@ export function FavouriteEditor({ p, existing, onSave, onCancel }) {
         <button className="primary" type="submit">
           <Save size={16} />
           {existing ? "Save note" : "Save centre"}
-        </button>
-        <button type="button" onClick={onCancel}>
-          Back
-        </button>
-      </div>
-    </form>
-  );
-}
-export function TemplateEditor({ value, mode, onSave, onCancel }) {
-  const [draft, setDraft] = useState(value),
-    [name, setName] = useState(value.name ?? "Usual pickup"),
-    [errors, setErrors] = useState({}),
-    [failure, setFailure] = useState("");
-  const field = (key, v) => {
-    setDraft((d) => ({ ...d, [key]: v, ...(key === "careType" ? { deadline: "", end: "" } : {}) }));
-    setErrors((x) => ({ ...x, [key]: null }));
-  };
-  const submit = (e) => {
-    e.preventDefault();
-    const issues = requestErrors({ ...draft, date: "2030-01-01", age: "" });
-    setErrors(issues);
-    if (Object.keys(issues).length) return;
-    try {
-      if (onSave(template(draft, name, value.id))) onCancel();
-      else
-        setFailure(
-          "We couldn’t save this. Your previous saved details are unchanged. Please try again.",
-        );
-    } catch (err) {
-      setFailure(err.message);
-    }
-  };
-  return (
-    <form className="template-editor" onSubmit={submit} noValidate>
-      <SaveExplanation />
-      <label className="field">
-        Search name{" "}
-        <input
-          value={name}
-          maxLength={60}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Usual pickup"
-        />
-      </label>
-      <CareTypeChoice value={draft.careType ?? "short_term"} onChange={v => field("careType", v)} />
-      <PlaceInput
-        idPrefix="template-pickup"
-        mode={mode}
-        value={draft.pickup}
-        onChange={(p) => field("pickup", p)}
-        error={errors.pickup}
-      />
-      {isShortCare(draft) && <div className="field-pair">
-        <div className="field">
-          <label htmlFor="template-deadline">When will your child leave?</label>
-          <TimeInput
-            id="template-deadline"
-            label="Template when will your child leave?"
-            value={draft.deadline}
-            onChange={(value) => field("deadline", value)}
-            invalid={!!errors.deadline}
-            describedBy={errors.deadline ? "template-deadline-error" : undefined}
-          />
-          {errors.deadline && (
-            <small id="template-deadline-error" className="field-error">{errors.deadline}</small>
-          )}
-        </div>
-        <div className="field">
-          <label htmlFor="template-care-end">When will you pick up your child?</label>
-          <TimeInput
-            id="template-care-end"
-            label="Template when will you pick up your child?"
-            value={draft.end}
-            onChange={(value) => field("end", value)}
-            invalid={!!errors.end}
-            describedBy={errors.end ? "template-care-end-error" : undefined}
-          />
-          {errors.end && <small id="template-care-end-error" className="field-error">{errors.end}</small>}
-        </div>
-      </div>}
-      <label className="field">
-        Who handles pickup?
-        <select
-          value={draft.transport}
-          onChange={(e) => field("transport", e.target.value)}
-        >
-          <option value="">Not specified</option>
-          <option value="self">I’ll handle it</option>
-          <option value="institution">Centre pickup</option>
-        </select>
-      </label>
-      <p className="notice">
-        {isShortCare(draft) ? "Next time, your pickup address and times will be ready. Choose a new date and add your child’s age if needed." : "Next time, your location and pickup choice will be ready. Add your child’s age if needed."}
-      </p>
-      {failure && (
-        <p className="error-box" role="alert">
-          {failure}
-        </p>
-      )}
-      <div className="saved-actions">
-        <button type="submit" className="primary">
-          <Save size={16} />
-          Save search
         </button>
         <button type="button" onClick={onCancel}>
           Back

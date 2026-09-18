@@ -1,3 +1,4 @@
+import { openSearch } from './ui-helpers.mjs';
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog } from "../../server/fixtures.mjs";
@@ -16,7 +17,7 @@ async function setup(page, calls, coLocated = false, contacts = false) {
   await page.goto("/#discover");
 }
 async function search(page) {
-  await page.locator(".map-search-launch").click();
+  await openSearch(page);
   await page.locator("#service-date").fill("2026-09-22");
   await page.locator("#deadline").fill("16:00");
   await page.locator("#care-end").fill("18:00");
@@ -131,7 +132,7 @@ for (const width of [320, 390, 1280, 1440]) test(`${width}px: map first, search 
   await expect(page.locator(".provider-row").first()).toBeVisible();
   await page.getByRole("button", { name: "Close search panel", exact: true }).click();
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
-  await expect(page.locator(".map-search-launch")).toBeFocused();
+  await expect(page.locator(width <= 760 ? ".mobile-search-summary" : ".map-search-launch")).toBeFocused();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
@@ -139,11 +140,11 @@ test("coincident recommendations remain separate; keyboard and reduced motion wo
   await page.setViewportSize({ width: 390, height: 844 });
   const calls = []; await setup(page, calls, true); await search(page); await checkCards(page);
   await page.screenshot({ path: `${out}/coincident-mobile.png` });
-  await page.locator(".map-search-launch").click();
+  await openSearch(page);
   await page.locator("#deadline").fill("15:45");
   await page.keyboard.press("Escape");
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
-  await page.locator(".map-search-launch").click(); await expect(page.locator("#deadline")).toHaveValue("15:45");
+  await openSearch(page); await expect(page.locator("#deadline")).toHaveValue("15:45");
   await page.getByRole("button", { name: "Close search panel", exact: true }).click();
   await expect(page.locator(".map-first")).toHaveAttribute("data-reduced", "true");
 });
@@ -156,7 +157,7 @@ test("cards and drawer fade out without leaving invisible interactive controls",
   await expect(page.locator(".map-centre-card.leaving").first()).toHaveAttribute("inert", "");
   await expect(page.locator(".map-centre-card.leaving")).toHaveCount(0);
   await expect(visibleCards(page)).toHaveCount(1);
-  await page.locator(".map-search-launch").click();
+  await openSearch(page);
   await page.getByRole("button", { name: "Close search panel" }).click();
   await expect(page.locator(".discovery-panel")).toHaveAttribute("inert", "");
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
@@ -274,7 +275,7 @@ for (const width of [320, 390, 927, 1440]) test(`${width}px: scrolled results an
 
 test("changed requests hide previous recommendations and empty searches keep the form available", async ({ page }) => {
   const calls = []; await setup(page, calls); await search(page); await checkCards(page);
-  await page.locator(".map-search-launch").click();
+  await openSearch(page);
   await page.locator("#deadline").fill("15:45");
   await page.getByRole("button", { name: "Close search panel" }).click();
   await expect(visibleCards(page)).toHaveCount(0);
@@ -286,7 +287,7 @@ test("changed requests hide previous recommendations and empty searches keep the
     if (body.action === "search") await route.fulfill({ json: { ok: true, ...await emptyAPI(body) } });
     else await route.fallback();
   });
-  await page.locator(".map-search-launch").click();
+  await openSearch(page);
   await page.getByRole("button", { name: "Update results", exact: true }).click();
   await expect(page.locator(".map-search-dock")).toBeVisible();
   await expect(visibleCards(page)).toHaveCount(0);

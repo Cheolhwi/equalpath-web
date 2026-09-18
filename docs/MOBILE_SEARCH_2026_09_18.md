@@ -1,0 +1,11 @@
+# Mobile map and saved-library simplification
+
+The Saved searches feature was a manual template manager. The user removed that user-facing workflow on 18 September 2026. Saved now contains Childcare and For you, with counts for saved centres only. Map shortcuts, sidebar reminders, template save/edit/reuse dialogs and More filters links no longer expose searches. Existing local templates remain readable by the storage layer and survive favourite updates; no migration deletes them.
+
+Suggestions still use the current completed request and local saved/viewed/compared centre signals. This UI change does not add automatic storage of full search requests or a cloud history service. The recommendation opt-out and clear-history controls remain under For you.
+
+At widths up to 760 px, a successful non-empty search replaces the full map toolbar with an address/date summary and a Change search button. The result-list and saved-centre shortcuts remain below it. Editing restores the same draft; Hide search returns to the map without submitting. Desktop search controls stay expanded. Validation errors, failed requests, empty results and edits made during an outstanding request keep the form open. Navigation and saved-centre rechecks reopen the requested field. The map's existing ResizeObserver measures the compact controls so marker cards use the freed space.
+
+Verification covers 320 × 568, 390 × 844 and desktop layouts; complete map searches; editing and resubmission; keyboard focus; failures and empty results; delayed-response draft preservation; legacy stored templates; saved-centre editing/reload; and short/long-term care switching. Screenshots and test receipts are under `.build/mobile-search-2026-09-18` (ignored). Reduced-motion and high-contrast/opaque material fallbacks are retained.
+
+Quick tour now follows the same map workflow through seven short steps. Location and time controls are highlighted on the map; mobile results demonstrate Change search; the next step highlights actual Save/Compare/Details actions. Centre details, side-by-side comparison and contact follow. A coach card can sit above a low map card so it does not cover the highlighted actions. Tour examples remain in memory, with prior search/layout restored and recommendation history paused.

@@ -22,3 +22,9 @@ test("tour cards remain inside small screens, zoomed layouts, and tall content",
     }
   }
 });
+
+test("a map card near the bottom gets a coach above it when there is room", () => {
+  const target = {left:20,top:630,right:360,bottom:700};
+  const p = tourPlacement(target,{width:390,height:844},280);
+  assert.ok(p.top + 280 < target.top);
+});

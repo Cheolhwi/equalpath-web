@@ -3,14 +3,14 @@
 import assert from 'node:assert/strict';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { chromium } from '@playwright/test';
-const out = '.build/release-2026-09-17';
+const out = process.env.QA_EVIDENCE_DIR || '.build/release-2026-09-18';
 mkdirSync(out, { recursive: true });
 const url = 'https://equalpathcare.me/#discover';
 const browser = await chromium.launch();
 const reports = [];
 try {
   for (const width of [1440, 390]) {
-    const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
+    const context = await browser.newContext({ viewport: { width, height: width < 760 ? 844 : 1000 }, reducedMotion: 'reduce' });
     const page = await context.newPage(), errors = [], responses = [];
     page.on('pageerror', e => errors.push(e.message));
     page.on('response', async r => {
@@ -31,6 +31,27 @@ try {
     await page.getByRole('radio', { name: '1–3 years', exact: true }).check();
     await page.getByRole('button', { name: 'Find childcare', exact: true }).click();
     await page.locator('.map-quick-actions button').first().filter({hasText:/All/}).waitFor();
+    assert.equal(await page.getByRole('button', { name: 'Saved searches', exact: true }).count(), 0);
+    if (width < 760) {
+      await page.locator('.mobile-search-summary').waitFor();
+      assert.equal(await page.locator('.dock-form').isVisible(), false);
+      await page.screenshot({ path: `${out}/production-map-collapsed-${width}.png` });
+      await page.getByRole('button', { name: 'Change search', exact: true }).click();
+      assert.match(await page.locator('#deadline').innerText(), /13:00/);
+      await page.getByRole('button', { name: 'Hide search', exact: true }).click();
+    }
+    const interestsBeforeTour = await page.evaluate(() => localStorage.getItem('equalpath:interests:v1:live'));
+    await page.getByRole('button', { name: 'Quick tour', exact: true }).click();
+    const tour = page.locator('.tour-dialog');
+    await tour.getByRole('button', { name: 'Show me around', exact: true }).click();
+    for (let step = 1; step <= 7; step++) {
+      await tour.locator('.tour-spotlight').waitFor();
+      if (step === 4) await page.screenshot({ path: `${out}/production-map-tour-${width}.png` });
+      await tour.getByRole('button', { name: step === 7 ? 'Back to my map' : 'Next', exact: true }).click();
+    }
+    await tour.waitFor({ state: 'detached' });
+    assert.equal(await page.evaluate(() => localStorage.getItem('equalpath:interests:v1:live')), interestsBeforeTour);
+    if (width < 760) await page.locator('.mobile-search-summary').waitFor();
     await page.locator('.map-quick-actions button').first().click();
     const rows = page.locator('.provider-row');
     await rows.first().waitFor();
@@ -42,7 +63,8 @@ try {
     await page.getByRole('button', { name: 'Save centre', exact: true }).click();
     await page.getByRole('button', { name: 'Close search panel' }).click();
     await page.getByRole('navigation', {name:'Main navigation'}).getByRole('button', {name:/Saved/}).click();
-  await page.getByRole('dialog').getByRole('button', {name:'For you',exact:true}).click();
+    assert.equal(await page.getByRole('dialog').getByRole('button', { name: /^Searches/ }).count(), 0);
+    await page.getByRole('dialog').getByRole('button', {name:'For you',exact:true}).click();
     await page.locator('.recommendation-card').first().waitFor();
     assert((await page.locator('.recommendation-card').count()) <= 3);
     await page.screenshot({ path: `${out}/production-for-you-${width}.png`, fullPage: true });

@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 
 export async function openSearch(page) {
+  if (await page.locator(".mobile-search-summary").isVisible()) await page.locator(".mobile-search-summary").click();
   if (await page.locator(".map-search-launch").isVisible()) await page.locator(".map-search-launch").click();
   const change = page.getByRole('button', {name:'Change search', exact:true});
   if (await change.isVisible()) await change.click();

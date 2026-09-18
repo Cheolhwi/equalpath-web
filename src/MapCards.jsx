@@ -34,9 +34,10 @@ export default function MapCards({ entries, pins, width, height, compact, topIns
   const cardHeight = compact ? (shortMap ? 164 : 178) : 190;
   const bottom = compact ? (hasCompare && !shortMap ? 112 : 48) : (hasCompare ? 116 : 96);
   const options = { width: compact ? width - 60 : width, height, top: topInset, bottom, cardWidth, cardHeight, pins };
-  // Keep readable controls when three full cards cannot fit. Native scrolling
-  // supports touch, trackpads and keyboard focus without shrinking tap targets.
-  const narrowRail = compact && height - topInset - bottom < 3 * (cardHeight + 10);
+  // Phones keep one row of cards even after the search toolbar folds away.
+  // Filling the newly freed map with three stacked cards would hide the pins.
+  // Native scrolling keeps every recommendation and its full-size actions reachable.
+  const narrowRail = compact;
   const selected = entries.length === 1 && entries[0].selected ? entries[0] : null;
   const selectedId = selected?.id;
   // Preserve the already visible recommendation's position when selecting it.

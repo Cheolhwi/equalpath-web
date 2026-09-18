@@ -51,11 +51,9 @@ import { feeSummary } from "../shared/result-summary.mjs";
 import { assess, costFor, enquiries } from "../shared/conditions.mjs";
 import {
   SavedLibrary,
-  SavedSearchReminder,
   SavedCentreReminder,
   MapSavedShortcuts,
   FavouriteEditor,
-  TemplateEditor,
   SavedChanges,
 } from "./SavedViews.jsx";
 import {
@@ -64,10 +62,9 @@ import {
   updateLibrary,
   storageKey,
   factSnapshot,
-  reuseTemplate,
-  matchedSavedPlace,
 } from "../shared/saved.mjs";
 const EMPTY = [];
+const focusMapSearch = () => [...document.querySelectorAll(".mobile-search-summary, .map-search-launch")].find(el => el.getClientRects().length)?.focus({ preventScroll: true });
 const initial = () => ({
   careType: new URLSearchParams(location.search).get("care") === "regular" ? "regular" : "short_term",
   pickup: null,
@@ -156,9 +153,7 @@ export default function App({
     [savedTab, setSavedTab] = useState("favourites"),
     [saveFailure, setSaveFailure] = useState(""),
     [saveEditor, setSaveEditor] = useState(null),
-    [templateEditor, setTemplateEditor] = useState(null),
     [reopening, setReopening] = useState(null),
-    [reusePlace, setReusePlace] = useState(null),
     [preparation, setPreparation] = useState(null);
   const [tourOpen, setTourOpen] = useState(false);
   const interests = useInterests(mode, tourOpen);
@@ -166,10 +161,10 @@ export default function App({
     if (dialog === 'details' && profile?.p && !dialogBusy && !tourOpen) interests.record([profile.p], 'view');
   }, [dialog, profile, dialogBusy, tourOpen, interests.record]);
   const [searchFocus, setSearchFocus] = useState(null), [dockHeight, setDockHeight] = useState(150);
+  const [searchCollapsed, setSearchCollapsed] = useState(false);
   const [pickupQueryReset, setPickupQueryReset] = useState(null);
   const [pickupAddress, setPickupAddress] = useState(null), [addressRetry, setAddressRetry] = useState(0);
   const tourSnapshot = useRef(null), tourData = useRef(null), tourSequence = useRef(0);
-  const reuseSeq = useRef(0);
   const mapView = useRef(DEFAULT_MAP), rememberedPickup = useRef(null);
   const requestSeq = useRef(0),
     dialogSeq = useRef(0),
@@ -232,68 +227,12 @@ export default function App({
       ...x,
       favourites: [...x.favourites.filter((p) => p.id !== item.id), item],
     }));
-  const saveTemplate = (item) =>
-    changeLibrary((x) => ({
-      ...x,
-      templates: [...x.templates.filter((p) => p.id !== item.id), item],
-    }));
   const editFavourite = (p, from = dialog) => {
     setSaveEditor({ p, from });
     setDialog("save-favourite");
   };
-  const editTemplate = (value, from = dialog) => {
-    setTemplateEditor({ value, from });
-    setDialog("save-template");
-  };
-  const useTemplate = async (item) => {
-    const next = reuseTemplate(item, initial());
-    const seq = ++reuseSeq.current;
-    requestSeq.current++;
-    setBusy(false);
-    setDraft(next);
-    setReopening(null);
-    setResults(null); setNearby(null); setSelected(null); setCompareIds([]); setComparison(null); setCompareSort("distance"); setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({}); setBrowseSelection(null);
-    setErrors(isShortCare(next) ? { date: "Choose a new service date." } : {});
-    setFailure(null);
-    setReusePlace({
-      state: "pending",
-      message: "Loading your saved pickup address…",
-    });
-    setFormOpen(true);
-    setMobilePane("map");
-    setSearchFocus({ field: isShortCare(next) ? "date" : "age", at: Date.now() });
-    close();
-    try {
-      const response = await requestAPI(mode === "live" ? {
-        action: "nearby", mode, careType: next.careType, center: item.pickup,
-      } : {
-        action: "places",
-        mode,
-        query: item.pickup.label,
-      });
-      if (seq !== reuseSeq.current) return;
-      if (mode === "live" || matchedSavedPlace(item.pickup, response.items)) {
-        setReusePlace(null);
-        showPickup(item.pickup);
-      }
-      else
-        setReusePlace({
-          state: "invalid",
-          message:
-            "We couldn’t find this saved address. Search for it again or choose it on the map. Your saved address is kept.",
-        });
-    } catch {
-      if (seq === reuseSeq.current)
-        setReusePlace({
-          state: "invalid",
-          message:
-            "We couldn’t check your saved pickup address. Try loading this search again or choose the address on the map.",
-        });
-    }
-  };
   const reopenFavourite = (saved) => {
-    reuseSeq.current++;
-    setReusePlace(null); setBrowseSelection(null);
+    setBrowseSelection(null);
     requestSeq.current++;
     setBusy(false);
     setReopening(saved);
@@ -361,12 +300,12 @@ export default function App({
   useEffect(() => {
     const key = (e) => {
       if (e.key === "Escape" && !e.defaultPrevented && !dialog && !tourOpen && mobilePane === "list" && !document.querySelector('dialog[open], [role="dialog"], [role="listbox"]')) {
-        setMobilePane("map"); requestAnimationFrame(() => document.querySelector(".map-search-launch")?.focus({ preventScroll: true })); return;
+        setMobilePane("map"); requestAnimationFrame(() => focusMapSearch()); return;
       }
       if (
         introPhase === "ready" &&
         e.key === "/" &&
-        !dialog &&
+        !dialog && !tourOpen &&
         !["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)
       ) {
         e.preventDefault();
@@ -397,9 +336,10 @@ export default function App({
     setMapRestored(false);
   };
   const setField = (field, value) => {
+    setSearchCollapsed(false);
     if (field === "careType") {
-      requestSeq.current++; dialogSeq.current++; reuseSeq.current++;
-      setBusy(false); setDialogBusy(false); setReusePlace(null); setReopening(null);
+      requestSeq.current++; dialogSeq.current++;
+      setBusy(false); setDialogBusy(false); setReopening(null);
       setResults(null); setNearby(null); setBrowseSelection(null); setSelected(null);
       setCompareIds([]); setComparison(null); setCompareSort("distance");
       setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({}); setDialog(null);
@@ -408,8 +348,6 @@ export default function App({
       return;
     }
     if (field === "pickup") {
-      reuseSeq.current++;
-      setReusePlace(null);
       if (value) {
         requestSeq.current++;
         setBusy(false);
@@ -426,8 +364,7 @@ export default function App({
     setPickupQueryReset(null);
     requestSeq.current++;
     dialogSeq.current++;
-    reuseSeq.current++;
-    setReusePlace(null);
+
     setReopening(null);
     setPreparation(null);
     setMode(next);
@@ -454,9 +391,9 @@ export default function App({
   };
   const search = async (e, page = 0, override = null) => {
     e?.preventDefault?.();
+    setSearchCollapsed(false);
     const request = override ?? draft,
       issues = requestErrors(request, { requireAge: true });
-    if (reusePlace) issues.pickup = reusePlace.message;
     setErrors(issues);
     if (Object.keys(issues).length) {
       setFormOpen(true);
@@ -495,6 +432,8 @@ export default function App({
       if (!editedWhilePending) setDraft(r.request);
       setSelected(null);
       setFormOpen(editedWhilePending);
+      setSearchCollapsed(!editedWhilePending && r.total > 0);
+      setSearchFocus(null);
       setHealth(r);
       if (!(override && results && scenario(request) === scenario(results.request))) setMobilePane("map");
       listRef.current?.scrollTo({ top: 0 });
@@ -630,10 +569,10 @@ export default function App({
     setDialog(null);
   };
   const startTour = () => {
-    if (tourOpen || busy || dialogBusy || reusePlace?.state === "pending") return;
-    tourSnapshot.current = { draft, results, selected, compareIds, comparison, compareSort, profile, enquiry, questionSelection, formOpen, mobilePane, choosing, errors, failure, reopening, reusePlace, mapTarget: mapView.current, pickupQuery: document.querySelector("#pickup-search")?.value ?? draft.pickup?.label ?? "", panelScroll: document.querySelector(".discovery-panel")?.scrollTop ?? 0 };
+    if (tourOpen || busy || dialogBusy) return;
+    tourSnapshot.current = { draft, results, selected, compareIds, comparison, compareSort, profile, enquiry, questionSelection, formOpen, mobilePane, searchCollapsed, choosing, errors, failure, reopening, mapTarget: mapView.current, pickupQuery: document.querySelector("#pickup-search")?.value ?? draft.pickup?.label ?? "", panelScroll: document.querySelector(".discovery-panel")?.scrollTop ?? 0 };
     tourData.current = null;
-    requestSeq.current++; dialogSeq.current++; reuseSeq.current++;
+    requestSeq.current++; dialogSeq.current++;
     setBusy(false); setDialogBusy(false); setDialog(null); setChoosing(false);
     setTourOpen(true);
   };
@@ -647,8 +586,8 @@ export default function App({
       setDraft(s.draft); setResults(s.results); setSelected(s.selected);
       setCompareIds(s.compareIds); setComparison(s.comparison); setCompareSort(s.compareSort);
       setProfile(s.profile); setEnquiry(s.enquiry); setQuestionSelection(s.questionSelection);
-      setFormOpen(s.formOpen); setMobilePane(s.mobilePane); setChoosing(s.choosing);
-      setErrors(s.errors); setFailure(s.failure); setReopening(s.reopening); setReusePlace(s.reusePlace);
+      setFormOpen(s.formOpen); setMobilePane(s.mobilePane); setSearchCollapsed(s.searchCollapsed); setChoosing(s.choosing);
+      setErrors(s.errors); setFailure(s.failure); setReopening(s.reopening);
       setMapTarget(s.mapTarget);
       setPickupQueryReset({ value: s.pickupQuery });
     }
@@ -656,13 +595,14 @@ export default function App({
     requestAnimationFrame(() => {
       const panel = document.querySelector(".discovery-panel");
       if (panel && s) panel.scrollTop = s.panelScroll;
-      document.querySelector(status === "completed" ? "#pickup-search" : ".quick-tour-button")?.focus({ preventScroll: true });
+      document.querySelector(".quick-tour-button")?.focus({ preventScroll: true });
     });
   };
   const showTourStep = async (step) => {
     const seq = ++tourSequence.current;
-    setDialog(null); setFormOpen(true); setErrors({}); setFailure(null); setReopening(null); setReusePlace(null);
-    setMobilePane(step === 3 ? "map" : "list");
+    setDialog(null); setFormOpen(true); setErrors({}); setFailure(null); setReopening(null);
+    setMobilePane("map");
+    setSearchFocus(null); setSearchCollapsed(step >= 3);
     if (step === 0) return;
     const example = { ...initial(), careType: "short_term", pickup: { id: "demo-pickup", label: "KL Sentral · tutorial", lat: 3.1341, lng: 101.6865 }, date: todayKL(), deadline: "13:00", end: "18:00", age: "4-6", transport: "self" };
     setDraft({ ...example, ...(step === 1 ? { deadline: "", end: "", age: "", transport: "" } : {}) });
@@ -678,10 +618,10 @@ export default function App({
       if (seq !== tourSequence.current) return;
       const r = tourData.current;
       const garden = r.items.find((p) => p.id === "demo-garden"), river = r.items.find((p) => p.id === "demo-river");
-      setResults(r); setSelected(garden.id); setFormOpen(false);
-      if (step === 3) { setCompareIds([]); return; }
-      if (step === 4) { setProfile({ p: garden, request: r.request }); setDialog("details"); return; }
-      if (step === 5) {
+      setDraft(r.request); setResults(r); setSelected(garden.id); setFormOpen(false);
+      if (step <= 4) { setCompareIds([]); return; }
+      if (step === 5) { setProfile({ p: garden, request: r.request }); setDialog("details"); return; }
+      if (step === 6) {
         setCompareIds([garden.id, river.id]);
         setComparison({ ...r, items: [garden, river] });
         setCompareSort("distance"); setDialog("compare"); return;
@@ -745,11 +685,11 @@ export default function App({
             onClick={() => {
               close();
               reloadLibrary();
-              setSavedTab(library.favourites.length || !library.templates.length ? "favourites" : "templates");
+              setSavedTab("favourites");
               setDialog("saved");
             }}
           >
-            <Bookmark size={18} aria-hidden="true" />Saved {library.favourites.length + library.templates.length > 0 && <em>{library.favourites.length + library.templates.length}</em>}
+            <Bookmark size={18} aria-hidden="true" />Saved {library.favourites.length > 0 && <em>{library.favourites.length}</em>}
           </button>
           <button
             className={dialog === "preparation" ? "active" : ""}
@@ -762,7 +702,7 @@ export default function App({
           </button>
         </nav>
         <div className="header-end">
-          <button className="quick-tour-button" aria-label="Quick tour" disabled={busy || dialogBusy || reusePlace?.state === "pending"} onClick={startTour}><CircleHelp size={19}/><span>Quick tour</span></button>
+          <button className="quick-tour-button" aria-label="Quick tour" disabled={busy || dialogBusy} onClick={startTour}><CircleHelp size={19}/><span>Quick tour</span></button>
           <span className={`data-badge ${mode === "demo" ? "demo" : ""}`}>
             {tourOpen ? "TUTORIAL" : mode === "demo" ? "DEMO" : isShortCare(draft) ? "COURSEWORK DEMO" : "KL + SELANGOR"}
           </span>
@@ -781,10 +721,10 @@ export default function App({
         aria-hidden={mobilePane !== "list" || undefined}
         aria-label="Find care for this request"
       >
-        {(mobilePane === "list" || tourOpen) && <>
+        {mobilePane === "list" && <>
         <div className="intro">
           <h1>Find childcare</h1>
-          <button className="close-search-panel" aria-label="Close search panel" onClick={() => { setMobilePane("map"); requestAnimationFrame(() => document.querySelector(".map-search-launch")?.focus({ preventScroll: true })); }}><X size={21} /></button>
+          <button className="close-search-panel" aria-label="Close search panel" onClick={() => { setMobilePane("map"); requestAnimationFrame(() => focusMapSearch()); }}><X size={21} /></button>
         </div>
         {tourOpen && <p className="demo-notice">Tutorial · fictional centres and sample details. Your search will be restored when you finish or skip.</p>}
         {mode === "demo" && (
@@ -797,9 +737,6 @@ export default function App({
         )}
         {!tourOpen && <SavedCentreReminder favourites={library.favourites}
           onChoose={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }} />}
-        {!tourOpen && <SavedSearchReminder templates={library.templates} onReuse={useTemplate}
-          onChoose={() => { setSavedTab("templates"); setDialog("saved"); }}
-          disabled={busy || reusePlace?.state === "pending"} />}
         <div className={`request-heading ${results ? "" : "request-heading-empty"}`}>
           {results && <strong>Your search</strong>}
           {results && (
@@ -852,12 +789,6 @@ export default function App({
             )}
           </div>
         )}
-        {reusePlace && (
-          <p className="notice-panel" role="status">
-            {reusePlace.message}
-          </p>
-        )}
-
         <form
           id="request-form"
           onSubmit={search}
@@ -1033,17 +964,8 @@ export default function App({
 
         </form>
         <div className="request-save-actions">
-          {(results || draft.pickup) && <button
-            className="text-link"
-            onClick={() => editTemplate({ ...draft }, null)}
-          >
-            Save this search
-          </button>}
           <button className="text-link" onClick={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }}>
             Saved centres{library.favourites.length > 0 && ` (${library.favourites.length})`}
-          </button>
-          <button className="text-link" onClick={() => { setSavedTab("templates"); setDialog("saved"); }}>
-            Saved searches
           </button>
         </div>
         {failure && (
@@ -1215,22 +1137,20 @@ export default function App({
         </>}
       </aside>
       <div className="map-wrap">
-        {!choosing && !tourOpen && mobilePane === "map" && <div className="map-tools-overlay">
+        {!choosing && mobilePane === "map" && <div className="map-tools-overlay">
           <MapSearchDock draft={draft} setField={setField} errors={errors} onSearch={search} busy={busy} results={results} dirty={dirty}
-            mode={mode} active={introPhase === "ready" && !dialog && !tourOpen} queryReset={pickupQueryReset}
+            mode={tourOpen ? "demo" : mode} active={introPhase === "ready" && !dialog && !tourOpen} queryReset={pickupQueryReset}
             onQueryChange={value => setPickupQueryReset({value})}
             onPanel={() => { setFormOpen(true); setMobilePane("list"); }}
             onMap={() => { setChoosing(true); setMobilePane("map"); }} submitRef={submitRef}
             focusRequest={searchFocus} onHeight={setDockHeight}
-            onSave={() => editTemplate({ ...draft }, null)}
-            onSavedSearches={() => { reloadLibrary(); setSavedTab("templates"); setDialog("saved"); }}
-            notice={reusePlace?.message || (reopening ? `Choose a new date for ${reopening.name}.` : results?.total === 0 ? "No centres found. Try another address or change the filters." : browseSelection && !results ? `Add your search details for ${browseSelection.name}.` : mode === "demo" ? "Demo · fictional centres" : "")}
+            collapsed={searchCollapsed} onCollapsedChange={setSearchCollapsed}
+            notice={reopening ? `Choose a new date for ${reopening.name}.` : results?.total === 0 ? "No centres found. Try another address or change the filters." : browseSelection && !results ? `Add your search details for ${browseSelection.name}.` : mode === "demo" ? "Demo · fictional centres" : ""}
             failure={failure} onRetry={() => search(null)} addressStatus={pickupAddress} onRetryAddress={() => setAddressRetry(n => n + 1)} />
           <div className="map-quick-actions">
             <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>
             <MapSavedShortcuts library={library}
-              onCentres={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }}
-              onSearches={() => { reloadLibrary(); setSavedTab("templates"); setDialog("saved"); }} />
+              onCentres={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }} />
           </div>
           {nearbyError && !failure && <p className="map-search-status" role="status">Centres could not load<button onClick={() => setNearbyReload(v => v + 1)}>Retry</button></p>}
         </div>}
@@ -1322,8 +1242,6 @@ export default function App({
               ? "Saved for later"
               : dialog === "save-favourite"
                 ? "Save this centre"
-                : dialog === "save-template"
-                  ? "Save this search"
                   : dialog === "preparation"
                     ? "Get ready for child care"
                     : dialog === "details"
@@ -1341,7 +1259,7 @@ export default function App({
           kicker={
             dialog === "preparation"
               ? "CHECKLIST"
-              : ["saved", "save-template", "save-favourite"].includes(dialog)
+              : ["saved", "save-favourite"].includes(dialog)
                 ? "YOUR SAVED ITEMS"
                 : dialog === "details"
                   ? "CENTRE DETAILS"
@@ -1361,10 +1279,8 @@ export default function App({
               library={library}
               failure={saveFailure}
               onRetry={reloadLibrary}
-              onReuse={useTemplate}
               onReopen={reopenFavourite}
               onEditFavourite={(p) => editFavourite(p, "saved")}
-              onEditTemplate={(t) => editTemplate(t, "saved")}
               onDelete={(type, id) =>
                 changeLibrary((x) => ({
                   ...x,
@@ -1388,14 +1304,6 @@ export default function App({
               )}
               onSave={saveFavourite}
               onCancel={() => setDialog(saveEditor.from)}
-            />
-          )}
-          {dialog === "save-template" && templateEditor && (
-            <TemplateEditor
-              mode={mode}
-              value={templateEditor.value}
-              onSave={saveTemplate}
-              onCancel={() => setDialog(templateEditor.from)}
             />
           )}
           {dialog === "preparation" &&
@@ -1687,8 +1595,8 @@ export default function App({
                 Your current request stays in this browser’s active page and is
                 sent only for the current query. There is no parent account,
                 child identity form or automatic contact. This browser remembers
-                your last map location and pickup point, plus any centres and
-                searches you save. Dates and child ages are not saved automatically.
+                your last map location and pickup point, plus centres you save.
+                Dates and child ages are not saved automatically.
                 Viewed and compared centre IDs are remembered here to help suggest other centres.
                 In Saved → For you → How suggestions work, you can turn viewing history off or clear it.
                 Address searches use OpenStreetMap data through Photon; map tiles

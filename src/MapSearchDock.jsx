@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Baby, CalendarDays, Clock3, SlidersHorizontal, X, MapPin, Users, ArrowRight, Bookmark, PanelLeft } from "lucide-react";
+import { Baby, CalendarDays, Clock3, SlidersHorizontal, X, MapPin, Users, ArrowRight, Pencil, ChevronUp, PanelLeft } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
 import CareTypeChoice from "./CareTypeChoice.jsx";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
@@ -7,8 +7,11 @@ import TimeInput from "./TimeInput.jsx";
 import { isShortCare, searchRadius, SHORT_CARE_RADIUS_KM, MAX_SEARCH_RADIUS_KM } from "../shared/request.mjs";
 
 const shortDate = date => date ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`)) : "Choose date";
-export default function MapSearchDock({ draft, setField, errors, onSearch, busy, results, dirty, mode, active, queryReset, onQueryChange, onMap, onPanel, submitRef, focusRequest, onHeight, onSave, onSavedSearches, notice, failure, onRetry, addressStatus, onRetryAddress }) {
+export default function MapSearchDock({ draft, setField, errors, onSearch, busy, results, dirty, mode, active, queryReset, onQueryChange, onMap, onPanel, submitRef, focusRequest, onHeight, collapsed, onCollapsedChange, notice, failure, onRetry, addressStatus, onRetryAddress }) {
   const root = useRef(null), lastTrigger = useRef(null), options = useRef(null), pendingFocus = useRef(null);
+  const summary = useRef(null);
+  const canCollapse = !!results?.total && !busy && !dirty && !failure && !Object.values(errors).some(Boolean);
+  const compact = collapsed && canCollapse;
   const [part, setPart] = useState(null);
   const [menuPosition, setMenuPosition] = useState({});
   const short = isShortCare(draft);
@@ -16,6 +19,7 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
   const toggle = (name, event) => { pendingFocus.current = null; lastTrigger.current = event.currentTarget; setPart(p => p === name ? null : name); };
   useLayoutEffect(() => {
     if (!focusRequest) return;
+    onCollapsedChange(false);
     const field = focusRequest.field;
     lastTrigger.current = root.current?.querySelector(`[data-field="${field}"]`);
     pendingFocus.current = field === "pickup" ? "pickup-search" : field === "date" ? "service-date" : field === "end" ? "care-end" : field;
@@ -25,10 +29,15 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
   // after that commit instead of racing the render with an animation frame.
   useLayoutEffect(() => {
     const target = typeof pendingFocus.current === "string" ? document.getElementById(pendingFocus.current) : pendingFocus.current;
-    if (!target?.isConnected) return;
+    if (!target?.isConnected || !target.getClientRects().length) return;
     target.focus({ preventScroll: true });
     pendingFocus.current = null;
-  }, [part, focusRequest]);
+  }, [part, focusRequest, compact]);
+  useLayoutEffect(() => {
+    if (compact && summary.current?.getClientRects().length && root.current.contains(document.activeElement)) {
+      summary.current.focus({ preventScroll: true });
+    }
+  }, [compact]);
   useEffect(() => { if (busy || !active) setPart(null); }, [busy, active]);
   useLayoutEffect(() => {
     const update = () => {
@@ -67,7 +76,13 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
   const chip = (name, Icon, label, value, error) => <button type="button" className={`search-chip${part === name ? " active" : ""}${error ? " invalid" : ""}`} data-field={name} aria-label={`${label}: ${value}`} aria-invalid={!!error || undefined} aria-expanded={part === name} aria-controls={part === name ? "search-options" : undefined} onClick={e => toggle(name, e)}>
     <Icon size={21} aria-hidden="true" /><span><small>{label}</small><strong>{value}</strong></span>
   </button>;
-  return <div className="map-search-dock" ref={root}>
+  return <div className={`map-search-dock${compact ? " search-collapsed" : ""}`} ref={root}>
+    {canCollapse && <button type="button" ref={summary} className="mobile-search-summary" aria-expanded={!compact} aria-controls="request-form" aria-label="Change search" onClick={() => { pendingFocus.current = "pickup-search"; onCollapsedChange(false); }}>
+      <MapPin size={20} aria-hidden="true" />
+      <span className="mobile-search-context"><strong>{results.request.pickup.label}</strong><small>{short ? `${shortDate(results.request.date)} · Short time` : "Long term"}</small></span>
+      <span className="mobile-search-edit"><Pencil size={16} aria-hidden="true" />Change search</span>
+    </button>}
+    {canCollapse && <button type="button" className="mobile-search-hide" onClick={() => { setPart(null); onCollapsedChange(true); }}><ChevronUp size={17} aria-hidden="true" />Hide search</button>}
     <form id="request-form" className="request-form dock-form" onSubmit={onSearch} noValidate aria-label="Find childcare">
       <div className="dock-address-row">
         <PlaceInput compact hideLabel mode={mode} value={draft.pickup} queryReset={queryReset} onQueryChange={onQueryChange} active={active} error={errors.pickup} onChange={p => setField("pickup", p)} onMap={onMap} label={short ? "Where will your child leave from?" : "Where do you need care?"}
@@ -94,7 +109,6 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
           <div className="field"><label htmlFor="radius">Search radius</label><select id="radius" value={searchRadius(draft.radius, draft.careType)} onChange={e => setField("radius", Number(e.target.value))}>{(short ? [SHORT_CARE_RADIUS_KM] : [5, MAX_SEARCH_RADIUS_KM]).map(n => <option key={n} value={n}>Within {n} km</option>)}</select></div>
           <label className="checkbox"><input type="checkbox" checked={draft.includeUnknown} onChange={e => setField("includeUnknown", e.target.checked)} />Include centres with details to confirm</label>
           <label className="checkbox"><input type="checkbox" checked={draft.includeConflicts} onChange={e => setField("includeConflicts", e.target.checked)} />Include centres that don’t meet all my needs</label>
-          <div className="dock-saved-actions">{draft.pickup && <button type="button" onClick={onSave}><Bookmark size={17} />Save this search</button>}<button type="button" onClick={onSavedSearches}>Saved searches<ArrowRight size={15} /></button></div>
         </>}
       </section>}
     </form>

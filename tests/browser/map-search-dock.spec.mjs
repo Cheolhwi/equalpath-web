@@ -38,6 +38,8 @@ for(const [width,height] of [[320,568],[390,844],[1440,900]]) test(`${width}x${h
   expect(calls.filter(c=>c.action==='search').at(-1).request).toMatchObject({careType:'short_term',age:'4-6',date:'2026-09-22',deadline:'16:00',end:'18:00',transport:'institution'});
   const cards=await page.locator('.map-centre-card:not(.leaving)').evaluateAll(es=>es.map(el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom};}));
   for(const a of cards){expect(a.x).toBeGreaterThanOrEqual(0);expect(a.bottom).toBeLessThanOrEqual(height-25);for(const b of cards.filter(b=>b!==a))expect(a.right<=b.x||b.right<=a.x||a.bottom<=b.y||b.bottom<=a.y).toBe(true);}
+  if (width > 760) await expect(page.locator('.dock-form')).toBeVisible();
+  else await expect(page.locator('.mobile-search-summary')).toBeVisible();
   await page.screenshot({path:`${out}/map-results-${width}.png`});
   await page.locator('.map-centre-card:not(.leaving)').first().getByRole('button',{name:/View details/}).click();
   await expect(page.getByRole('dialog')).toBeVisible();
@@ -111,4 +113,71 @@ for (const width of [320, 390, 1440]) test(`${width}px: simple choices open as s
     await trigger.click(); await page.keyboard.press('Escape');
     await expect(page.locator('.dock-popover')).toHaveCount(0); await expect(trigger).toBeFocused();
   }
+});
+
+for (const width of [320, 390]) test(`${width}px: search collapses to a summary, editing keeps choices and re-search collapses again`, async ({page}) => {
+  await page.setViewportSize({width, height: width === 320 ? 568 : 844});
+  const {calls, errors} = await setup(page); await fillMapSearch(page);
+  const before = await page.locator('.map-tools-overlay').boundingBox();
+  await page.getByRole('button', {name:'Find childcare', exact:true}).click();
+  const summary = page.getByRole('button', {name:'Change search', exact:true});
+  await expect(summary).toBeVisible();
+  await expect(summary).toContainText('KL Sentral');
+  await expect(summary).toContainText('22 Sept');
+  await expect(page.locator('.dock-form')).not.toBeVisible();
+  const after = await page.locator('.map-tools-overlay').boundingBox();
+  expect(after.height).toBeLessThan(140); expect(before.height - after.height).toBeGreaterThan(140);
+  await page.screenshot({path:`${out}/collapsed-${width}.png`});
+  await summary.click();
+  await expect(page.locator('#pickup-search')).toBeFocused();
+  await expect(page.locator('#deadline')).toContainText('16:00');
+  await expect(page.locator('#care-end')).toContainText('18:00');
+  await expect(page.locator('[data-field="age"]')).toContainText('4–6');
+  await expect(page.getByRole('button', {name:'Choose your location', exact:true})).toBeVisible();
+  await expect(page.getByRole('button', {name:'Use my location', exact:true})).toBeVisible();
+  await page.getByRole('button', {name:'Hide search', exact:true}).click();
+  await expect(summary).toBeFocused();
+  await summary.click(); await selectTime(page, '#care-end', '19', '15');
+  await page.getByRole('button', {name:'Update results', exact:true}).click();
+  await expect(summary).toBeVisible();
+  expect(calls.filter(c=>c.action==='search').at(-1).request.end).toBe('19:15');
+  await page.getByRole('navigation').getByRole('button', {name:'Find care', exact:true}).click();
+  await expect(page.locator('#pickup-search')).toBeFocused();
+  await expect(page.locator('.dock-form')).toBeVisible();
+  await page.locator('[data-field="age"]').click();
+  await page.getByRole('radio', {name:'1–3 years', exact:true}).click();
+  await expect(page.locator('.dock-form')).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('mobile search stays expanded for no results, failures and edits made while waiting', async ({page}) => {
+  await page.setViewportSize({width:390, height:844});
+  await setup(page); await fillMapSearch(page);
+  let release, started;
+  const gate = new Promise(r=>release=r), seen = new Promise(r=>started=r);
+  await page.route('**/api', async route => {
+    if (route.request().postDataJSON().action === 'search') { started(); await gate; }
+    await route.fallback();
+  });
+  await page.getByRole('button',{name:'Find childcare',exact:true}).click(); await seen;
+  await page.locator('[data-field="age"]').click(); await page.getByRole('radio',{name:'1–3 years',exact:true}).click();
+  release();
+  await expect(page.locator('.dock-changed')).toBeVisible();
+  await expect(page.locator('.dock-form')).toBeVisible();
+  await expect(page.locator('[data-field="age"]')).toContainText('1–3');
+  await page.route('**/api', async route => {
+    if (route.request().postDataJSON().action !== 'search') return route.fallback();
+    await route.fulfill({status:503,json:{ok:false,code:'unavailable'}});
+  });
+  await page.getByRole('button',{name:'Update results',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Retry search',exact:true})).toBeVisible();
+  await expect(page.locator('.dock-form')).toBeVisible();
+  await page.route('**/api', async route => {
+    const b=route.request().postDataJSON(); if(b.action!=='search')return route.fallback();
+    const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items:[]})}});
+    await route.fulfill({json:{ok:true,...await api(b)}});
+  });
+  await page.getByRole('button',{name:'Retry search',exact:true}).click();
+  await expect(page.locator('.dock-feedback')).toContainText('No centres found');
+  await expect(page.locator('.dock-form')).toBeVisible();
 });

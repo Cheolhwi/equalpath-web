@@ -23,6 +23,8 @@ export function tourPlacement(target, viewport, cardHeight) {
       left = target.left - gap - width; top = target.top;
     } else if (target.bottom + gap + height <= viewport.height - margin) {
       left = target.left; top = target.bottom + gap;
+    } else if (target.top - gap - height >= margin) {
+      left = target.left; top = target.top - gap - height;
     } else { left = viewport.width > 760 ? viewport.width - width - 28 : margin; top = viewport.height - height - margin; }
   }
   return { width, left: Math.max(margin, Math.min(left, viewport.width - width - margin)), top: Math.max(margin, Math.min(top, viewport.height - height - margin)) };
