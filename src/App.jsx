@@ -1451,7 +1451,6 @@ export default function App({
           {dialog === "enquiry" && enquiry && (
             <>
               <Enquiry
-                showQuestions={tourOpen}
                 key={enquiry.p.id + scenario(enquiry.request)}
                 p={enquiry.p}
                 request={enquiry.request}

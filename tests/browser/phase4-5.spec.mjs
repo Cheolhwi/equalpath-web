@@ -69,7 +69,6 @@ test("questions belong to a selected centre and never appear in main navigation"
   await expect(page.getByRole("heading", { name: "Contact the centre", exact: true })).toBeVisible();
   await expect(page.locator(".request-context")).toContainText(institution);
   const question = page.locator(".question-list input").first();
-  await page.locator(".question-editor > summary").click();
   await question.uncheck();
   await page.screenshot({ path: `${evidenceDir}/centre-questions-copy.png` });
   await close(page);

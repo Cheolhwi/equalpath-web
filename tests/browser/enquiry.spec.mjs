@@ -7,7 +7,7 @@ const out = process.env.QA_EVIDENCE_DIR || ".build/enquiry";
 mkdirSync(out, { recursive: true });
 const source = { label: "Published branch information", url: "https://example.com/centre", retrievedAt: "2026-09-13" };
 const name = "Little Garden Childcare, Kota Damansara";
-async function openQuestions(page, { missing = false, clipboard = true, transport = "institution", edit = true } = {}) {
+async function openQuestions(page, { missing = false, clipboard = true, transport = "institution" } = {}) {
   const base = structuredClone(fixtureCatalog.items[0]);
   const p = { ...base, id: "enquiry-test", name, mode: "live", feeRule: null, lateRule: null,
     age: { ...base.age, min: 12, max: 84, endpointKnown: true, maxInclusive: false },
@@ -36,46 +36,59 @@ async function openQuestions(page, { missing = false, clipboard = true, transpor
   await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
   await page.getByRole("button", { name: `View details for ${name}`, exact: true }).click();
   await page.getByRole("button", { name: "Contact the centre", exact: true }).click();
-  if (edit && !(await page.locator(".question-editor").getAttribute("open") !== null)) await page.locator(".question-editor > summary").click();
   return page.getByRole("dialog");
 }
-for (const width of [390, 1440]) test(`${width}px: search details open by default; contact and the optional message stay usable`, async ({ page }) => {
+for (const width of [390, 1440]) test(`${width}px: search details open by default; questions and the exact message are visible and stay usable`, async ({ page }) => {
   await page.setViewportSize({ width, height: 844 });
-  const dialog = await openQuestions(page, { edit: false });
+  const dialog = await openQuestions(page);
   const call = dialog.getByRole("link", { name: `Call ${name}`, exact: true });
   await expect(call).toBeVisible();
   await expect(call).toHaveAttribute("href", "tel:0312345678");
   await expect(dialog.getByRole("heading", { name: "Ask if your child can come", exact: true })).toHaveCount(0);
   await expect(dialog.locator(".question-tags, .question-tag")).toHaveCount(0);
-  await expect(dialog.locator(".question-editor")).not.toHaveAttribute("open");
   await expect(dialog.locator(".contact-request")).toHaveAttribute("open", "");
-  await expect(dialog.locator(".message-sample")).toContainText("Hello, I need childcare for a few hours.");
+  await expect(dialog.getByRole("heading", { name: "Choose questions" })).toBeVisible();
+  await expect(dialog.getByRole("textbox", { name: "Message to copy" })).toHaveValue(/Hello Little Garden/);
+  const choices = await dialog.locator(".enquiry-questions").boundingBox();
+  const preview = await dialog.locator(".enquiry-send").boundingBox();
+  if (width > 800) {
+    expect(preview.x).toBeGreaterThan(choices.x + choices.width);
+    expect(Math.abs(preview.y - choices.y)).toBeLessThan(2);
+  } else expect(preview.y).toBeGreaterThan(choices.y + choices.height);
   await page.screenshot({ path: `${out}/contact-first-${width}.png` });
   const feeText = await dialog.locator('[data-question-id="fees"] label span').textContent();
   const careText = await dialog.locator('[data-question-id="care"] label span').textContent();
-  await dialog.locator(".question-editor > summary").click();
   const fee = dialog.locator('[data-question-id="fees"]').getByRole("checkbox");
+  const before = await dialog.locator(".enquiry-question").evaluateAll(rows => rows.map(row => row.dataset.questionId));
   await fee.uncheck();
-  await dialog.locator(".enquiry-preview > summary").click();
-  await expect(dialog.locator(".enquiry-preview > div")).not.toContainText(feeText);
-  await expect(dialog.locator(".enquiry-preview > div")).toContainText(careText);
+  expect(await dialog.locator(".enquiry-question").evaluateAll(rows => rows.map(row => row.dataset.questionId))).toEqual(before);
+  expect(await dialog.getByRole("textbox", { name: "Message to copy" }).inputValue()).not.toContain(feeText);
+  expect(await dialog.getByRole("textbox", { name: "Message to copy" }).inputValue()).toContain(careText);
+  await dialog.getByRole("button", { name: "Preview message", exact: true }).click();
+  await expect(dialog.locator(".enquiry-send")).toBeFocused();
   await dialog.getByRole("button", { name: "Copy message to send", exact: true }).click();
   const copied = await page.evaluate(() => window.copiedQuestions);
+  expect(copied).toBe(await dialog.getByRole("textbox", { name: "Message to copy" }).inputValue());
   expect(copied).not.toContain(feeText);
   expect(copied).toContain(careText);
   expect(copied).toContain("Pickup address: KL Sentral");
-  await expect(dialog.getByRole("status")).toContainText("Now paste it into WhatsApp or a text message.");
+  await expect(dialog.getByRole("status")).toContainText("Copied. Paste it into WhatsApp or a text message to send.");
+  await fee.check();
+  await expect(dialog.getByRole("button", { name: "Copy message to send", exact: true })).toBeEnabled();
+  await expect(dialog.getByRole("status")).not.toContainText("Copied.");
+  await fee.uncheck();
   await dialog.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.getByRole("button", { name: `View details for ${name}`, exact: true }).click();
   await page.getByRole("button", { name: "Contact the centre", exact: true }).click();
-  await dialog.locator(".question-editor > summary").click();
   await expect(fee).not.toBeChecked();
   await fee.focus(); await page.keyboard.press("Space");
   await expect(fee).toBeChecked();
-  await dialog.getByRole("button", { name: "Remove all questions", exact: true }).click();
+  await dialog.getByRole("button", { name: "Unselect all", exact: true }).click();
   await expect(dialog.getByRole("button", { name: "Copy message to send", exact: true })).toBeDisabled();
   await expect(call).toBeEnabled();
-  await dialog.getByRole("button", { name: "Use suggested message", exact: true }).click();
+  await expect(dialog.getByRole("textbox", { name: "Message to copy" })).toHaveCount(0);
+  await expect(dialog.locator(".message-empty")).toContainText("Select at least one question");
+  await dialog.getByRole("button", { name: "Select all", exact: true }).click();
   await expect(fee).toBeChecked();
   await expect(dialog.getByRole("button", { name: "Copy message to send", exact: true })).toBeEnabled();
   expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
@@ -100,7 +113,10 @@ test("questions show their exact check and source; copy reflects selection and r
   const capacity = dialog.locator('[data-question-id="capacity"]');
   const excluded = await capacity.locator("label span").innerText();
   await capacity.getByRole("checkbox").uncheck();
-  await dialog.getByRole("button", { name: "Move care question down", exact: true }).click();
+  await dialog.getByRole("button", { name: "Change order", exact: true }).click();
+  await expect(dialog.getByRole("button", { name: "Move Time to go home question up", exact: true })).toBeDisabled();
+  await dialog.getByRole("button", { name: "Move Time to go home question down", exact: true }).click();
+  await dialog.getByRole("button", { name: "Done ordering", exact: true }).click();
   const expected = await dialog.locator(".enquiry-question:has(input:checked) label span").allTextContents();
   await copy.click();
   const message = await page.evaluate(() => window.copiedQuestions);
@@ -113,7 +129,6 @@ test("questions show their exact check and source; copy reflects selection and r
   await dialog.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.getByRole("button", { name: `View details for ${name}`, exact: true }).click();
   await page.getByRole("button", { name: "Contact the centre", exact: true }).click();
-  if (!(await page.locator(".question-editor").getAttribute("open") !== null)) await page.locator(".question-editor > summary").click();
   await expect(dialog.locator(".enquiry-question:has(input:checked) label span")).toHaveText(expected);
   await expect(dialog.locator(".enquiry-question input:not(:checked)")).toHaveCount(1);
 });
@@ -127,12 +142,14 @@ test("mobile preserves relationships, manual copy, missing contacts and the next
   await expect(care.locator("details")).toHaveAttribute("open", "");
   await care.scrollIntoViewIfNeeded(); await page.screenshot({ path: `${out}/enquiry-mobile-linked-check.png` });
   await expect(dialog.locator('[data-question-id="transport"]')).toHaveCount(0);
-  await dialog.getByRole("button", { name: "Remove all questions", exact: true }).click();
+  await dialog.getByRole("button", { name: "Unselect all", exact: true }).click();
   await expect(dialog.getByRole("button", { name: "Copy message to send", exact: true })).toBeDisabled();
-  await dialog.getByRole("button", { name: "Use all questions", exact: true }).click();
+  await dialog.getByRole("button", { name: "Select all", exact: true }).click();
   await dialog.getByRole("button", { name: "Copy message to send", exact: true }).click();
   await expect(dialog.getByRole("textbox", { name: "Message to copy" })).toBeFocused();
-  await expect(dialog.getByRole("textbox", { name: "Message to copy" })).toContainText("Pick up from childcare at: 18:00");
+  await expect(dialog.getByRole("textbox", { name: "Message to copy" })).toHaveValue(/Pick up from childcare at: 18:00/);
+  await expect(dialog.getByRole("status")).toContainText("Copy did not work");
+  await page.screenshot({ path: `${out}/enquiry-mobile-copy.png` });
   const contact = dialog.locator(".enquiry-contact");
   await expect(contact).toContainText("No phone number listed");
   await contact.scrollIntoViewIfNeeded(); await page.screenshot({ path: `${out}/enquiry-mobile-contact.png` });
