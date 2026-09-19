@@ -71,7 +71,7 @@ for (const [width,height] of [[320,568],[390,844]]) test(`${width}: mobile walkt
     await expect(tour(page).getByRole("button",{name:step===7?"Back to my map":"Next",exact:true})).toBeEnabled();
     await expect.poll(async()=>{const b=await tour(page).locator(".tour-card").boundingBox();return b.y+b.height;}).toBeLessThanOrEqual(height+1);
     if (step===2) await expect.poll(async()=>{
-      const b=await tour(page).locator(".tour-card").boundingBox(), r=await page.locator(".dock-options").boundingBox();
+      const b=await tour(page).locator(".tour-card").boundingBox(), r=await page.locator(".dock-filter-panel").boundingBox();
       return b.y>=r.y+r.height+8 || b.y+b.height<=r.y-8;
     }).toBe(true);
     if (step===3 || step===4) {

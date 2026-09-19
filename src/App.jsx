@@ -26,6 +26,7 @@ import useInterests from "./useInterests.js";
 import Comparison from "./Comparison.jsx";
 import MapCanvas from "./MapCanvas.jsx";
 import MapSearchDock from "./MapSearchDock.jsx";
+import SearchActions from "./SearchActions.jsx";
 import Dialog from "./Dialog.jsx";
 import DialogPresence from "./DialogPresence.jsx";
 import SelectMenu, { sortOptions } from "./SelectMenu.jsx";
@@ -841,9 +842,10 @@ export default function App({
           </div>
           <div className="field-pair care-time-endpoints">
             <div className="field">
-              <label htmlFor="deadline"><MapPin size={19} aria-hidden="true" />When will your child leave?</label>
+              <label htmlFor="deadline"><MapPin size={19} aria-hidden="true" />Start</label>
               <TimeInput
                 id="deadline"
+                shortLabel="Start"
                 label="When will your child leave?"
                 value={draft.deadline}
                 onChange={(value) => setField("deadline", value)}
@@ -855,9 +857,10 @@ export default function App({
               )}
             </div>
             <div className="field">
-              <label htmlFor="care-end"><Building2 size={19} aria-hidden="true" />When will you pick up your child?</label>
+              <label htmlFor="care-end"><Building2 size={19} aria-hidden="true" />End</label>
               <TimeInput
                 id="care-end"
+                shortLabel="End"
                 label="When will you pick up your child?"
                 value={draft.end}
                 onChange={(value) => setField("end", value)}
@@ -939,28 +942,7 @@ export default function App({
               Include centres that don’t meet all my needs
             </label>
           </details>
-          <button
-            ref={submitRef}
-            type="submit"
-            className="primary find-button"
-            disabled={busy}
-          >
-            {busy ? (
-              <>
-                <span className="spinner" />
-                Finding care options…
-              </>
-            ) : (
-              <>
-                {reopening
-                  ? "Check saved centre"
-                  : results
-                    ? "Update results"
-                    : "Find childcare"}
-                <ArrowRight size={18} />
-              </>
-            )}
-          </button>
+          <SearchActions busy={busy} results={results} dirty={dirty} failure={failure} submitRef={submitRef} reopening={reopening} />
 
         </form>
         <div className="request-save-actions">
@@ -980,9 +962,9 @@ export default function App({
         {results && (dirty || busy) && (
           <div className="earlier-results" role="status">
             <strong>
-              {busy ? "Updating results…" : "Your search has changed"}
+              {busy ? "Updating results…" : "Showing previous results"}
             </strong>
-            <p>{requestCaption(results.request)}</p>
+            <p>{dirty ? "Your new choices have not been applied. " : ""}{requestCaption(results.request)}</p>
             {!busy && !formOpen && (
               <button onClick={() => search(null)}>
                 Update results <ArrowRight size={12} />

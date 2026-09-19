@@ -11,6 +11,7 @@ import "./map-discovery.css";
 import "./map-search-dock.css";
 import "./map-glass.css";
 import "./surfaces.css";
+import "./search-actions.css";
 import "./comparison.css";
 import "./recommendations.css";
 createRoot(document.getElementById("root")).render(<Experience />);

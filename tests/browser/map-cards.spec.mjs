@@ -279,7 +279,7 @@ test("changed requests hide previous recommendations and empty searches keep the
   await page.locator("#deadline").fill("15:45");
   await page.getByRole("button", { name: "Close search panel" }).click();
   await expect(visibleCards(page)).toHaveCount(0);
-  await expect(page.locator(".dock-changed")).toContainText("Search changed");
+  await expect(page.locator(".search-apply-status")).toContainText("Changes not applied");
   // Serve the empty result from the same validated search shape, without a live request.
   const emptyAPI = createAPI({ store: { catalog: async () => ({ ...fixtureCatalog, items: [] }) } });
   await page.route("**/api", async route => {

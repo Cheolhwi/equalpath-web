@@ -377,7 +377,7 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   await expect(popup).toHaveCount(0);
   await expect(leave).toContainText("14:27");
   await expect(bag).toBeChecked();
-  await expect(page.getByText("Your search has changed", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Showing previous results", { exact: true })).toHaveCount(0);
 
   await pickup.click(); await chooseTime("21", "15");
   await popup.getByRole("button", { name: "Done", exact: true }).click();
@@ -418,7 +418,7 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   expect(copied).toContain("Pick up from childcare at: 18:05");
   await page.getByRole("button", { name: "Get ready for child care", exact: true }).click();
   await expect(leave).toContainText("14:27"); await expect(pickup).toContainText("18:05");
-  await expect(page.getByText("Your search has changed", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Showing previous results", { exact: true })).toHaveCount(0);
 });
 
 test("mobile navigation, modal layout, checkboxes and keyboard close remain usable", async ({

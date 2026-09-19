@@ -27,6 +27,8 @@ for(const [width,height] of [[320,568],[390,844],[1440,900]]) test(`${width}x${h
   await page.setViewportSize({width,height});const {calls,errors}=await setup(page);
   await expect(page.locator('.discovery-panel')).not.toBeVisible();
   await expect(page.locator('.map-search-dock')).toBeVisible();
+  await expect(page.locator('#deadline small')).toHaveText('Start');
+  await expect(page.locator('#care-end small')).toHaveText('End');
   await fillMapSearch(page);
   await page.locator('[data-field="more"]').click();
   const box=await page.locator('.dock-popover').boundingBox();expect(box.x).toBeGreaterThanOrEqual(0);expect(box.y+box.height).toBeLessThanOrEqual(height);
@@ -124,6 +126,7 @@ for (const width of [320, 390]) test(`${width}px: search collapses to a summary,
   await expect(summary).toBeVisible();
   await expect(summary).toContainText('KL Sentral');
   await expect(summary).toContainText('22 Sept');
+  await expect(summary).toContainText('Results up to date');
   await expect(page.locator('.dock-form')).not.toBeVisible();
   const after = await page.locator('.map-tools-overlay').boundingBox();
   expect(after.height).toBeLessThan(140); expect(before.height - after.height).toBeGreaterThan(140);
@@ -162,7 +165,8 @@ test('mobile search stays expanded for no results, failures and edits made while
   await page.getByRole('button',{name:'Find childcare',exact:true}).click(); await seen;
   await page.locator('[data-field="age"]').click(); await page.getByRole('radio',{name:'1–3 years',exact:true}).click();
   release();
-  await expect(page.locator('.dock-changed')).toBeVisible();
+  await expect(page.locator('.search-actions')).toHaveAttribute('data-state', 'pending');
+  await expect(page.locator('.search-apply-status')).toContainText('Changes not applied');
   await expect(page.locator('.dock-form')).toBeVisible();
   await expect(page.locator('[data-field="age"]')).toContainText('1–3');
   await page.route('**/api', async route => {
@@ -171,6 +175,8 @@ test('mobile search stays expanded for no results, failures and edits made while
   });
   await page.getByRole('button',{name:'Update results',exact:true}).click();
   await expect(page.getByRole('button',{name:'Retry search',exact:true})).toBeVisible();
+  await expect(page.locator('.search-apply-status')).toContainText('Results not updated');
+  await expect(page.locator('[data-field="age"]')).toHaveAttribute('data-pending', 'true');
   await expect(page.locator('.dock-form')).toBeVisible();
   await page.route('**/api', async route => {
     const b=route.request().postDataJSON(); if(b.action!=='search')return route.fallback();
@@ -180,4 +186,57 @@ test('mobile search stays expanded for no results, failures and edits made while
   await page.getByRole('button',{name:'Retry search',exact:true}).click();
   await expect(page.locator('.dock-feedback')).toContainText('No centres found');
   await expect(page.locator('.dock-form')).toBeVisible();
+});
+
+for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly pending until Update succeeds, and reverting clears the pending state`, async ({page}) => {
+  await page.setViewportSize({width, height: 900});
+  const {calls, errors} = await setup(page);
+  await expect(page.locator('.search-apply-status')).toContainText('Then tap Find care');
+  await fillMapSearch(page);
+  await page.getByRole('button', {name:'Find childcare', exact:true}).click();
+  await expect.poll(() => calls.filter(c => c.action === 'search').length).toBe(1);
+  if (width < 760) await page.getByRole('button', {name:'Change search', exact:true}).click();
+  await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
+  await page.locator('[data-field="age"]').click();
+  await page.getByRole('radio', {name:'1–3 years', exact:true}).click();
+  await expect(page.locator('[data-field="age"]')).toHaveAttribute('data-pending', 'true');
+  await expect(page.locator('.search-apply-status')).toContainText('Changes not applied');
+  await expect(page.locator('[data-field="date"]')).not.toHaveAttribute('data-pending');
+  await page.locator('[data-field="age"]').click();
+  await page.getByRole('radio', {name:'4–6 years', exact:true}).click();
+  await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
+  await expect(page.locator('[data-pending]')).toHaveCount(0);
+  await page.locator('[data-field="more"]').click();
+  await page.locator('#transport').selectOption('self');
+  await page.getByRole('button', {name:'Close options', exact:true}).click();
+  await expect(page.locator('.selected-filter-summary')).toContainText('Pickup: I’ll handle it');
+  await expect(page.locator('[data-field="more"]')).toHaveAttribute('data-pending', 'true');
+  await selectTime(page, '#care-end', '19', '15');
+  await expect(page.locator('#care-end')).toHaveAttribute('data-pending', 'true');
+  expect(calls.filter(c => c.action === 'search')).toHaveLength(1);
+  const action = await page.locator('.search-actions').boundingBox();
+  const filters = await page.locator('.dock-options').boundingBox();
+  expect(action.y).toBeGreaterThanOrEqual(filters.y + filters.height);
+  expect(action.y + action.height).toBeLessThan(900);
+  await page.screenshot({path:`${out}/filters-pending-${width}.png`});
+  let release, started;
+  const gate = new Promise(r => release = r), seen = new Promise(r => started = r);
+  await page.route('**/api', async route => {
+    if (route.request().postDataJSON().action === 'search') { started(); await gate; }
+    await route.fallback();
+  });
+  await page.locator('[data-field="more"]').click();
+  await expect(page.locator('.filter-review')).toContainText('Changes apply when you tap Update results');
+  await page.locator('.filter-review').getByRole('button', {name:'Update results', exact:true}).click();
+  await seen;
+  await expect(page.locator('.search-actions')).toHaveAttribute('data-state', 'loading');
+  await expect(page.locator('.search-actions button')).toBeDisabled();
+  release();
+  if (width < 760) await page.getByRole('button', {name:'Change search', exact:true}).click();
+  await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
+  await expect(page.locator('[data-pending]')).toHaveCount(0);
+  await expect(page.locator('.selected-filter-summary')).toContainText('Pickup: I’ll handle it');
+  expect(calls.filter(c => c.action === 'search').at(-1).request).toMatchObject({transport:'self', end:'19:15'});
+  await page.screenshot({path:`${out}/filters-applied-${width}.png`});
+  expect(errors).toEqual([]);
 });

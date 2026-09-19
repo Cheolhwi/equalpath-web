@@ -9,7 +9,7 @@
 .dock-address-row .dock-panel-toggle { width: 40px; min-width: 40px; min-height: 46px; border: none; border-radius: 9px; padding: 9px; box-shadow: none; }
 .dock-address-row .dock-panel-toggle:hover { background: var(--soft); }
 .dock-address-row .pickup-field { margin: 0; min-width: 0; flex: 1; position: relative; }
-.dock-address-row .compact-place { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "address address" "actions submit"; gap: 4px 8px; }
+.dock-address-row .compact-place { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "address" "actions"; gap: 4px 8px; }
 .compact-place .place-search-row { grid-area: address; border-bottom: 1px solid var(--rule); padding-bottom: 4px; }
 .compact-place .place-submit { grid-area: submit; display: flex; align-items: stretch; }
 .compact-place > :is(.field-error, .location-feedback) { grid-column: 1 / -1; }
@@ -62,7 +62,6 @@
 .dock-saved-actions button { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; text-decoration: underline; }
 .dock-feedback { margin: 7px 8px 0; font-size: 13px; line-height: 1.4; }
 .dock-feedback button { min-height: 32px; text-decoration: underline; padding: 0 4px; }
-.dock-changed { display: block; margin: 4px 10px 0; color: var(--muted); font-size: 12px; }
 .map-tools-overlay > .map-quick-actions { margin-top: 10px; width: fit-content; }
 .map-first .map-tools { z-index: 7; }
 /* Two choices need a small menu, not a full form panel. */
@@ -109,7 +108,7 @@
   .dock-address-row .location-search > input { font-size: 14px; }
   .dock-address-row .location-search > button { min-width: 32px; width: 32px; padding: 6px; }
   .place-search-row { gap: 4px; }
-  .dock-address-row .compact-place { grid-template-areas: "address submit" "actions actions"; gap: 4px 6px; }
+  .dock-address-row .compact-place { grid-template-areas: "address" "actions"; gap: 4px 6px; }
   .compact-place .place-search-row { padding-bottom: 0; border-bottom: 0; }
   .equalpath .compact-place .geolocation-control { border-top: 1px solid var(--rule); padding-top: 4px; }
   .equalpath .geolocation-control { gap: 6px; }

@@ -13,7 +13,7 @@ function normalise(value) {
 
 // The OS time popup does not inherit the site's palette. Keep a text field and
 // provide a themed, minute-precise picker without changing the HH:mm contract.
-export default function TimeInput({ id, label, pickerLabel = label, value, onChange, invalid, describedBy, variant = "field", allowClear = true, icon: Icon = Clock3, shortLabel, onOpen }) {
+export default function TimeInput({ id, label, pickerLabel = label, value, onChange, invalid, describedBy, variant = "field", allowClear = true, icon: Icon = Clock3, shortLabel, onOpen, pending = false }) {
   const generatedId = useId(), popupId = `${generatedId}-time`;
   const inputId = id || generatedId;
   const displayLabel = pickerLabel.replace(/^Template /, "").replace(/^./, (letter) => letter.toUpperCase());
@@ -132,15 +132,15 @@ export default function TimeInput({ id, label, pickerLabel = label, value, onCha
     if (next) { event.preventDefault(); dismiss.current(); next.focus(); }
   };
   return <div className="time-input" ref={root}>
-    {variant === "chip" ? <button id={inputId} ref={trigger} type="button" className={`search-chip${invalid ? " invalid" : ""}`}
-      aria-label={`${label} ${value || "Choose time"}`} aria-invalid={invalid || undefined} aria-describedby={describedBy}
+    {variant === "chip" ? <button id={inputId} ref={trigger} type="button" className={`search-chip${invalid ? " invalid" : ""}${pending ? " unapplied" : ""}`} data-pending={pending || undefined}
+      aria-label={`${shortLabel ? `${shortLabel}: ` : ""}${label} ${value || "Choose time"}`} aria-invalid={invalid || undefined} aria-describedby={describedBy}
       aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? popupId : undefined}
-      onClick={() => open ? dismiss.current() : show()}><Icon size={21} aria-hidden="true" /><span><small>{shortLabel}</small><strong>{value || "Set time"}</strong></span></button> : variant === "button" ? <button ref={trigger} type="button" className="time-value-button"
+      onClick={() => open ? dismiss.current() : show()}><Icon size={21} aria-hidden="true" /><span><small>{shortLabel}{pending && <Pencil size={11} aria-hidden="true" />}</small><strong>{value || "Set time"}</strong></span></button> : variant === "button" ? <button ref={trigger} type="button" className="time-value-button"
       aria-label={`Change ${label.toLowerCase()} time: ${value || "not set"}`} aria-describedby={describedBy}
       aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? popupId : undefined}
       onClick={() => open ? dismiss.current() : show()}><strong>{value || "Set time"}</strong><Pencil size={15} aria-hidden="true" /></button> : <>
     <input id={inputId} type="text" inputMode="numeric" autoComplete="off" maxLength={5}
-      placeholder="--:--" aria-label={label} aria-invalid={invalid || undefined} aria-describedby={describedBy}
+      placeholder="--:--" aria-label={`${shortLabel ? `${shortLabel}: ` : ""}${label}`} aria-invalid={invalid || undefined} aria-describedby={describedBy}
       value={value} onChange={(event) => onChange(event.target.value)}
       onBlur={() => { const next = normalise(value); if (next !== value) onChange(next); }}
       onKeyDown={(event) => { if (event.key === "ArrowDown") { event.preventDefault(); show(); } }} />

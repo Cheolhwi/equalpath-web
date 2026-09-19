@@ -34,7 +34,7 @@
   .equalpath.map-first.dark { --glass-fill: #253028dc; --glass-thick: #2b352ce8; }
 }
 .map-first :is(.app-header > .wordmark, .app-header > nav, .header-end,
-  .dock-address-row, .dock-options, .map-centre-card, .map-quick-actions button,
+  .dock-address-row, .dock-filter-panel, .map-centre-card, .map-quick-actions button,
   .map-tools button, .map-choose, .dock-popover, .compact-place .place-results,
   .map-pick-confirm, .map-search-status),
 .map-first > .time-picker {
@@ -135,7 +135,7 @@
 .map-first .dock-popover :is(input, select),
 .map-first > .time-picker :is(.time-picker-option, .time-picker-done) { border-radius: 10px; }
 .map-first .map-search-status { margin-top: 8px; }
-.map-first :is(.dock-feedback, .dock-changed) {
+.map-first .dock-feedback {
   width: fit-content; max-width: 100%; margin: 6px 0 0; padding: 5px 12px;
   border-radius: 12px; background: var(--glass-thick); color: var(--glass-text);
 }
