@@ -1,55 +1,47 @@
-/* Questions and their exact clipboard text stay visible in one workspace. */
-.equalpath .question-flow .enquiry-visit { border: 0; background: transparent; padding: 0; margin-bottom: 20px; }
-.equalpath .question-flow .enquiry-visit h3 { margin-bottom: 8px; }
-.equalpath .question-flow .enquiry-contact { padding: 0 0 22px; margin-bottom: 24px; }
-.question-flow .contact-buttons { display: flex; flex-wrap: wrap; gap: 12px 24px; }
-.question-flow .contact-buttons .published-contact { margin-bottom: 12px; }
-.equalpath .question-flow .call-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 18px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 16px; text-decoration: none; }
-.equalpath .question-flow .call-link:hover { background: var(--soft); border-color: var(--accent); }
-.equalpath .question-flow .enquiry-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; }
-.equalpath .question-flow .enquiry-step { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 21px; line-height: 1.4; }
-.enquiry-step > span { display: grid; place-items: center; flex: 0 0 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 16px; }
-.equalpath .question-flow .enquiry-guide { margin: 10px 0 16px; color: var(--muted); font-size: 15px; line-height: 1.6; }
-.question-selection-bar, .question-edit-tools { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 12px; }
-.question-selection-bar { padding: 0 0 4px; font-size: 14px; }
-.question-flow .question-edit-tools { margin-bottom: 16px; }
-.equalpath .question-flow .question-edit-tools > button, .equalpath .question-flow .question-selection-bar > button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; font-size: 14px; }
-.equalpath .question-flow .question-edit-tools > .secondary { padding: 7px 13px; border-radius: 999px; }
-.question-edit-tools > [aria-pressed="true"] { background: var(--soft); border-color: var(--accent); }
-.enquiry-order-help { font-size: 14px; line-height: 1.5; color: var(--muted); }
-.equalpath .question-flow .enquiry-question { padding: 18px 0; }
-.equalpath .question-flow .enquiry-question-main label { font-size: 16px; line-height: 1.6; min-height: 44px; }
-.equalpath .question-flow .enquiry-question-main input { width: 20px; height: 20px; margin-top: 3px; }
-.equalpath .question-flow .enquiry-reorder button { min-width: 44px; min-height: 44px; border: 1px solid var(--rule); border-radius: 10px; background: var(--paper); }
-.question-flow .enquiry-reorder { gap: 4px; }
-.equalpath .question-flow .question-connection { margin: 7px 0 0 30px; font-size: 13px; }
-.question-flow .question-check > summary { min-height: 32px; align-items: center; }
-.question-flow .question-check > summary svg { margin-top: 0; }
-.equalpath .question-flow .enquiry-send { grid-row: auto; order: initial; position: sticky; top: 0; border: 1px solid var(--rule); border-radius: 20px; padding: 22px; background: var(--soft); scroll-margin-top: 12px; }
-.message-preview-label { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 9px; font-size: 14px; font-weight: 600; }
-.message-preview-label > span { font-weight: 400; color: var(--muted); }
-.message-scroll-hint { margin: 8px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
-.equalpath .question-flow .enquiry-message { display: block; width: 100%; height: 380px; min-height: 180px; resize: vertical; border: 1px solid var(--rule); border-radius: 12px; padding: 16px; background: var(--paper); color: var(--ink); font: inherit; font-size: 15px; line-height: 1.7; scrollbar-width: thin; }
-.question-flow .message-copy-action { border: 0; margin: 0; padding-top: 16px; }
-.equalpath .question-flow .message-copy-action > button { border-radius: 999px; min-height: 48px; }
-.equalpath .question-flow .enquiry-copy-status { font-size: 14px; line-height: 1.5; margin: 12px 0 0; }
-.enquiry-call-hint { border-top: 1px solid var(--rule); padding-top: 14px; font-size: 14px; line-height: 1.5; color: var(--muted); margin: 16px 0 0; }
-.question-flow .message-empty { background: var(--paper); border: 1px dashed var(--rule); border-radius: 12px; padding: 20px 16px; font-size: 16px; line-height: 1.6; }
-.equalpath .question-flow .enquiry-next { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 28px; border-radius: 18px; background: var(--soft); padding: 18px 20px; }
-.question-flow .enquiry-next h3 { font-size: 18px; margin: 0; }
-.question-flow .enquiry-next p { margin: 6px 0 0; }
-.question-flow .enquiry-next > button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; }
+/* One readable message: checked questions are exactly what gets copied. */
+.equalpath .simple-contact .enquiry-visit { border: 0; background: transparent; padding: 0 0 20px; margin-bottom: 24px; border-bottom: 1px solid var(--rule); }
+.equalpath .simple-contact .enquiry-visit h3 { margin-bottom: 8px; }
+.equalpath .simple-contact .enquiry-layout { display: grid; grid-template-columns: minmax(210px, .65fr) minmax(0, 1.35fr); gap: 28px; align-items: start; }
+.equalpath .simple-contact .enquiry-contact { padding: 0; border: 0; }
+.simple-contact .contact-buttons .published-contact { margin-bottom: 16px; }
+.equalpath .simple-contact .call-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 16px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 16px; text-decoration: none; }
+.equalpath .simple-contact .call-link:hover { background: var(--soft); border-color: var(--accent); }
+.equalpath .simple-contact .enquiry-send { grid-row: auto; order: initial; width: 100%; padding: 22px; background: var(--soft); border: 1px solid var(--rule); border-radius: 20px; }
+.equalpath .simple-contact .enquiry-send h3 { font-size: 21px; margin: 0; }
+.equalpath .simple-contact .enquiry-guide { color: var(--muted); font-size: 15px; line-height: 1.6; margin: 6px 0 16px; }
+.contact-message-paper { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 18px; }
+.contact-message-intro { font-size: 15px; line-height: 1.65; white-space: pre-wrap; margin: 0 0 14px; overflow-wrap: anywhere; }
+.equalpath .simple-contact .question-list { margin: 0; border: 0; }
+.contact-question { padding: 14px 0; border-top: 1px solid var(--rule); }
+.contact-question label { display: flex; align-items: flex-start; gap: 12px; min-height: 44px; cursor: pointer; font-size: 16px; line-height: 1.6; }
+.contact-question input { flex: 0 0 auto; width: 22px; height: 22px; margin-top: 2px; accent-color: var(--accent); }
+.contact-question.not-selected label > span { color: var(--muted); text-decoration: line-through; }
+.question-excluded { display: block; margin: 4px 0 0 34px; color: var(--muted); font-size: 13px; }
+.contact-question-warning { color: var(--amber); font-size: 13px; line-height: 1.5; margin: 8px 0 0 34px; }
+.contact-message-thanks { margin: 10px 0 0; font-size: 15px; }
+.simple-contact .message-copy-action { border: 0; margin: 0; padding-top: 16px; }
+.equalpath .simple-contact .message-copy-action > button { border-radius: 999px; min-height: 48px; }
+.equalpath .simple-contact .enquiry-copy-status { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 10px 0 0; }
+.contact-question-evidence { border-top: 1px solid var(--rule); margin-top: 16px; }
+.contact-question-evidence > summary { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; color: var(--muted); font-size: 14px; cursor: pointer; list-style: none; }
+.contact-question-evidence > summary::-webkit-details-marker { display: none; }
+.contact-question-evidence[open] > summary svg { transform: rotate(180deg); }
+.contact-evidence-item { padding: 14px 0; border-top: 1px solid var(--rule); font-size: 14px; line-height: 1.5; }
+.contact-evidence-item p { margin: 6px 0; }
+.equalpath .simple-contact .enquiry-manual-message { width: 100%; height: 260px; margin-top: 14px; padding: 14px; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); color: var(--ink); font: inherit; font-size: 16px; line-height: 1.6; }
+.equalpath .simple-contact .enquiry-next { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 28px; border-radius: 18px; background: var(--soft); padding: 18px 20px; }
+.simple-contact .enquiry-next h3 { font-size: 18px; margin: 0; }
+.simple-contact .enquiry-next p { margin: 6px 0 0; }
+.simple-contact .enquiry-next > button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; }
 @media (max-width: 800px) {
-  .equalpath .question-flow .enquiry-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .equalpath .question-flow .enquiry-send { position: static; padding: 18px; }
-  .equalpath .question-flow .enquiry-message { height: 340px; }
-  .equalpath .question-flow .enquiry-next { flex-direction: column; align-items: stretch; }
+  .equalpath .simple-contact .enquiry-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .simple-contact .contact-buttons { display: flex; flex-wrap: wrap; gap: 0 16px; }
+  .equalpath .simple-contact .enquiry-send { padding: 16px; }
+  .simple-contact .message-copy-action { position: sticky; bottom: 0; z-index: 1; background: var(--soft); padding: 12px 0; border-top: 1px solid var(--rule); }
+  .contact-message-paper { padding: 14px; }
+  .equalpath .simple-contact .enquiry-next { flex-direction: column; align-items: stretch; }
 }
 @media (max-width: 380px) {
-  .equalpath .question-flow .enquiry-send { padding: 14px; }
-  .equalpath .question-flow .enquiry-step { font-size: 19px; }
-  .equalpath .question-flow .enquiry-message { padding: 12px; }
-}
-@media (max-height: 780px) and (min-width: 801px) {
-  .equalpath .question-flow .enquiry-send { position: static; }
+  .equalpath .simple-contact .enquiry-send { padding: 12px; }
+  .contact-message-paper { padding: 12px; }
 }

@@ -41,7 +41,7 @@ for (const width of [390, 1440]) test(`${width}px: centre, compare, contact and 
   await page.getByRole('button', { name: 'Show less', exact: true }).click();
   await page.locator('thead').getByRole('button', { name: /^Contact / }).first().click();
   await capture(page, `contact-${width}`);
-  await expect(page.getByRole('button', { name: 'Copy message to send', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Copy message', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Get ready for child care', exact: true }).click();
   await capture(page, `preparation-${width}`);
   await page.locator('.ready-item input').first().check();

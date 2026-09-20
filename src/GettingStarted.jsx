@@ -11,7 +11,7 @@ const steps = [
   { title: "Save or compare a centre", target: ".map-centre-card:not(.leaving) .map-card-actions", icon: Bookmark, body: "Tap Save to keep a centre in Saved. Tap Compare to see up to 3 centres side by side. Tap Details to learn more." },
   { title: "Check the centre’s details", target: ".condition-list", icon: CheckCircle2, body: "Tap Details on a map card to see fees, ages and care hours. Ask the centre about any details that need checking." },
   { title: "Compare your choices", target: ".comparison-scroll", icon: Scale, body: "Add 2 or 3 centres, then tap Compare. Read their fees and services side by side." },
-  { title: "Contact the centre", target: ".enquiry-contact", icon: MessageCircle, body: "Call or message to ask if they have a place for your child. Choose questions, review the full message, then copy and send it yourself." },
+  { title: "Contact the centre", target: ".enquiry-contact", icon: MessageCircle, body: "Call or message to ask if they have a place for your child. A short message is ready. Untick any question you don’t need, then copy and send it yourself." },
 ];
 const visibleTarget = selector => selector && [...document.querySelectorAll(selector)].find(el => el.getClientRects().length);
 

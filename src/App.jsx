@@ -1455,12 +1455,12 @@ export default function App({
                 p={enquiry.p}
                 request={enquiry.request}
                 selection={
-                  questionSelection[enquiry.p.id + scenario(enquiry.request)]
+                  questionSelection["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]
                 }
                 onSelection={(ids) =>
                   setQuestionSelection((x) => ({
                     ...x,
-                    [enquiry.p.id + scenario(enquiry.request)]: ids,
+                    ["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]: ids,
                   }))
                 }
                 onCompare={() => loadComparison()}

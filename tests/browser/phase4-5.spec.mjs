@@ -411,10 +411,10 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   await page.screenshot({ path: `${evidenceDir}/edited-checklist-${width}.png` });
 
   await page.locator(".ready-plan-note").getByRole("button", { name: "Contact the centre", exact: true }).click();
-  await page.getByRole("button", { name: "Copy message to send", exact: true }).click();
+  await page.getByRole("button", { name: "Copy message", exact: true }).click();
   const copied = await page.evaluate(() => window.checklistMessage);
-  expect(copied).toContain("Leave pickup address by: 14:27");
-  expect(copied).toContain("Pick up from childcare at: 18:05");
+  expect(copied).toContain("Leave at: 14:27");
+  expect(copied).toContain("Pick up child at: 18:05");
   await page.getByRole("button", { name: "Get ready for child care", exact: true }).click();
   await expect(leave).toContainText("14:27"); await expect(pickup).toContainText("18:05");
   await expect(page.getByText("Showing previous results", { exact: true })).toHaveCount(0);
