@@ -59,7 +59,9 @@ export default function MapCards({ entries, pins, width, height, compact, topIns
   }, [key, reduced, rail]);
   useLayoutEffect(() => { retained.current = positioned; });
   return <div className="map-card-layer" aria-label="Centres on the map">
-    {rail && entries.length > 0 && <div className={`map-card-rail${compact ? " narrow-rail" : ""}`} aria-label="Recommended centres, scroll for more" style={{ top: Math.max(topInset, height - bottom - cardHeight), height: cardHeight + 8 }}>
+    {/* Anchor the scrolling rail to the viewport bottom. The toolbar's measured
+        height can lag behind its collapse; it must never push actions offscreen. */}
+    {rail && entries.length > 0 && <div className={`map-card-rail${compact ? " narrow-rail" : ""}`} aria-label="Recommended centres, scroll for more" style={{ bottom: Math.max(0, bottom - 8), height: cardHeight + 8 }}>
       {entries.map(point => <article key={point.id} className={`map-centre-card rail-card${point.selected ? " selected" : ""}`} data-provider-id={point.id} data-anchor-x={point.x} data-anchor-y={point.y} aria-label={point.p.name} style={{ width: cardWidth, height: cardHeight }}>
         <Card {...point} saved={savedIds.includes(point.id)} compared={compareIds.includes(point.id)} onOpen={onOpen} onClose={onClose} onSave={onSave} onCompare={onCompare} />
       </article>)}
