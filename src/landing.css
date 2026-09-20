@@ -359,7 +359,9 @@
 .experience[data-intro-reduced="true"] *::before,
 .experience[data-intro-reduced="true"] *::after {
   animation-duration: 0.01ms !important;
-  transition-duration: 0.01ms !important;
+  /* A nonzero duration also starts a visibility transition on the app shell.
+     Immediate entry must expose it before keyboard focus moves into it. */
+  transition-duration: 0ms !important;
 }
 @media (max-width: 650px) {
   .landing-header {
