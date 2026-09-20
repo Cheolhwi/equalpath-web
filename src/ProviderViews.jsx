@@ -65,7 +65,7 @@ function SourceDisclosure({ source, children = "View source", extra }) {
   if (!source) return null;
   return <details className="source-disclosure"><summary>{children}</summary><SourceLink source={source} />{extra}</details>;
 }
-export function PublishedContacts({ p, compact = false }) {
+export function PublishedContacts({ p, compact = false, showSources = true }) {
   const ContactSource = compact ? SourceDisclosure : SourceLink;
   return (
     <>
@@ -75,7 +75,7 @@ export function PublishedContacts({ p, compact = false }) {
             <Phone size={19} />
             Call · {p.phone.display}
           </a>
-          <ContactSource source={p.phone.source} />
+          {showSources && <ContactSource source={p.phone.source} />}
         </div>
       )}
       {(p.whatsapp ?? []).map((contact) => (
@@ -91,7 +91,7 @@ export function PublishedContacts({ p, compact = false }) {
             WhatsApp · {contact.display}
             <ArrowUpRight size={15} />
           </a>
-          <ContactSource source={contact.source} />
+          {showSources && <ContactSource source={contact.source} />}
           {contact.scope === "website" && (
             <small className="notice">
               Website number · ask for this centre.

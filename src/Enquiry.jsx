@@ -1,14 +1,10 @@
-import CareJourney from "./CareJourney.jsx";
-import { isShortCare } from "../shared/request.mjs";
 import { useId, useLayoutEffect, useRef, useState } from "react";
-import { ArrowRight, ArrowUpRight, Check, ChevronDown, ClipboardList, Copy, MapPin } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, ChevronDown, ClipboardList, Copy, MessageCircle } from "lucide-react";
 import { PublishedContacts, SourceLink } from "./ProviderViews.jsx";
-import { childAge, pickupPreference, visitDate } from "../shared/enquiry-view.mjs";
 import { contactIntro, contactMessage, contactQuestions } from "../shared/contact-message.mjs";
 import "./enquiry.css";
 
 export default function Enquiry({ p, request, selection, onSelection, onPreparation }) {
-  const shortCare = isShortCare(request);
   const [copyState, setCopyState] = useState("");
   const messageRef = useRef(null), copyAttempt = useRef(0);
   const uid = useId();
@@ -33,25 +29,20 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
   return <div className="enquiry-page simple-contact">
     <section className="request-context enquiry-visit" aria-label="Centre and visit">
       <h3>{p.name}</h3>
-      <p className="contact-visit-summary">{shortCare ? <time dateTime={request.date}>{visitDate(request.date)}</time> : <span>Long term</span>}<span>{childAge(request.age)}</span></p>
-      <details className="contact-request" open><summary>Your search details<ChevronDown size={16} aria-hidden="true" /></summary>
-        {shortCare && <CareJourney request={request} centreName={p.name} />}
-        <p className="enquiry-pickup"><MapPin size={14} aria-hidden="true" /><span>From {request.pickup.label}</span></p>
-        <small>{pickupPreference(request.transport)}</small>
-      </details>
+      <section className="enquiry-contact" aria-label="Contact the centre">
+        <div className="contact-buttons"><PublishedContacts p={p} compact showSources={false} /></div>
+        {p.sourcePage && <a className="text-link contact-website" aria-label="Centre website or listing" href={p.sourcePage} target="_blank" rel="noreferrer">Website<ArrowUpRight size={14} /></a>}
+        {p.mode === "demo" && <p className="demo-notice">Demo centre — no real contact details.</p>}
+      </section>
     </section>
     <div className="enquiry-layout">
-    <section className="enquiry-contact" aria-label="Contact the centre">
-      <div className="contact-buttons"><PublishedContacts p={p} compact /></div>
-      {p.sourcePage && <a className="text-link" href={p.sourcePage} target="_blank" rel="noreferrer">Centre website or listing<ArrowUpRight size={14} /></a>}
-      {p.mode === "demo" && <p className="demo-notice">Demo centre — no real contact details.</p>}
-    </section>
-
       <section className="enquiry-send" aria-labelledby={`${uid}-message`}>
-        <h3 id={`${uid}-message`}>Your message</h3>
-        <p className="enquiry-guide">Untick anything you don’t want to ask.</p>
+        <div className="contact-message-heading"><MessageCircle size={23} aria-hidden="true" /><div><h3 id={`${uid}-message`}>Your message</h3>
+        <p className="enquiry-guide">Untick anything you don’t want to ask.</p></div></div>
         <div className="contact-message-paper">
-          <p className="contact-message-intro">{contactIntro(p, request)}</p>
+          <details className="contact-request" open><summary>Your search details<ChevronDown size={16} aria-hidden="true" /></summary>
+            <p className="contact-message-intro">{contactIntro(p, request)}</p>
+          </details>
           <div className="question-list" aria-label="Questions to include">
             {questions.map(q => <div key={q.id} className={`contact-question ${ids.includes(q.id) ? "" : "not-selected"}`} data-question-id={q.id}>
               <label><input type="checkbox" checked={ids.includes(q.id)} onChange={() => toggle(q.id)} /><span>{q.text}</span></label>
@@ -66,7 +57,11 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
           <p className="enquiry-copy-status" role="status">{!selected.length ? "Tick a question to include it." : copyState === "copied" ? "Paste it into WhatsApp or a text message to send." : copyState === "manual" ? "Copy did not work. Copy the selected text below." : "Copies your details and the checked questions."}</p>
         </div>
         {copyState === "manual" && <textarea className="enquiry-manual-message" ref={messageRef} readOnly aria-label="Message to copy" value={text} />}
-        <details className="contact-question-evidence"><summary>Why these questions?<ChevronDown size={16} aria-hidden="true" /></summary>
+        <details className="contact-question-evidence"><summary>More details<ChevronDown size={16} aria-hidden="true" /></summary>
+          {(p.phone || p.whatsapp?.length > 0) && <div className="contact-evidence-item"><strong>Contact details</strong>
+            {p.phone && <SourceLink source={p.phone.source}>{p.phone.display}</SourceLink>}
+            {(p.whatsapp ?? []).map(contact => <SourceLink key={contact.href} source={contact.source}>{contact.display}</SourceLink>)}
+          </div>}
           {questions.flatMap(q => q.checks).map(q => <div className="contact-evidence-item" key={q.id} data-check-id={q.id}>
             <strong>{q.topic}</strong><p>{q.why}</p>
             {q.check && <><p>{q.check.reason}</p>{q.check.source && <SourceLink source={q.check.source} />}{q.id === "age" && p.age?.alternative?.source && <SourceLink source={p.age.alternative.source} />}</>}
@@ -75,6 +70,6 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
         </details>
       </section>
     </div>
-    <section className="enquiry-next"><div><h3>After the centre says yes</h3><p>Check pickup times and what to bring.</p></div><button className="primary" onClick={onPreparation}><ClipboardList size={18} />Get ready for child care<ArrowRight size={16} /></button></section>
+    <section className="enquiry-next"><div><h3>After the centre says yes</h3><p>Check pickup times and what to bring.</p></div><button className="secondary" onClick={onPreparation}><ClipboardList size={18} />Get ready for child care<ArrowRight size={16} /></button></section>
   </div>;
 }

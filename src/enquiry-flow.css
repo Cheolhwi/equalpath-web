@@ -1,16 +1,25 @@
 /* One readable message: checked questions are exactly what gets copied. */
-.equalpath .simple-contact .enquiry-visit { border: 0; background: transparent; padding: 0 0 20px; margin-bottom: 24px; border-bottom: 1px solid var(--rule); }
-.equalpath .simple-contact .enquiry-visit h3 { margin-bottom: 8px; }
-.equalpath .simple-contact .enquiry-layout { display: grid; grid-template-columns: minmax(210px, .65fr) minmax(0, 1.35fr); gap: 28px; align-items: start; }
-.equalpath .simple-contact .enquiry-contact { padding: 0; border: 0; }
-.simple-contact .contact-buttons .published-contact { margin-bottom: 16px; }
+.equalpath.map-first dialog.enquiry-dialog { width: min(780px, calc(100vw - 40px)); }
+.equalpath .simple-contact .enquiry-visit { border: 0; background: transparent; padding: 0; margin-bottom: 18px; }
+.equalpath .simple-contact .enquiry-visit h3 { font-size: 23px; margin: 0 0 14px; }
+.equalpath .simple-contact .enquiry-layout { display: block; }
+.equalpath .simple-contact .enquiry-contact { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 18px; padding: 0; border: 0; margin-bottom: 14px; }
+.simple-contact .contact-buttons { display: flex; flex-wrap: wrap; gap: 10px 14px; max-width: 100%; }
+.simple-contact .contact-buttons .published-contact { margin: 0; min-width: 0; }
+.equalpath .simple-contact .contact-website { display: inline-flex; align-items: center; gap: 6px; min-height: 48px; margin: 0; font-size: 13px; }
+.simple-contact .contact-request { border: 0; border-radius: 12px; padding: 2px 14px 12px; margin-bottom: 14px; background: var(--bg); }
+.simple-contact .contact-request > summary { justify-content: space-between; min-height: 40px; font-size: 13px; color: var(--muted); }
+.simple-contact .contact-request:not([open]) { padding-bottom: 2px; }
+.simple-contact .contact-request[open] > summary svg { transform: rotate(180deg); }
 .equalpath .simple-contact .call-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 16px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 16px; text-decoration: none; }
 .equalpath .simple-contact .call-link:hover { background: var(--soft); border-color: var(--accent); }
-.equalpath .simple-contact .enquiry-send { grid-row: auto; order: initial; width: 100%; padding: 22px; background: var(--soft); border: 1px solid var(--rule); border-radius: 20px; }
+.equalpath .simple-contact .enquiry-send { grid-row: auto; order: initial; width: 100%; padding: 22px; background: var(--paper); border: 1px solid var(--rule); border-radius: 20px; }
+.contact-message-heading { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+.contact-message-heading > svg { color: var(--accent); flex-shrink: 0; margin-top: 3px; }
 .equalpath .simple-contact .enquiry-send h3 { font-size: 21px; margin: 0; }
-.equalpath .simple-contact .enquiry-guide { color: var(--muted); font-size: 15px; line-height: 1.6; margin: 6px 0 16px; }
-.contact-message-paper { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 18px; }
-.contact-message-intro { font-size: 15px; line-height: 1.65; white-space: pre-wrap; margin: 0 0 14px; overflow-wrap: anywhere; }
+.equalpath .simple-contact .enquiry-guide { color: var(--muted); font-size: 15px; line-height: 1.6; margin: 4px 0 0; }
+.contact-message-paper { padding: 0; }
+.contact-message-intro { font-size: 15px; line-height: 1.65; white-space: pre-wrap; margin: 0; overflow-wrap: anywhere; }
 .equalpath .simple-contact .question-list { margin: 0; border: 0; }
 .contact-question { padding: 14px 0; border-top: 1px solid var(--rule); }
 .contact-question label { display: flex; align-items: flex-start; gap: 12px; min-height: 44px; cursor: pointer; font-size: 16px; line-height: 1.6; }
@@ -29,19 +38,20 @@
 .contact-evidence-item { padding: 14px 0; border-top: 1px solid var(--rule); font-size: 14px; line-height: 1.5; }
 .contact-evidence-item p { margin: 6px 0; }
 .equalpath .simple-contact .enquiry-manual-message { width: 100%; height: 260px; margin-top: 14px; padding: 14px; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); color: var(--ink); font: inherit; font-size: 16px; line-height: 1.6; }
-.equalpath .simple-contact .enquiry-next { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 28px; border-radius: 18px; background: var(--soft); padding: 18px 20px; }
-.simple-contact .enquiry-next h3 { font-size: 18px; margin: 0; }
-.simple-contact .enquiry-next p { margin: 6px 0 0; }
+.equalpath .simple-contact .enquiry-next { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 22px; border-radius: 0; background: transparent; padding: 0; }
+.equalpath .simple-contact .enquiry-next h3 { font-size: 16px; margin: 0; }
+.equalpath .simple-contact .enquiry-next p { font-size: 13px; color: var(--muted); margin: 5px 0 0; }
 .simple-contact .enquiry-next > button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; }
 @media (max-width: 800px) {
-  .equalpath .simple-contact .enquiry-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .simple-contact .contact-buttons { display: flex; flex-wrap: wrap; gap: 0 16px; }
+  .equalpath.map-first dialog.enquiry-dialog { width: calc(100vw - 16px); }
+  .equalpath .simple-contact .enquiry-visit h3 { font-size: 20px; }
+  .equalpath .simple-contact .enquiry-contact { gap: 0 14px; margin-bottom: 12px; }
   .equalpath .simple-contact .enquiry-send { padding: 16px; }
-  .simple-contact .message-copy-action { position: sticky; bottom: 0; z-index: 1; background: var(--soft); padding: 12px 0; border-top: 1px solid var(--rule); }
-  .contact-message-paper { padding: 14px; }
+  .simple-contact .message-copy-action { padding-top: 14px; }
+  .simple-contact .contact-request { padding-inline: 12px; }
   .equalpath .simple-contact .enquiry-next { flex-direction: column; align-items: stretch; }
 }
 @media (max-width: 380px) {
   .equalpath .simple-contact .enquiry-send { padding: 12px; }
-  .contact-message-paper { padding: 12px; }
+  .equalpath .simple-contact .call-link { font-size: 14px; padding-inline: 12px; }
 }
