@@ -2,9 +2,11 @@
    morphs while the search runs, then briefly confirms before settling away. */
 .map-first .dock-filter-panel { margin-top: 8px; border-radius: 20px; }
 .map-first .dock-filter-panel .dock-options { margin: 0; border: 0; box-shadow: none; background: transparent; }
-.search-actions { display: flex; align-items: center; justify-content: flex-end; min-height: 0; padding: 0; overflow: hidden; transition: padding 240ms ease, max-height 240ms ease, opacity 180ms ease; }
+.search-actions { display: flex; align-items: center; justify-content: flex-end; min-height: 0; max-height: 0; padding: 0; opacity: 0; overflow: hidden; transition: padding 260ms ease, max-height 260ms ease, opacity 180ms ease; }
 .map-first .dock-filter-panel .search-actions { margin: 0 10px; border-top: 0; max-height: 0; }
-.search-actions:has(> button) { max-height: 72px; padding: 8px 0 10px; }
+.search-actions > button { opacity: 0; transform: translateY(-6px) scale(.98); transition: opacity 180ms ease, transform 260ms cubic-bezier(.22,.61,.36,1); }
+.search-actions:has(> button) { max-height: 76px; padding: 8px 0 10px; opacity: 1; }
+.search-actions:has(> button) > button { opacity: 1; transform: none; }
 .map-first .dock-filter-panel .search-actions:has(> button) { border-top: 1px solid var(--rule); }
 .search-actions[data-state="pending"] > button { box-shadow: 0 0 0 3px var(--soft); animation: search-action-attention 760ms cubic-bezier(.22, .61, .36, 1) 1; }
 .search-actions[data-state="failed"] > button { background: var(--red); box-shadow: 0 0 0 3px var(--red-bg); animation: search-action-failure 340ms ease-out 1; }
@@ -22,7 +24,7 @@
 .filter-review p { font-size: 13px; line-height: 1.4; margin: 0 0 10px; }
 .map-first .filter-review > button { min-height: 44px; width: 100%; border-radius: 99px; justify-content: center; gap: 10px; }
 .map-first .dock-filter-panel .search-actions:has(> button) { max-height: 76px; justify-content: flex-end; padding: 10px 8px 8px; }
-.map-first .dock-filter-panel .search-actions .dock-find { width: min(100%, 360px); min-height: 54px; padding: 13px 24px; border-radius: 999px; font-size: 16px; gap: 12px; }
+.map-first .dock-filter-panel .search-actions .dock-find { width: min(100%, 320px); min-height: 50px; padding: 11px 20px; border-radius: 999px; font-size: 15px; gap: 10px; }
 .mobile-search-context small { display: flex; align-items: center; gap: 4px; }
 .mobile-search-context small > svg { flex-shrink: 0; }
 .mobile-search-context .mobile-search-applied { display: block; width: 9px; height: 9px; padding: 0; border-radius: 50%; background: var(--nav-selected); color: var(--paper); }
@@ -37,8 +39,8 @@
   .map-first .search-collapsed .mobile-search-summary { padding-block: 10px; }
   .map-first .dock-filter-panel { margin-top: 6px; border-radius: 18px; }
   .map-first .dock-filter-panel .search-actions { gap: 8px; margin-inline: 9px; }
-  .map-first .dock-filter-panel .search-actions:has(> button) { max-height: 72px; justify-content: stretch; padding: 8px 0 9px; }
-  .map-first .search-actions .dock-find { width: 100%; min-height: 50px; padding: 11px 16px; font-size: 15px; gap: 8px; }
+  .map-first .dock-filter-panel .search-actions:has(> button) { max-height: 68px; justify-content: stretch; padding: 8px 0 9px; }
+  .map-first .search-actions .dock-find { width: 100%; min-height: 48px; padding: 10px 16px; font-size: 15px; gap: 8px; }
 }
 @media (max-width: 760px) and (max-height: 650px) {
   .map-first .map-wrap:has(.map-search-dock:not(.search-collapsed)) .map-tools { display: none; }
@@ -50,3 +52,5 @@
 [data-reduced="true"] .search-actions[data-confirmed="true"] > button,
 [data-reduced="true"] .search-confirm-icon,
 [data-reduced="true"] .search-failure-icon { animation: none; }
+[data-reduced="true"] .search-actions,
+[data-reduced="true"] .search-actions > button { transition: none; }

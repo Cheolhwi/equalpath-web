@@ -79,7 +79,14 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
   }, [part]);
   useEffect(() => {
     if (!part) return;
-    const outside = e => { if (!root.current?.contains(e.target)) setPart(null); };
+    const outside = e => {
+      const popover = options.current;
+      const trigger = root.current?.querySelector(`[data-field="${part}"]`);
+      if (!popover?.contains(e.target) && !trigger?.contains(e.target)) {
+        setPart(null);
+        lastTrigger.current?.focus({ preventScroll: true });
+      }
+    };
     const escape = e => { if (e.key === "Escape" && !e.defaultPrevented) { e.preventDefault(); setPart(null); lastTrigger.current?.focus(); } };
     document.addEventListener("pointerdown", outside); document.addEventListener("keydown", escape);
     return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", escape); };
