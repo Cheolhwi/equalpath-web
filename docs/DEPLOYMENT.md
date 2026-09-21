@@ -62,7 +62,13 @@ The verifier waits only within its bounded window. If the public digest is still
 3. Fix the cause, run the local gate once more, and perform one deliberate deployment retry.
 4. Do not make empty commits, poll forever, disable TLS, or treat a stale preview/CDN response as a successful release.
 
-Keep these outcomes separate in the receipt: local checks, Appwrite build/deployment, public HTTPS/digest/backend verification, and CI. The user has asked not to start more Chrome testing, so do not launch `npm run test:browser` or manual Chrome checks unless they explicitly ask again. Existing automatic browser CI results may be reported, but they are not evidence of a new manual run and must not be silently marked passed.
+Keep these outcomes separate in the receipt: local checks, local browser visual checks, Appwrite build/deployment, public HTTPS/digest/backend verification, and CI. Existing automatic browser CI results may be reported, but they are not evidence of a new manual run and must not be silently marked passed.
+
+## Verification split by change type
+
+UI/UX work has a mandatory local visual gate. Start the local preview, open it in a local browser, inspect the affected desktop and mobile layouts, and exercise the changed interaction before publishing. A build, unit test, or DOM-only check does not replace this screen-level check. Do not use cloud browser journeys for UI-only work.
+
+Backend, data, and business-logic changes use the relevant local tests plus cloud/public verification after release. A mixed UI and logic change requires both the local visual gate and the cloud verification. Keep local visual evidence, cloud/backend evidence, Appwrite deployment evidence and browser CI outcomes separate in the release receipt.
 
 If the local Appwrite CLI is offloaded or hangs because a dependency is not hydrated, stop that command with a bounded timeout and use a functioning checked-in/API release path. Never print access tokens, environment dumps, owner rows or deployment secrets.
 
