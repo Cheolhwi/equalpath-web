@@ -90,7 +90,7 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
   return <div className={`map-search-dock${compact ? " search-collapsed" : ""}`} ref={root}>
     {canCollapse && <button type="button" ref={summary} className="mobile-search-summary" aria-expanded={!compact} aria-controls="request-form" aria-label="Change search" aria-describedby="mobile-search-applied" onClick={() => { pendingFocus.current = "pickup-search"; onCollapsedChange(false); }}>
       <MapPin size={20} aria-hidden="true" />
-      <span className="mobile-search-context"><small id="mobile-search-applied" className="mobile-search-applied" role="status"><Check size={12} aria-hidden="true" />Results up to date</small><strong>{results.request.pickup.label}</strong><small>{short ? `${shortDate(results.request.date)} · ${results.request.deadline}–${results.request.end}` : "Long term"}</small></span>
+      <span className="mobile-search-context"><small id="mobile-search-applied" className="mobile-search-applied" role="status"><span className="mobile-search-check" aria-hidden="true"><Check size={12} /></span><span className="sr-only">Results up to date</span></small><strong>{results.request.pickup.label}</strong><small>{short ? `${shortDate(results.request.date)} · ${results.request.deadline}–${results.request.end}` : "Long term"}</small></span>
       <span className="mobile-search-edit"><Pencil size={16} aria-hidden="true" />Change search</span>
     </button>}
     {canCollapse && <button type="button" className="mobile-search-hide" onClick={() => { setPart(null); onCollapsedChange(true); }}><ChevronUp size={17} aria-hidden="true" />Hide search</button>}
@@ -124,7 +124,7 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
           <div className="field"><label htmlFor="radius">Search radius</label><select id="radius" value={searchRadius(draft.radius, draft.careType)} onChange={e => setField("radius", Number(e.target.value))}>{(short ? [SHORT_CARE_RADIUS_KM] : [5, MAX_SEARCH_RADIUS_KM]).map(n => <option key={n} value={n}>Within {n} km</option>)}</select></div>
           <label className="checkbox"><input type="checkbox" checked={draft.includeUnknown} onChange={e => setField("includeUnknown", e.target.checked)} />Include centres with details to confirm</label>
           <label className="checkbox"><input type="checkbox" checked={draft.includeConflicts} onChange={e => setField("includeConflicts", e.target.checked)} />Include centres that don’t meet all my needs</label>
-          <div className="filter-review"><p>Changes apply when you tap {results ? "Update results" : "Find care"}.</p><button type="submit" className="primary" disabled={busy}>{results ? "Update results" : "Find care"} <ArrowRight size={16} /></button></div>
+          <div className="filter-review"><p className="sr-only">Changes apply when you tap {results ? "Update results" : "Find care"}.</p><button type="submit" className="primary" disabled={busy}>{results ? "Update results" : "Find care"} <ArrowRight size={16} /></button></div>
         </>}
       </section>}
     </form>

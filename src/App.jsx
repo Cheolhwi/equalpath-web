@@ -649,12 +649,14 @@ export default function App({
   const requestChanged =
     comparison && scenario(comparison.request) !== scenario(activeRequest);
   const retryDialog = () => loadComparison();
+  const searchState = busy ? "loading" : failure ? "failed" : dirty ? "pending" : results ? "applied" : "ready";
   return (
     <main
       className={`equalpath map-first ${theme} mobile-${mobilePane}`}
       tabIndex={-1}
       data-reduced={reduced}
       data-mode={tourOpen ? "demo" : mode}
+      data-search-state={searchState}
       inert={introPhase !== "ready"}
       aria-hidden={introPhase !== "ready" || undefined}
     >
