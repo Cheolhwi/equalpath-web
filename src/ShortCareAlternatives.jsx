@@ -28,6 +28,28 @@ export function hasExplicitShortCareMatch(items = []) {
   });
 }
 
+export function ShortCareMapAlternatives() {
+  return (
+    <aside className="short-care-map-alternatives" aria-labelledby="short-care-map-title">
+      <div className="short-care-map-heading">
+        <span className="short-care-map-icon" aria-hidden="true"><Clock3 size={18} /></span>
+        <div>
+          <strong id="short-care-map-title">No confirmed match for this search</strong>
+          <span>Try these childcare websites</span>
+        </div>
+      </div>
+      <div className="short-care-map-links">
+        {SHORT_CARE_RESOURCES.map((resource) => (
+          <a key={resource.name} href={resource.href} target="_blank" rel="noreferrer">
+            {resource.name} <ArrowUpRight size={13} aria-hidden="true" />
+          </a>
+        ))}
+      </div>
+      <small>Check the date, age and place on their website.</small>
+    </aside>
+  );
+}
+
 export default function ShortCareAlternatives() {
   return (
     <section className="short-care-alternatives" aria-labelledby="short-care-alternatives-title">

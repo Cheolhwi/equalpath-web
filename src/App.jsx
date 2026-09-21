@@ -46,7 +46,7 @@ import Preparation from "./Preparation.jsx";
 import Enquiry from "./Enquiry.jsx";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import GettingStarted from "./GettingStarted.jsx";
-import ShortCareAlternatives, { hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
+import ShortCareAlternatives, { ShortCareMapAlternatives, hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
 import { saveTour } from "../shared/tour.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { assess, costFor, enquiries } from "../shared/conditions.mjs";
@@ -1191,6 +1191,12 @@ export default function App({
             <MapSavedShortcuts library={library}
               onCentres={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }} />
           </div>
+          {isShortCare(results?.request) && !busy && !dirty &&
+            (Number.isFinite(results?.explicitMatchCount)
+              ? results.explicitMatchCount === 0
+              : results && !hasExplicitShortCareMatch(items)) && (
+            <ShortCareMapAlternatives />
+          )}
           {nearbyError && !failure && <p className="map-search-status" role="status">Centres could not load<button onClick={() => setNearbyReload(v => v + 1)}>Retry</button></p>}
         </div>}
 

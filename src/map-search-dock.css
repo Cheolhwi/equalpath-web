@@ -63,6 +63,52 @@
 .dock-feedback { margin: 7px 8px 0; font-size: 13px; line-height: 1.4; }
 .dock-feedback button { min-height: 32px; text-decoration: underline; padding: 0 4px; }
 .map-tools-overlay > .map-quick-actions { margin-top: 10px; width: fit-content; }
+.short-care-map-alternatives {
+  display: grid;
+  gap: 10px;
+  width: min(520px, 100%);
+  margin-top: 10px;
+  padding: 13px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 17px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--map-shadow);
+  pointer-events: auto;
+}
+.short-care-map-heading { display: flex; align-items: center; gap: 9px; }
+.short-care-map-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--soft);
+  color: var(--accent);
+}
+.short-care-map-heading > div { display: grid; gap: 2px; min-width: 0; }
+.short-care-map-heading strong { font-size: 14px; line-height: 1.25; }
+.short-care-map-heading > div > span,
+.short-care-map-alternatives small { color: var(--muted); font-size: 12px; line-height: 1.3; }
+.short-care-map-links { display: flex; flex-wrap: wrap; gap: 7px; }
+.short-care-map-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 34px;
+  padding: 5px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--nav-selected);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+.short-care-map-links a:hover { background: var(--nav-selected); color: var(--nav-selected-text); }
+.short-care-map-links a:active { transform: translateY(1px); }
+.short-care-map-alternatives small { display: block; }
 .map-first .map-tools { z-index: 7; }
 /* Two choices need a small menu, not a full form panel. */
 .map-first .dock-popover:is(.dock-popover-age, .dock-popover-care) {
@@ -131,6 +177,9 @@
   .dock-popover { width: min(350px,calc(100vw - 20px)); padding: 20px; max-height: calc(100dvh - 310px); }
   .dock-popover-age { left: auto; right: 0; }
   .map-tools-overlay > .map-quick-actions { margin-top: 7px; }
+  .short-care-map-alternatives { width: 100%; margin-top: 7px; padding: 11px 12px; border-radius: 15px; }
+  .short-care-map-links { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 1px; }
+  .short-care-map-links a { flex: 0 0 auto; }
   .map-first .map-tools { top: auto; bottom: 58px; right: 10px; }
   .map-first .map-controls { max-width: calc(100% - 70px); }
   .compact-place .place-results { left: 0; right: 0; min-width: 0; }
