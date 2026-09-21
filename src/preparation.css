@@ -299,12 +299,8 @@
   .preparation-conflicts { padding: 15px; }
 
 }
-@media (prefers-reduced-motion: reduce) {
-  .preparation *,
-  .saved-library * {
-    scroll-behavior: auto;
-  }
-}
+.equalpath[data-reduced="true"] .preparation *,
+.equalpath[data-reduced="true"] .saved-library * { scroll-behavior: auto; }
 
 dialog .dialog-top {
   position: sticky;

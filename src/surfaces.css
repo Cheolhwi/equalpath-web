@@ -248,7 +248,6 @@
   .map-tools-overlay:has(.search-collapsed) .map-saved-label { font-size: 13px; }
   .map-tools-overlay:has(.search-collapsed) .map-saved-label small { display: grid; }
 }
-@media (prefers-reduced-motion: reduce) { .map-first .search-collapsed .mobile-search-summary { animation: none; } }
 .map-first[data-reduced="true"] .search-collapsed .mobile-search-summary { animation: none; }
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
   .map-first .search-collapsed .mobile-search-summary { background: var(--paper); backdrop-filter: none; -webkit-backdrop-filter: none; border-color: var(--rule); }

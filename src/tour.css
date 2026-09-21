@@ -47,13 +47,13 @@
 @keyframes tour-appear { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 .tour-dialog[data-reduced="true"] .tour-card, .tour-dialog[data-reduced="true"] .tour-spotlight { animation: none; transition: none; }
 @media (max-width: 760px) { .quick-tour-button span { display: none; } .tour-card { padding: 19px; } .tour-card h2 { font-size: 22px; } }
-@media (prefers-reduced-motion: reduce) { .tour-card, .tour-spotlight { animation: none; transition: none; } }
+.tour-dialog[data-reduced="true"] .tour-card, .tour-dialog[data-reduced="true"] .tour-spotlight { animation: none; transition: none; }
 dialog.tour-behind[open] { position: fixed; z-index: 30; top: 110px; left: 24px; margin: 0; width: min(850px, calc(100vw - 460px)); max-height: calc(100dvh - 135px); overflow: auto; }
 .tour-error { color: var(--ink); padding: 10px; background: var(--bg); border: 1px solid var(--rule); font-size: 12px; }
 .tour-card > h2, .tour-card > .tour-example { animation: tour-appear 230ms ease-out; }
 @media (max-width: 760px) { dialog.tour-behind[open] { top: 118px; left: 16px; width: calc(100vw - 32px); max-width: none; max-height: calc(100dvh - 140px); } .tour-behind .dialog-content { padding: 20px; } }
 .tour-dialog[data-reduced="true"] .tour-card > * { animation: none; }
-@media (prefers-reduced-motion: reduce) { .tour-card > * { animation: none; } }
+.tour-dialog[data-reduced="true"] .tour-card > * { animation: none; }
 .tour-mobile-columns { display: none; }
 @media (max-width: 760px) { .tour-mobile-columns { display: flex; gap: 8px; margin-top: 14px; } .tour-mobile-columns button { flex: 1; } .tour-mobile-columns button[aria-pressed="true"] { border-color: var(--accent); background: var(--bg); } }
 @media (max-width: 760px) { .equalpath .app-header { grid-template-columns: minmax(0, 1fr) 96px; } .equalpath .header-end { width: 96px; gap: 8px; } }

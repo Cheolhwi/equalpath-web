@@ -135,7 +135,6 @@
   .map-first .map-controls { max-width: calc(100% - 70px); }
   .compact-place .place-results { left: 0; right: 0; min-width: 0; }
 }
-@media (prefers-reduced-motion: reduce) { .dock-popover { animation: none; } }
 [data-reduced="true"] .dock-popover { animation: none; }
 @media (max-width: 760px) {
   .equalpath.map-first { grid-template-rows: 64px minmax(0,1fr); }

@@ -84,7 +84,7 @@ test('required fields open on the map; long term keeps age, and filters do not s
 });
 
 test('map time chips save on outside click, cancel with Escape and support dark/reduced motion',async({page})=>{
-  await page.setViewportSize({width:390,height:844});await setup(page);await selectTime(page,'#deadline','13','00');
+  await page.setViewportSize({width:390,height:844});await page.addInitScript(() => localStorage.setItem('equalpath:motion:v1','reduce'));await setup(page);await selectTime(page,'#deadline','13','00');
   await page.locator('#deadline').click();await page.locator('.time-picker').getByRole('listbox',{name:'Hour',exact:true}).getByRole('option',{name:'15',exact:true}).click();
   await page.locator('[data-field="age"]').click();await expect(page.locator('#deadline')).toContainText('15:00');
   await page.keyboard.press('Escape');await page.locator('#deadline').click();

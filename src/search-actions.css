@@ -40,5 +40,4 @@
   .map-first .map-wrap:has(.map-search-dock:not(.search-collapsed)) .map-tools { display: none; }
   .map-first:has(.tour-dialog[data-step="2"]) .dock-address-row { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { .search-actions[data-state="loading"] .search-apply-status > svg { animation: none; } }
 [data-reduced="true"] .search-actions[data-state="loading"] .search-apply-status > svg { animation: none; }

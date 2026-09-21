@@ -63,8 +63,28 @@ test("circle pointer works above dialogs without blocking clicks and restores na
   await page.locator(".map-canvas canvas").hover({ position: { x: 100, y: 500 } });
   await expect(pointer).not.toBeVisible();
   await saved.hover(); await expect(pointer).toBeVisible();
-  await page.emulateMedia({ reducedMotion: "reduce" }); await expect(pointer).not.toBeVisible();
+  await page.evaluate(() => {
+    localStorage.setItem("equalpath:motion:v1", "reduce");
+    window.dispatchEvent(new CustomEvent("equalpath-motion-change", { detail: { reduced: true } }));
+  });
+  await expect(pointer).not.toBeVisible();
   expect(errors).toEqual([]);
+});
+
+test("system reduced media does not replace the app's motion-on default", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await start(page);
+  await expect(page.locator(".map-first")).toHaveAttribute("data-reduced", "false");
+  await page.getByRole("button", { name: "Quick tour", exact: true }).click();
+  const tour = page.locator(".tour-dialog");
+  await expect(tour).toBeVisible();
+  expect(await tour.locator(".tour-card").evaluate(el => getComputedStyle(el).animationName)).not.toBe("none");
+  await page.keyboard.press("Escape");
+  await page.evaluate(() => {
+    localStorage.setItem("equalpath:motion:v1", "reduce");
+    window.dispatchEvent(new CustomEvent("equalpath-motion-change", { detail: { reduced: true } }));
+  });
+  await expect(page.locator(".map-first")).toHaveAttribute("data-reduced", "true");
 });
 
 test("result cards reveal on first view without extra searches or hiding focused content", async ({ page }) => {
@@ -96,6 +116,7 @@ test("touch screens retain native interaction and reduced motion leaves all card
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce", baseURL });
   const page = await context.newPage();
   try {
+    await page.addInitScript(() => localStorage.setItem("equalpath:motion:v1", "reduce"));
     await start(page); await search(page);
     await expect(page.locator(".care-pointer")).not.toBeVisible();
     expect(await page.locator(".provider-row").evaluateAll(rows => rows.every(el => getComputedStyle(el).opacity === "1"))).toBe(true);

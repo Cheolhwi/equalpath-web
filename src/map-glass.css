@@ -163,11 +163,9 @@
 .map-first[data-reduced="true"] .geolocation-control button::before { transition: none; }
 .map-first[data-reduced="true"] :is(.map-card-details, .compare-tray-open, .dock-find) > svg { transition: none; transform: none; }
 .map-first[data-reduced="true"] :is(.map-center-pin > svg, .map-pick-confirm) { animation: none; }
-@media (prefers-reduced-motion: reduce) {
-  .map-first .geolocation-control button::before { transition: none; }
-  .map-first :is(.map-card-details, .compare-tray-open, .dock-find) > svg { transition: none; transform: none; }
-  .map-first :is(.map-center-pin > svg, .map-pick-confirm) { animation: none; }
-}
+.map-first[data-reduced="true"] .geolocation-control button::before { transition: none; }
+.map-first[data-reduced="true"] :is(.map-card-details, .compare-tray-open, .dock-find) > svg { transition: none; transform: none; }
+.map-first[data-reduced="true"] :is(.map-center-pin > svg, .map-pick-confirm) { animation: none; }
 @media (max-width: 1100px) and (min-width: 761px) {
   .equalpath.map-first .app-header { gap: 10px; }
   .equalpath.map-first .app-header nav button { padding-inline: 11px; font-size: 13px; }
@@ -211,9 +209,7 @@
   .equalpath.map-first .app-header { margin-inline: 8px; padding-inline: 2px; }
 }
 .map-first[data-reduced="true"] :is(.dock-options .search-chip, .app-header nav button) { transition: none; }
-@media (prefers-reduced-motion: reduce) {
-  .map-first :is(.dock-options .search-chip, .app-header nav button) { transition: none; }
-}
+.map-first[data-reduced="true"] :is(.dock-options .search-chip, .app-header nav button) { transition: none; }
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
   .equalpath.map-first, .equalpath.map-first.dark {
     --glass-fill: var(--paper); --glass-thick: var(--paper); --glass-filter: none;

@@ -50,6 +50,7 @@ import GettingStarted from "./GettingStarted.jsx";
 import { saveTour } from "../shared/tour.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { assess, costFor, enquiries } from "../shared/conditions.mjs";
+import { hasStoredMotionPreference, readMotionPreference, writeMotionPreference } from "./motion-preference.js";
 import {
   SavedLibrary,
   SavedCentreReminder,
@@ -144,9 +145,7 @@ export default function App({
     [choosing, setChoosing] = useState(false),
     [theme, setTheme] = useState("light"),
     [labels, setLabels] = useState(true),
-    [reduced, setReduced] = useState(
-      matchMedia("(prefers-reduced-motion: reduce)").matches,
-    ),
+    [reduced, setReduced] = useState(readMotionPreference),
     [health, setHealth] = useState(null),
     [toast, setToast] = useState(""),
     [mapStatus, setMapStatus] = useState("loading"),
@@ -158,6 +157,19 @@ export default function App({
     [preparation, setPreparation] = useState(null);
   const [tourOpen, setTourOpen] = useState(false);
   const interests = useInterests(mode, tourOpen);
+  useEffect(() => {
+    const media = matchMedia("(prefers-reduced-motion: reduce)");
+    const changed = (event) => {
+      if (typeof event.detail?.reduced === "boolean") setReduced(event.detail.reduced);
+      else if (!hasStoredMotionPreference()) setReduced(media.matches);
+    };
+    window.addEventListener("equalpath-motion-change", changed);
+    media.addEventListener("change", changed);
+    return () => {
+      window.removeEventListener("equalpath-motion-change", changed);
+      media.removeEventListener("change", changed);
+    };
+  }, []);
   useEffect(() => {
     if (dialog === 'details' && profile?.p && !dialogBusy && !tourOpen) interests.record([profile.p], 'view');
   }, [dialog, profile, dialogBusy, tourOpen, interests.record]);
@@ -1517,7 +1529,11 @@ export default function App({
                 <input
                   type="checkbox"
                   checked={reduced}
-                  onChange={(e) => setReduced(e.target.checked)}
+                  onChange={(e) => {
+                    const next = e.target.checked;
+                    writeMotionPreference(next);
+                    setReduced(next);
+                  }}
                 />
               </label>
               <div className="data-mode">

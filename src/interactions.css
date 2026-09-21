@@ -69,9 +69,10 @@
 .experience[data-intro-reduced="true"] .provider-row { opacity: 1; animation: none !important; }
 .equalpath[data-reduced="true"] dialog::backdrop,
 .experience[data-intro-reduced="true"] dialog::backdrop { animation: none; }
-@media (prefers-reduced-motion: reduce) {
-  .provider-row[data-reveal] { opacity: 1; }
-  .equalpath dialog[open], .equalpath dialog[open]::backdrop,
-  .provider-row, .select-menu-popup, .registration-popover, .time-picker { animation: none !important; }
-}
+.equalpath[data-reduced="true"] .provider-row[data-reveal] { opacity: 1; }
+.equalpath[data-reduced="true"] dialog[open], .equalpath[data-reduced="true"] dialog[open]::backdrop,
+.equalpath[data-reduced="true"] .provider-row,
+.equalpath[data-reduced="true"] .select-menu-popup,
+.equalpath[data-reduced="true"] .registration-popover,
+.equalpath[data-reduced="true"] .time-picker { animation: none !important; }
 @media print { .care-pointer { display: none !important; } }

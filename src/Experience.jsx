@@ -13,6 +13,7 @@ import Pointer from "./Pointer.jsx";
 import LandingLoader from "./LandingLoader.jsx";
 import { careArtworks } from "./care-artworks.js";
 import { ENTRANCE_COVER_MS, ENTRANCE_REVEAL_MS, startEntrance } from "./entrance.js";
+import { hasStoredMotionPreference, readMotionPreference, writeMotionPreference } from "./motion-preference.js";
 import "./landing.css";
 
 const CareScene = lazy(() => import("./CareScene.jsx"));
@@ -34,9 +35,7 @@ export default function Experience() {
       ? "ready"
       : "welcome",
   );
-  const [reduced, setReduced] = useState(
-    () => matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
+  const [reduced, setReduced] = useState(readMotionPreference);
   const cancelEntrance = useRef(() => {});
   const [activeArtwork, setActiveArtwork] = useState(0);
   const [entryArtwork, setEntryArtwork] = useState(0);
@@ -91,9 +90,16 @@ export default function Experience() {
   useEffect(() => () => cancelEntrance.current(), []);
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
-    const changed = () => setReduced(media.matches);
+    const changed = (event) => {
+      if (typeof event.detail?.reduced === "boolean") setReduced(event.detail.reduced);
+      else if (!hasStoredMotionPreference()) setReduced(media.matches);
+    };
+    window.addEventListener("equalpath-motion-change", changed);
     media.addEventListener("change", changed);
-    return () => media.removeEventListener("change", changed);
+    return () => {
+      window.removeEventListener("equalpath-motion-change", changed);
+      media.removeEventListener("change", changed);
+    };
   }, []);
   useEffect(() => {
     if (reduced && moving) finish();
@@ -195,7 +201,11 @@ export default function Experience() {
               <span>NO ACCOUNT NEEDED</span>
               <button
                 className="motion-toggle"
-                onClick={() => setReduced((v) => !v)}
+                onClick={() => setReduced((v) => {
+                  const next = !v;
+                  writeMotionPreference(next);
+                  return next;
+                })}
                 aria-pressed={reduced}
               >
                 {reduced ? "REDUCED MOTION" : "MOTION ON"}

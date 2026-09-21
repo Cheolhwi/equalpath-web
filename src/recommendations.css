@@ -36,5 +36,4 @@
 @keyframes recommendation-in { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 @media(max-width:1000px) { .recommendation-grid { grid-template-columns:1fr; } .recommendation-card { padding:20px; } }
 @media(max-width:480px) { .recommendations-heading h3 { font-size:21px; } .recommendations-heading p { font-size:14px; } .recommendations-emblem { display:none; } .recommendation-card h4 { font-size:20px; } .map-first .saved-tabs { width:100%; gap:2px; } .map-first .saved-tabs button { padding:8px; font-size:14px; flex:1; white-space:nowrap; } }
-@media(prefers-reduced-motion:reduce) { .recommendation-card { animation:none; } }
 .equalpath[data-reduced="true"] .recommendation-card { animation:none; }
