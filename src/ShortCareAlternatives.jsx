@@ -13,11 +13,6 @@ export const SHORT_CARE_RESOURCES = [
     description: "Search local babysitters and choose who to contact.",
     href: "https://www.babysits.my/",
   },
-  {
-    name: "Kiddy123",
-    description: "Browse more childcare centres and ask about short visits.",
-    href: "https://www.kiddy123.com/",
-  },
 ];
 
 export function hasExplicitShortCareMatch(items = []) {

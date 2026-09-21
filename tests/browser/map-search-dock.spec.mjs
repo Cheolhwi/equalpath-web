@@ -186,10 +186,10 @@ test('mobile search stays expanded for no results, failures and edits made while
   await page.getByRole('button',{name:'Retry search',exact:true}).click();
   await expect(page.locator('.dock-feedback')).toContainText('No centres found');
   await expect(page.locator('.short-care-map-alternatives')).toBeVisible();
-  await expect(page.locator('.short-care-map-links a')).toHaveCount(3);
+  await expect(page.locator('.short-care-map-links a')).toHaveCount(2);
   await page.locator('.map-quick-actions button').first().click();
   await expect(page.locator('.short-care-alternatives')).toBeVisible();
-  await expect(page.locator('.short-care-alternative')).toHaveCount(3);
+  await expect(page.locator('.short-care-alternative')).toHaveCount(2);
   await expect(page.locator('.short-care-alternatives-note')).toContainText('outside EqualPath');
 });
 
