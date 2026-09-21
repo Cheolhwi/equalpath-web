@@ -118,7 +118,6 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
         </>}
         {chip("more", SlidersHorizontal, "More", selectedFilters.length ? `Filters (${selectedFilters.length})` : "Filters")}
       </div>
-      {selectedFilters.length > 0 && <div className="selected-filter-summary"><span>Selected:</span> {selectedFilters.join(" · ")}</div>}
       <SearchActions compact busy={busy} results={results} dirty={dirty} failure={failure} submitRef={submitRef} />
       </div>
       {part && <section ref={options} className={`dock-popover dock-popover-${part}`} id="search-options" aria-label={`${part} options`} style={menuPosition}>

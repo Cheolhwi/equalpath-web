@@ -18,13 +18,11 @@
 .search-chip small > svg { flex-shrink: 0; }
 .map-first .dock-options .search-chip.unapplied { box-shadow: inset 0 -2px var(--accent); }
 .map-first .dock-options .search-chip.unapplied small { color: var(--ink); }
-.selected-filter-summary { padding: 3px 14px 9px; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; color: var(--muted); }
-.selected-filter-summary > span { color: var(--ink); font-weight: 650; }
 .filter-review { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--rule); }
 .filter-review p { font-size: 13px; line-height: 1.4; margin: 0 0 10px; }
 .map-first .filter-review > button { min-height: 44px; width: 100%; border-radius: 99px; justify-content: center; gap: 10px; }
 .map-first .dock-filter-panel .search-actions:has(> button) { max-height: 76px; justify-content: flex-end; padding: 10px 8px 8px; }
-.map-first .dock-filter-panel .search-actions .dock-find { width: min(100%, 320px); min-height: 50px; padding: 11px 20px; border-radius: 999px; font-size: 15px; gap: 10px; }
+.map-first .dock-filter-panel .search-actions .dock-find { width: min(100%, 250px); min-height: 44px; padding: 9px 16px; border-radius: 999px; font-size: 14px; gap: 8px; }
 .mobile-search-context small { display: flex; align-items: center; gap: 4px; }
 .mobile-search-context small > svg { flex-shrink: 0; }
 .mobile-search-context .mobile-search-applied { display: block; width: 9px; height: 9px; padding: 0; border-radius: 50%; background: var(--nav-selected); color: var(--paper); }

@@ -209,7 +209,7 @@ for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly p
   await page.locator('[data-field="more"]').click();
   await page.locator('#transport').selectOption('self');
   await page.getByRole('button', {name:'Close options', exact:true}).click();
-  await expect(page.locator('.selected-filter-summary')).toContainText('Pickup: I’ll handle it');
+  await expect(page.locator('.selected-filter-summary')).toHaveCount(0);
   await expect(page.locator('[data-field="more"]')).toHaveAttribute('data-pending', 'true');
   await selectTime(page, '#care-end', '19', '15');
   await expect(page.locator('#care-end')).toHaveAttribute('data-pending', 'true');
@@ -218,6 +218,10 @@ for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly p
   const filters = await page.locator('.dock-options').boundingBox();
   expect(action.y).toBeGreaterThanOrEqual(filters.y + filters.height);
   expect(action.y + action.height).toBeLessThan(900);
+  if (width >= 760) {
+    const button = await page.locator('.search-actions .dock-find').boundingBox();
+    expect(button.width).toBeLessThanOrEqual(260);
+  }
   await page.screenshot({path:`${out}/filters-pending-${width}.png`});
   let release, started;
   const gate = new Promise(r => release = r), seen = new Promise(r => started = r);
@@ -235,7 +239,7 @@ for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly p
   if (width < 760) await page.getByRole('button', {name:'Change search', exact:true}).click();
   await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
   await expect(page.locator('[data-pending]')).toHaveCount(0);
-  await expect(page.locator('.selected-filter-summary')).toContainText('Pickup: I’ll handle it');
+  await expect(page.locator('.selected-filter-summary')).toHaveCount(0);
   expect(calls.filter(c => c.action === 'search').at(-1).request).toMatchObject({transport:'self', end:'19:15'});
   await page.screenshot({path:`${out}/filters-applied-${width}.png`});
   expect(errors).toEqual([]);
