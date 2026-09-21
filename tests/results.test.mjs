@@ -48,6 +48,32 @@ test("no located centres within range returns an empty result without expanding 
     const r=await api(body);assert.equal(r.total,0);assert.deepEqual(r.items,[]);
   }
 });
+test("short-care search reports only fully checked centres as explicit matches", async () => {
+  const base = fixtureCatalog.items[0];
+  const request = { pickup: demoPickup, date: "2026-09-14", deadline: "13:00", end: "18:00", age: "4", transport: "self" };
+  const api = createAPI({
+    store: {
+      catalog: async () => ({
+        ...fixtureCatalog,
+        items: [
+          { ...base, id: "confirmed", admission: { value: true, requirements: [] } },
+          { ...base, id: "needs-confirmation", admission: undefined },
+          { ...base, id: "does-not-fit", admission: { value: false } },
+        ],
+      }),
+    },
+    drivingRoutes: async (_, rows) => rows,
+  });
+  const result = await api({ action: "search", request });
+  assert.equal(result.total, 3);
+  assert.equal(result.explicitMatchCount, 1);
+  assert.deepEqual(
+    result.items.find((p) => p.id === "confirmed").fit.conditions
+      .filter((condition) => condition.id !== "transfer")
+      .map((condition) => condition.state),
+    ["supported", "supported", "supported", "supported", "supported", "supported"],
+  );
+});
 test("driving uses one bounded table, caches pairs across search/compare and coalesces concurrent requests", async()=>{
   let calls=0;
   const routes=createDrivingRoutes({interval:0,fetcher:async url=>{

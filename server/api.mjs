@@ -204,11 +204,17 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
         Boolean(request.query || !request.includeUnknown || !request.includeConflicts));
       request.sort = order.factor;
       const pageItems = sortProviders(pageCandidates, request.sort, request.date);
+      const explicitMatchCount = candidates.filter((p) =>
+        p.fit?.counts?.conflict === 0 &&
+        !(p.fit?.conditions ?? []).filter((condition) => condition.id !== "transfer")
+          .some((condition) => condition.state === "unknown"),
+      ).length;
       return {
         ...meta,
         request,
         items: await withDriving(suggestProviders(pageItems, request)),
         total: candidates.length,
+        explicitMatchCount,
         page,
         pageSize,
         missingLocations: candidates.filter((p) => !p.location).length,

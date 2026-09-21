@@ -46,6 +46,7 @@ import Preparation from "./Preparation.jsx";
 import Enquiry from "./Enquiry.jsx";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import GettingStarted from "./GettingStarted.jsx";
+import ShortCareAlternatives, { hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
 import { saveTour } from "../shared/tour.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { assess, costFor, enquiries } from "../shared/conditions.mjs";
@@ -1110,6 +1111,12 @@ export default function App({
                 </div>
               )}
             </div>
+            {isShortCare(results.request) && !busy && !dirty &&
+              (Number.isFinite(results.explicitMatchCount)
+                ? results.explicitMatchCount === 0
+                : !hasExplicitShortCareMatch(items)) && (
+              <ShortCareAlternatives />
+            )}
             {results.total > results.pageSize && (
               <div className="pagination">
                 <button

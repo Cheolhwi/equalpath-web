@@ -185,7 +185,10 @@ test('mobile search stays expanded for no results, failures and edits made while
   });
   await page.getByRole('button',{name:'Retry search',exact:true}).click();
   await expect(page.locator('.dock-feedback')).toContainText('No centres found');
-  await expect(page.locator('.dock-form')).toBeVisible();
+  await page.locator('.map-quick-actions button').first().click();
+  await expect(page.locator('.short-care-alternatives')).toBeVisible();
+  await expect(page.locator('.short-care-alternative')).toHaveCount(3);
+  await expect(page.locator('.short-care-alternatives-note')).toContainText('outside EqualPath');
 });
 
 for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly pending until Update succeeds, and reverting clears the pending state`, async ({page}) => {
