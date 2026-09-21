@@ -153,6 +153,7 @@ export default function App({
     [saveFailure, setSaveFailure] = useState(""),
     [saveEditor, setSaveEditor] = useState(null),
     [reopening, setReopening] = useState(null),
+    [savedCheck, setSavedCheck] = useState(null),
     [preparation, setPreparation] = useState(null);
   const [tourOpen, setTourOpen] = useState(false);
   const interests = useInterests(mode, tourOpen);
@@ -224,9 +225,11 @@ export default function App({
     window.addEventListener("storage", changed);
     return () => window.removeEventListener("storage", changed);
   }, [mode]);
+  const savedCheckSeq = useRef(0);
   const changeLibrary = (change) => {
     try {
       setLibrary(updateLibrary(window.localStorage, mode, change));
+      setSavedCheck(null);
       setSaveFailure("");
       return true;
     } catch (e) {
@@ -242,6 +245,39 @@ export default function App({
   const editFavourite = (p, from = dialog) => {
     setSaveEditor({ p, from });
     setDialog("save-favourite");
+  };
+  const checkSavedCentres = async (request) => {
+    const issues = requestErrors(request, { requireAge: true });
+    if (Object.keys(issues).length) {
+      setSavedCheck({ status: "error", request, error: Object.values(issues)[0] });
+      return;
+    }
+    const entries = [...library.favourites];
+    const seq = ++savedCheckSeq.current;
+    setSavedCheck({ status: "checking", request, items: [], failed: 0 });
+    const checked = [];
+    let failed = 0;
+    // Keep the network work bounded while using the same request for every saved centre.
+    for (let offset = 0; offset < entries.length; offset += 4) {
+      const group = entries.slice(offset, offset + 4);
+      const settled = await Promise.allSettled(group.map(async (saved) => {
+        const response = await requestAPI({ action: "details", mode, id: saved.id, request });
+        return { ...response.items[0], saved };
+      }));
+      settled.forEach((outcome) => {
+        if (outcome.status === "fulfilled" && outcome.value?.id) checked.push(outcome.value);
+        else failed += 1;
+      });
+      if (seq !== savedCheckSeq.current) return;
+    }
+    setSavedCheck({ status: "ready", request, items: checked, failed, checkedAt: new Date().toISOString() });
+  };
+  const openSavedCentre = (p, request) => {
+    const saved = library.favourites.find((item) => item.id === p.id) ?? p.saved;
+    setProfile({ p, request, saved, current: factSnapshot(p) });
+    setSelected(p.id);
+    setDialogError(null);
+    setDialog("details");
   };
   const reopenFavourite = (saved) => {
     setBrowseSelection(null);
@@ -962,6 +998,9 @@ export default function App({
           <button className="text-link" onClick={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }}>
             Saved centres{library.favourites.length > 0 && ` (${library.favourites.length})`}
           </button>
+          {!!library.favourites.length && !!activeRequest && <button className="text-link" onClick={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }}>
+            Check saved centres with this search <ArrowRight size={14} />
+          </button>}
         </div>
         {failure && (
           <div className="error-box" role="alert">
@@ -1273,6 +1312,11 @@ export default function App({
               failure={saveFailure}
               onRetry={reloadLibrary}
               onReopen={reopenFavourite}
+              onStartSearch={() => { close(); setFormOpen(true); setMobilePane("list"); }}
+              currentRequest={activeRequest ?? draft}
+              savedCheck={savedCheck}
+              onCheckSaved={checkSavedCentres}
+              onOpenSaved={openSavedCentre}
               onEditFavourite={(p) => editFavourite(p, "saved")}
               onDelete={(type, id) =>
                 changeLibrary((x) => ({

@@ -106,6 +106,38 @@
 .map-first .saved-tabs button { padding: 8px 17px; border: 0; border-radius: 999px; font-size: 15px; }
 .map-first .saved-tabs button[aria-pressed="true"] { background: var(--nav-selected); color: var(--nav-selected-text); }
 .map-first .saved-tabs button[aria-pressed="true"] em { color: inherit; }
+.map-first .saved-check-panel { margin: 0 0 20px; padding: 18px; border: 1px solid var(--rule); border-radius: 20px; background: var(--soft); }
+.map-first .saved-check-heading { display: flex; align-items: flex-start; gap: 11px; }
+.map-first .saved-check-icon { display: grid; place-items: center; flex: 0 0 38px; width: 38px; height: 38px; border-radius: 50%; color: var(--accent); background: var(--paper); }
+.map-first .saved-check-heading h3 { margin: 0; font-size: 19px; line-height: 1.3; }
+.map-first .saved-check-heading p { margin: 3px 0 0; color: var(--muted); font-size: 14px; }
+.map-first .saved-check-location { display: flex; align-items: center; gap: 8px; margin: 16px 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--paper); font-size: 14px; }
+.map-first .saved-check-location > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.map-first .saved-check-form { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; align-items: end; }
+.map-first .saved-check-field { display: grid; gap: 5px; min-width: 0; font-size: 12px; font-weight: 600; }
+.map-first .saved-check-field > span { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
+.map-first .saved-check-field :is(input, select) { width: 100%; min-height: 42px; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 11px; background: var(--paper); color: var(--ink); font: inherit; font-size: 14px; }
+.map-first .saved-check-submit { grid-column: 1 / -1; justify-content: center; min-height: 44px; margin-top: 3px; }
+.map-first .saved-check-empty { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); }
+.map-first .saved-check-empty p { margin: 0 0 11px; color: var(--muted); font-size: 14px; }
+.map-first .saved-check-empty button { min-height: 42px; }
+.map-first .saved-check-hint { display: flex; align-items: center; gap: 6px; margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+.map-first .saved-check-results { margin-top: 17px; padding-top: 15px; border-top: 1px solid var(--rule); }
+.map-first .saved-check-result-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.map-first .saved-check-result-heading small { color: var(--muted); font-size: 11px; }
+.map-first .saved-check-result-list { display: grid; gap: 6px; }
+.map-first .saved-check-result { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border: 1px solid var(--rule); border-radius: 13px; background: var(--paper); }
+.map-first .saved-check-result > div { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.map-first .saved-check-result > div > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.map-first .saved-check-result .text-link { flex-shrink: 0; font-size: 12px; }
+.map-first .saved-check-status { display: inline-flex; align-items: center; gap: 5px; width: fit-content; font-size: 11px; color: var(--muted); }
+.map-first .saved-check-status > span { display: grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; background: var(--soft); font-weight: 700; }
+.map-first .saved-check-status.supported { color: var(--accent); }
+.map-first .saved-check-status.unknown { color: #8a6719; }
+.map-first .saved-check-status.conflict { color: #8b4c45; }
+.map-first .saved-check-panel .error-box { margin: 14px 0 0; }
+.map-first .saved-check-panel .spin { animation: saved-check-spin 800ms linear infinite; }
+@keyframes saved-check-spin { to { transform: rotate(360deg); } }
 .map-first .saved-row { border: 1px solid var(--rule); border-radius: 18px; padding: 20px; margin-bottom: 12px; background: var(--paper); }
 .map-first .saved-row h3 { font-size: 20px; }
 .map-first .saved-row .saved-actions > button:not(.secondary) { border-radius: 999px; padding-inline: 12px; }
@@ -180,8 +212,14 @@
   .map-first .compare-sort { padding: 10px; gap: 8px; }
   .map-first .compare-sort .compare-more { margin-left: 0; }
   .map-first .saved-row { padding: 16px; }
+  .map-first .saved-check-panel { padding: 15px; border-radius: 17px; }
+  .map-first .saved-check-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
+  .map-first .saved-check-form { grid-template-columns: 1fr; }
+  .map-first .saved-check-result { align-items: flex-start; flex-direction: column; }
+  .map-first .saved-check-result .text-link { align-self: flex-start; }
+  .map-first .saved-check-result-heading { display: grid; gap: 3px; }
   .map-first .map-tools-overlay > .map-quick-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); width: 100%; gap: 6px; }
   .map-first .map-quick-actions > button { min-width: 0; }
   .map-first .map-quick-actions > button:first-child { flex-direction: column; gap: 0; padding: 4px; font-size: 11px; line-height: 1.35; }

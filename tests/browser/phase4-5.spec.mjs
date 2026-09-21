@@ -107,7 +107,7 @@ test("save a centre, reload, edit its note, recheck, download preparation, and r
   await page.screenshot({ path: `${evidenceDir}/saved-desktop.png` });
   await expect(page.getByRole("button", { name: /^Searches / })).toHaveCount(0);
   await page
-    .getByRole("button", { name: "Check for a new date", exact: true })
+    .getByRole("button", { name: "Check this centre alone", exact: true })
     .click();
   await openSearch(page);
   await expect(page.locator("#service-date")).toHaveValue("");
@@ -268,7 +268,7 @@ test("reopened favourite reports changed source facts and preserves snapshot aft
   });
   await saved(page);
   await page
-    .getByRole("button", { name: "Check for a new date", exact: true })
+    .getByRole("button", { name: "Check this centre alone", exact: true })
     .click();
   await openSearch(page);
   await page.locator("#service-date").fill("2026-09-18");
@@ -286,7 +286,7 @@ test("reopened favourite reports changed source facts and preserves snapshot aft
   await page.unroute("**/api");
   await saved(page);
   await page
-    .getByRole("button", { name: "Check for a new date", exact: true })
+    .getByRole("button", { name: "Check this centre alone", exact: true })
     .click();
   await openSearch(page);
   await page.locator("#service-date").fill("2026-09-20");

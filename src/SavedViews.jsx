@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { Bookmark, ArrowRight, Trash2, Pencil, Save } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Bookmark, ArrowRight, Trash2, Pencil, Save, CalendarDays, Clock3, Users, RefreshCw, Check, CircleHelp } from "lucide-react";
 import {
   favourite,
   compareFacts,
   factDescription,
   factDates,
 } from "../shared/saved.mjs";
-import { isShortCare } from "../shared/request.mjs";
+import { isShortCare, requestErrors } from "../shared/request.mjs";
 
 export function SaveExplanation() {
   return (
@@ -43,7 +43,91 @@ export function MapSavedShortcuts({ library, onCentres }) {
       {item && <strong id="map-saved-centre">{item.name}</strong>}</span>
   </button>;
 }
-export function SavedLibrary({ library, failure, onRetry, onReopen, onEditFavourite, onDelete, onDiscover, tab, setTab, suggestions }) {
+const checkRequestKey = (request) => JSON.stringify([
+  request?.careType,
+  request?.pickup?.label,
+  request?.pickup?.lat,
+  request?.pickup?.lng,
+  request?.date,
+  request?.deadline,
+  request?.end,
+  request?.age,
+  request?.transport,
+]);
+const checkStatus = (p) => p.fit?.counts?.conflict
+  ? { label: "Doesn’t fit all choices", tone: "conflict" }
+  : p.fit?.counts?.unknown
+    ? { label: "Ask the centre", tone: "unknown" }
+    : { label: "Fits your plan", tone: "supported" };
+
+export function SavedCheckPanel({ entries, currentRequest, checking, result, onStartSearch, onCheck, onOpen }) {
+  const requestKey = checkRequestKey(currentRequest);
+  const [form, setForm] = useState(() => ({
+    careType: currentRequest?.careType ?? "short_term",
+    pickup: currentRequest?.pickup ?? null,
+    date: currentRequest?.date ?? "",
+    deadline: currentRequest?.deadline ?? "",
+    end: currentRequest?.end ?? "",
+    age: currentRequest?.age ?? "",
+    transport: currentRequest?.transport ?? "",
+  }));
+  const short = isShortCare(form);
+  const errors = requestErrors(form, { requireAge: true });
+  const canCheck = !Object.keys(errors).length && !!form.pickup;
+  const formRequest = { ...currentRequest, ...form };
+  const resultMatches = !result?.request || checkRequestKey(result.request) === checkRequestKey(formRequest);
+  useEffect(() => {
+    setForm((previous) => ({
+      ...previous,
+      careType: currentRequest?.careType ?? previous.careType ?? "short_term",
+      pickup: currentRequest?.pickup ?? previous.pickup ?? null,
+      date: currentRequest?.date ?? previous.date ?? "",
+      deadline: currentRequest?.deadline ?? previous.deadline ?? "",
+      end: currentRequest?.end ?? previous.end ?? "",
+      age: currentRequest?.age ?? previous.age ?? "",
+      transport: currentRequest?.transport ?? previous.transport ?? "",
+    }));
+  }, [requestKey]);
+  const update = (field, value) => setForm((previous) => ({ ...previous, [field]: value }));
+  return <section className="saved-check-panel" aria-labelledby="saved-check-title">
+    <div className="saved-check-heading">
+      <span className="saved-check-icon"><RefreshCw size={19} aria-hidden="true" /></span>
+      <div>
+        <h3 id="saved-check-title">Check all saved centres</h3>
+        <p>Enter one plan for all {entries.length} saved {entries.length === 1 ? "centre" : "centres"}.</p>
+      </div>
+    </div>
+    {!form.pickup ? <div className="saved-check-empty">
+      <p>Start a search with your address first. Then we can check your saved centres together.</p>
+      <button className="secondary" type="button" onClick={onStartSearch}><SearchIcon />Set up a search <ArrowRight size={15} /></button>
+    </div> : <>
+      <div className="saved-check-location"><Bookmark size={16} aria-hidden="true" /><span>{form.pickup.label}</span><button type="button" className="text-link" onClick={onStartSearch}>Change</button></div>
+      <form className="saved-check-form" onSubmit={(event) => { event.preventDefault(); if (canCheck) onCheck(formRequest); }}>
+        {short && <label className="saved-check-field"><span><CalendarDays size={16} aria-hidden="true" />Date</span><input aria-label="Date for all saved centres" type="date" value={form.date} onChange={(event) => update("date", event.target.value)} /></label>}
+        <label className="saved-check-field"><span><Users size={16} aria-hidden="true" />Child’s age</span><select aria-label="Child’s age for all saved centres" value={form.age} onChange={(event) => update("age", event.target.value)}><option value="">Choose age</option><option value="1-3">1–3 years</option><option value="4-6">4–6 years</option></select></label>
+        {short && <>
+          <label className="saved-check-field"><span><Clock3 size={16} aria-hidden="true" />Start time</span><input aria-label="Start time for all saved centres" type="time" value={form.deadline} onChange={(event) => update("deadline", event.target.value)} /></label>
+          <label className="saved-check-field"><span><Clock3 size={16} aria-hidden="true" />End time</span><input aria-label="End time for all saved centres" type="time" value={form.end} onChange={(event) => update("end", event.target.value)} /></label>
+        </>}
+        <button className="primary saved-check-submit" type="submit" disabled={!canCheck || checking}>{checking ? <><RefreshCw size={16} className="spin" />Checking saved centres…</> : <><Check size={16} />Check all saved centres</>}</button>
+      </form>
+      {!canCheck && <p className="saved-check-hint"><CircleHelp size={15} aria-hidden="true" />Choose an age{short ? ", date, start time and end time" : ""} to check every saved centre.</p>}
+    </>}
+    {result?.status === "error" && <p className="error-box" role="alert">{result.error}</p>}
+    {result?.status === "ready" && !resultMatches && <p className="saved-check-hint" role="status"><CircleHelp size={15} aria-hidden="true" />This plan changed. Check again to refresh every saved centre.</p>}
+    {result?.status === "ready" && resultMatches && <div className="saved-check-results" aria-live="polite">
+      <div className="saved-check-result-heading"><strong>Checked {result.items.length} of {entries.length} saved {entries.length === 1 ? "centre" : "centres"}</strong><small>{result.checkedAt ? `Just checked · ${result.request?.date ?? "current details"}` : ""}</small></div>
+      {result.failed > 0 && <p className="notice">{result.failed} centre{result.failed === 1 ? "" : "s"} could not be checked. Your saved item is still here.</p>}
+      <div className="saved-check-result-list">{result.items.map((item) => { const status = checkStatus(item); return <div className="saved-check-result" key={item.id}>
+        <div><strong>{item.name}</strong><span className={`saved-check-status ${status.tone}`}><span aria-hidden="true">{status.tone === "supported" ? "✓" : status.tone === "unknown" ? "?" : "!"}</span>{status.label}</span></div>
+        <button className="text-link" type="button" onClick={() => onOpen(item, result.request)}>View details <ArrowRight size={14} /></button>
+      </div>; })}</div>
+    </div>}
+  </section>;
+}
+function SearchIcon() { return <Search size={16} aria-hidden="true" />; }
+
+export function SavedLibrary({ library, failure, onRetry, onReopen, onEditFavourite, onDelete, onDiscover, onStartSearch = onDiscover, tab, setTab, suggestions, currentRequest, savedCheck, onCheckSaved, onOpenSaved }) {
   const entries = [...library.favourites].reverse().sort((a, b) => (b.savedAt ?? "").localeCompare(a.savedAt ?? ""));
   return <div className="saved-library">
     {failure && <div className="error-box" role="alert"><p>{failure}</p><button onClick={onRetry}>Try again</button></div>}
@@ -52,6 +136,7 @@ export function SavedLibrary({ library, failure, onRetry, onReopen, onEditFavour
       <button aria-pressed={tab === "suggestions"} onClick={() => setTab("suggestions")}>For you</button>
     </div>
     {tab === "suggestions" ? suggestions : <>
+      {!!entries.length && <SavedCheckPanel entries={entries} currentRequest={currentRequest} checking={savedCheck?.status === "checking"} result={savedCheck} onStartSearch={onStartSearch} onCheck={onCheckSaved} onOpen={onOpenSaved} />}
       {!entries.length && <div className="empty-state"><Bookmark size={30} /><h3>Save childcare you like</h3>
         <p>Tap Save on any childcare option to keep it here.</p>
         <button className="primary" onClick={onDiscover}>Find childcare <ArrowRight size={16} /></button></div>}
@@ -61,7 +146,7 @@ export function SavedLibrary({ library, failure, onRetry, onReopen, onEditFavour
         <details className="saved-source-dates"><summary>When were these details checked?</summary>
           <small>Details saved {item.snapshot?.capturedAt?.slice(0, 10) ?? "date unavailable"}</small><small>{factDates(item.snapshot?.facts)}</small></details>
         <div className="saved-actions">
-          <button className="secondary" onClick={() => onReopen(item)}>{isShortCare(item) ? "Check for a new date" : "Check centre"} <ArrowRight size={15} /></button>
+          <button className="secondary" onClick={() => onReopen(item)}>Check this centre alone <ArrowRight size={15} /></button>
           <button aria-label={`Edit ${item.name}`} onClick={() => onEditFavourite(item)}><Pencil size={15} />Edit</button>
           <button aria-label={`Remove ${item.name}`} onClick={() => onDelete("favourites", item.id)}><Trash2 size={15} />Remove</button>
         </div>
