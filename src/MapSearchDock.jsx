@@ -131,6 +131,6 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
     {(errors.deadline || errors.end) && <p className="dock-feedback field-error" role="alert" id={errors.deadline ? "deadline-error" : "care-end-error"}>{errors.deadline || errors.end}</p>}
     {notice && <p className="dock-feedback" role="status">{notice}</p>}
     {addressStatus && <p className="dock-feedback" role="status">{addressStatus === "loading" ? "Finding the nearby street…" : <>Street address unavailable. <button onClick={onRetryAddress}>Retry address</button></>}</p>}
-    {failure && <p className="dock-feedback field-error" role="alert">We couldn’t load centres. <button onClick={onRetry}>Retry search</button></p>}
+    {failure && <p className="dock-feedback field-error" role="alert">We couldn’t load centres. Use the Retry search button above to try again.</p>}
   </div>;
 }

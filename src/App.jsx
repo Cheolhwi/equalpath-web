@@ -10,7 +10,6 @@ import {
   List,
   Check,
   X,
-  RotateCcw,
   Sun,
   Moon,
   Info,
@@ -968,9 +967,7 @@ export default function App({
           <div className="error-box" role="alert">
             <strong>We couldn’t load centres</strong>
             <p>{errorMessage(failure)}</p>
-            <button className="text-link" onClick={() => search(null)}>
-              Retry search <RotateCcw size={13} />
-            </button>
+            <p>Use the Retry search button above to try again.</p>
           </div>
         )}
         {results && (dirty || busy) && (

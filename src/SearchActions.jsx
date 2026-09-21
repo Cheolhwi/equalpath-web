@@ -31,7 +31,7 @@ export default function SearchActions({ busy, results, dirty, failure, submitRef
     failed: "Try again to use these choices.",
     pending: "Update to use these choices.",
     applied: "",
-    ready: reopening ? "Then check this centre." : "Then find childcare.",
+    ready: reopening ? "Then check this centre." : "Then tap Find care.",
   }[state];
   const actionText = busy ? results ? "Updating…" : "Searching…" : confirmed ? "Updated" : failure ? "Try again" : reopening ? "Check saved centre" : results ? "Update results" : "Find childcare";
   const actionLabel = confirmed ? "Results updated" : failure ? "Retry search" : busy ? (results ? "Updating results" : "Finding childcare") : reopening ? "Check saved centre" : results ? "Update results" : "Find childcare";
