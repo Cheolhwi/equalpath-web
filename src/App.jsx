@@ -19,6 +19,7 @@ import {
   Building2,
   Users,
   ChevronDown,
+  Heart,
 } from "lucide-react";
 import Recommendations from "./Recommendations.jsx";
 import useInterests from "./useInterests.js";
@@ -1190,6 +1191,7 @@ export default function App({
             <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>
             <MapSavedShortcuts library={library}
               onCentres={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }} />
+            {interests.history.preferenceSetup === "new" && <button className="map-preference-shortcut" onClick={() => { reloadLibrary(); setSavedTab("suggestions"); setDialog("saved"); }}><Heart size={17} aria-hidden="true" /><span>Choose what matters</span></button>}
           </div>
           {isShortCare(results?.request) && !busy && !dirty &&
             (Number.isFinite(results?.explicitMatchCount)

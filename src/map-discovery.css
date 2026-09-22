@@ -22,6 +22,8 @@
 .map-search-launch > svg { flex-shrink: 0; }
 .map-quick-actions { display: flex; gap: 8px; }
 .map-quick-actions button { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 7px 14px; background: var(--paper); border: 1px solid var(--rule); border-radius: 24px; font-size: 13px; box-shadow: 0 2px 8px #30382f0d; }
+.map-quick-actions .map-preference-shortcut { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 42%, var(--rule)); }
+.map-quick-actions .map-preference-shortcut svg { flex-shrink: 0; }
 .map-search-status { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin: 0; padding: 8px 12px; background: var(--paper); border: 1px solid var(--rule); font-size: 13px; }
 .map-search-status button { display: inline-flex; align-items: center; gap: 6px; text-decoration: underline; }
 .map-first .map-controls { top: auto; bottom: 42px; left: 16px; max-width: calc(100% - 90px); }
