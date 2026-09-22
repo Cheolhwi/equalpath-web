@@ -11,10 +11,25 @@ import { ArrowRight, Minus, Plus } from "lucide-react";
 import App from "./App.jsx";
 import Pointer from "./Pointer.jsx";
 import LandingLoader from "./LandingLoader.jsx";
+import { PreferenceSetup } from "./Recommendations.jsx";
 import { careArtworks } from "./care-artworks.js";
 import { ENTRANCE_COVER_MS, ENTRANCE_REVEAL_MS, startEntrance } from "./entrance.js";
 import { hasStoredMotionPreference, readMotionPreference, writeMotionPreference } from "./motion-preference.js";
+import { emptyInterests, readInterests, updateInterests } from "../shared/recommendations.mjs";
 import "./landing.css";
+
+const mapHash = ["#discover", "#request-form"];
+const liveMode = () => new URLSearchParams(location.search).get("mode") !== "demo";
+const readLivePreferences = () => {
+  try { return readInterests(window.localStorage, "live"); }
+  catch { return emptyInterests(); }
+};
+const shouldShowPreferences = () => liveMode() && readLivePreferences().preferenceSetup === "new";
+const initialExperiencePhase = () => {
+  if (location.hash === "#preferences") return shouldShowPreferences() ? "preferences" : "ready";
+  if (mapHash.includes(location.hash)) return shouldShowPreferences() ? "preferences" : "ready";
+  return "welcome";
+};
 
 const CareScene = lazy(() => import("./CareScene.jsx"));
 
@@ -30,12 +45,10 @@ class SceneBoundary extends Component {
 }
 
 export default function Experience() {
-  const [phase, setPhase] = useState(() =>
-    ["#discover", "#request-form"].includes(location.hash)
-      ? "ready"
-      : "welcome",
-  );
+  const [phase, setPhase] = useState(initialExperiencePhase);
   const [reduced, setReduced] = useState(readMotionPreference);
+  const [preferenceHistory, setPreferenceHistory] = useState(readLivePreferences);
+  const [preferenceError, setPreferenceError] = useState("");
   const cancelEntrance = useRef(() => {});
   const [activeArtwork, setActiveArtwork] = useState(0);
   const [entryArtwork, setEntryArtwork] = useState(0);
@@ -65,20 +78,31 @@ export default function Experience() {
       `${location.pathname}${location.search}#discover`,
     );
   }, []);
+  const openMapOrPreferences = useCallback(() => {
+    if (shouldShowPreferences()) {
+      const data = readLivePreferences();
+      setPreferenceHistory(data);
+      setPreferenceError("");
+      history.replaceState(null, "", `${location.pathname}${location.search}#preferences`);
+      setPhase("preferences");
+      return;
+    }
+    finish();
+  }, [finish]);
   const enter = useCallback(() => {
     if (phase !== "welcome") return;
     setEntryArtwork(activeArtwork);
     cancelEntrance.current();
     // The optional decoration must never show an empty frame or hold up entry.
     if (loadStage !== "ready" || !readyArtworks.has(activeArtwork)) {
-      finish();
+      openMapOrPreferences();
       return;
     }
     cancelEntrance.current = startEntrance(
-      (next) => (next === "ready" ? finish() : setPhase(next)),
+      (next) => (next === "ready" ? openMapOrPreferences() : setPhase(next)),
       { reduced },
     );
-  }, [phase, reduced, finish, activeArtwork, readyArtworks, loadStage]);
+  }, [phase, reduced, openMapOrPreferences, activeArtwork, readyArtworks, loadStage]);
   const home = useCallback(() => {
     cancelEntrance.current();
     history.replaceState(null, "", `${location.pathname}${location.search}`);
@@ -102,8 +126,8 @@ export default function Experience() {
     };
   }, []);
   useEffect(() => {
-    if (reduced && moving) finish();
-  }, [reduced, moving, finish]);
+    if (reduced && moving && phase !== "preferences") openMapOrPreferences();
+  }, [reduced, moving, phase, openMapOrPreferences]);
   useEffect(() => {
     // Immediate entry can remove the inert/hidden landing state in the same
     // frame as the click. Start keyboard navigation at the app container,
@@ -120,11 +144,14 @@ export default function Experience() {
   }, [phase]);
   useEffect(() => {
     const keyboard = (e) => {
-      if (e.key === "Escape" && moving) finish();
+      if (e.key === "Escape" && moving) {
+        if (phase === "preferences") home();
+        else openMapOrPreferences();
+      }
     };
     window.addEventListener("keydown", keyboard);
     const hashChanged = () => {
-      if (location.hash === "#discover") finish();
+      if (location.hash === "#discover" || location.hash === "#preferences") openMapOrPreferences();
       else if (!location.hash) home();
     };
     window.addEventListener("hashchange", hashChanged);
@@ -132,7 +159,22 @@ export default function Experience() {
       window.removeEventListener("keydown", keyboard);
       window.removeEventListener("hashchange", hashChanged);
     };
-  }, [moving, finish, home]);
+  }, [moving, phase, openMapOrPreferences, home]);
+
+  const savePreferences = (topics, status) => {
+    try {
+      const next = updateInterests(window.localStorage, "live", historyState => ({
+        ...historyState,
+        preferences: topics,
+        preferenceSetup: status,
+      }));
+      setPreferenceHistory(next);
+      setPreferenceError("");
+      finish();
+    } catch {
+      setPreferenceError("Your choices could not be saved in this browser. Please try again.");
+    }
+  };
 
   return (
     <div
@@ -146,6 +188,19 @@ export default function Experience() {
     >
       <App introPhase={phase} introReduced={reduced} onHome={home} />
       <Pointer reduced={reduced} />
+      {phase === "preferences" && (
+        <section className="preference-onboarding" aria-labelledby="preference-onboarding-title">
+          <div className="preference-onboarding-shell">
+            <header className="preference-onboarding-heading">
+              <span>WELCOME TO EQUALPATH</span>
+              <h1 id="preference-onboarding-title">Find childcare that fits your day.</h1>
+              <p>Choose what matters first. We’ll use it in your normal search and suggestions, and you can change it later.</p>
+            </header>
+            <PreferenceSetup compact history={preferenceHistory} onSave={savePreferences} />
+            {preferenceError && <p className="preference-onboarding-error" role="alert">{preferenceError}</p>}
+          </div>
+        </section>
+      )}
       {keepLanding && (
         <section
           className="landing"

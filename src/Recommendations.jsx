@@ -23,7 +23,7 @@ export function PreferenceSetup({ history, onSave, compact = false }) {
     <button className="text-link" type="button" onClick={() => setEditing(true)}>Change choices</button>
   </div>;
   return <section className={`preference-setup${compact ? ' preference-setup-compact' : ''}`} aria-labelledby="preference-setup-title">
-    <div className="preference-setup-heading"><div><h4 id="preference-setup-title">{compact ? 'Tell us what matters' : 'What matters to you?'}</h4><p>{compact ? 'Pick up to 3. We’ll use them in your search.' : 'Choose up to 3. We use these choices to order suggestions.'}</p></div><span>{draft.length}/3</span></div>
+    <div className="preference-setup-heading"><div><h4 id="preference-setup-title">{compact ? 'Tell us what matters' : 'What matters to you?'}</h4><p>{compact ? 'Pick up to 3. We’ll use them with your search.' : 'Choose up to 3. We use these choices to order suggestions.'}</p></div><span>{draft.length}/3</span></div>
     <div className="preference-options" role="group" aria-label="Suggestion choices">
       {DISCOVERY_PREFERENCES.map(option => <button key={option.id} type="button" className="preference-option" aria-pressed={draft.includes(option.id)} onClick={() => toggle(option.id)}>
         <span className="preference-option-check" aria-hidden="true">{draft.includes(option.id) ? '✓' : ''}</span><span><strong>{option.label}</strong><small>{option.description}</small></span>
@@ -110,11 +110,11 @@ export default function Recommendations({ mode, library, interests, request, onD
           <button className="recommendation-dismiss text-link" onClick={() => update(h => hideRecommendation(h, p))} aria-label={`Not interested in ${p.name}`}><X size={14} />Not interested</button>
         </article>)}</div>
         {!cards.length && <div className="recommendations-empty"><Check size={26} /><h4>No new suggestions for this search</h4><p>Try another location or time. Your saved centres are still in Childcare.</p><button className="secondary" onClick={onDiscover}>Change search <ArrowRight size={16} /></button></div>}
-        {!!cards.length && <p className="recommendations-footnote">Based on listed details. Ask the centre if they have a place for your child.</p>}
+        {!!cards.length && <p className="recommendations-footnote">Based on your search and public review themes. Ask the centre if they have a place for your child.</p>}
       </>}
     <details className="recommendation-controls"><summary>How suggestions work</summary>
       <p>We check your current search, then look for centres similar to those you saved or viewed. Comparing a centre counts more than opening it once. Suggestions do not change your search sorting.</p>
-      <p>Your choices gently reorder matching listed details. They never remove a centre that fits your search, and unknown details are left for you to ask about.</p>
+      <p>Your choices gently reorder matching public review themes. They never remove a centre that fits your search, and missing review evidence is left unknown.</p>
       <p>Viewing history stays in this browser. It keeps centre IDs and activity counts, without your search address, care times or child’s age. Live and demo history stay separate.</p>
       <label><input type="checkbox" checked={history.enabled} onChange={e => update(h => ({ ...h, enabled: e.target.checked }))} />Use viewing history for suggestions</label>
       <p className="notice">Saved centres still help when this is off. Clear history also restores hidden suggestions; your saved items stay.</p>

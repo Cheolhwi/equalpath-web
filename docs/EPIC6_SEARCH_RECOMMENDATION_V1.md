@@ -1,48 +1,70 @@
 # Epic 6 search and recommendation direction
 
-This note records the first implementation of Epic 6 personalised discovery. It is a search aid, not advertising. A centre must still pass the user’s current search before it can be suggested.
+Epic 6 is an evidence-backed search aid, not advertising. A centre must first
+pass the current search. Review signals only reorder eligible results that the
+parent could already use.
 
-## What the user controls
+## First use and cold start
 
-On a first visit to the live map, a visitor sees a small preference card and can choose up to three things that matter:
+Before the first live map opens, EqualPath shows a separate, skippable
+preference page. It asks what matters in a childcare review, rather than
+asking for search constraints:
 
-- Short visits
-- Easy pickup
-- Open later
-- Clear fees
-- Easy to contact
+- flexible short care;
+- smooth pickup;
+- clear late-pickup rules;
+- predictable fees;
+- a responsive team.
 
-The choice is optional, can be skipped, and can be changed later from Saved → For you. It is stored in the same mode-separated browser-local record as recommendation history. No address, date, age, time, notes, or provider snapshot is stored there.
+These are level-two preferences grouped under five level-one review themes:
+temporary care, pickup, late collection, fees, and communication. A visitor
+can choose up to three, skip, or change them later. The choices are stored in
+the mode-separated browser-local record; addresses, dates, times, ages, notes,
+and provider snapshots are not stored there.
+
+This gives a new visitor a useful first signal without pretending that a
+listed service fact is a personal preference. Saved, compared, and viewed
+centres then add a separate, decaying history signal.
+
+## Review taxonomy and evidence gate
+
+Review collection is branch-specific. Each retained record must include its
+public source, observed branch identity, retrieval date, permitted-use scope,
+and enough positive evidence for the same level-two theme. The current gate is
+at least two supporting reviews; when dates are available, at least two must be
+within the recent review window. One review, an old review, a provider listing,
+or a hard search fact stays unknown.
+
+The classifier maps review text or an approved topic annotation to a level-one
+theme and then to its level-two preference. It never converts an overall star
+rating into a preference. For example, two recent reviews about parent updates
+can support “Responsive team”; a published phone number cannot.
+
+The September 22 short-care crawl publishes only derived themes for
+branch-matched Google Maps public review pages. It does not publish full review
+wording. At this point, communication evidence is supported for three
+short-care branches; pickup, late collection, fees, and flexible short-care
+preferences remain neutral until the corpus contains the required review
+evidence.
 
 ## Ranking boundary
 
-The current search remains the hard gate. It decides care type, radius, location, age, date, time, pickup choice, conflicts, and the user’s include-unknown setting. A recommendation cannot bypass those checks.
+The current search remains the hard gate for care type, radius, location, age,
+date, start and end time, pickup, conflicts, and the include-unknown setting.
+After that gate, the ranking combines proximity and known fit, saved/compared/
+viewed history, and the selected review preferences. Preference evidence is a
+gentle capped nudge; unknown evidence contributes no match. The normal search
+page uses the same rerank, so a parent does not need to open a separate
+recommendation page. Explicit price, closing-time, and pickup sorts stay in
+their chosen order.
 
-The ranking then combines:
+The UI uses plain language such as “Matches what you value: Responsive team”.
+It does not present a single childcare score, and it never implies that a
+centre is available just because a review mentions a related service.
 
-1. proximity and known fit for the current request;
-2. saved, compared, and viewed centres, with the existing decay and caps;
-3. explicit preference matches from structured listed facts;
-4. an explicit review topic only when the provider record carries traceable review evidence.
+## Reset and controls
 
-Explicit preferences are a gentle 22% maximum nudge. Unknown evidence is neutral and is never presented as a match. The UI explains a supported match in everyday words, for example “Matches your choice: Easy pickup”.
-
-The same score is also used inside the normal search page. The server still owns the current result page and all hard eligibility checks; local history and choices only annotate and gently reorder matching centres already returned by that search. Nearest first keeps the gentle reorder, while an explicit price, closing-time, or pickup sort remains unchanged.
-
-This deliberately does not create a single childcare score. Different parents can value different evidence, and an unknown fee or pickup rule must stay a question for the centre.
-
-## Cold start
-
-With no saved or viewed history, the first-use map card asks for up to three preferences before the user has to understand a separate recommendation page. The visitor can skip it and search immediately; nearby, known-fit centres remain available. After the visitor saves, compares, or opens a centre, those actions refine later search ordering and For you suggestions. The current search always outranks inferred taste.
-
-## Review topics and evidence gate
-
-Epic 6 review themes remain temporary care, pickup, late collection, fees, and communication. The recommendation code accepts a provider’s explicit topic evidence only; it does not infer a topic from prose or turn review excerpts into a provider-wide rating. The D5 corpus requirements still apply: permitted use, scope, branch match, date, and excerpt traceability must be present before review topics are published.
-
-## User-facing controls
-
-The For you screen exposes the selected choices, a Change choices action, the current search used for checking, and a plain-language How suggestions work section. Viewing history can be paused or cleared without clearing saved centres or the selected choices.
-
-When a first-time visitor has not chosen or skipped preferences, the map shows the compact setup card directly below the search controls. After choices are saved, it disappears from the map and the For you view shows a compact preview: “Good matches, ready to check” for a cold start, or “Your usual centres, ready to check” once saved, compared, or viewed centres provide a real history signal. The preview and normal search tags are visual explanations only: the same current-search gate and evidence rules apply.
-
-The next Epic 6 slice can add review-topic evidence after the D5 corpus is approved, then test whether topic matches improve useful centre opens and saves without increasing unknown or conflict recommendations.
+The settings action “Clear local cache” removes preferences, history, and saved
+centres from this browser, then returns to the landing page so the next visit
+starts as a new user. The preference page can be reopened from the landing
+flow; the map no longer contains a second compact onboarding card.

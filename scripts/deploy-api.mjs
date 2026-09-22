@@ -39,6 +39,7 @@ for (const f of [
   "server/providers.mjs",
   "server/appwrite-store.mjs",
   "server/published-catalog.mjs",
+  "server/review-evidence.mjs",
   "server/hours-overlay.mjs",
   "server/services-overlay.mjs",
   "server/admissions-overlay.mjs",
@@ -57,6 +58,7 @@ for (const f of [
   "server/data/boundary-source.json",
   "server/data/catalog-snapshot.json.gz",
   "server/data/catalog-snapshot.meta.json",
+  "server/data/short-care-review-evidence-20260922.json",
 ])
   cpSync(resolve(root, f), resolve(path, f));
 writeFileSync(

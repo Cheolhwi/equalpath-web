@@ -1,0 +1,150 @@
+{
+  "schema": "equalpath-short-care-review-evidence-v1",
+  "retrievedOn": "2026-09-22",
+  "sourceKind": "google_maps_public_reviews",
+  "scope": "short_term_candidates",
+  "notes": "Only branch-matched public review themes are retained. No full review text is published here. A preference is supported only when at least two positive reviews support the same level-2 theme.",
+  "providers": [
+    {
+      "id": "provider_038b7be988901ada265e733de80",
+      "observedName": "Little Playhouse Preschool and Childcare Centre @ Jalan Mesra",
+      "observedAddress": "34 Jalan Mesra, Off Jalan Damai, 55000 Kuala Lumpur",
+      "reviewCount": 46,
+      "rating": 4.5,
+      "observedThemes": ["nurturing environment", "loving teachers", "curriculum", "warm staff", "confidence"],
+      "sourceUrl": "https://www.google.com/maps/search/Little+Playhouse+Preschool+and+Childcare+Centre+Jalan+Mesra+Kuala+Lumpur"
+    },
+    {
+      "id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+      "observedName": "Lullabee",
+      "observedAddress": "Wisma Ambawang 3G, Jalan Anggor, Jalan Klang Lama, 58100 Kuala Lumpur",
+      "reviewCount": 23,
+      "rating": 4.7,
+      "observedThemes": ["caring teachers", "safe environment", "parent updates", "regular updates", "social development"],
+      "reviewTaxonomy": [{"level1":"communication","level2":"responsive_team","reviewCount":2,"recentCount":2,"positiveCount":2}],
+      "reviewTopics": {"communication":{"state":"supported","reviewCount":2,"recentCount":2,"positiveCount":2}},
+      "sourceUrl": "https://www.google.com/maps/search/Lullabee+Old+Klang+Road+Kuala+Lumpur"
+    },
+    {
+      "id": "provider_21507892dc4fa7d9cba4819519a",
+      "observedName": "Little Playhouse Preschool and Childcare Centre @ KL Eco City",
+      "observedAddress": "M-01, KL Eco City Mall, 3, Jalan Bangsar, 59100 Kuala Lumpur",
+      "reviewCount": 65,
+      "rating": 4.8,
+      "observedThemes": ["friendly teachers", "caring teachers", "patient teachers", "helpful staff", "communication with parents"],
+      "reviewTaxonomy": [{"level1":"communication","level2":"responsive_team","reviewCount":3,"recentCount":3,"positiveCount":3}],
+      "reviewTopics": {"communication":{"state":"supported","reviewCount":3,"recentCount":3,"positiveCount":3}},
+      "sourceUrl": "https://www.google.com/maps/search/Little+Playhouse+Preschool+and+Childcare+Centre+KL+Eco+City+Malaysia"
+    },
+    {
+      "id": "provider_4576ca09bd13bb7c7798a359247",
+      "observedName": "Learning Fresh, Mont Kiara",
+      "observedAddress": "LG3-6 Plaza Arcoris, Jalan Kiara, Mont Kiara, 50480 Kuala Lumpur",
+      "reviewCount": 17,
+      "rating": 4.8,
+      "observedThemes": ["patient teachers", "creative teaching", "supportive teachers", "confidence", "parents"],
+      "sourceUrl": "https://www.google.com/maps/search/Learning+Fresh+Mont+Kiara+Kuala+Lumpur"
+    },
+    {
+      "id": "provider_636b2a9c3d83d2b574befea79b3",
+      "observedName": "Edu Talent Education Centre",
+      "observedAddress": "6-2-2, Jalan Setia Prima C U13/C, Setia Alam, 40170 Shah Alam",
+      "reviewCount": 100,
+      "rating": 4.9,
+      "observedThemes": ["dedicated teachers", "caring teachers", "patient teachers", "warm environment", "progress updates"],
+      "reviewTaxonomy": [{"level1":"communication","level2":"responsive_team","reviewCount":2,"recentCount":2,"positiveCount":2}],
+      "reviewTopics": {"communication":{"state":"supported","reviewCount":2,"recentCount":2,"positiveCount":2}},
+      "sourceUrl": "https://www.google.com/maps/search/Edu+Talent+Education+Centre+Setia+Alam"
+    },
+    {
+      "id": "provider_709a1c3af749886ea08b7c5e4db",
+      "observedName": "Taska Ibu Elisa",
+      "observedAddress": "2, Jalan 12/4D, Taman Cheras Jaya, 43200 Cheras, Selangor",
+      "reviewCount": 1,
+      "rating": 5,
+      "observedThemes": [],
+      "sourceUrl": "https://www.google.com/maps/search/Taska+Ibu+Elisa+Cheras+Jaya+Malaysia"
+    },
+    {
+      "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+      "observedName": "TOY8 Playground — The Gardens Mall",
+      "observedAddress": "T-216C, 3rd Floor, The Gardens Mall, Lingkaran Syed Putra, 59200 Kuala Lumpur",
+      "reviewCount": 41,
+      "rating": 4.4,
+      "observedThemes": ["unique toys", "child development", "friendly staff", "cleanliness", "parents"],
+      "sourceUrl": "https://www.google.com/maps/place/TOY8+Playground/data=!4m2!3m1!1s0x0:0x2dfa9b410ff9ebd0"
+    },
+    {
+      "id": "provider_7ac2d78d14abd37d859b7dfcae9",
+      "observedName": "Limoncito — Bukit Tunku Art Drop",
+      "observedAddress": "Lot G2, Persiaran Taman Tunku, Bukit Tunku, 50480 Kuala Lumpur",
+      "reviewCount": 8,
+      "rating": 5,
+      "observedThemes": ["painting", "art drop", "warm atmosphere", "creative activities", "caring team"],
+      "sourceUrl": "https://www.google.com/maps/search/Limoncito+Bukit+Tunku+Art+Drop+Kuala+Lumpur"
+    },
+    {
+      "id": "provider_88408de0b4f21319175ac455673",
+      "observedName": "Learning Fresh, KLCC",
+      "observedAddress": "B-9-7, Megan Avenue 2, Jalan Yap Kwan Seng, 50450 Kuala Lumpur",
+      "reviewCount": 8,
+      "rating": 4,
+      "observedThemes": ["warm welcome", "kind teachers", "patient teachers", "confidence"],
+      "sourceUrl": "https://www.google.com/maps/search/Learning+Fresh+KLCC+Kuala+Lumpur"
+    },
+    {
+      "id": "provider_b4fca32684be03c852a77c7f3f2",
+      "observedName": "Kinder Mindz — Kepong",
+      "observedAddress": "Ground Floor, Block C, Vista Mutiara Condominium, Jalan Vista Mutiara, Kepong Baru, 52000 Kuala Lumpur",
+      "reviewCount": 6,
+      "rating": 4.7,
+      "observedThemes": ["academic improvement", "teachers"],
+      "sourceUrl": "https://www.google.com/maps/search/Kindermindz+Kepong+Kuala+Lumpur"
+    },
+    {
+      "id": "provider_b5e469ac6144ecffad381d62593",
+      "observedName": "Little Playhouse — Menara Shell (KL Sentral)",
+      "observedAddress": "Level 4, Menara Shell, 211, Jalan Tun Sambanthan, KL Sentral, 50470 Kuala Lumpur",
+      "reviewCount": 133,
+      "rating": 4.8,
+      "observedThemes": ["kind teachers", "safe environment", "friendly staff", "supportive management", "curriculum"],
+      "sourceUrl": "https://www.google.com/maps/search/Little+Playhouse+Menara+Shell+KL+Sentral"
+    },
+    {
+      "id": "provider_b98cf5c4416105eb3c18b26160b",
+      "observedName": "iKid House — Bandar Puteri",
+      "observedAddress": "11 Jalan Puteri 4/7A, Bandar Puteri, 47100 Puchong, Selangor",
+      "reviewCount": 35,
+      "rating": 4.9,
+      "observedThemes": ["caring teachers", "daycare", "teachers"],
+      "sourceUrl": "https://www.google.com/maps/search/iKid+House+Bandar+Puteri+Puchong"
+    },
+    {
+      "id": "provider_bc393868c856c47ef03fd2043b1",
+      "observedName": "Kasih Nilly Nursery",
+      "observedAddress": "Warisan Cityview, 55200 Kuala Lumpur",
+      "reviewCount": 22,
+      "rating": 5,
+      "observedThemes": ["kind teachers", "nurturing environment", "cleanliness", "childcare", "happy place"],
+      "sourceUrl": "https://www.google.com/maps/search/Kasih+Nilly+Nursery+Kuala+Lumpur"
+    },
+    {
+      "id": "provider_d599142b1023ab80f309304845e",
+      "observedName": "We Rock the Spectrum — Taman Desa",
+      "observedAddress": "G1, Wisma Miramas, 1, Jalan 2/109E, Old Klang Road, Taman Desa, 58100 Kuala Lumpur",
+      "reviewCount": 28,
+      "rating": 4.7,
+      "observedThemes": ["therapies", "ASD", "toys", "staff", "safety"],
+      "sourceUrl": "https://www.google.com/maps/search/We+Rock+the+Spectrum+Taman+Desa+Kuala+Lumpur"
+    },
+    {
+      "id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+      "observedName": "Learning Fresh, Bukit Damansara",
+      "observedAddress": "22-1, Jalan Medan Setia 2, Bukit Damansara, 50490 Kuala Lumpur",
+      "reviewCount": null,
+      "rating": null,
+      "observedThemes": [],
+      "sourceUrl": "https://www.google.com/maps/search/Learning+Fresh+Damansara+Heights+Kuala+Lumpur"
+    }
+  ]
+}

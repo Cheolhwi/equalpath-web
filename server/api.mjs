@@ -25,6 +25,7 @@ import { regionAt, regions, distanceKm } from "./geography.mjs";
 import { fixtureCatalog, demoPickup } from "./fixtures.mjs";
 import { ServiceError } from "./appwrite-store.mjs";
 import { createPublishedStore } from "./published-catalog.mjs";
+import { applyReviewEvidence } from "./review-evidence.mjs";
 import { createPlaceSearch } from "./places.mjs";
 import { createDrivingRoutes } from "./driving.mjs";
 export function createAPI({ store = createPublishedStore(), placeSearch = createPlaceSearch(), reverseGeocode = placeSearch.reverse, drivingRoutes = createDrivingRoutes() } = {}) {
@@ -47,7 +48,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       if (!regions.includes(regionAt(body.point))) throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
       return {contract:CONTRACT,mode,regions,...(mode === "demo" ? {pickup:null} : await reverseGeocode(body.point))};
     }
-    const catalog = mode === "demo" ? fixtureCatalog : await store.catalog(),
+    const catalog = mode === "demo" ? fixtureCatalog : applyReviewEvidence(await store.catalog()),
       allItems = body.features?.includes?.('area-fees-v1') === true ? catalog.items : catalog.items.map(p=>p.fees?.some(f=>f.verification==='area_estimate') ? {...p,fees:p.fees.filter(f=>f.verification!=='area_estimate')} : p);
     const careType = body.request?.careType ?? body.careType ?? "short_term";
     if (!["regular", "short_term"].includes(careType)) throw new ServiceError("INVALID_REQUEST", 422, { careType: "Choose a care type." });

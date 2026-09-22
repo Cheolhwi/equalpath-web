@@ -22,19 +22,6 @@
 .map-search-launch > svg { flex-shrink: 0; }
 .map-quick-actions { display: flex; gap: 8px; }
 .map-quick-actions button { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 7px 14px; background: var(--paper); border: 1px solid var(--rule); border-radius: 24px; font-size: 13px; box-shadow: 0 2px 8px #30382f0d; }
-.map-tools-overlay > .preference-setup-compact { margin: 0; padding: 14px; border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--rule)); border-radius: 18px; background: color-mix(in srgb, var(--paper) 94%, var(--accent)); box-shadow: var(--map-shadow); }
-.map-tools-overlay .preference-setup-compact .preference-setup-heading { gap: 10px; }
-.map-tools-overlay .preference-setup-compact .preference-setup-heading h4 { margin-bottom: 2px; font-size: 16px; }
-.map-tools-overlay .preference-setup-compact .preference-setup-heading p { font-size: 12px; }
-.map-tools-overlay .preference-setup-compact .preference-options { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin: 12px 0; }
-.map-tools-overlay .preference-setup-compact .preference-option { min-height: 48px; padding: 8px; border-radius: 12px; gap: 6px; }
-.map-tools-overlay .preference-setup-compact .preference-option strong { font-size: 12px; }
-.map-tools-overlay .preference-setup-compact .preference-option small { margin-top: 2px; font-size: 10px; }
-.map-tools-overlay .preference-setup-compact .preference-option-check { flex-basis: 17px; width: 17px; height: 17px; }
-.map-tools-overlay .preference-setup-compact .preference-setup-actions { gap: 10px; }
-.map-tools-overlay .preference-setup-compact .preference-setup-actions .primary { min-height: 38px; padding: 8px 12px; font-size: 12px; }
-.map-tools-overlay .preference-setup-compact .preference-setup-actions .text-link { min-height: 38px; font-size: 12px; }
-.map-tools-overlay .preference-setup-compact .preference-setup-note { margin: 8px 0 0; font-size: 10px; }
 .map-search-status { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin: 0; padding: 8px 12px; background: var(--paper); border: 1px solid var(--rule); font-size: 13px; }
 .map-search-status button { display: inline-flex; align-items: center; gap: 6px; text-decoration: underline; }
 .map-first .map-controls { top: auto; bottom: 42px; left: 16px; max-width: calc(100% - 90px); }

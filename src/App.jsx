@@ -21,7 +21,7 @@ import {
   ChevronDown,
   Heart,
 } from "lucide-react";
-import Recommendations, { PreferenceSetup } from "./Recommendations.jsx";
+import Recommendations from "./Recommendations.jsx";
 import useInterests from "./useInterests.js";
 import Comparison from "./Comparison.jsx";
 import MapCanvas from "./MapCanvas.jsx";
@@ -212,6 +212,7 @@ export default function App({
       window.dispatchEvent(new CustomEvent("equalpath-motion-change", { detail: { reduced: false } }));
       setClearCacheConfirm(false);
       close();
+      onHome?.();
       notify("Local data cleared. EqualPath is ready for a new start.");
     } catch {
       setClearCacheConfirm(false);
@@ -1216,13 +1217,6 @@ export default function App({
             collapsed={searchCollapsed} onCollapsedChange={setSearchCollapsed}
             notice={reopening ? `Choose a new date for ${reopening.name}.` : results?.total === 0 ? "No centres found. Try another address or change the filters." : browseSelection && !results ? `Add your search details for ${browseSelection.name}.` : mode === "demo" ? "Demo · fictional centres" : ""}
             failure={failure} onRetry={() => search(null)} addressStatus={pickupAddress} onRetryAddress={() => setAddressRetry(n => n + 1)} />
-          {mode === "live" && interests.ready && interests.history.preferenceSetup === "new" && (
-            <PreferenceSetup
-              compact
-              history={interests.history}
-              onSave={(topics, status) => interests.update(h => ({ ...h, preferences: topics, preferenceSetup: status }))}
-            />
-          )}
           <div className="map-quick-actions">
             <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>
             <MapSavedShortcuts library={library}

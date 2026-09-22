@@ -11,6 +11,78 @@
   visibility: hidden;
   pointer-events: none;
 }
+.experience.phase-preferences .equalpath {
+  visibility: hidden;
+  pointer-events: none;
+}
+.preference-onboarding {
+  position: fixed;
+  inset: 0;
+  z-index: 26;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: clamp(24px, 6vw, 76px);
+  background: color-mix(in srgb, var(--landing-paper) 94%, #dfe5d5);
+  color: var(--landing-ink);
+  font-family: MiSans, "DM Sans", sans-serif;
+}
+.preference-onboarding-shell {
+  width: min(780px, 100%);
+}
+.preference-onboarding-heading {
+  margin-bottom: 24px;
+}
+.preference-onboarding-heading > span {
+  display: block;
+  margin-bottom: 12px;
+  color: #687453;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+.preference-onboarding-heading h1 {
+  max-width: 650px;
+  margin: 0;
+  font-size: clamp(32px, 5vw, 58px);
+  line-height: 1.05;
+  letter-spacing: -.045em;
+}
+.preference-onboarding-heading p {
+  max-width: 590px;
+  margin: 14px 0 0;
+  color: var(--landing-muted);
+  font-size: clamp(15px, 2vw, 19px);
+  line-height: 1.45;
+}
+.preference-onboarding .preference-setup-compact {
+  margin: 0;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid var(--landing-rule);
+  border-radius: 24px;
+  background: #fafaf5e8;
+  box-shadow: 0 18px 50px #30362c12;
+}
+.preference-onboarding .preference-setup-heading h4 {
+  font-size: clamp(20px, 2.5vw, 25px);
+}
+.preference-onboarding .preference-setup-heading p {
+  font-size: 14px;
+}
+.preference-onboarding .preference-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+.preference-onboarding .preference-option {
+  min-height: 72px;
+  padding: 14px;
+  border-radius: 16px;
+}
+.preference-onboarding .preference-option strong { font-size: 15px; }
+.preference-onboarding .preference-option small { font-size: 12px; }
+.preference-onboarding .preference-setup-actions .primary { min-height: 48px; padding-inline: 18px; }
+.preference-onboarding-error { margin: 12px 0 0; color: #8b5e1a; font-size: 13px; }
 .experience.phase-entering {
   overflow: clip;
 }
@@ -364,6 +436,15 @@
   transition-duration: 0ms !important;
 }
 @media (max-width: 650px) {
+  .preference-onboarding { align-items: start; padding: 28px 18px 34px; }
+  .preference-onboarding-heading { margin-bottom: 18px; }
+  .preference-onboarding-heading > span { margin-bottom: 9px; font-size: 9px; }
+  .preference-onboarding-heading h1 { font-size: clamp(30px, 10vw, 44px); }
+  .preference-onboarding-heading p { margin-top: 10px; font-size: 15px; }
+  .preference-onboarding .preference-setup-compact { padding: 15px; border-radius: 19px; }
+  .preference-onboarding .preference-options { grid-template-columns: 1fr; gap: 7px; margin: 14px 0; }
+  .preference-onboarding .preference-option { min-height: 58px; padding: 11px; }
+  .preference-onboarding .preference-setup-actions { gap: 9px; }
   .landing-header {
     top: 28px;
     left: 24px;

@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DISCOVERY_PREFERENCES, emptyInterests, recordInterest, interestSeeds, readInterests, updateInterests, interestKey, hideRecommendation, centreSimilarity, preferenceEvidence, recommendCentres, personaliseSearchItems } from '../shared/recommendations.mjs';
+import { DISCOVERY_PREFERENCES, emptyInterests, recordInterest, interestSeeds, readInterests, updateInterests, interestKey, hideRecommendation, centreSimilarity, classifyReview, preferenceEvidence, recommendCentres, personaliseSearchItems } from '../shared/recommendations.mjs';
 import { emptyLibrary } from '../shared/saved.mjs';
 import { createAPI } from '../server/api.mjs';
+import { applyReviewEvidence } from '../server/review-evidence.mjs';
 import { fixtureCatalog, demoPickup } from '../server/fixtures.mjs';
 const now = '2026-09-17T04:00:00.000Z';
 const request = { careType:'short_term', pickup:demoPickup, date:'2026-09-22', deadline:'16:00', end:'18:00', age:'4', transport:'', radius:5, sort:'distance', includeUnknown:true, includeConflicts:true, query:'' };
@@ -68,19 +69,30 @@ test('fresh seed facts drive similarity, unknown stays unknown, and a previous c
   assert.ok(ranked.find(x=>x.p.id==='b').reason.includes('Similar'));
   assert.ok(!rank([b],{seeds:[],history:h})[0].reason.includes('Similar'));
 });
-test('explicit choices gently promote supported facts and leave unknown evidence neutral', () => {
-  const clear = provider('clear', { fees: [{ amount: 20, basis: 'hour', currency: 'MYR' }] });
+test('explicit review preferences gently promote supported evidence and leave unknown evidence neutral', () => {
+  const responsive = provider('responsive', { reviewTopics: { communication: { state: 'supported', reviewCount: 2, recentCount: 2, positiveCount: 2 } } });
   const unknown = provider('unknown', { fees: [] });
-  const ranked = rank([unknown, clear], { preferences: ['clear_fees'] });
-  assert.equal(ranked[0].p.id, 'clear');
-  assert.equal(ranked[0].reason, 'Matches your choice: Clear fees');
-  assert.equal(preferenceEvidence(unknown, 'clear_fees', request).state, 'unknown');
-  assert.equal(preferenceEvidence(clear, 'clear_fees', request).state, 'supported');
+  const ranked = rank([unknown, responsive], { preferences: ['responsive_team'] });
+  assert.equal(ranked[0].p.id, 'responsive');
+  assert.equal(ranked[0].reason, 'Matches what you value: Responsive team');
+  assert.equal(preferenceEvidence(unknown, 'responsive_team', request).state, 'unknown');
+  assert.equal(preferenceEvidence(responsive, 'responsive_team', request).state, 'supported');
 });
 test('review topics are used only when explicitly supplied by the provider evidence', () => {
-  const p = provider('reviewed', { admission: null, reviewTopics: { short_visits: true } });
-  assert.equal(preferenceEvidence(p, 'short_visits', request).source, 'review');
-  assert.equal(preferenceEvidence(provider('without-review', { admission: null }), 'short_visits', request).state, 'unknown');
+  const p = provider('reviewed', { admission: null, reviewTopics: { temporary_care: { state: 'supported', reviewCount: 2, positiveCount: 2 } } });
+  assert.equal(preferenceEvidence(p, 'flexible_short_care', request).source, 'review');
+  assert.equal(preferenceEvidence(provider('without-review', { admission: null }), 'flexible_short_care', request).state, 'unknown');
+});
+test('review text maps a level-one concern to a level-two preference', () => {
+  const classified = classifyReview({ rating: 5, text: 'Parents say staff reply quickly, share progress updates and explain fees before the visit.' });
+  assert.deepEqual(classified.level1, ['fees', 'communication']);
+  assert.deepEqual(classified.level2, ['predictable_fees', 'responsive_team']);
+});
+test('short-care crawl merges only derived review evidence into a matched branch', () => {
+  const catalog = applyReviewEvidence({ items: [{ id: 'provider_1bdfa3d76b9a23c6c4306edb6f4' }, { id: 'not-crawled' }] });
+  assert.equal(catalog.items[0].reviewTopics.communication.state, 'supported');
+  assert.equal(catalog.items[0].reviewEvidence.identityVerified, true);
+  assert.equal(catalog.items[1].reviewEvidence, undefined);
 });
 test('explicit fee priority wins over history; same brands do not fill an otherwise equivalent shortlist', () => {
   const expensive=provider('expensive',{fees:[{amount:100,basis:'hour'}]}), cheap=provider('cheap');
@@ -95,21 +107,26 @@ test('contact preference and deterministic top-three limits remain intact', () =
   assert.equal(rank(['a','b','c','d'].map(id=>provider(id))).length,3);
 });
 test('normal search gently surfaces preference matches without changing explicit sorts', () => {
-  const clear = provider('clear', { fees: [{ amount: 20, basis: 'hour', currency: 'MYR' }] });
+  const clear = provider('clear', { reviewTopics: { fees: { state: 'supported', reviewCount: 2, positiveCount: 2 } } });
   const unknown = provider('unknown', { fees: [], distanceKm: .2 });
   const items = personaliseSearchItems({
     items: [unknown, clear], request, library: emptyLibrary(),
-    history: { ...emptyInterests(), preferences: ['clear_fees'], preferenceSetup: 'complete' },
+    history: { ...emptyInterests(), preferences: ['predictable_fees'], preferenceSetup: 'complete' },
   });
   assert.deepEqual(items.map(p => p.id), ['clear', 'unknown']);
   assert.equal(items[0].personalised, true);
-  assert.match(items[0].personalisedReason, /Clear fees/);
+  assert.match(items[0].personalisedReason, /Predictable fees/);
   const byPrice = personaliseSearchItems({
     items: [clear, unknown], request: { ...request, sort: 'price' }, library: emptyLibrary(),
-    history: { ...emptyInterests(), preferences: ['clear_fees'], preferenceSetup: 'complete' },
+    history: { ...emptyInterests(), preferences: ['predictable_fees'], preferenceSetup: 'complete' },
   });
   assert.deepEqual(byPrice.map(p => p.id), ['clear', 'unknown']);
   assert.equal(byPrice[0].personalised, true);
+});
+test('listed fees, pickup and contact details do not create review preferences', () => {
+  const listed = provider('listed', { fees: [{ amount: 20, basis: 'hour' }], transport: { exists: true }, reviewTopics: undefined });
+  for (const id of ['predictable_fees', 'smooth_pickup', 'responsive_team'])
+    assert.equal(preferenceEvidence(listed, id, request).state, 'unknown');
 });
 test('normal search history is safe when a previous centre is off the current page', () => {
   const viewed = provider('viewed', { distanceKm: 30 });
