@@ -249,3 +249,56 @@ for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly p
   await page.screenshot({path:`${out}/filters-applied-${width}.png`});
   expect(errors).toEqual([]);
 });
+
+for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly pending until Update succeeds, and reverting clears the pending state`, async ({page}) => {
+  await page.setViewportSize({width, height: 900});
+  const {calls, errors} = await setup(page);
+  await expect(page.locator('.search-apply-status')).toContainText('Then tap Find care');
+  await fillMapSearch(page);
+  await page.getByRole('button', {name:'Find childcare', exact:true}).click();
+  await expect.poll(() => calls.filter(c => c.action === 'search').length).toBe(1);
+  if (width < 760) await page.getByRole('button', {name:'Change search', exact:true}).click();
+  await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
+  await page.locator('[data-field="age"]').click();
+  await page.getByRole('radio', {name:'1–3 years', exact:true}).click();
+  await expect(page.locator('[data-field="age"]')).toHaveAttribute('data-pending', 'true');
+  await expect(page.locator('.search-apply-status')).toContainText('Changes not applied');
+  await expect(page.locator('[data-field="date"]')).not.toHaveAttribute('data-pending');
+  await page.locator('[data-field="age"]').click();
+  await page.getByRole('radio', {name:'4–6 years', exact:true}).click();
+  await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
+  await expect(page.locator('[data-pending]')).toHaveCount(0);
+  await page.locator('[data-field="more"]').click();
+  await page.locator('#transport').selectOption('self');
+  await page.getByRole('button', {name:'Close options', exact:true}).click();
+  await expect(page.locator('.selected-filter-summary')).toContainText('Pickup: I’ll handle it');
+  await expect(page.locator('[data-field="more"]')).toHaveAttribute('data-pending', 'true');
+  await selectTime(page, '#care-end', '19', '15');
+  await expect(page.locator('#care-end')).toHaveAttribute('data-pending', 'true');
+  expect(calls.filter(c => c.action === 'search')).toHaveLength(1);
+  const action = await page.locator('.search-actions').boundingBox();
+  const filters = await page.locator('.dock-options').boundingBox();
+  expect(action.y).toBeGreaterThanOrEqual(filters.y + filters.height);
+  expect(action.y + action.height).toBeLessThan(900);
+  await page.screenshot({path:`${out}/filters-pending-${width}.png`});
+  let release, started;
+  const gate = new Promise(r => release = r), seen = new Promise(r => started = r);
+  await page.route('**/api', async route => {
+    if (route.request().postDataJSON().action === 'search') { started(); await gate; }
+    await route.fallback();
+  });
+  await page.locator('[data-field="more"]').click();
+  await expect(page.locator('.filter-review')).toContainText('Changes apply when you tap Update results');
+  await page.locator('.filter-review').getByRole('button', {name:'Update results', exact:true}).click();
+  await seen;
+  await expect(page.locator('.search-actions')).toHaveAttribute('data-state', 'loading');
+  await expect(page.locator('.search-actions button')).toBeDisabled();
+  release();
+  if (width < 760) await page.getByRole('button', {name:'Change search', exact:true}).click();
+  await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
+  await expect(page.locator('[data-pending]')).toHaveCount(0);
+  await expect(page.locator('.selected-filter-summary')).toContainText('Pickup: I’ll handle it');
+  expect(calls.filter(c => c.action === 'search').at(-1).request).toMatchObject({transport:'self', end:'19:15'});
+  await page.screenshot({path:`${out}/filters-applied-${width}.png`});
+  expect(errors).toEqual([]);
+});

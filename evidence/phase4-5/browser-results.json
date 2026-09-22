@@ -3,7 +3,11 @@
     "argv": [
       "/opt/homebrew/Cellar/node/26.0.0/bin/node",
       "/Users/cheolhwi/Documents/fit5120/webapp/node_modules/.bin/playwright",
-      "test"
+      "test",
+      "tests/browser/map-cards.spec.mjs",
+      "--project=journeys",
+      "--grep",
+      "mobile map previews"
     ],
     "configFile": "/Users/cheolhwi/Documents/fit5120/webapp/playwright.config.mjs",
     "rootDir": "/Users/cheolhwi/Documents/fit5120/webapp/tests/browser",
@@ -16,24 +20,36 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {
-      "actualWorkers": 1
-    },
+    "metadata": {},
     "preserveOutput": "always",
     "projects": [
       {
         "outputDir": "/Users/cheolhwi/Documents/fit5120/webapp/.build/browser-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 1
-        },
-        "id": "",
-        "name": "",
+        "metadata": {},
+        "id": "journeys",
+        "name": "journeys",
+        "testDir": "/Users/cheolhwi/Documents/fit5120/webapp/tests/browser",
+        "testIgnore": [
+          "/landing(?:-loading)?\\.spec\\.mjs/"
+        ],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "/Users/cheolhwi/Documents/fit5120/webapp/.build/browser-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "landing",
+        "name": "landing",
         "testDir": "/Users/cheolhwi/Documents/fit5120/webapp/tests/browser",
         "testIgnore": [],
         "testMatch": [
-          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+          "/landing(?:-loading)?\\.spec\\.mjs/"
         ],
         "timeout": 45000
       }
@@ -62,265 +78,23 @@
     "version": "1.63.0",
     "workers": 1,
     "webServer": {
-      "command": "VITE_EQUALPATH_API_URL=/api npm run dev -- --port 4191",
-      "url": "http://127.0.0.1:4191",
+      "command": "VITE_EQUALPATH_API_URL=/api npm run dev -- --port 4179",
+      "url": "http://127.0.0.1:4179",
       "reuseExistingServer": true,
       "timeout": 30000
     }
   },
-  "suites": [
+  "suites": [],
+  "errors": [
     {
-      "title": "phase4-5.spec.mjs",
-      "file": "phase4-5.spec.mjs",
-      "column": 0,
-      "line": 0,
-      "specs": [
-        {
-          "title": "save, reload, edit, reuse fresh request, inspect preparation, download, and remove",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 45000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "",
-              "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 2850,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-09-13T03:17:16.899Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "107ef3ee61f37c60ae88-d85b8f7cabdc8c59984a",
-          "file": "phase4-5.spec.mjs",
-          "line": 51,
-          "column": 1
-        },
-        {
-          "title": "failed local writes preserve candidate, previous reason and saved list",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 45000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "",
-              "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 1144,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-09-13T03:17:20.055Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "107ef3ee61f37c60ae88-9fc0709024a668d84c4d",
-          "file": "phase4-5.spec.mjs",
-          "line": 194,
-          "column": 1
-        },
-        {
-          "title": "unmatched saved place and conflicting times require correction, not silent replacement",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 45000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "",
-              "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 1244,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-09-13T03:17:21.204Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "107ef3ee61f37c60ae88-290b4e2d0f4233aebbdc",
-          "file": "phase4-5.spec.mjs",
-          "line": 232,
-          "column": 1
-        },
-        {
-          "title": "reopened favourite reports changed source facts and preserves snapshot after refresh failure",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 45000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "",
-              "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 1392,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-09-13T03:17:22.453Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "107ef3ee61f37c60ae88-d26bb4eeba5735b2021e",
-          "file": "phase4-5.spec.mjs",
-          "line": 285,
-          "column": 1
-        },
-        {
-          "title": "preparation remains dated until explicitly regenerated for new times and transport",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 45000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "",
-              "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 1071,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-09-13T03:17:23.849Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "107ef3ee61f37c60ae88-d463ede1ea98b9adc83c",
-          "file": "phase4-5.spec.mjs",
-          "line": 339,
-          "column": 1
-        },
-        {
-          "title": "mobile navigation, modal layout, checkboxes and keyboard close remain usable",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 45000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "",
-              "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 1198,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-09-13T03:17:24.927Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "107ef3ee61f37c60ae88-6f668c7dd2bae6a28fb7",
-          "file": "phase4-5.spec.mjs",
-          "line": 374,
-          "column": 1
-        },
-        {
-          "title": "print action creates the standalone sheet and compact zoom keeps controls usable",
-          "ok": true,
-          "tags": [],
-          "tests": [
-            {
-              "timeout": 45000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "",
-              "projectName": "",
-              "results": [
-                {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 1058,
-                  "errors": [],
-                  "stdout": [],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-09-13T03:17:26.130Z",
-                  "annotations": [],
-                  "attachments": []
-                }
-              ],
-              "status": "expected"
-            }
-          ],
-          "id": "107ef3ee61f37c60ae88-43ddaaad2572c6938df1",
-          "file": "phase4-5.spec.mjs",
-          "line": 411,
-          "column": 1
-        }
-      ]
+      "message": "Error: Process from config.webServer was not able to start. Exit code: 1",
+      "stack": "Error: Process from config.webServer was not able to start. Exit code: 1"
     }
   ],
-  "errors": [],
   "stats": {
-    "startTime": "2026-09-13T03:17:16.280Z",
-    "duration": 11026.919,
-    "expected": 7,
+    "startTime": "2026-09-22T19:53:18.769Z",
+    "duration": 266.745,
+    "expected": 0,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

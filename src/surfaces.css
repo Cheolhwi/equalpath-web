@@ -170,6 +170,7 @@
 .map-first .saved-row h3 { font-size: 20px; }
 .map-first .saved-row .saved-actions > button:not(.secondary) { border-radius: 999px; padding-inline: 12px; }
 .map-first .saved-row .saved-actions > button:not(.secondary):hover { background: var(--soft); }
+.map-first .saved-return { margin-bottom: 16px; }
 .map-first .save-explanation { padding: 12px 16px; }
 .map-first .saved-library > .save-explanation { margin-bottom: 0; padding: 0; border-radius: 0; }
 
