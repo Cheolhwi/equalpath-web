@@ -197,7 +197,7 @@
 .map-first .provider-row .row-actions { gap: 6px; }
 .map-first .provider-row .row-actions > button:not(:last-child) { border: 1px solid var(--rule); background: var(--bg); }
 .map-first .provider-row .row-actions > button[aria-pressed="true"] { background: var(--soft); border-color: var(--accent); }
-.map-first .provider-row :is(.state-pill, .suggestion-tag) { border-radius: 999px; }
+.map-first .provider-row :is(.state-pill, .suggestion-tag, .personalised-tag) { border-radius: 999px; }
 
 /* Clear, separate card actions. The whole card is not a nested button. */
 .map-first .map-centre-card { display: flex; flex-direction: column; }
@@ -254,7 +254,6 @@
   .map-first .map-tools-overlay > .map-quick-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); width: 100%; gap: 6px; }
   .map-first .map-quick-actions > button { min-width: 0; }
   .map-first .map-quick-actions > button:first-child { flex-direction: column; gap: 0; padding: 4px; font-size: 11px; line-height: 1.35; }
-  .map-first .map-quick-actions .map-preference-shortcut { grid-column: 1 / -1; min-height: 44px; }
   .map-results-label { display: none; }
   .map-results-short { display: inline; }
   .map-first .map-quick-actions .map-saved-shortcut { min-height: 44px; max-width: none; width: 100%; padding: 6px 8px; gap: 5px; border-radius: 16px; }

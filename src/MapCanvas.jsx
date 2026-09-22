@@ -255,7 +255,7 @@ export default function MapCanvas({
         el.textContent = String(
           items.findIndex((x) => x.id === p.id) + 1,
         ).padStart(2, "0");
-        el.title = p.name + (conflict ? " · Some details don’t match" : p.suggested ? " · Suggested first" : "");
+        el.title = p.name + (conflict ? " · Some details don’t match" : p.personalised ? ` · ${p.personalisedReason}` : p.suggested ? " · Suggested first" : "");
         if (conflict) el.setAttribute("aria-description", "Some details don’t match this request. Select to check.");
         if (p.suggested) {
           const badge = document.createElement("span");

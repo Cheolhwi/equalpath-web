@@ -678,6 +678,19 @@ select {
   font-size: 10px;
   color: var(--green);
 }
+.personalised-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  line-height: 1.4;
+  padding: 4px 7px;
+  width: fit-content;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: var(--soft);
+  font-weight: 600;
+}
 .row-actions {
   display: flex;
   justify-content: space-between;
@@ -1292,6 +1305,12 @@ dialog::backdrop {
   border-bottom: 1px solid var(--rule);
   font-size: 13px;
 }
+.setting-line-clear { align-items: flex-start; gap: 14px; }
+.setting-line-clear > span:first-child { display: grid; gap: 4px; min-width: 0; }
+.setting-line-clear > span:first-child strong { font-size: 13px; }
+.setting-line-clear > span:first-child small { max-width: 34ch; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.setting-line-clear > button, .setting-confirm-actions button { flex-shrink: 0; min-height: 38px; padding: 8px 12px; border-radius: 999px; }
+.setting-confirm-actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .theme-buttons {
   display: flex;
   border: 1px solid var(--rule);

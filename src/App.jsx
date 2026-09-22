@@ -21,7 +21,7 @@ import {
   ChevronDown,
   Heart,
 } from "lucide-react";
-import Recommendations from "./Recommendations.jsx";
+import Recommendations, { PreferenceSetup } from "./Recommendations.jsx";
 import useInterests from "./useInterests.js";
 import Comparison from "./Comparison.jsx";
 import MapCanvas from "./MapCanvas.jsx";
@@ -66,6 +66,7 @@ import {
   storageKey,
   factSnapshot,
 } from "../shared/saved.mjs";
+import { personaliseSearchItems } from "../shared/recommendations.mjs";
 const EMPTY = [];
 const focusMapSearch = () => [...document.querySelectorAll(".mobile-search-summary, .map-search-launch")].find(el => el.getClientRects().length)?.focus({ preventScroll: true });
 const initial = () => ({
@@ -149,6 +150,7 @@ export default function App({
     [reduced, setReduced] = useState(readMotionPreference),
     [health, setHealth] = useState(null),
     [toast, setToast] = useState(""),
+    [clearCacheConfirm, setClearCacheConfirm] = useState(false),
     [mapStatus, setMapStatus] = useState("loading"),
     [library, setLibrary] = useState(emptyLibrary),
     [savedTab, setSavedTab] = useState("favourites"),
@@ -192,6 +194,29 @@ export default function App({
     setToast(text);
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(""), 4200);
+  };
+  const clearLocalCache = () => {
+    try {
+      Object.keys(window.localStorage)
+        .filter(key => key.startsWith("equalpath:"))
+        .forEach(key => window.localStorage.removeItem(key));
+      interests.clear();
+      setLibrary(emptyLibrary());
+      setDraft(initial());
+      setResults(null); setNearby(null); setSelected(null); setCompareIds([]); setComparison(null);
+      setProfile(null); setEnquiry(null); setPreparation(null); setSavedCheck(null);
+      setErrors({}); setFailure(null); setFormOpen(true); setSearchCollapsed(false); setMobilePane("map");
+      setMapTarget(DEFAULT_MAP); setBrowseCenter(DEFAULT_MAP.center); setMapRestored(false);
+      mapView.current = DEFAULT_MAP; rememberedPickup.current = null;
+      setTheme("light"); setLabels(true); setReduced(false);
+      window.dispatchEvent(new CustomEvent("equalpath-motion-change", { detail: { reduced: false } }));
+      setClearCacheConfirm(false);
+      close();
+      notify("Local data cleared. EqualPath is ready for a new start.");
+    } catch {
+      setClearCacheConfirm(false);
+      notify("Local data could not be cleared. Please try again.");
+    }
   };
   useEffect(() => {
     const point=draft.pickup;
@@ -409,7 +434,10 @@ export default function App({
   };
   const dirty = results && fingerprint(draft) !== fingerprint(results.request),
     activeRequest = results?.request,
-    items = results?.items ?? nearby?.items ?? EMPTY;
+    rawItems = results?.items ?? nearby?.items ?? EMPTY,
+    items = results
+      ? personaliseSearchItems({ items: rawItems, request: results.request, library, history: interests.history })
+      : rawItems;
   const switchMode = (next) => {
     setPickupQueryReset(null);
     requestSeq.current++;
@@ -616,6 +644,7 @@ export default function App({
     dialogSeq.current++;
     setDialogBusy(false);
     setDialogError(null);
+    setClearCacheConfirm(false);
     setDialog(null);
   };
   const startTour = () => {
@@ -1187,11 +1216,17 @@ export default function App({
             collapsed={searchCollapsed} onCollapsedChange={setSearchCollapsed}
             notice={reopening ? `Choose a new date for ${reopening.name}.` : results?.total === 0 ? "No centres found. Try another address or change the filters." : browseSelection && !results ? `Add your search details for ${browseSelection.name}.` : mode === "demo" ? "Demo · fictional centres" : ""}
             failure={failure} onRetry={() => search(null)} addressStatus={pickupAddress} onRetryAddress={() => setAddressRetry(n => n + 1)} />
+          {mode === "live" && interests.ready && interests.history.preferenceSetup === "new" && (
+            <PreferenceSetup
+              compact
+              history={interests.history}
+              onSave={(topics, status) => interests.update(h => ({ ...h, preferences: topics, preferenceSetup: status }))}
+            />
+          )}
           <div className="map-quick-actions">
             <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>
             <MapSavedShortcuts library={library}
               onCentres={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }} />
-            {interests.history.preferenceSetup === "new" && <button className="map-preference-shortcut" onClick={() => { reloadLibrary(); setSavedTab("suggestions"); setDialog("saved"); }}><Heart size={17} aria-hidden="true" /><span>Choose what matters</span></button>}
           </div>
           {isShortCare(results?.request) && !busy && !dirty &&
             (Number.isFinite(results?.explicitMatchCount)
@@ -1298,7 +1333,7 @@ export default function App({
                         : dialog === "enquiry"
                           ? "Contact the centre"
                           : dialog === "settings"
-                            ? "Display settings"
+                            ? "Settings"
                             : dialog === "ordering"
                               ? "Why this order?"
                               : "About our information"
@@ -1594,6 +1629,10 @@ export default function App({
                   }}
                 />
               </label>
+              <div className="setting-line setting-line-clear">
+                <span><strong>Clear local cache</strong><small>Start fresh on this browser. This deletes all saved centres, preferences, viewing history and settings in both real and demo mode.</small></span>
+                {clearCacheConfirm ? <span className="setting-confirm-actions"><strong role="alert">Delete everything from this browser?</strong><button className="secondary" onClick={clearLocalCache}>Clear everything</button><button className="text-link" onClick={() => setClearCacheConfirm(false)}>Cancel</button></span> : <button className="secondary" onClick={() => setClearCacheConfirm(true)}>Clear local cache</button>}
+              </div>
               <div className="data-mode">
                 <h3>Try the demo</h3>
                 <p>

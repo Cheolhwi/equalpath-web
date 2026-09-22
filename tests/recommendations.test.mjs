@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DISCOVERY_PREFERENCES, emptyInterests, recordInterest, interestSeeds, readInterests, updateInterests, interestKey, hideRecommendation, centreSimilarity, preferenceEvidence, recommendCentres } from '../shared/recommendations.mjs';
+import { DISCOVERY_PREFERENCES, emptyInterests, recordInterest, interestSeeds, readInterests, updateInterests, interestKey, hideRecommendation, centreSimilarity, preferenceEvidence, recommendCentres, personaliseSearchItems } from '../shared/recommendations.mjs';
 import { emptyLibrary } from '../shared/saved.mjs';
 import { createAPI } from '../server/api.mjs';
 import { fixtureCatalog, demoPickup } from '../server/fixtures.mjs';
@@ -93,6 +93,31 @@ test('contact preference and deterministic top-three limits remain intact', () =
   assert.deepEqual(rank(ps).map(x=>x.p.id),['b']);
   assert.equal(rank([ps[0]]).length,1);
   assert.equal(rank(['a','b','c','d'].map(id=>provider(id))).length,3);
+});
+test('normal search gently surfaces preference matches without changing explicit sorts', () => {
+  const clear = provider('clear', { fees: [{ amount: 20, basis: 'hour', currency: 'MYR' }] });
+  const unknown = provider('unknown', { fees: [], distanceKm: .2 });
+  const items = personaliseSearchItems({
+    items: [unknown, clear], request, library: emptyLibrary(),
+    history: { ...emptyInterests(), preferences: ['clear_fees'], preferenceSetup: 'complete' },
+  });
+  assert.deepEqual(items.map(p => p.id), ['clear', 'unknown']);
+  assert.equal(items[0].personalised, true);
+  assert.match(items[0].personalisedReason, /Clear fees/);
+  const byPrice = personaliseSearchItems({
+    items: [clear, unknown], request: { ...request, sort: 'price' }, library: emptyLibrary(),
+    history: { ...emptyInterests(), preferences: ['clear_fees'], preferenceSetup: 'complete' },
+  });
+  assert.deepEqual(byPrice.map(p => p.id), ['clear', 'unknown']);
+  assert.equal(byPrice[0].personalised, true);
+});
+test('normal search history is safe when a previous centre is off the current page', () => {
+  const viewed = provider('viewed', { distanceKm: 30 });
+  const current = provider('current');
+  const history = recordInterest(emptyInterests(), [viewed], 'compare', now);
+  const items = personaliseSearchItems({ items: [current], request, library: emptyLibrary(), history });
+  assert.equal(items[0].id, 'current');
+  assert.equal(items[0].personalised, false);
 });
 test('read-only recommendation API refreshes public seeds, checks current request and leaves search pages unchanged', async () => {
   const api=createAPI(), body={action:'recommendations',mode:'demo',request,seedIds:['demo-garden','removed-id']};

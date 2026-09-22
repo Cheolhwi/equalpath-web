@@ -22,6 +22,7 @@ import {
   Users,
   Wallet,
   X,
+  Heart,
 } from "lucide-react";
 import { todayKL, isShortCare } from "../shared/request.mjs";
 import { drivingLabel, feeSummary, formatFee, feesForCare } from "../shared/result-summary.mjs";
@@ -196,7 +197,8 @@ export function ProviderCard({
           <strong>{fees.label}</strong>
         </div>
         <div className="row-status">
-          {p.suggested && <span className="suggestion-tag"><Star size={12} fill="currentColor" />Suggested first</span>}
+          {p.personalised && <span className="personalised-tag"><Heart size={12} aria-hidden="true" />{p.personalisedReason}</span>}
+          {p.suggested && !p.personalised && <span className="suggestion-tag"><Star size={12} fill="currentColor" />Suggested first</span>}
           <Status state={p.fit.counts.conflict ? "conflict" : "unknown"}>
             {p.fit.counts.conflict
               ? `${p.fit.counts.conflict} ${p.fit.counts.conflict === 1 ? "issue" : "issues"} to check`

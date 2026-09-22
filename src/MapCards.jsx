@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Bookmark, Car, Check, Plus, X } from "lucide-react";
+import { ArrowRight, Bookmark, Car, Check, Heart, Plus, X } from "lucide-react";
 import { feeSummary, drivingLabel } from "../shared/result-summary.mjs";
 import { followMapCard, placeMapCards } from "../shared/map-cards.mjs";
 
@@ -8,6 +8,7 @@ function Card({ p, index, selected, saved, compared, onOpen, onClose, onSave, on
     <div className="map-centre-card-main">
       <span className="map-card-number" aria-label={`Map point ${index}`}>{String(index).padStart(2, "0")}</span>
       <strong>{p.name}</strong>
+      {p.personalised && <span className="map-card-personalised"><Heart size={12} aria-hidden="true" />For you</span>}
       <span className="map-card-drive"><Car size={14} aria-hidden="true" />{drivingLabel(p.driving)}</span>
       <span className="map-card-fee">Fee: {feeSummary(p).label}</span>
     </div>
@@ -31,7 +32,7 @@ export default function MapCards({ entries, pins, width, height, compact, topIns
   }, [leaving]);
   const cardWidth = Math.min(304, width - (compact ? 92 : 40));
   const shortMap = compact && height <= 650;
-  const cardHeight = compact ? (shortMap ? 164 : 178) : 190;
+  const cardHeight = (compact ? (shortMap ? 164 : 178) : 190) + (entries.some(e => e.p?.personalised) ? 20 : 0);
   const bottom = compact ? (hasCompare && !shortMap ? 112 : 48) : (hasCompare ? 116 : 96);
   const options = { width: compact ? width - 60 : width, height, top: topInset, bottom, cardWidth, cardHeight, pins };
   // Phones keep one row of cards even after the search toolbar folds away.

@@ -81,6 +81,7 @@ function publishedFee(p) {
 }
 export function centreSimilarity(a, b) {
   // Missing facts are not matches. Shared area/type alone cannot imply similar care.
+  if (!a || !b) return { value: 0, meaningful: false };
   const parts = [];
   if (a.admission?.value === true && b.admission?.value === true) parts.push({ value: 1, weight: .3, reason: 'service' });
   if (a.transport?.exists === true && b.transport?.exists === true) parts.push({ value: 1, weight: .25, reason: 'pickup' });
@@ -165,4 +166,39 @@ export function recommendCentres({ candidates, seeds: currentSeeds, request, lib
     chosen.push(scored.shift());
   }
   return chosen;
+}
+
+// Apply the same evidence-backed score to the current result page. History and
+// choices stay local; the server still decides which page belongs in the search.
+export function personaliseSearchItems({ items, request, library, history, now = Date.now() }) {
+  if (!Array.isArray(items) || !items.length || !request || !library || !history) return items ?? [];
+  const hasSignals = history.preferences?.length || interestSeeds(library, history, request.careType, now).length;
+  if (!hasSignals) return items;
+  const ranked = recommendCentres({ candidates: items, seeds: items, request, library, history, now });
+  if (!ranked.length) return items;
+  const rankById = new Map(ranked.map((entry, index) => [entry.p.id, { ...entry, index }]));
+  const annotated = items.map((p, index) => {
+    const match = rankById.get(p.id);
+    const personal = match && match.reason !== 'Near your chosen location';
+    return personal
+      ? { ...p, personalised: true, personalisedReason: match.reason, personalisedRank: match.index + 1 }
+      : { ...p, personalised: false, personalisedReason: null, personalisedRank: null, _searchIndex: index };
+  });
+  // Keep explicit price, care-end and pickup sorts untouched. The default
+  // nearest view may gently surface a top match inside the current page.
+  if (request.sort !== 'distance') return annotated.map(({ _searchIndex, ...p }) => p);
+  return annotated
+    .map((p, index) => ({ p, index }))
+    .sort((a, b) => {
+      const aConflict = a.p.fit?.counts?.conflict > 0 ? 1 : 0;
+      const bConflict = b.p.fit?.counts?.conflict > 0 ? 1 : 0;
+      if (aConflict !== bConflict) return aConflict - bConflict;
+      const aRank = a.p.personalisedRank ?? Infinity;
+      const bRank = b.p.personalisedRank ?? Infinity;
+      return aRank - bRank || a.index - b.index;
+    })
+    .map(({ p }) => {
+      const { _searchIndex, ...clean } = p;
+      return clean;
+    });
 }

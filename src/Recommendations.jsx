@@ -6,7 +6,7 @@ import { isShortCare } from '../shared/request.mjs';
 import { favourite } from '../shared/saved.mjs';
 import { requestAPI, errorMessage } from './api.js';
 
-function PreferenceSetup({ history, onSave }) {
+export function PreferenceSetup({ history, onSave, compact = false }) {
   const [draft, setDraft] = useState(() => normalisePreferenceTopics(history.preferences));
   const [editing, setEditing] = useState(history.preferenceSetup === 'new');
   useEffect(() => {
@@ -22,14 +22,14 @@ function PreferenceSetup({ history, onSave }) {
     <span>{history.preferences?.length ? `Looking for: ${history.preferences.map(id => DISCOVERY_PREFERENCES.find(p => p.id === id)?.label).filter(Boolean).join(', ')}` : 'Suggestions use your current search and saved centres.'}</span>
     <button className="text-link" type="button" onClick={() => setEditing(true)}>Change choices</button>
   </div>;
-  return <section className="preference-setup" aria-labelledby="preference-setup-title">
-    <div className="preference-setup-heading"><div><h4 id="preference-setup-title">What matters to you?</h4><p>Choose up to 3. We use these choices to order suggestions.</p></div><span>{draft.length}/3</span></div>
+  return <section className={`preference-setup${compact ? ' preference-setup-compact' : ''}`} aria-labelledby="preference-setup-title">
+    <div className="preference-setup-heading"><div><h4 id="preference-setup-title">{compact ? 'Tell us what matters' : 'What matters to you?'}</h4><p>{compact ? 'Pick up to 3. We’ll use them in your search.' : 'Choose up to 3. We use these choices to order suggestions.'}</p></div><span>{draft.length}/3</span></div>
     <div className="preference-options" role="group" aria-label="Suggestion choices">
       {DISCOVERY_PREFERENCES.map(option => <button key={option.id} type="button" className="preference-option" aria-pressed={draft.includes(option.id)} onClick={() => toggle(option.id)}>
         <span className="preference-option-check" aria-hidden="true">{draft.includes(option.id) ? '✓' : ''}</span><span><strong>{option.label}</strong><small>{option.description}</small></span>
       </button>)}
     </div>
-    <div className="preference-setup-actions"><button className="primary" type="button" disabled={!draft.length} onClick={() => save('complete')}>Use my choices <ArrowRight size={16} /></button><button className="text-link" type="button" onClick={() => save('skipped')}>Skip for now</button></div>
+    <div className="preference-setup-actions"><button className="primary" type="button" disabled={!draft.length} onClick={() => save('complete')}>{compact ? 'Use these choices' : 'Use my choices'} <ArrowRight size={16} /></button><button className="text-link" type="button" onClick={() => save('skipped')}>Skip for now</button></div>
     <p className="preference-setup-note">You can change this later. It stays in this browser only.</p>
   </section>;
 }
