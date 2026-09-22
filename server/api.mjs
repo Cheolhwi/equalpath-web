@@ -206,11 +206,10 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
         Boolean(request.query || !request.includeUnknown || !request.includeConflicts));
       request.sort = order.factor;
       const pageItems = sortProviders(pageCandidates, request.sort, request.date);
-      const explicitMatchCount = candidates.filter((p) =>
-        p.fit?.counts?.conflict === 0 &&
-        !(p.fit?.conditions ?? []).filter((condition) => condition.id !== "transfer")
-          .some((condition) => condition.state === "unknown"),
-      ).length;
+      // Unknown details remain candidates that can be checked with the centre.
+      // The external no-match fallback is reserved for pages where every
+      // candidate has a known conflict (the grey-pin state).
+      const explicitMatchCount = candidates.filter((p) => p.fit?.counts?.conflict === 0).length;
       return {
         ...meta,
         request,

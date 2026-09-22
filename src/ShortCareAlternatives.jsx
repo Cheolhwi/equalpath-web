@@ -16,11 +16,9 @@ export const SHORT_CARE_RESOURCES = [
 ];
 
 export function hasExplicitShortCareMatch(items = []) {
-  return items.some((item) => {
-    const conditions = item.fit?.conditions ?? [];
-    return item.fit?.counts?.conflict === 0 &&
-      !conditions.filter((condition) => condition.id !== "transfer").some((condition) => condition.state === "unknown");
-  });
+  // Unknown details are still usable candidates. Only a known conflict
+  // makes a result ineligible for the no-match fallback.
+  return items.some((item) => item.fit?.counts?.conflict === 0);
 }
 
 export function ShortCareMapAlternatives() {

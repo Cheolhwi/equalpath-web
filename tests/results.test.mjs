@@ -66,7 +66,9 @@ test("short-care search reports only fully checked centres as explicit matches",
   });
   const result = await api({ action: "search", request });
   assert.equal(result.total, 3);
-  assert.equal(result.explicitMatchCount, 1);
+  // The unconfirmed candidate still counts as a usable result. Only the
+  // known conflict is excluded from the no-match fallback count.
+  assert.equal(result.explicitMatchCount, 2);
   assert.deepEqual(
     result.items.find((p) => p.id === "confirmed").fit.conditions
       .filter((condition) => condition.id !== "transfer")
