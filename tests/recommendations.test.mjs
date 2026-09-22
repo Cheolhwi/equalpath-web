@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { emptyInterests, recordInterest, interestSeeds, readInterests, updateInterests, interestKey, hideRecommendation, centreSimilarity, recommendCentres } from '../shared/recommendations.mjs';
+import { DISCOVERY_PREFERENCES, emptyInterests, recordInterest, interestSeeds, readInterests, updateInterests, interestKey, hideRecommendation, centreSimilarity, preferenceEvidence, recommendCentres } from '../shared/recommendations.mjs';
 import { emptyLibrary } from '../shared/saved.mjs';
 import { createAPI } from '../server/api.mjs';
 import { fixtureCatalog, demoPickup } from '../server/fixtures.mjs';
@@ -31,6 +31,15 @@ test('storage separates modes, strips unknown fields and preserves malformed dat
   assert.throws(()=>updateInterests(storage,'live',h=>h));
   assert.equal(data.get(interestKey('live')),'{bad');
 });
+test('preference choices are capped, mode-local and do not retain arbitrary text', () => {
+  const data = new Map(), storage = { getItem:k=>data.get(k), setItem:(k,v)=>data.set(k,v) };
+  const ids = DISCOVERY_PREFERENCES.map(p => p.id);
+  const saved = updateInterests(storage, 'live', h => ({ ...h, preferences: [...ids, 'made-up'], preferenceSetup: 'complete', note: 'private' }));
+  assert.deepEqual(saved.preferences, ids.slice(0, 3));
+  assert.equal(saved.note, undefined);
+  assert.equal(readInterests(storage, 'demo').preferences.length, 0);
+  assert.equal(readInterests(storage, 'live').preferenceSetup, 'complete');
+});
 test('saves outweigh comparisons, comparisons outweigh views, older history fades and care types stay separate', () => {
   let h=recordInterest(emptyInterests(),[provider('compared')],'compare',now);
   h=recordInterest(h,[provider('viewed')],'view',now);
@@ -58,6 +67,20 @@ test('fresh seed facts drive similarity, unknown stays unknown, and a previous c
   assert.equal(ranked.find(x=>x.p.id==='a').reason,'You compared this centre before');
   assert.ok(ranked.find(x=>x.p.id==='b').reason.includes('Similar'));
   assert.ok(!rank([b],{seeds:[],history:h})[0].reason.includes('Similar'));
+});
+test('explicit choices gently promote supported facts and leave unknown evidence neutral', () => {
+  const clear = provider('clear', { fees: [{ amount: 20, basis: 'hour', currency: 'MYR' }] });
+  const unknown = provider('unknown', { fees: [] });
+  const ranked = rank([unknown, clear], { preferences: ['clear_fees'] });
+  assert.equal(ranked[0].p.id, 'clear');
+  assert.equal(ranked[0].reason, 'Matches your choice: Clear fees');
+  assert.equal(preferenceEvidence(unknown, 'clear_fees', request).state, 'unknown');
+  assert.equal(preferenceEvidence(clear, 'clear_fees', request).state, 'supported');
+});
+test('review topics are used only when explicitly supplied by the provider evidence', () => {
+  const p = provider('reviewed', { admission: null, reviewTopics: { short_visits: true } });
+  assert.equal(preferenceEvidence(p, 'short_visits', request).source, 'review');
+  assert.equal(preferenceEvidence(provider('without-review', { admission: null }), 'short_visits', request).state, 'unknown');
 });
 test('explicit fee priority wins over history; same brands do not fill an otherwise equivalent shortlist', () => {
   const expensive=provider('expensive',{fees:[{amount:100,basis:'hour'}]}), cheap=provider('cheap');

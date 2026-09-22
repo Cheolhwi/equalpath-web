@@ -57,6 +57,19 @@ test('comparison only records after viewing; suggestions explain history, save, 
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('equalpath:saved:v1:demo')).favourites.length)).toBe(1);
   expect(errors).toEqual([]);
 });
+test('cold-start choices are optional, stay local, and explain why a centre is suggested', async ({ page }) => {
+  await start(page);
+  await openForYou(page);
+  const setup = page.getByRole('region', { name: 'What matters to you?' });
+  await setup.getByRole('button', { name: /Easy pickup/ }).click();
+  await setup.getByRole('button', { name: 'Use my choices', exact: true }).click();
+  await expect(page.locator('.preference-summary')).toContainText('Easy pickup');
+  await expect(page.locator('.recommendation-reason').first()).toContainText('Matches your choice: Easy pickup');
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('equalpath:interests:v1:demo')));
+  expect(stored.preferences).toEqual(['easy_pickup']);
+  expect(stored).not.toHaveProperty('request');
+  expect(JSON.stringify(stored)).not.toContain('age');
+});
 for(const width of [390,1440]) test(`${width}px recommendations have readable cards, visible actions and current detail navigation`,async({page})=>{
   await page.setViewportSize({width,height:1000});
   const {errors}=await start(page);

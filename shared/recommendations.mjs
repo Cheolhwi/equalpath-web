@@ -4,12 +4,24 @@ import { shortFeeFrom, monthlyFeeFrom, feePriorityGroup } from './result-summary
 // Only public centre IDs and capped activity counts are remembered. Requests,
 // addresses, child ages, notes and provider snapshots never enter this store.
 export const interestKey = mode => `equalpath:interests:v1:${mode}`;
-export const emptyInterests = () => ({ version: 1, enabled: true, visits: [], hidden: [] });
+export const DISCOVERY_PREFERENCES = [
+  { id: 'short_visits', label: 'Short visits', description: 'Care for a few hours' },
+  { id: 'easy_pickup', label: 'Easy pickup', description: 'Pickup is clearly listed' },
+  { id: 'open_later', label: 'Open later', description: 'Care that can run later' },
+  { id: 'clear_fees', label: 'Clear fees', description: 'A published fee is available' },
+  { id: 'easy_to_contact', label: 'Easy to contact', description: 'A phone or website is listed' },
+];
+const preferenceIds = new Set(DISCOVERY_PREFERENCES.map(p => p.id));
+export const emptyInterests = () => ({ version: 1, enabled: true, visits: [], hidden: [], preferences: [], preferenceSetup: 'new' });
 const DAY = 86400000;
 const validId = id => typeof id === 'string' && id.length > 0 && id.length <= 160;
 const validType = type => ['short_term', 'regular'].includes(type);
 const same = (a, b) => a.id === b.id && a.careType === b.careType;
 const validDate = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
+const validPreferenceSetup = value => ['new', 'skipped', 'complete'].includes(value);
+export function normalisePreferenceTopics(topics) {
+  return [...new Set(Array.isArray(topics) ? topics.filter(id => preferenceIds.has(id)) : [])].slice(0, 3);
+}
 export function readInterests(storage, mode) {
   const raw = storage.getItem(interestKey(mode));
   if (!raw) return emptyInterests();
@@ -18,12 +30,16 @@ export function readInterests(storage, mode) {
   return { version: 1, enabled: data.enabled,
     visits: data.visits.filter(v => validId(v?.id) && validType(v.careType)).slice(-100).map(v => ({ id: v.id, careType: v.careType,
       ...Object.fromEntries(['view', 'compare'].flatMap(kind => validDate(v[`${kind}At`]) ? [[`${kind}At`, v[`${kind}At`]], [`${kind}Count`, Math.min(6, Math.max(1, Number(v[`${kind}Count`]) || 1))]] : [])) })),
-    hidden: data.hidden.filter(v => validId(v?.id) && validType(v.careType)).slice(-100).map(v => ({ id: v.id, careType: v.careType })) };
+    hidden: data.hidden.filter(v => validId(v?.id) && validType(v.careType)).slice(-100).map(v => ({ id: v.id, careType: v.careType })),
+    preferences: normalisePreferenceTopics(data.preferences),
+    preferenceSetup: validPreferenceSetup(data.preferenceSetup) ? data.preferenceSetup : (data.preferences?.length ? 'complete' : 'new'),
+  };
 }
 export function updateInterests(storage, mode, change) {
   const next = change(readInterests(storage, mode));
-  storage.setItem(interestKey(mode), JSON.stringify(next));
-  return next;
+  const safe = readInterests({ getItem: () => JSON.stringify({ ...emptyInterests(), ...next }) }, mode);
+  storage.setItem(interestKey(mode), JSON.stringify(safe));
+  return safe;
 }
 export function recordInterest(data, providers, kind, now = new Date().toISOString()) {
   if (!data.enabled || !['view', 'compare'].includes(kind)) return data;
@@ -74,7 +90,29 @@ export function centreSimilarity(a, b) {
   if (a.district && a.district === b.district) parts.push({ value: 1, weight: .05, reason: 'area' });
   return { value: parts.reduce((s, x) => s + x.value * x.weight, 0), meaningful: parts.some(x => ['service', 'pickup', 'fee'].includes(x.reason) && x.value >= .6) };
 }
-export function recommendCentres({ candidates, seeds: currentSeeds, request, library, history, now = Date.now() }) {
+function reviewTopic(p, id) {
+  const value = p?.reviewTopics?.[id] ?? p?.reviews?.topics?.[id];
+  return value === true || value?.state === 'supported' ? 'review' : null;
+}
+export function preferenceEvidence(p, id, request) {
+  const review = reviewTopic(p, id);
+  if (review) return { state: 'supported', source: review };
+  if (id === 'short_visits') return p.admission?.value === true ? { state: 'supported', source: 'listed' } : p.admission?.value === false ? { state: 'conflict', source: 'listed' } : { state: 'unknown' };
+  if (id === 'easy_pickup') return p.transport?.exists === true ? { state: 'supported', source: 'listed' } : p.transport?.exists === false ? { state: 'conflict', source: 'listed' } : { state: 'unknown' };
+  if (id === 'clear_fees') return publishedFee(p) ? { state: 'supported', source: 'listed' } : { state: 'unknown' };
+  if (id === 'easy_to_contact') return hasContact(p) ? { state: 'supported', source: 'listed' } : { state: 'unknown' };
+  if (id === 'open_later') {
+    const target = request?.end ? Number(String(request.end).slice(0, 2)) * 60 + Number(String(request.end).slice(3, 5)) : null;
+    const latest = priorityValue(p, 'closing', request?.date);
+    if (Number.isFinite(target) && Number.isFinite(latest)) return latest >= target ? { state: 'supported', source: 'listed' } : { state: 'conflict', source: 'listed' };
+    return Number.isFinite(latest) ? { state: 'supported', source: 'listed' } : { state: 'unknown' };
+  }
+  return { state: 'unknown' };
+}
+export function preferenceMatches(p, preferences, request) {
+  return normalisePreferenceTopics(preferences).map(id => ({ id, ...preferenceEvidence(p, id, request) }));
+}
+export function recommendCentres({ candidates, seeds: currentSeeds, request, library, history, preferences = history.preferences, now = Date.now() }) {
   const interests = interestSeeds(library, history, request.careType, now);
   const fresh = new Map(currentSeeds.map(p => [p.id, p]));
   const seeds = interests.filter(s => fresh.has(s.id));
@@ -93,10 +131,22 @@ export function recommendCentres({ candidates, seeds: currentSeeds, request, lib
     const totalWeight = seeds.reduce((sum, s) => sum + s.weight, 0);
     const similarity = similarities.reduce((sum, s) => sum + s.value * s.weight, 0) / (totalWeight || 1);
     const familiar = own ? Math.min(1, own.weight / 3) : 0;
-    const score = (1 - confidence) * (.6 * near + .4 * known) + confidence * (.8 * similarity + .2 * familiar);
+    const matches = preferenceMatches(p, preferences, request);
+    const supportedPreferences = matches.filter(m => m.state === 'supported');
+    const knownPreferences = matches.filter(m => m.state !== 'unknown');
+    // Explicit choices are a gentle nudge, capped below the current request
+    // and history signals. Unknown evidence stays neutral and is never called
+    // a match in the interface.
+    const preferenceWeight = matches.length ? .22 : 0;
+    const preferenceScore = knownPreferences.length
+      ? supportedPreferences.length / knownPreferences.length
+      : .5;
+    const baseScore = (1 - confidence) * (.6 * near + .4 * known) + confidence * (.8 * similarity + .2 * familiar);
+    const score = (1 - preferenceWeight) * baseScore + preferenceWeight * preferenceScore;
     const anchor = similarities.filter(s => s.meaningful && s.id !== p.id).sort((a, b) => b.value * b.weight - a.value * a.weight)[0];
-    const reason = own?.compared ? 'You compared this centre before' : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
-    return { p, score, reason, basedOn: anchor ? fresh.get(anchor.id).name : null };
+    const preferenceReason = supportedPreferences[0]?.id && DISCOVERY_PREFERENCES.find(x => x.id === supportedPreferences[0].id)?.label;
+    const reason = preferenceReason ? `Matches your choice: ${preferenceReason}` : own?.compared ? 'You compared this centre before' : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
+    return { p, score, reason, basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
   });
   const chosen = [];
   const brand = p => p.name?.split(/\s[—–]\s/)[0].toLowerCase();

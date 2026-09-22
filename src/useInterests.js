@@ -21,7 +21,9 @@ export default function useInterests(mode, paused) {
   const record = useCallback((providers, kind) => update(data => recordInterest(data, providers, kind)), [update]);
   const reset = () => {
     try {
-      const data = { ...emptyInterests(), enabled: state.data.enabled };
+      const data = { ...emptyInterests(), enabled: state.data.enabled,
+        preferences: state.data.preferences,
+        preferenceSetup: state.data.preferenceSetup };
       window.localStorage.setItem(interestKey(mode), JSON.stringify(data));
       setState({ mode, data, error: '' });
     } catch { setState(s => ({ ...s, error: 'History could not be cleared. Please try again.' })); }
