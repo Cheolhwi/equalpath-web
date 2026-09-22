@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Bookmark, Check, Heart, MapPin, RotateCcw, Search, X } from 'lucide-react';
+import { ArrowRight, Bookmark, Check, Heart, MapPin, RotateCcw, Search, Sparkles, X } from 'lucide-react';
 import { DISCOVERY_PREFERENCES, interestSeeds, recommendCentres, hideRecommendation, normalisePreferenceTopics } from '../shared/recommendations.mjs';
 import { feeSummary } from '../shared/result-summary.mjs';
 import { isShortCare } from '../shared/request.mjs';
@@ -31,6 +31,26 @@ function PreferenceSetup({ history, onSave }) {
     </div>
     <div className="preference-setup-actions"><button className="primary" type="button" disabled={!draft.length} onClick={() => save('complete')}>Use my choices <ArrowRight size={16} /></button><button className="text-link" type="button" onClick={() => save('skipped')}>Skip for now</button></div>
     <p className="preference-setup-note">You can change this later. It stays in this browser only.</p>
+  </section>;
+}
+
+function RecommendationHero({ cards, onOpen, hasUsuals }) {
+  const preview = cards.slice(0, 3);
+  if (!preview.length) return null;
+  return <section className="recommendation-hero" aria-labelledby="recommendation-hero-title">
+    <div className="recommendation-hero-heading">
+      <div className="recommendation-hero-emblem"><Sparkles size={26} aria-hidden="true" /></div>
+      <div><h4 id="recommendation-hero-title">{hasUsuals ? 'Your usual centres, ready to check' : 'Good matches, ready to check'}</h4><p>{hasUsuals ? 'Start with familiar places that fit this search.' : 'Start with places that fit your search and choices.'}</p></div>
+    </div>
+    <div className="recommendation-hero-cards" aria-label="Suggested centres">
+      {preview.map(({ p, reason }) => <button key={p.id} type="button" className="recommendation-hero-card" onClick={() => onOpen(p)} aria-label={`View ${p.name}`}>
+        <span className="recommendation-hero-card-icon"><Heart size={18} aria-hidden="true" /></span>
+        <strong>{p.name}</strong>
+        <small>{reason}</small>
+        <span className="recommendation-hero-card-fee">{feeSummary(p).label}</span>
+      </button>)}
+    </div>
+    <a className="recommendation-hero-action" href="#recommendation-list">See all suggestions <ArrowRight size={17} aria-hidden="true" /></a>
   </section>;
 }
 
@@ -76,7 +96,8 @@ export default function Recommendations({ mode, library, interests, request, onD
       : !ready && !failure ? <p className="recommendations-loading" role="status">Checking centre details…</p>
       : ready && <>
         {!seedIds.length && !history.preferences?.length && <p className="notice">Start with nearby centres. Saving and comparing will help us suggest others.</p>}
-        <div className="recommendation-grid">{cards.map(({ p, reason, basedOn, preferenceMatches }) => <article className="recommendation-card" key={p.id}>
+        <RecommendationHero cards={cards} onOpen={open} hasUsuals={seedIds.length > 0} />
+        <div id="recommendation-list" className="recommendation-grid">{cards.map(({ p, reason, basedOn, preferenceMatches }) => <article className="recommendation-card" key={p.id}>
           <div className="recommendation-reason"><Heart size={15} aria-hidden="true" /><span>{reason}</span></div>
           <h4>{p.name}</h4>
           <p className="recommendation-area">{p.district || p.region}</p>

@@ -41,4 +41,6 @@ Epic 6 review themes remain temporary care, pickup, late collection, fees, and c
 
 The For you screen exposes the selected choices, a Change choices action, the current search used for checking, and a plain-language How suggestions work section. Viewing history can be paused or cleared without clearing saved centres or the selected choices.
 
+When a first-time visitor has not chosen or skipped preferences, the map shows a small “Choose what matters” shortcut. After choices are saved, it disappears from the map and the For you view shows a compact preview: “Good matches, ready to check” for a cold start, or “Your usual centres, ready to check” once saved, compared, or viewed centres provide a real history signal. The preview is only a visual entry point: the same current-search gate and evidence rules apply.
+
 The next Epic 6 slice can add review-topic evidence after the D5 corpus is approved, then test whether topic matches improve useful centre opens and saves without increasing unknown or conflict recommendations.
