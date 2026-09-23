@@ -30,7 +30,10 @@ export function parsePublishedAge(value) {
 export function ageRangeLabel(age) {
   if (age.basis === 'type_reference') return age.wording;
   const unit = n => n >= 12 && n % 12 === 0 ? `${n/12} ${n===12?'year':'years'}` : `${n} ${n===1?'month':'months'}`;
-  return age.max == null ? `${unit(age.min)} and up` : `${unit(age.min)}–${unit(age.max)}`;
+  if (age.max == null) return `${unit(age.min)} and up`;
+  return age.maxInclusive === false
+    ? `${unit(age.min)}–under ${unit(age.max)}`
+    : `${unit(age.min)}–${unit(age.max)}`;
 }
 
 export function referenceAgeFor(category) {

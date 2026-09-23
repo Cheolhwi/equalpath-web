@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { ageRangeLabel } from "../shared/published-ages.mjs";
 
 const dataPath = resolve(import.meta.dirname, "data/short-care-completed-20260923.json");
 const payload = JSON.parse(readFileSync(dataPath, "utf8"));
@@ -79,14 +80,17 @@ export function applyCompletedShortCareData(catalog) {
       }
 
       if (facts.shortCareMinAgeMonths != null && facts.shortCareMaxAgeMonths != null) {
+        const min = facts.shortCareMinAgeMonths;
+        const max = facts.shortCareMaxAgeMonths;
+        const age = { min, max, maxInclusive: false };
         updated.age = {
-          min: facts.shortCareMinAgeMonths,
-          max: facts.shortCareMaxAgeMonths,
+          min,
+          max,
           endpointKnown: true,
-          maxInclusive: true,
+          maxInclusive: false,
           basis: "current_provider_data",
-          wording: `${facts.shortCareMinAgeMonths}–${facts.shortCareMaxAgeMonths} months for short-time care (current provider data; confirm the child's exact age).`,
-          rangeLabel: `${facts.shortCareMinAgeMonths} months–${Math.floor(facts.shortCareMaxAgeMonths / 12)} years`,
+          wording: `${ageRangeLabel(age)} for short-time care (current provider data; confirm the child's exact age).`,
+          rangeLabel: ageRangeLabel(age),
           source,
         };
       }

@@ -27,4 +27,7 @@ test("current provider, review and fee handoffs cover the short-care pool withou
   assert.equal(fee.source.kind, "user_provided_fee_sheet");
   assert.equal(fee.provenance.kind, "current_fee_data");
   assert.ok(shortCare.some(item => item.completedShortCare.facts.transportFeeMYRMonth === null));
+  const adam = shortCare.find(item => item.name === "TASKA ADAM UWAIS");
+  assert.equal(adam.age.rangeLabel, "3 months–under 4 years");
+  assert.equal(adam.age.maxInclusive, false);
 });
