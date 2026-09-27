@@ -6,6 +6,18 @@ import {fixtureProviders,demoPickup} from '../server/fixtures.mjs';
 const p={...fixtureProviders[0],careWindows:[],lateRule:null};
 const r={pickup:demoPickup,date:'2026-09-14',deadline:'16:00',end:'19:00',age:'4',transport:'self'};
 const care=(provider,request=r)=>assess(provider,request).conditions.find(c=>c.id==='care');
+test('unlisted weekend care ends conflict, while weekday gaps and explicit weekend schedules retain their meaning',()=>{
+ const weekdayOnly={...p,businessHours:{windows:[{days:['MON'],start:480,end:1140}],closedDays:[]}};
+ for(const date of ['2026-09-26','2026-09-27']) {
+  const request={...r,date};
+  assert.equal(care(weekdayOnly,request).state,'conflict');
+  assert.equal(care({...weekdayOnly,businessHours:{windows:[]}},request).state,'conflict');
+  assert.equal(care({...weekdayOnly,careWindows:[{days:['MON'],start:480,end:1140}]},request).state,'conflict');
+  assert.equal(care({...weekdayOnly,careWindows:[{days:['SAT','SUN'],start:480,end:1140}]},request).state,'supported');
+  assert.equal(care({...weekdayOnly,dateExceptions:[{date,label:'Special hours pending'}]},request).state,'unknown');
+ }
+ assert.equal(care(weekdayOnly,{...r,date:'2026-09-25'}).state,'unknown');
+});
 test('care-end display and sorting use the same specific schedule, exceptions and late rules as the check',()=>{
  assert.equal(careEndTimeFor(p,r.date),'19:00');
  assert.equal(careEndTimeFor({...p,careWindows:[{days:['MON'],start:480,end:1080}]},r.date),'18:00');

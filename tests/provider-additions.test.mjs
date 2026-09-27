@@ -31,7 +31,7 @@ test('short-care rates stay hourly or explicitly unspecified and evening schedul
  assert.equal(lull.fees[0].basis,'unspecified');assert.match(lull.fees[0].conditions,/not a verified hourly rate/);
  const state=(p,end,date='2026-09-15')=>assess(p,{...request(p),end,date}).conditions.find(c=>c.id==='care').state;
  assert.equal(state(mont,'21:00'),'supported');assert.equal(state(mont,'23:00'),'conflict');assert.equal(state(dam,'21:00'),'conflict');
- assert.equal(state(mont,'20:00','2026-09-20'),'supported');assert.equal(state(dam,'16:00','2026-09-20'),'unknown');
+ assert.equal(state(mont,'20:00','2026-09-20'),'supported');assert.equal(state(dam,'16:00','2026-09-20'),'conflict');
 });
 
 test('added branches participate in nearby and dated searches inside the short-care 5 km cap',async()=>{

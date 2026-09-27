@@ -261,6 +261,15 @@ export function assess(p, r) {
     reason += ` The latest pickup time is ${timeLabel(p.lateRule.latestEnd)}.`;
     careSource = p.lateRule.source;
   }
+  // Missing weekend hours make a centre ineligible for this search, without
+  // asserting that the provider is closed. Preserve exceptions/disagreements.
+  const schedule = careEndScheduleFor(p, r.date);
+  if (["SAT", "SUN"].includes(dayFor(r.date)) &&
+      ["Not listed for this day", "Not published"].includes(schedule.label)) {
+    state = "conflict";
+    reason = "No care end time is listed for this weekend date, so this centre does not match your search.";
+    careSource = schedule.source;
+  }
   states.push(
     result(
       "care",
