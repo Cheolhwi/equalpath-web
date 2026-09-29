@@ -5,7 +5,7 @@ import CareTypeChoice from "./CareTypeChoice.jsx";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import TimeInput from "./TimeInput.jsx";
 import SearchActions from "./SearchActions.jsx";
-import { isShortCare, searchRadius, SHORT_CARE_RADIUS_KM, MAX_SEARCH_RADIUS_KM } from "../shared/request.mjs";
+import { isShortCare, searchRadius, MAX_SEARCH_RADIUS_KM } from "../shared/request.mjs";
 
 const shortDate = date => date ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`)) : "Choose date";
 export default function MapSearchDock({ draft, setField, errors, onSearch, busy, results, dirty, mode, active, queryReset, onQueryChange, onMap, onPanel, submitRef, focusRequest, onHeight, collapsed, onCollapsedChange, notice, failure, onRetry, addressStatus, onRetryAddress }) {
@@ -22,7 +22,7 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
   const selectedFilters = [
     draft.transport && `Pickup: ${draft.transport === "institution" ? "The centre" : "I’ll handle it"}`,
     draft.query?.trim() && `Name / area: ${draft.query.trim()}`,
-    searchRadius(draft.radius, draft.careType) !== searchRadius(MAX_SEARCH_RADIUS_KM, draft.careType) && `Within ${draft.radius} km`,
+    searchRadius(draft.radius, draft.careType) !== searchRadius(undefined, draft.careType) && `Within ${draft.radius} km`,
     !draft.includeUnknown && "Hide centres with unconfirmed details",
     !draft.includeConflicts && "Hide centres that don’t meet my needs",
   ].filter(Boolean);
@@ -127,7 +127,7 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
         {part === "age" && <AgeRangeChoice value={draft.age} onChange={v => { setField("age", v); closeOptions(); }} error={errors.age} />}
         {part === "more" && <><h2>More filters</h2><div className="field"><label htmlFor="transport"><Users size={18} />Pickup help</label><select id="transport" value={draft.transport} onChange={e => setField("transport", e.target.value)}><option value="">Not sure yet</option><option value="institution">The centre</option><option value="self">I’ll handle it</option></select></div>
           <div className="field"><label htmlFor="provider-query">Centre name or area</label><input id="provider-query" value={draft.query} onChange={e => setField("query", e.target.value)} placeholder="Centre name or area" /></div>
-          <div className="field"><label htmlFor="radius">Search radius</label><select id="radius" value={searchRadius(draft.radius, draft.careType)} onChange={e => setField("radius", Number(e.target.value))}>{(short ? [SHORT_CARE_RADIUS_KM] : [5, MAX_SEARCH_RADIUS_KM]).map(n => <option key={n} value={n}>Within {n} km</option>)}</select></div>
+          <div className="field"><label htmlFor="radius">Distance</label><select id="radius" value={searchRadius(draft.radius, draft.careType)} onChange={e => setField("radius", Number(e.target.value))}>{[5, MAX_SEARCH_RADIUS_KM].map(n => <option key={n} value={n}>Within {n} km</option>)}</select></div>
           <label className="checkbox"><input type="checkbox" checked={draft.includeUnknown} onChange={e => setField("includeUnknown", e.target.checked)} />Include centres with details to confirm</label>
           <label className="checkbox"><input type="checkbox" checked={draft.includeConflicts} onChange={e => setField("includeConflicts", e.target.checked)} />Include centres that don’t meet all my needs</label>
           <div className="filter-review"><p className="sr-only">Changes apply when you tap {results ? "Update results" : "Find care"}.</p><button type="submit" className="primary" disabled={busy}>{results ? "Update results" : "Find care"} <ArrowRight size={16} /></button></div>

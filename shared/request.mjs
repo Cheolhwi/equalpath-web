@@ -3,7 +3,8 @@ export const MAX_SEARCH_RADIUS_KM = 10;
 export const isShortCare = (request) => request?.careType !== "regular";
 export const careTypeLabel = (request) => isShortCare(request) ? "Care for a few hours" : "Long-term childcare";
 export const SHORT_CARE_RADIUS_KM = 5;
-export const searchRadius = (value, careType = "regular") => careType === "short_term" ? SHORT_CARE_RADIUS_KM : Number(value) === 5 ? 5 : MAX_SEARCH_RADIUS_KM;
+// Short care starts nearby; expanding to 10 km is an explicit user choice.
+export const searchRadius = (value, careType = "regular") => Number(value) === MAX_SEARCH_RADIUS_KM ? MAX_SEARCH_RADIUS_KM : Number(value) === 5 ? 5 : careType === "short_term" ? SHORT_CARE_RADIUS_KM : MAX_SEARCH_RADIUS_KM;
 export const searchPageSize = (careType) => careType === "short_term" ? 10 : 20;
 export const minutes = (s) =>
   typeof s === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(s)

@@ -34,7 +34,7 @@ test('short-care rates stay hourly or explicitly unspecified and evening schedul
  assert.equal(state(mont,'20:00','2026-09-20'),'supported');assert.equal(state(dam,'16:00','2026-09-20'),'conflict');
 });
 
-test('added branches participate in nearby and dated searches inside the short-care 5 km cap',async()=>{
+test('added branches participate in nearby and dated searches inside the default short-care 5 km radius',async()=>{
  const cat=catalogue(),api=createAPI({store:{catalog:async()=>cat},drivingRoutes:async(_pickup,ps)=>ps,reverseGeocode:null});
  for(const p of cat.items.slice(1)){
   const near=await api({action:'nearby',center:p.location,radius:999});assert.equal(near.radius,5);assert.ok(near.items.some(x=>x.id===p.id));

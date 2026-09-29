@@ -40,7 +40,7 @@ import {
   OrderingNote,
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
-import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM, SHORT_CARE_RADIUS_KM, searchRadius, isShortCare, careTypeLabel } from "../shared/request.mjs";
+import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM, searchRadius, isShortCare, careTypeLabel } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
@@ -78,7 +78,7 @@ const initial = () => ({
   end: "",
   age: "",
   transport: "",
-  radius: searchRadius(MAX_SEARCH_RADIUS_KM, new URLSearchParams(location.search).get("care") === "regular" ? "regular" : "short_term"),
+  radius: searchRadius(undefined, new URLSearchParams(location.search).get("care") === "regular" ? "regular" : "short_term"),
   query: "",
   includeUnknown: true,
   includeConflicts: true,
@@ -421,7 +421,7 @@ export default function App({
       setCompareIds([]); setComparison(null); setCompareSort("distance");
       setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({}); setDialog(null);
       setErrors({}); setFailure(null); setFormOpen(true);
-      setDraft(x => ({ ...x, careType: value, radius: searchRadius(MAX_SEARCH_RADIUS_KM, value), date: value === "short_term" ? todayKL() : "", deadline: "", end: "", sort: "distance" }));
+      setDraft(x => ({ ...x, careType: value, radius: searchRadius(undefined, value), date: value === "short_term" ? todayKL() : "", deadline: "", end: "", sort: "distance" }));
       return;
     }
     if (field === "pickup") {
@@ -990,7 +990,7 @@ export default function App({
               />
             </div>
             <div className="field">
-              <label htmlFor="radius">Search radius</label>
+              <label htmlFor="radius">Distance</label>
               <select
                 id="radius"
                 value={searchRadius(draft.radius, draft.careType)}
@@ -1001,7 +1001,7 @@ export default function App({
                   )
                 }
               >
-                {(isShortCare(draft) ? [SHORT_CARE_RADIUS_KM] : [5, MAX_SEARCH_RADIUS_KM]).map((n) => (
+                {[5, MAX_SEARCH_RADIUS_KM].map((n) => (
                   <option key={n} value={n}>
                     Within {n} km
                   </option>

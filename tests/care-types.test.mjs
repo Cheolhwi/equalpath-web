@@ -53,32 +53,39 @@ test('membership is not an admission claim and missing membership fails closed',
   const broken=createAPI({store:{catalog:async()=>({...catalog,shortCareReady:false})}});
   await assert.rejects(broken({action:'search',request}),e=>e.code==='SOURCE_INCOMPLETE');
 });
-test('short care clamps forged and legacy requests to 5 km and ten per page before routing',async()=>{
+test('short care supports an explicit 10 km radius across search, map, recommendations and cache while retaining ten-item pages',async()=>{
   const north=km=>({lat:demoPickup.lat+km/6371*180/Math.PI,lng:demoPickup.lng});
   const make=(id,km)=>({...structuredClone(fixtureCatalog.items[0]),id,location:km===null?null:north(km)});
-  const short=[...Array.from({length:22},(_,i)=>make(`short-${i}`,1+i*.1)),make('inside-5',4.999),make('outside-5',5.001),make('unlocated',null)];
+  const short=[...Array.from({length:22},(_,i)=>make(`short-${i}`,1+i*.1)),make('inside-5',4.999),make('outside-5',5.001),make('inside-10',9.999),make('outside-10',10.001),make('unlocated',null)];
   const regular=Array.from({length:21},(_,i)=>make(`regular-${i}`,6+i*.1));
   const a=createAPI({store:{catalog:async()=>({...fixtureCatalog,items:[...short,...regular],shortCareReady:true,shortCareIds:short.map(p=>p.id)})},drivingRoutes:async(_,rows)=>{
     assert.ok(rows.length<=(rows[0]?.id.startsWith('regular')?20:10));return rows;
   }});
-  for(const careType of ['short_term',undefined])for(const radius of [undefined,10,999]){
+  for(const careType of ['short_term',undefined])for(const radius of [undefined,null,'',5,'5',10,'10',999,-1,'invalid']){
     const r={...dated,careType,radius};
+    const expectedRadius=Number(radius)===10?10:5,total=expectedRadius===10?25:23;
     const pages=[];
     for(let page=0;page<4;page++){
       const result=await a({action:'search',request:r,page,pageSize:999});
-      assert.equal(result.request.radius,5);assert.equal(result.pageSize,10);assert.equal(result.total,23);
-      assert.equal(result.items.length,[10,10,3,0][page]);assert.equal(result.ordering.pageSize,10);
-      assert.ok(result.items.every(p=>p.distanceKm<=5&&!p.id.startsWith('regular')));pages.push(...result.items);
+      assert.equal(result.request.radius,expectedRadius);assert.equal(result.pageSize,10);assert.equal(result.total,total);
+      assert.equal(result.items.length,[10,10,total-20,0][page]);assert.equal(result.ordering.pageSize,10);
+      assert.ok(result.items.every(p=>p.distanceKm<=expectedRadius&&!p.id.startsWith('regular')));pages.push(...result.items);
     }
-    assert.equal(new Set(pages.map(p=>p.id)).size,23);assert.ok(pages.some(p=>p.id==='inside-5'));
+    assert.equal(new Set(pages.map(p=>p.id)).size,total);assert.ok(pages.some(p=>p.id==='inside-5'));
+    assert.equal(pages.some(p=>p.id==='outside-5'),expectedRadius===10);
+    assert.equal(pages.some(p=>p.id==='inside-10'),expectedRadius===10);
+    assert.ok(!pages.some(p=>p.id==='outside-10'||p.id==='unlocated'));
     const nearby=await a({action:'nearby',careType,center:demoPickup,radius,pageSize:999});
-    assert.equal(nearby.radius,5);assert.equal(nearby.total,23);assert.equal(nearby.items.length,10);
-    assert.ok(nearby.items.every(p=>p.distanceKm<=5));
+    assert.equal(nearby.radius,expectedRadius);assert.equal(nearby.total,total);assert.equal(nearby.items.length,10);
+    assert.ok(nearby.items.every(p=>p.distanceKm<=expectedRadius));
+    const recommended=await a({action:'recommendations',request:r});
+    assert.equal(recommended.request.radius,expectedRadius);
+    assert.ok(recommended.items.length>0&&recommended.items.every(p=>p.distanceKm<=expectedRadius));
   }
   const regularResult=await a({action:'search',request});
   assert.equal(regularResult.request.radius,10);assert.equal(regularResult.total,21);assert.equal(regularResult.items.length,20);
   assert.ok(regularResult.items.every(p=>p.id.startsWith('regular')));
-  assert.equal(nearbyCacheKey({center:demoPickup,careType:'short_term',radius:10}),nearbyCacheKey({center:demoPickup,careType:'short_term',radius:5}));
+  assert.notEqual(nearbyCacheKey({center:demoPickup,careType:'short_term',radius:10}),nearbyCacheKey({center:demoPickup,careType:'short_term',radius:5}));
 });
 test('regular detail, question copy and printable preparation do not require or fabricate a visit date',async()=>{
   const result=await api({action:'search',request});
