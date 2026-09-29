@@ -24,9 +24,9 @@
   pointer-events: none;
   animation: preference-onboarding-exit 560ms cubic-bezier(.22, 1, .36, 1) both;
 }
-.experience.phase-preferences.preference-exit .landing {
+.experience.phase-preferences .landing {
+  visibility: hidden;
   pointer-events: none;
-  animation: preference-landing-exit 560ms ease both;
 }
 @keyframes preference-onboarding-exit {
   from { opacity: 1; transform: translateY(0); }
@@ -35,10 +35,6 @@
 @keyframes preference-map-enter {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
-}
-@keyframes preference-landing-exit {
-  from { opacity: 1; }
-  to { opacity: 0; }
 }
 .preference-onboarding {
   position: fixed;
