@@ -26,7 +26,6 @@ export default function ReviewEvidence({ p, onAsk }) {
   const representative=[examples.find(e=>['negative','mixed'].includes(e.sentiments[topic])), examples.find(e=>e.sentiments[topic]==='positive')].filter(Boolean);
   const ordered=[...new Map([...representative,...examples].map(e=>[e.id,e])).values()];
   const concern=reviewConcerns(p).find(t=>t.id===topic);
-  const dates=Object.keys(profile.dates).sort();
   return <details className="centre-reviews extra-details">
     <summary><MessageCircle size={18} aria-hidden="true"/><span>Parent reviews<small>{profile.sampleCount} reviews in this sample</small></span><ChevronDown size={16} aria-hidden="true"/></summary>
     <div className="review-evidence-body">
@@ -37,7 +36,6 @@ export default function ReviewEvidence({ p, onAsk }) {
       {!ordered.length&&<p>No review passage about this topic is available in this sample.</p>}
       {ordered.length>2&&<button type="button" className="text-link" onClick={()=>setExpanded(!expanded)}>{expanded?'Show fewer reviews':'Read more reviews'}<ChevronDown size={16}/></button>}
       {concern&&onAsk&&<div className="review-ask"><p>{concern.recentNegative} recent reviews raise a concern about this.</p><button className="secondary" type="button" onClick={()=>onAsk(topic)}>Ask the centre about this<ArrowRight size={16}/></button></div>}
-      <details className="review-sample-details"><summary>About this review sample</summary><p>{profile.scope}</p><p>Collected: {dateLabel(profile.source.retrievedAt)}. Review dates: {dates[0]??'unknown'} to {dates.at(-1)??'unknown'}. {profile.undatedCount} without a date.</p><p>Topic labels are assigned automatically and may be imperfect. Service listings and promotional descriptions are not counted as parent reviews. Older reviews remain readable but carry less weight in suggestions.</p><div className="review-date-counts">{Object.entries(profile.dates).sort(([a],[b])=>b.localeCompare(a)).map(([month,count])=><span key={month}>{month}: {count}</span>)}</div></details>
     </div>
   </details>;
 }
