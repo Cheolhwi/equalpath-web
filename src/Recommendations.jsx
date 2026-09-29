@@ -1,36 +1,39 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Bookmark, Check, Heart, MapPin, RotateCcw, Search, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Bell, Bookmark, Check, Clock3, Heart, MapPin, MessageCircle, RotateCcw, Search, Sparkles, WalletCards, X } from 'lucide-react';
 import { DISCOVERY_PREFERENCES, interestSeeds, recommendCentres, hideRecommendation, normalisePreferenceTopics } from '../shared/recommendations.mjs';
 import { feeSummary } from '../shared/result-summary.mjs';
 import { isShortCare } from '../shared/request.mjs';
 import { favourite } from '../shared/saved.mjs';
 import { requestAPI, errorMessage } from './api.js';
 
-export function PreferenceSetup({ history, onSave, compact = false }) {
+export function PreferenceSetup({ history, onSave, compact = false, exiting = false }) {
   const [draft, setDraft] = useState(() => normalisePreferenceTopics(history.preferences));
   const [editing, setEditing] = useState(history.preferenceSetup === 'new');
   useEffect(() => {
     if (!editing) setDraft(normalisePreferenceTopics(history.preferences));
   }, [history.preferences, editing]);
   const toggle = id => setDraft(current => current.includes(id) ? current.filter(value => value !== id) : current.length >= 3 ? current : [...current, id]);
+  const selectedCount = draft.length;
+  const choiceName = option => option.onboardingLabel ?? option.label;
   const save = status => {
     const topics = status === 'skipped' ? [] : normalisePreferenceTopics(draft);
     onSave(topics, status === 'skipped' ? 'skipped' : topics.length ? 'complete' : 'skipped');
     setEditing(false);
   };
-  if (!editing) return <div className="preference-summary" aria-label="Your suggestion choices">
-    <span>{history.preferences?.length ? `Looking for: ${history.preferences.map(id => DISCOVERY_PREFERENCES.find(p => p.id === id)?.label).filter(Boolean).join(', ')}` : 'Suggestions use your current search and saved centres.'}</span>
+  if (!editing && !exiting) return <div className="preference-summary" aria-label="Your suggestion choices">
+    <span>{history.preferences?.length ? `Looking for: ${history.preferences.map(id => { const option = DISCOVERY_PREFERENCES.find(p => p.id === id); return option ? choiceName(option) : null; }).filter(Boolean).join(', ')}` : 'Suggestions use your current search and saved centres.'}</span>
     <button className="text-link" type="button" onClick={() => setEditing(true)}>Change choices</button>
   </div>;
-  return <section className={`preference-setup${compact ? ' preference-setup-compact' : ''}`} aria-labelledby="preference-setup-title">
-    <div className="preference-setup-heading"><div><h4 id="preference-setup-title">{compact ? 'Tell us what matters' : 'What matters to you?'}</h4><p>{compact ? 'Pick up to 3. We’ll use them with your search.' : 'Choose up to 3. We use these choices to order suggestions.'}</p></div><span>{draft.length}/3</span></div>
+  return <section className={`preference-setup${compact ? ' preference-setup-compact' : ''}${exiting ? ' preference-setup-exiting' : ''}`} aria-labelledby="preference-setup-title" aria-label={compact ? 'What matters to you?' : undefined}>
+    <div className="preference-setup-heading"><div><h4 id="preference-setup-title">{compact ? 'Choose what matters most' : 'What matters to you?'}</h4><p>{compact ? 'Choose up to 3 things.' : 'Choose up to 3. We use these choices to order suggestions.'}</p></div><span aria-live="polite">{selectedCount} of 3 selected</span></div>
+    {compact && <p className="preference-setup-hint"><span aria-hidden="true">1</span> Tap the boxes you want.</p>}
     <div className="preference-options" role="group" aria-label="Suggestion choices">
-      {DISCOVERY_PREFERENCES.map(option => <button key={option.id} type="button" className="preference-option" aria-pressed={draft.includes(option.id)} onClick={() => toggle(option.id)}>
-        <span className="preference-option-check" aria-hidden="true">{draft.includes(option.id) ? '✓' : ''}</span><span><strong>{option.label}</strong><small>{option.description}</small></span>
+      {DISCOVERY_PREFERENCES.map(option => <button key={option.id} type="button" className="preference-option" aria-pressed={draft.includes(option.id)} aria-describedby={`preference-${option.id}-description`} onClick={() => toggle(option.id)}>
+        <span className="preference-option-check" aria-hidden="true">{draft.includes(option.id) ? <Check size={16} strokeWidth={3} /> : ''}</span><span className="preference-option-icon" aria-hidden="true">{option.id === 'flexible_short_care' ? <Clock3 size={21} /> : option.id === 'smooth_pickup' ? <MapPin size={21} /> : option.id === 'clear_late_rules' ? <Bell size={21} /> : option.id === 'predictable_fees' ? <WalletCards size={21} /> : <MessageCircle size={21} />}</span><span className="preference-option-copy"><strong>{choiceName(option)}</strong><small id={`preference-${option.id}-description`}>{option.description}</small></span>
       </button>)}
     </div>
-    <div className="preference-setup-actions"><button className="primary" type="button" disabled={!draft.length} onClick={() => save('complete')}>{compact ? 'Use these choices' : 'Use my choices'} <ArrowRight size={16} /></button><button className="text-link" type="button" onClick={() => save('skipped')}>Skip for now</button></div>
-    <p className="preference-setup-note">You can change this later. It stays in this browser only.</p>
+    <div className="preference-setup-actions"><button className="primary" type="button" disabled={!draft.length} onClick={() => save('complete')}>{compact ? (selectedCount ? 'Continue' : 'Choose at least one') : 'Use my choices'} <ArrowRight size={16} /></button><button className="text-link" type="button" onClick={() => save('skipped')}>Skip for now</button></div>
+    <p className="preference-setup-note">You can change these choices later in Settings.</p>
   </section>;
 }
 

@@ -66,7 +66,7 @@ test('cold-start choices are optional, stay local, and explain why a centre is s
   await expect(page.locator('.preference-summary')).toContainText('Easy pickup');
   await expect(page.locator('.recommendation-reason').first()).toContainText('Matches your choice: Easy pickup');
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('equalpath:interests:v1:demo')));
-  expect(stored.preferences).toEqual(['easy_pickup']);
+  expect(stored.preferences).toEqual(['smooth_pickup']);
   expect(stored).not.toHaveProperty('request');
   expect(JSON.stringify(stored)).not.toContain('age');
 });

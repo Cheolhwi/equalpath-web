@@ -11,27 +11,27 @@ export const REVIEW_TOPIC_GROUPS = [
   {
     id: 'temporary_care',
     label: 'Temporary care',
-    preferences: [{ id: 'flexible_short_care', label: 'Flexible short care', description: 'Parents mention one-off or short visits' }],
+    preferences: [{ id: 'flexible_short_care', label: 'Flexible short care', onboardingLabel: 'Short visits', description: 'Care for a few hours' }],
   },
   {
     id: 'pickup',
     label: 'Pickup',
-    preferences: [{ id: 'smooth_pickup', label: 'Smooth pickup', description: 'Parents mention easy handovers' }],
+    preferences: [{ id: 'smooth_pickup', label: 'Smooth pickup', onboardingLabel: 'Easy pickup', description: 'The centre explains pickup clearly' }],
   },
   {
     id: 'late_collection',
     label: 'Late collection',
-    preferences: [{ id: 'clear_late_rules', label: 'Clear late pickup', description: 'Parents mention clear plans when pickup changes' }],
+    preferences: [{ id: 'clear_late_rules', label: 'Clear late pickup', onboardingLabel: 'Clear pickup rules', description: 'Know what happens if you are late' }],
   },
   {
     id: 'fees',
     label: 'Fees',
-    preferences: [{ id: 'predictable_fees', label: 'Predictable fees', description: 'Parents mention costs were clear' }],
+    preferences: [{ id: 'predictable_fees', label: 'Predictable fees', onboardingLabel: 'Clear fees', description: 'See the price before you call' }],
   },
   {
     id: 'communication',
     label: 'Communication',
-    preferences: [{ id: 'responsive_team', label: 'Responsive team', description: 'Parents mention quick, helpful replies' }],
+    preferences: [{ id: 'responsive_team', label: 'Responsive team', onboardingLabel: 'Easy to contact', description: 'Phone or website available' }],
   },
 ];
 export const DISCOVERY_PREFERENCES = [

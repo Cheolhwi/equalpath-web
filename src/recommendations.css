@@ -12,9 +12,13 @@
 .preference-setup-heading p { margin:0; color:var(--muted); font-size:14px; }
 .preference-setup-heading > span { flex:0 0 auto; color:var(--accent); font-size:13px; font-weight:700; }
 .preference-options { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:16px 0; }
-.preference-option { display:flex; align-items:flex-start; gap:8px; min-height:76px; padding:11px; border:1px solid var(--rule); border-radius:14px; background:var(--paper); color:var(--ink); text-align:left; }
-.preference-option[aria-pressed="true"] { border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); background:var(--paper); }
-.preference-option-check { display:grid; place-items:center; flex:0 0 20px; width:20px; height:20px; border:1px solid var(--muted); border-radius:50%; color:var(--paper); background:transparent; font-size:13px; line-height:1; }
+.preference-option { display:flex; align-items:center; gap:12px; min-height:76px; padding:12px 13px; border:1px solid var(--rule); border-radius:14px; background:var(--paper); color:var(--ink); text-align:left; transition:border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
+.preference-option:hover { border-color:var(--accent); transform:translateY(-1px); }
+.preference-option:focus-visible { outline:3px solid color-mix(in srgb, var(--accent) 30%, transparent); outline-offset:2px; }
+.preference-option[aria-pressed="true"] { border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); background:color-mix(in srgb, var(--accent) 8%, var(--paper)); }
+.preference-option-icon { display:grid; place-items:center; flex:0 0 38px; width:38px; height:38px; border-radius:12px; color:var(--accent); background:var(--soft); }
+.preference-option-copy { min-width:0; flex:1; }
+.preference-option-check { display:grid; place-items:center; flex:0 0 24px; width:24px; height:24px; border:1.5px solid var(--muted); border-radius:8px; color:var(--paper); background:transparent; font-size:13px; line-height:1; }
 .preference-option[aria-pressed="true"] .preference-option-check { border-color:var(--accent); background:var(--accent); }
 .preference-option strong,.preference-option small { display:block; }
 .preference-option strong { font-size:13px; line-height:1.25; }

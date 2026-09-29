@@ -49,6 +49,7 @@ export default function Experience() {
   const [reduced, setReduced] = useState(readMotionPreference);
   const [preferenceHistory, setPreferenceHistory] = useState(readLivePreferences);
   const [preferenceError, setPreferenceError] = useState("");
+  const [preferenceExit, setPreferenceExit] = useState(false);
   const cancelEntrance = useRef(() => {});
   const [activeArtwork, setActiveArtwork] = useState(0);
   const [entryArtwork, setEntryArtwork] = useState(0);
@@ -105,6 +106,7 @@ export default function Experience() {
   }, [phase, reduced, openMapOrPreferences, activeArtwork, readyArtworks, loadStage]);
   const home = useCallback((options = {}) => {
     cancelEntrance.current();
+    setPreferenceExit(false);
     if (options.fresh) hasEntered.current = false;
     history.replaceState(null, "", `${location.pathname}${location.search}`);
     setActiveArtwork(0);
@@ -171,7 +173,17 @@ export default function Experience() {
       }));
       setPreferenceHistory(next);
       setPreferenceError("");
-      finish();
+      if (reduced) {
+        finish();
+        return;
+      }
+      cancelEntrance.current();
+      setPreferenceExit(true);
+      const timer = window.setTimeout(() => {
+        setPreferenceExit(false);
+        finish();
+      }, 560);
+      cancelEntrance.current = () => window.clearTimeout(timer);
     } catch {
       setPreferenceError("Your choices could not be saved in this browser. Please try again.");
     }
@@ -179,7 +191,7 @@ export default function Experience() {
 
   return (
     <div
-      className={`experience phase-${phase}`}
+      className={`experience phase-${phase}${preferenceExit ? " preference-exit" : ""}`}
       data-intro-phase={phase}
       data-intro-reduced={reduced}
       style={{
@@ -194,10 +206,10 @@ export default function Experience() {
           <div className="preference-onboarding-shell">
             <header className="preference-onboarding-heading">
               <span>WELCOME TO EQUALPATH</span>
-              <h1 id="preference-onboarding-title">Find childcare that fits your day.</h1>
-              <p>Choose what matters first. We’ll use it in your normal search and suggestions, and you can change it later.</p>
+              <h1 id="preference-onboarding-title">What do you need?</h1>
+              <p>Choose up to 3 things. We will use them to find childcare for you.</p>
             </header>
-            <PreferenceSetup compact history={preferenceHistory} onSave={savePreferences} />
+            <PreferenceSetup compact history={preferenceHistory} exiting={preferenceExit} onSave={savePreferences} />
             {preferenceError && <p className="preference-onboarding-error" role="alert">{preferenceError}</p>}
           </div>
         </section>
