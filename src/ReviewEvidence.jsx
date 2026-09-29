@@ -6,10 +6,9 @@ import SelectMenu from './SelectMenu.jsx';
 
 const dateLabel = date => date ? new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z')) : 'Date not provided';
 export function ReviewQuote({ review, topic }) {
-  const mood = review.sentiments[topic];
   const quote = review.passages?.[topic] ?? review.text;
   return <article className="review-quote">
-    <p className="review-quote-meta"><strong>{({positive:'Positive experience',negative:'A concern',mixed:'Mixed experience',neutral:'Reported experience'})[mood] ?? 'Reported experience'}</strong><span>{dateLabel(review.date)}</span></p>
+    <p className="review-quote-meta"><strong>Parent review</strong><span>{dateLabel(review.date)}</span></p>
     <blockquote>{quote}</blockquote>
   </article>;
 }
