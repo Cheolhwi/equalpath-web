@@ -5,7 +5,7 @@ import { fileAtCell } from "./vendor/rhine/archive-loop";
 import { fileLocation, records } from "./vendor/rhine/data";
 import { careArtworks, nextArtwork, artworkDwell } from "./care-artworks.js";
 
-export default function CareScene({ reduced, animateOpening = true, leaving = false, presented = true, active = true, homeVisit = 0, onStatusChange, onArtworkChange }) {
+export default function CareScene({ reduced, animateOpening = true, leaving = false, presented = true, active = true, homeVisit = 0, onStatusChange, onArtworkChange, onEnter }) {
   const host = useRef(null);
   const instance = useRef(null);
   const selected = useRef(0);
@@ -22,6 +22,10 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
   const [hidden, setHidden] = useState(() => document.hidden);
   const renderActive = useRef(active && !hidden);
   const renderLoop = useRef(null);
+  const entryAction = useRef(null);
+  useEffect(() => {
+    entryAction.current = active && presented && !leaving ? onEnter : null;
+  }, [active, presented, leaving, onEnter]);
   const reportStatus = useCallback(value => {
     setStatus(value);
     onStatusChange?.(value);
@@ -133,6 +137,11 @@ export default function CareScene({ reduced, animateOpening = true, leaving = fa
         transmission: 0.5,
       });
       scene.setArchiveCoverage(true);
+      scene.renderer.domElement.setAttribute("aria-label", "Childcare cards. Tap a card to find childcare. Drag to explore the collection.");
+      scene.onActivate = (index) => {
+        interact();
+        entryAction.current?.(fileLocation(index).lane);
+      };
       scene.onSelect = (index, cell, intent) => {
         interact();
         choose(index, { cell });

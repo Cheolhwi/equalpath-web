@@ -50,6 +50,7 @@ export default function Experience() {
   const [preferenceHistory, setPreferenceHistory] = useState(readLivePreferences);
   const [preferenceError, setPreferenceError] = useState("");
   const [preferenceExit, setPreferenceExit] = useState(false);
+  const [entryPreferences, setEntryPreferences] = useState(false);
   const cancelEntrance = useRef(() => {});
   const [activeArtwork, setActiveArtwork] = useState(0);
   const [entryArtwork, setEntryArtwork] = useState(0);
@@ -71,6 +72,7 @@ export default function Experience() {
   const artwork = careArtworks[displayedArtwork];
   const finish = useCallback(() => {
     cancelEntrance.current();
+    setEntryPreferences(false);
     setPhase("ready");
     hasEntered.current = true;
     history.replaceState(
@@ -80,6 +82,7 @@ export default function Experience() {
     );
   }, []);
   const openMapOrPreferences = useCallback(() => {
+    cancelEntrance.current();
     if (shouldShowPreferences()) {
       const data = readLivePreferences();
       setPreferenceHistory(data);
@@ -90,12 +93,19 @@ export default function Experience() {
     }
     finish();
   }, [finish]);
-  const enter = useCallback(() => {
+  const enter = useCallback((artworkIndex = activeArtwork) => {
     if (phase !== "welcome") return;
-    setEntryArtwork(activeArtwork);
+    setActiveArtwork(artworkIndex);
+    setEntryArtwork(artworkIndex);
     cancelEntrance.current();
+    const needsPreferences = shouldShowPreferences();
+    setEntryPreferences(needsPreferences);
+    if (needsPreferences) {
+      setPreferenceHistory(readLivePreferences());
+      setPreferenceError("");
+    }
     // The optional decoration must never show an empty frame or hold up entry.
-    if (loadStage !== "ready" || !readyArtworks.has(activeArtwork)) {
+    if (loadStage !== "ready" || !readyArtworks.has(artworkIndex)) {
       openMapOrPreferences();
       return;
     }
@@ -107,6 +117,7 @@ export default function Experience() {
   const home = useCallback((options = {}) => {
     cancelEntrance.current();
     setPreferenceExit(false);
+    setEntryPreferences(false);
     if (options.fresh) hasEntered.current = false;
     history.replaceState(null, "", `${location.pathname}${location.search}`);
     setActiveArtwork(0);
@@ -140,6 +151,8 @@ export default function Experience() {
           document
             .querySelector(".equalpath")
             ?.focus({ preventScroll: true });
+        else if (phase === "preferences")
+          document.querySelector(".preference-onboarding")?.focus({ preventScroll: true });
         else if (phase === "welcome" && hasEntered.current)
           enterButton.current?.focus({ preventScroll: true });
     }, 0);
@@ -193,6 +206,7 @@ export default function Experience() {
     <div
       className={`experience phase-${phase}${preferenceExit ? " preference-exit" : ""}`}
       data-intro-phase={phase}
+      data-entry-destination={entryPreferences ? "preferences" : "map"}
       data-intro-reduced={reduced}
       style={{
         "--entrance-cover": `${ENTRANCE_COVER_MS}ms`,
@@ -201,8 +215,10 @@ export default function Experience() {
     >
       <App introPhase={phase} introReduced={reduced} onHome={home} />
       <Pointer reduced={reduced} />
-      {phase === "preferences" && (
-        <section className="preference-onboarding" aria-labelledby="preference-onboarding-title">
+      {(phase === "preferences" || (phase === "entering" && entryPreferences)) && (
+        <section className="preference-onboarding" aria-labelledby="preference-onboarding-title"
+          tabIndex={-1} inert={phase !== "preferences" || preferenceExit}
+          aria-hidden={phase !== "preferences" || preferenceExit || undefined}>
           <div className="preference-onboarding-shell">
             <header className="preference-onboarding-heading">
               <span>WELCOME TO EQUALPATH</span>
@@ -233,7 +249,7 @@ export default function Experience() {
                   <CareScene reduced={reduced} animateOpening={!hasEntered.current}
                     active={phase !== "ready"} homeVisit={homeVisit}
                     leaving={moving} presented={loadStage === "ready"}
-                    onStatusChange={setSceneStatus} onArtworkChange={setActiveArtwork} />
+                    onStatusChange={setSceneStatus} onArtworkChange={setActiveArtwork} onEnter={enter} />
                 </Suspense>
               </SceneBoundary>
             </div>
@@ -255,7 +271,7 @@ export default function Experience() {
               <button
                 ref={enterButton}
                 className="landing-enter"
-                onClick={enter}
+                onClick={() => enter()}
               >
                 <span>
                   {hasEntered.current

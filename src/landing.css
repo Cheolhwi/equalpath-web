@@ -132,6 +132,16 @@
   animation: app-entry var(--entrance-reveal) cubic-bezier(0.22, 1, 0.36, 1)
     var(--entrance-cover) both;
 }
+.phase-entering[data-entry-destination="preferences"] .equalpath {
+  visibility: hidden;
+  animation: none;
+}
+.phase-entering .preference-onboarding {
+  /* Prepare the destination beneath the welcome page before the curtain opens. */
+  z-index: 19;
+  pointer-events: none;
+}
+.preference-onboarding:focus { outline: none; }
 .phase-entering .landing {
   pointer-events: none;
   /* Swap the existing views only once the moving curtain covers them. */

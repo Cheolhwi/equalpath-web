@@ -248,6 +248,7 @@ export class ArchiveScene {
   private displayHeight = 0;
   private layoutKind = "";
   onSelect?: (index: number, cell?: ArchiveCell, intent?: "browse" | "activate") => void;
+  onActivate?: (index: number) => void;
   onHover?: (index: number | null) => void;
   onNavigate?: (axis: "row" | "lane", direction: number) => void;
   constructor(
@@ -970,7 +971,7 @@ export class ArchiveScene {
     const hover = (e: PointerEvent) => {
       if (
         e.pointerType !== "mouse" ||
-        !this.canBrowse() ||
+        (!this.canBrowse() && !this.onActivate) ||
         this.archiveMomentum
       )
         return;
@@ -1030,7 +1031,8 @@ export class ArchiveScene {
     };
     canvas.addEventListener("pointerdown", (e) => {
       if (e.pointerType === "mouse" && e.button !== 0) return;
-      if (!this.canBrowse() && !this.canInspect) return;
+      if (!this.canBrowse() && !this.canInspect && !this.onActivate) return;
+      if (!this.loaded || this.container.closest("[inert]")) return;
       pointers.add(e.pointerId);
       if (pointers.size > 1) {
         cancelled = true;
@@ -1091,6 +1093,16 @@ export class ArchiveScene {
       if (this.relayActive) {
         if (!cancelled && !moved) { const cell = this.pickCell(e.clientX, e.clientY); this.onRelayPick?.(cell ? cellKey(cell) : null); }
         reset(); return;
+      }
+      // A deliberate tap on a card can enter the app. Drags, multi-touch and
+      // taps on empty space keep their existing gallery behavior.
+      if (!cancelled && !moved && Math.hypot(e.clientX - startX, e.clientY - startY) <= 7 && this.onActivate) {
+        const cell = this.pickCell(e.clientX, e.clientY);
+        if (cell) {
+          reset();
+          this.onActivate(fileAtCell(cell));
+          return;
+        }
       }
       if (!cancelled && browse && this.canBrowse()) {
         moveArchive(e);
