@@ -11,7 +11,6 @@ export function ReviewQuote({ review, topic }) {
   return <article className="review-quote">
     <p className="review-quote-meta"><strong>{({positive:'Positive experience',negative:'A concern',mixed:'Mixed experience',neutral:'Reported experience'})[mood] ?? 'Reported experience'}</strong><span>{dateLabel(review.date)}</span></p>
     <blockquote>{quote}</blockquote>
-    <details><summary>Review source</summary><p>Provided review sheet · Record {review.id}</p><p>{review.contextNote}</p>{quote!==review.text&&<p>{review.text}</p>}{review.sourceUrl ? <a href={review.sourceUrl} target="_blank" rel="noreferrer">Open original review</a> : <p>Original link not supplied. Reviewer identity has not been checked.</p>}</details>
   </article>;
 }
 export default function ReviewEvidence({ p, onAsk }) {

@@ -13,9 +13,6 @@
 .review-quote { padding-block:18px; border-block-end:1px solid var(--rule); }
 .review-quote-meta { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; font-size:13px; color:var(--muted); }
 .review-quote blockquote { margin:12px 0; font-size:16px; line-height:1.65; overflow-wrap:anywhere; }
-.review-quote details { font-size:13px; color:var(--muted); line-height:1.5; }
-.review-quote details p { margin-block:6px; }
-.review-quote summary { cursor:pointer; min-height:36px; display:flex; align-items:center; text-decoration:underline; text-underline-offset:4px; }
 .review-ask { border-radius:16px; background:var(--wash,#eceee3); padding:16px; margin-block:18px; }
 .review-ask p { margin:0 0 12px; font-size:14px; }
 .review-ask button { min-height:48px; border-radius:99px; padding:12px 18px; }
