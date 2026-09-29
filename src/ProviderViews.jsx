@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 import CareJourney from "./CareJourney.jsx";
+import ReviewEvidence from "./ReviewEvidence.jsx";
 import useCardReveal from "./useCardReveal.js";
 import {
   Bookmark,
@@ -383,7 +384,7 @@ function CareSchedule({ p }) {
     </dl></details>
   </section>;
 }
-export function Details({ p, request, onPrepare, onCompare, compared, onSave, saved, onPreparation }) {
+export function Details({ p, request, onPrepare, onAskReview, onCompare, compared, onSave, saved, onPreparation }) {
   const counts = p.fit.counts, fees = feeSummary(p), badge = registrationBadge(p, todayKL());
   const shortCare = isShortCare(request);
   const date = shortCare ? new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(request.date + "T12:00:00+08:00")) : "Long term";
@@ -427,6 +428,7 @@ export function Details({ p, request, onPrepare, onCompare, compared, onSave, sa
           <div className="centre-preparation"><h4>After the centre says yes</h4><button onClick={onPreparation}><ClipboardList size={15} />Get ready for child care<ArrowRight size={14} /></button></div>
         </div>
       </aside>
+      <ReviewEvidence p={p} onAsk={onAskReview} />
       <details className="centre-fees extra-details"><summary><Wallet size={18} aria-hidden="true" />Fees & extras<ChevronDown size={16} aria-hidden="true" /></summary><Costs p={p} /></details>
       <details className="centre-hours extra-details"><summary><Clock3 size={18} aria-hidden="true" />Weekly opening hours<ChevronDown size={16} aria-hidden="true" /></summary><CareSchedule p={p} /></details>
       <details className="centre-evidence" open={badge?.state === "attention"}><summary><div><strong>Registration & sources</strong><span>{badge ? `${badge.authority} · ${badge.number}${badge.state === "attention" ? " · needs checking" : ""}` : "Where these details come from"}</span></div><ChevronDown size={17} className="disclosure-chevron" /></summary>

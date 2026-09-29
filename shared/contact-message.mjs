@@ -1,5 +1,21 @@
 import { isShortCare } from './request.mjs';
 import { childAge, enquiryView, visitDate } from './enquiry-view.mjs';
+import { reviewConcerns } from './review-profile.mjs';
+
+// Keep chosen review topics with the in-memory contact draft, not a fetched
+// provider object: reopening details replaces that object with current facts.
+export function withReviewQuestions(p, selection, key) {
+  return { ...p, reviewQuestionIds: [...new Set([...(selection[`reviews:${key}`] ?? []), ...(p.reviewQuestionIds ?? [])])] };
+}
+export function addReviewQuestion(p, request, topic, selection, key, now = Date.now()) {
+  const next = withReviewQuestions({ ...p, reviewQuestionIds: [...(p.reviewQuestionIds ?? []), topic] }, selection, key);
+  const updated = { ...selection, [`reviews:${key}`]: next.reviewQuestionIds };
+  if (selection[key]) {
+    const added = contactQuestions(next, request, now).find(q => q.checks.some(c => c.reviewTopic === topic));
+    if (added) updated[key] = [...new Set([...selection[key], added.id])];
+  }
+  return { p: next, selection: updated };
+}
 
 // Ask once per parent decision. Keep every underlying check available as evidence.
 const bookingQuestions = new Map([
@@ -13,7 +29,7 @@ const bookingQuestions = new Map([
   ['Can you supervise my child for this 1–3-hour visit, with the required notice and toilet-training requirements?', 'Can I book a 1–3-hour visit? How early must I book? Does my child need to use the toilet without help?'],
 ]);
 
-export function contactQuestions(p, request) {
+export function contactQuestions(p, request, now = Date.now()) {
   const short = isShortCare(request), rows = enquiryView(p, request);
   const specialAdmission = short && p.admission?.requirements?.length && rows.some(q => q.id === 'admission');
   const groups = [];
@@ -42,6 +58,14 @@ export function contactQuestions(p, request) {
   // Unknown future question types remain visible instead of being silently lost.
   const covered = new Set(groups.flatMap(q => q.checks.map(c => c.id)));
   for (const row of rows.filter(q => !covered.has(q.id))) add(row.id, [row.id], row.text);
+  for (const concern of reviewConcerns(p, now).filter(c => p.reviewQuestionIds?.includes(c.id))) {
+    const evidence = { id: `review:${concern.id}`, topic: concern.label,
+      why: `${concern.recentNegative} recent reviews raise a concern. This is a sample of reported experiences, not a confirmed service fact.`,
+      reviewTopic: concern.id, reviewExcerpts: concern.excerpts, check: { source: p.reviewProfile.source } };
+    const existing = groups.find(q => q.id === concern.mergesWith);
+    if (existing) existing.checks.push(evidence);
+    else groups.push({ id: `review:${concern.id}`, text: concern.question, checks: [evidence], conflicts: [] });
+  }
   return groups.sort((a, b) => Number(b.conflicts.length > 0) - Number(a.conflicts.length > 0));
 }
 

@@ -4,41 +4,9 @@ import { shortFeeFrom, monthlyFeeFrom, feePriorityGroup } from './result-summary
 // Only public centre IDs and capped activity counts are remembered. Requests,
 // addresses, child ages, notes and provider snapshots never enter this store.
 export const interestKey = mode => `equalpath:interests:v1:${mode}`;
-// Review evidence is deliberately kept separate from search constraints. The
-// first level is the concern area found in a review; the second level is the
-// human preference that can gently rerank an already eligible result.
-export const REVIEW_TOPIC_GROUPS = [
-  {
-    id: 'temporary_care',
-    label: 'Temporary care',
-    preferences: [{ id: 'flexible_short_care', label: 'Flexible short care', onboardingLabel: 'Short visits', description: 'Care for a few hours' }],
-  },
-  {
-    id: 'pickup',
-    label: 'Pickup',
-    preferences: [{ id: 'smooth_pickup', label: 'Smooth pickup', onboardingLabel: 'Easy pickup', description: 'The centre explains pickup clearly' }],
-  },
-  {
-    id: 'late_collection',
-    label: 'Late collection',
-    preferences: [{ id: 'clear_late_rules', label: 'Clear late pickup', onboardingLabel: 'Clear pickup rules', description: 'Know what happens if you are late' }],
-  },
-  {
-    id: 'fees',
-    label: 'Fees',
-    preferences: [{ id: 'predictable_fees', label: 'Predictable fees', onboardingLabel: 'Clear fees', description: 'See the price before you call' }],
-  },
-  {
-    id: 'communication',
-    label: 'Communication',
-    preferences: [{ id: 'responsive_team', label: 'Responsive team', onboardingLabel: 'Easy to contact', description: 'Phone or website available' }],
-  },
-];
-export const DISCOVERY_PREFERENCES = [
-  ...REVIEW_TOPIC_GROUPS.flatMap(group => group.preferences.map(preference => ({ ...preference, topic: group.id }))),
-];
-const preferenceIds = new Set(DISCOVERY_PREFERENCES.map(p => p.id));
-const preferenceTopic = new Map(DISCOVERY_PREFERENCES.map(preference => [preference.id, preference.topic]));
+import { DISCOVERY_PREFERENCES, REVIEW_TOPIC_GROUPS, normalisePreferenceTopics, classifyReview, reviewTopicEvidence, aspectSentiment } from './review-profile.mjs';
+export { DISCOVERY_PREFERENCES, REVIEW_TOPIC_GROUPS, normalisePreferenceTopics, classifyReview } from './review-profile.mjs';
+const preferenceTopic = new Map(DISCOVERY_PREFERENCES.map(p => [p.id, p.topic]));
 export const emptyInterests = () => ({ version: 1, enabled: true, visits: [], hidden: [], preferences: [], preferenceSetup: 'new' });
 const DAY = 86400000;
 const validId = id => typeof id === 'string' && id.length > 0 && id.length <= 160;
@@ -46,9 +14,6 @@ const validType = type => ['short_term', 'regular'].includes(type);
 const same = (a, b) => a.id === b.id && a.careType === b.careType;
 const validDate = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
 const validPreferenceSetup = value => ['new', 'skipped', 'complete'].includes(value);
-export function normalisePreferenceTopics(topics) {
-  return [...new Set(Array.isArray(topics) ? topics.filter(id => preferenceIds.has(id)) : [])].slice(0, 3);
-}
 export function readInterests(storage, mode) {
   const raw = storage.getItem(interestKey(mode));
   if (!raw) return emptyInterests();
@@ -118,51 +83,6 @@ export function centreSimilarity(a, b) {
   if (a.district && a.district === b.district) parts.push({ value: 1, weight: .05, reason: 'area' });
   return { value: parts.reduce((s, x) => s + x.value * x.weight, 0), meaningful: parts.some(x => ['service', 'pickup', 'fee'].includes(x.reason) && x.value >= .6) };
 }
-const reviewText = review => typeof review === 'string'
-  ? review
-  : [review?.text, review?.excerpt, review?.content, review?.body, review?.quote, review?.reviewText]
-    .filter(value => typeof value === 'string').join(' ');
-
-const REVIEW_PATTERNS = {
-  temporary_care: { flexible_short_care: [/short[- ]?(term|visit|stay|care)/i, /drop[- ]?in/i, /hourly/i, /one[- ]?off/i, /ad[- ]?hoc/i, /part[- ]?time/i, /短时|临时|按小时|灵活照护/i] },
-  pickup: { smooth_pickup: [/pickup|pick-up|pick up|handover|collection/i, /jemput|ambil anak/i, /接送|交接/i] },
-  late_collection: { clear_late_rules: [/late|after hours|延迟|迟到|迟接|lewat/i] },
-  fees: { predictable_fees: [/fee|fees|price|pricing|cost|costs|payment|tuition|yuran|bayaran|费用|收费|学费/i] },
-  communication: { responsive_team: [/reply|repl(y|ied|ies)|respond|response|responsive|helpful|contact|message|communication|update|progress|balas|respon|沟通|回复|联络/i] },
-};
-
-const unique = values => [...new Set(values)];
-const explicitReviewTopics = review => {
-  const topics = review?.topics;
-  if (Array.isArray(topics)) return topics;
-  if (topics && typeof topics === 'object') return Object.entries(topics).flatMap(([key, value]) => value === true || value?.state === 'supported' ? [key] : []);
-  return [];
-};
-
-/**
- * Classify one permitted review excerpt into level-1 concerns and level-2
- * preferences. This is a deterministic fallback for a published D5 review
- * record; it never turns a provider description or a listed fact into review
- * evidence.
- */
-export function classifyReview(review) {
-  const explicit = explicitReviewTopics(review);
-  const text = `${reviewText(review)} ${explicit.join(' ')}`;
-  const level2 = [];
-  const level1 = [];
-  for (const group of REVIEW_TOPIC_GROUPS) {
-    for (const preference of group.preferences) {
-      const hasExplicit = explicit.includes(group.id) || explicit.includes(preference.id);
-      const matched = hasExplicit || REVIEW_PATTERNS[group.id]?.[preference.id]?.some(pattern => pattern.test(text));
-      if (matched) {
-        level1.push(group.id);
-        level2.push(preference.id);
-      }
-    }
-  }
-  return { level1: unique(level1), level2: unique(level2) };
-}
-
 const topicEvidenceValue = (value) => {
   if (!value || typeof value !== 'object') return null;
   const reviewCount = Number(value.reviewCount ?? value.count ?? value.collected);
@@ -175,7 +95,7 @@ const topicEvidenceValue = (value) => {
 };
 
 const explicitEvidence = (provider, preferenceId) => {
-  const groupId = preferenceTopic.get(preferenceId);
+  const groupId = ({flexible_short_care:'temporary_care',smooth_pickup:'pickup',clear_late_rules:'late_collection',predictable_fees:'fees',responsive_team:'communication'})[preferenceId] ?? preferenceTopic.get(preferenceId);
   const sources = [provider?.reviewTopics, provider?.reviews?.topics, provider?.reviews?.topicEvidence].filter(value => value && typeof value === 'object');
   for (const source of sources) {
     const value = source[preferenceId] ?? source[groupId];
@@ -190,113 +110,114 @@ const classifiedEvidence = (provider, preferenceId) => {
   if (!Array.isArray(reviews)) return null;
   const matching = reviews.filter(review => {
     const classification = classifyReview(review);
-    const positive = review?.sentiment === 'positive' || Number(review?.rating) >= 4 || review?.support === true;
+    const positive = review?.sentiment === 'positive' || review?.support === true || aspectSentiment(review?.text ?? review?.excerpt, preferenceId).sentiment === 'positive';
     return positive && classification.level2.includes(preferenceId);
   });
   if (!matching.length) return null;
   return { supported: matching.length >= 2, reviewCount: matching.length, recentCount: null, positiveCount: matching.length, limited: matching.length < 2 };
 };
 
-function reviewEvidence(p, id) {
+function reviewEvidence(p, id, now = Date.now()) {
+  if (p.reviewProfile) return reviewTopicEvidence(p, id, now);
   const evidence = explicitEvidence(p, id) ?? classifiedEvidence(p, id);
-  if (!evidence?.supported) return { state: 'unknown', source: 'review', reviewCount: evidence?.reviewCount ?? 0, limited: !!evidence };
-  return { state: 'supported', source: 'review', reviewCount: evidence.reviewCount, recentCount: evidence.recentCount, positiveCount: evidence.positiveCount };
+  if (!evidence?.supported) return { state: 'unknown', score: .5, confidence: 0, source: 'review', reviewCount: evidence?.reviewCount ?? 0, limited: !!evidence };
+  return { state: 'supported', score: .5 + .4 * (evidence.positiveCount ?? evidence.reviewCount) / (evidence.reviewCount + 4), confidence: evidence.reviewCount / (evidence.reviewCount + 8), source: 'review', reviewCount: evidence.reviewCount, recentCount: evidence.recentCount, positiveCount: evidence.positiveCount };
 }
-export function preferenceEvidence(p, id, request) {
+export function preferenceEvidence(p, id, request, now = Date.now()) {
   // request is intentionally unused: preferences personalise the current
   // eligible result set, while date/time/pickup remain hard search gates.
   void request;
-  return reviewEvidence(p, id);
+  return reviewEvidence(p, id, now);
 }
-export function preferenceMatches(p, preferences, request) {
-  return normalisePreferenceTopics(preferences).map(id => ({ id, ...preferenceEvidence(p, id, request) }));
+export function preferenceMatches(p, preferences, request, now = Date.now()) {
+  return normalisePreferenceTopics(preferences).map(id => ({ id, ...preferenceEvidence(p, id, request, now) }));
 }
-export function recommendCentres({ candidates, seeds: currentSeeds, request, library, history, preferences = history.preferences, now = Date.now() }) {
+// Rebuild the interest vector from fresh branch facts. Nothing about a child or
+// a search is written into history; hidden branches contribute a bounded dislike.
+export function learnedPreferenceWeights({ seeds, library, history, careType, now = Date.now() }) {
+  const fresh = new Map(seeds.map(p => [p.id, p]));
+  const weighted = interestSeeds(library, history, careType, now).filter(s => fresh.has(s.id));
+  const weights = Object.fromEntries(DISCOVERY_PREFERENCES.map(p => [p.id, 0]));
+  let total = 0;
+  for (const seed of weighted) {
+    total += seed.weight;
+    for (const id of Object.keys(weights)) {
+      const e = reviewEvidence(fresh.get(seed.id), id, now);
+      weights[id] += seed.weight * (e.score - .5) * 2 * (e.confidence ?? 0);
+    }
+  }
+  for (const hidden of history.enabled ? history.hidden.filter(h => h.careType === careType) : []) {
+    const p = fresh.get(hidden.id); if (!p) continue;
+    total += .5;
+    for (const id of Object.keys(weights)) {
+      const e = reviewEvidence(p, id, now);
+      weights[id] -= Math.max(0, e.score - .5) * (e.confidence ?? 0);
+    }
+  }
+  return { weights: Object.fromEntries(Object.entries(weights).map(([id,w]) => [id, w / Math.max(1,total)])), confidence: Math.min(1,total/8) };
+}
+export function rankCentres({ candidates, seeds: currentSeeds = [], request, library, history, preferences = history.preferences, now = Date.now(), excludeSaved = false }) {
   const interests = interestSeeds(library, history, request.careType, now);
-  const fresh = new Map(currentSeeds.map(p => [p.id, p]));
+  const fresh = new Map([...currentSeeds, ...candidates].map(p => [p.id, p]));
   const seeds = interests.filter(s => fresh.has(s.id));
   const saved = new Set(library.favourites.filter(f => (f.careType ?? 'short_term') === request.careType).map(f => f.id));
   const hidden = new Set(history.hidden.filter(v => v.careType === request.careType).map(v => v.id));
-  let pool = candidates.filter(p => p.careType === request.careType && p.location && p.fit && p.fit.counts.conflict === 0 && !saved.has(p.id) && !hidden.has(p.id));
-  if (pool.some(hasContact)) pool = pool.filter(hasContact);
+  const pool = candidates.filter(p => p.careType === request.careType && p.location && p.fit && p.fit.counts.conflict === 0 && (!excludeSaved || !saved.has(p.id)) && !hidden.has(p.id));
+  const learned = learnedPreferenceWeights({ seeds: [...fresh.values()], library, history, careType: request.careType, now });
   const relevant = new Set(['admission', 'care', ...(request.age ? ['age'] : []), ...(request.transport === 'institution' ? ['transport', 'coverage', 'pickup'] : [])]);
-  const confidence = Math.min(.35, seeds.length / (seeds.length + 3) * .35);
   const scored = pool.map(p => {
     const checks = p.fit.conditions.filter(c => relevant.has(c.id));
     const known = checks.filter(c => c.state === 'supported').length / Math.max(1, checks.length);
     const near = 1 - Math.min(1, Math.max(0, p.distanceKm) / request.radius);
     const own = seeds.find(s => s.id === p.id);
     const similarities = seeds.map(s => ({ ...s, ...centreSimilarity(p, fresh.get(s.id)) }));
-    const totalWeight = seeds.reduce((sum, s) => sum + s.weight, 0);
-    const similarity = similarities.reduce((sum, s) => sum + s.value * s.weight, 0) / (totalWeight || 1);
-    const familiar = own ? Math.min(1, own.weight / 3) : 0;
-    const matches = preferenceMatches(p, preferences, request);
-    const supportedPreferences = matches.filter(m => m.state === 'supported');
-    const knownPreferences = matches.filter(m => m.state !== 'unknown');
-    // Explicit choices are a gentle nudge, capped below the current request
-    // and history signals. Unknown evidence stays neutral and is never called
-    // a match in the interface.
-    const preferenceWeight = matches.length ? .22 : 0;
-    const preferenceScore = knownPreferences.length
-      ? supportedPreferences.length / knownPreferences.length
-      : .5;
-    const baseScore = (1 - confidence) * (.6 * near + .4 * known) + confidence * (.8 * similarity + .2 * familiar);
-    const score = (1 - preferenceWeight) * baseScore + preferenceWeight * preferenceScore;
-    const anchor = similarities.filter(s => s.meaningful && s.id !== p.id).sort((a, b) => b.value * b.weight - a.value * a.weight)[0];
-    const preferenceReason = supportedPreferences[0]?.id && DISCOVERY_PREFERENCES.find(x => x.id === supportedPreferences[0].id)?.label;
-    const reason = preferenceReason ? `Matches what you value: ${preferenceReason}` : own?.compared ? 'You compared this centre before' : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
+    const totalWeight = seeds.reduce((sum,s) => sum+s.weight,0);
+    const similarity = similarities.reduce((sum,s) => sum+s.value*s.weight,0)/(totalWeight||1);
+    const matches = preferenceMatches(p, preferences, request, now);
+    const explicit = matches.reduce((n,e) => n+(e.score-.5)*2,0)/Math.max(1,matches.length);
+    const learnedTotal = Object.values(learned.weights).reduce((s,w)=>s+Math.abs(w),0);
+    const learnedFit = DISCOVERY_PREFERENCES.reduce((sum,t)=>sum+learned.weights[t.id]*(reviewEvidence(p,t.id,now).score-.5)*2,0)/Math.max(.01,learnedTotal);
+    const score = .6*near+.4*known + .22*explicit + .2*learned.confidence*learnedFit + .12*learned.confidence*similarity + (own ? .06*Math.min(1,own.weight/4) : 0);
+    const supported = matches.filter(e => e.state==='supported' && e.score>.5).sort((a,b)=>b.score-a.score);
+    const learnedTopic = DISCOVERY_PREFERENCES.map(t=>({...t,value:learned.weights[t.id]*(reviewEvidence(p,t.id,now).score-.5)})).sort((a,b)=>b.value-a.value)[0];
+    const anchor = similarities.filter(s=>s.meaningful&&s.id!==p.id).sort((a,b)=>b.value*b.weight-a.value*a.weight)[0];
+    const label = DISCOVERY_PREFERENCES.find(t=>t.id===supported[0]?.id)?.label;
+    const reason = label ? `Matches your choices: ${label}` : own?.saved ? 'A centre you saved' : own?.compared ? 'You compared this centre before' : learnedTopic?.value>.01 ? `Based on your activity: ${learnedTopic.label}` : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
     return { p, score, reason, basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
   });
-  const chosen = [];
-  const brand = p => p.name?.split(/\s[—–]\s/)[0].toLowerCase();
-  const priority = (a, b) => {
-    // A deliberately chosen fee/hours/pickup priority precedes inferred taste.
-    // Distance remains part of the For you score; ordinary search order is untouched.
-    if (!['price', 'closing', 'pickup'].includes(request.sort)) return 0;
-    const x = priorityValue(a.p, request.sort, request.date), y = priorityValue(b.p, request.sort, request.date);
-    if (!Number.isFinite(x) || !Number.isFinite(y)) return Number(!Number.isFinite(x)) - Number(!Number.isFinite(y));
-    if (request.sort === 'price') return feePriorityGroup(a.p) - feePriorityGroup(b.p) || x - y;
-    return y - x;
+  const priority = (a,b) => {
+    const contact = Number(hasContact(b.p))-Number(hasContact(a.p)); if(contact) return contact;
+    if(!['price','closing','pickup'].includes(request.sort))return 0;
+    const x=priorityValue(a.p,request.sort,request.date),y=priorityValue(b.p,request.sort,request.date);
+    if(!Number.isFinite(x)||!Number.isFinite(y))return Number(!Number.isFinite(x))-Number(!Number.isFinite(y));
+    return request.sort==='price' ? feePriorityGroup(a.p)-feePriorityGroup(b.p)||x-y : y-x;
   };
-  while (scored.length && chosen.length < 3) {
-    const adjusted = item => item.score - (chosen.some(c => brand(c.p) === brand(item.p)) ? .12 : 0);
-    scored.sort((a, b) => priority(a, b) || adjusted(b) - adjusted(a) || a.p.distanceKm - b.p.distanceKm || a.p.id.localeCompare(b.p.id));
+  const chosen=[]; const brand=p=>p.name?.split(/\s[—–]\s/)[0].toLowerCase();
+  while(scored.length){
+    const adjusted=x=>x.score-(chosen.slice(0,3).some(c=>brand(c.p)===brand(x.p))?.12:0);
+    scored.sort((a,b)=>priority(a,b)||adjusted(b)-adjusted(a)||a.p.distanceKm-b.p.distanceKm||a.p.id.localeCompare(b.p.id));
     chosen.push(scored.shift());
   }
   return chosen;
 }
-
-// Apply the same evidence-backed score to the current result page. History and
-// choices stay local; the server still decides which page belongs in the search.
-export function personaliseSearchItems({ items, request, library, history, now = Date.now() }) {
-  if (!Array.isArray(items) || !items.length || !request || !library || !history) return items ?? [];
-  const hasSignals = history.preferences?.length || interestSeeds(library, history, request.careType, now).length;
-  if (!hasSignals) return items;
-  const ranked = recommendCentres({ candidates: items, seeds: items, request, library, history, now });
-  if (!ranked.length) return items;
-  const rankById = new Map(ranked.map((entry, index) => [entry.p.id, { ...entry, index }]));
-  const annotated = items.map((p, index) => {
-    const match = rankById.get(p.id);
-    const personal = match && match.reason !== 'Near your chosen location';
-    return personal
-      ? { ...p, personalised: true, personalisedReason: match.reason, personalisedRank: match.index + 1 }
-      : { ...p, personalised: false, personalisedReason: null, personalisedRank: null, _searchIndex: index };
-  });
-  // Keep explicit price, care-end and pickup sorts untouched. The default
-  // nearest view may gently surface a top match inside the current page.
-  if (request.sort !== 'distance') return annotated.map(({ _searchIndex, ...p }) => p);
-  return annotated
-    .map((p, index) => ({ p, index }))
-    .sort((a, b) => {
-      const aConflict = a.p.fit?.counts?.conflict > 0 ? 1 : 0;
-      const bConflict = b.p.fit?.counts?.conflict > 0 ? 1 : 0;
-      if (aConflict !== bConflict) return aConflict - bConflict;
-      const aRank = a.p.personalisedRank ?? Infinity;
-      const bRank = b.p.personalisedRank ?? Infinity;
-      return aRank - bRank || a.index - b.index;
-    })
-    .map(({ p }) => {
-      const { _searchIndex, ...clean } = p;
-      return clean;
-    });
+export function recommendCentres(options) {
+  const ranked=rankCentres({...options,excludeSaved:true});
+  const pool=ranked.some(x=>hasContact(x.p))?ranked.filter(x=>hasContact(x.p)):ranked;
+  return pool.slice(0,3);
+}
+// One page order and one suggestion set drive the list, pins and map cards.
+export function personaliseSearchItems({ items, seeds = [], request, library, history, now = Date.now() }) {
+  if(!Array.isArray(items)||!items.length||!request||!library||!history)return items??[];
+  const hasSignals=history.preferences?.length||interestSeeds(library,history,request.careType,now).length||(history.enabled&&history.hidden.some(h=>h.careType===request.careType));
+  if(!hasSignals)return items;
+  const ranked=rankCentres({candidates:items,seeds:[...seeds,...items],request,library,history,now});
+  const byId=new Map(ranked.map((r,index)=>[r.p.id,{...r,index}]));
+  const order=request.sort==='distance' ? [...items].sort((a,b)=>{
+    const conflicts=Number(a.fit?.counts?.conflict>0)-Number(b.fit?.counts?.conflict>0);
+    return conflicts||Number(hasContact(b))-Number(hasContact(a))||(byId.get(a.id)?.index??Infinity)-(byId.get(b.id)?.index??Infinity);
+  }) : items;
+  const eligible=order.filter(p=>byId.has(p.id));
+  const contactable=eligible.some(hasContact)?eligible.filter(hasContact):eligible;
+  const suggested=new Set(contactable.slice(0,3).map(p=>p.id));
+  return order.map(p=>{const match=byId.get(p.id);const personal=match&&match.reason!=='Near your chosen location';return {...p,suggested:suggested.has(p.id),personalised:!!personal&&suggested.has(p.id),personalisedReason:personal?match.reason:null,personalisedRank:match?match.index+1:null};});
 }

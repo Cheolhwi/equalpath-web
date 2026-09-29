@@ -27,6 +27,7 @@ import { ServiceError } from "./appwrite-store.mjs";
 import { createPublishedStore } from "./published-catalog.mjs";
 import { applyReviewEvidence } from "./review-evidence.mjs";
 import { applyCompletedShortCareData } from "./completed-short-care.mjs";
+import { applyReviewProfiles } from "./review-profiles.mjs";
 import { createPlaceSearch } from "./places.mjs";
 import { createDrivingRoutes } from "./driving.mjs";
 export function createAPI({ store = createPublishedStore(), placeSearch = createPlaceSearch(), reverseGeocode = placeSearch.reverse, drivingRoutes = createDrivingRoutes() } = {}) {
@@ -49,7 +50,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       if (!regions.includes(regionAt(body.point))) throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
       return {contract:CONTRACT,mode,regions,...(mode === "demo" ? {pickup:null} : await reverseGeocode(body.point))};
     }
-    const catalog = mode === "demo" ? fixtureCatalog : applyCompletedShortCareData(applyReviewEvidence(await store.catalog())),
+    const catalog = mode === "demo" ? fixtureCatalog : applyReviewProfiles(applyCompletedShortCareData(applyReviewEvidence(await store.catalog()))),
       allItems = body.features?.includes?.('area-fees-v1') === true ? catalog.items : catalog.items.map(p=>p.fees?.some(f=>f.verification==='area_estimate') ? {...p,fees:p.fees.filter(f=>f.verification!=='area_estimate')} : p);
     const careType = body.request?.careType ?? body.careType ?? "short_term";
     if (!["regular", "short_term"].includes(careType)) throw new ServiceError("INVALID_REQUEST", 422, { careType: "Choose a care type." });
@@ -57,6 +58,12 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
     const shortIds = mode === "live" && Array.isArray(catalog.shortCareIds) ? new Set(catalog.shortCareIds) : null;
     const items = (shortIds ? allItems.filter(p => shortIds.has(p.id) === (careType === "short_term")) : allItems)
       .map(p => ({ ...p, careType }));
+    const seedIds = body.seedIds ?? [];
+    if (!Array.isArray(seedIds) || seedIds.length > 100 || new Set(seedIds).size !== seedIds.length || seedIds.some(id => typeof id !== 'string' || !id.length || id.length > 160))
+      throw new ServiceError('INVALID_SELECTION', 400);
+    // Only current public facts travel back. User weights remain in the browser.
+    const seedFact = p => ({ id:p.id,name:p.name,careType:p.careType,category:p.category,district:p.district,admission:p.admission,transport:p.transport,fees:p.fees,reviewTopics:p.reviewTopics,reviewProfile:p.reviewProfile ? { topics:p.reviewProfile.topics,asOf:p.reviewProfile.asOf } : undefined });
+    const seeds = items.filter(p => seedIds.includes(p.id)).map(seedFact);
     const pageSize = searchPageSize(careType);
     const meta = {
       contract: CONTRACT,
@@ -163,7 +170,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       // Fetch current public facts, never accept saved snapshots or inferred fit.
       // Activity weights/timestamps remain in the browser; this boundary only
       // receives the public IDs whose attributes need refreshing.
-      const ids = body.seedIds ?? [];
+      const ids = seedIds;
       if (!Array.isArray(ids) || ids.length > 100 || new Set(ids).size !== ids.length || ids.some(id => typeof id !== 'string' || !id.length || id.length > 160))
         throw new ServiceError('INVALID_SELECTION', 400);
       const q = request.query.toLowerCase();
@@ -172,7 +179,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
         .map(hydrate).filter(p => !p.fit.counts.conflict && (request.includeUnknown || p.fit.conditions.filter(c => c.id !== 'transfer').every(c => c.state !== 'unknown')))
         .sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
       return { ...meta, request, items: candidates.slice(0, 100), total: candidates.length, limit: 100,
-        seeds: items.filter(p => ids.includes(p.id)), checkedAt: new Date().toISOString() };
+        seeds, checkedAt: new Date().toISOString() };
     }
     if (body.action === "search") {
       const q = request.query.toLowerCase();
@@ -214,6 +221,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
         ...meta,
         request,
         items: await withDriving(suggestProviders(pageItems, request)),
+        seeds,
         total: candidates.length,
         explicitMatchCount,
         page,

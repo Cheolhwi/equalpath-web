@@ -11,7 +11,10 @@
 .preference-setup-heading h4 { margin:0 0 4px; font-size:19px; }
 .preference-setup-heading p { margin:0; color:var(--muted); font-size:14px; }
 .preference-setup-heading > span { flex:0 0 auto; color:var(--accent); font-size:13px; font-weight:700; }
-.preference-options { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:16px 0; }
+.preference-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:16px 0; }
+.preference-more { min-height:44px; gap:8px; }
+.preference-limit { font-size:14px; color:var(--muted); margin:8px 0; }
+.question-review-note { display:block; margin:4px 0 0 34px; color:var(--muted); font-size:13px; }
 .preference-option { display:flex; align-items:center; gap:12px; min-height:76px; padding:12px 13px; border:1px solid var(--rule); border-radius:14px; background:var(--paper); color:var(--ink); text-align:left; transition:border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
 .preference-option:hover { border-color:var(--accent); transform:translateY(-1px); }
 .preference-option:focus-visible { outline:3px solid color-mix(in srgb, var(--accent) 30%, transparent); outline-offset:2px; }

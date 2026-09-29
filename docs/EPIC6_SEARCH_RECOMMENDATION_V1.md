@@ -1,70 +1,150 @@
-# Epic 6 search and recommendation direction
+# Epic 6: search, review evidence and recommendations
 
-Epic 6 is an evidence-backed search aid, not advertising. A centre must first
-pass the current search. Review signals only reorder eligible results that the
-parent could already use.
+Implementation record, 29 September 2026. This file describes the current code;
+the earlier exported diagrams show the original five-theme design. This is a
+local implementation record, not a production release receipt.
 
-## First use and cold start
+## Data and two-level classification
 
-Before the first live map opens, EqualPath shows a separate, skippable
-preference page. It asks what matters in a childcare review, rather than
-asking for search constraints:
+The corrected, user-supplied `short-care-review.numbers` workbook contains
+10,211 review records matched by provider ID to the 101 completed short-care
+branches. Each review stays attached to its branch; matching brand names do not
+transfer reviews between branches. Duplicate review IDs and repeated wording
+within the same branch are removed before aggregation.
 
-- flexible short care;
-- smooth pickup;
-- clear late-pickup rules;
-- predictable fees;
-- a responsive team.
+Six readable level-one groups contain twelve level-two preferences:
 
-These are level-two preferences grouped under five level-one review themes:
-temporary care, pickup, late collection, fees, and communication. A visitor
-can choose up to three, skip, or change them later. The choices are stored in
-the mode-separated browser-local record; addresses, dates, times, ages, notes,
-and provider snapshots are not stored there.
+| Level one | Level two |
+| --- | --- |
+| Care | Kind teachers; Safe pickup |
+| Daily care | Clean spaces; Good meals |
+| Play and learning | Fun activities |
+| Communication | Helpful updates |
+| Visits and pickup | Flexible visits; Flexible hours; Easy drop-off; Clear late fees |
+| Costs | Clear prices; Good value |
 
-This gives a new visitor a useful first signal without pretending that a
-listed service fact is a personal preference. Saved, compared, and viewed
-centres then add a separate, decaying history signal.
+The groups and user-facing names are a stable, curated vocabulary, **not an
+unsupervised discovery claim**. The import trains hierarchical TF-IDF centroids
+from the supplied topic annotations. For unlabelled text, it first selects
+level-one groups, then predicts level-two topics inside those groups; weak or
+unrelated text is left unclassified. Existing source annotations are retained
+as candidates, with a text-relevance gate. Clause rules separate sentiment and
+narrow pickup/fee aspects. Overall stars never stand in for topic sentiment.
 
-## Review taxonomy and evidence gate
+This is a lightweight, reproducible classifier. It is not an LLM, a
+collaborative-filtering model, or an automatically retrained online model.
 
-Review collection is branch-specific. Each retained record must include its
-public source, observed branch identity, retrieval date, permitted-use scope,
-and enough positive evidence for the same level-two theme. The current gate is
-at least two supporting reviews; when dates are available, at least two must be
-within the recent review window. One review, an old review, a provider listing,
-or a hard search fact stays unknown.
+## Topic scores
 
-The classifier maps review text or an approved topic annotation to a level-one
-theme and then to its level-two preference. It never converts an overall star
-rating into a preference. For example, two recent reviews about parent updates
-can support “Responsive team”; a published phone number cannot.
+`shared/review-profile.mjs` aggregates positive, negative, mixed and neutral
+observations by topic and date. A mixed review can count on both sides. Neutral
+mentions do not become praise. Prices, opening hours and phone listings never
+become review evidence.
 
-The September 22 short-care crawl publishes only derived themes for
-branch-matched Google Maps public review pages. It does not publish full review
-wording. At this point, communication evidence is supported for three
-short-care branches; pickup, late collection, fees, and flexible short-care
-preferences remain neutral until the corpus contains the required review
-evidence.
+- Review recency has a 180-day half-life.
+- Positive/negative proportions use a Beta(2,2) prior, shrunk toward neutral by
+  `weightedCount / (weightedCount + 8)`.
+- At least two positive reviews in the past 365 days are required for a
+  supported theme. At least two recent negative reviews support a concern.
+- Sparse, undated, future-dated and old-only evidence gives a neutral ranking
+  contribution. Missing evidence is not a bad rating.
+- Counts, positive/negative balance, dates and sample limits are visible.
+  The internal score is not displayed as a childcare quality or safety rating.
 
-## Ranking boundary
+## First use and learning from activity
 
-The current search remains the hard gate for care type, radius, location, age,
-date, start and end time, pickup, conflicts, and the include-unknown setting.
-After that gate, the ranking combines proximity and known fit, saved/compared/
-viewed history, and the selected review preferences. Preference evidence is a
-gentle capped nudge; unknown evidence contributes no match. The normal search
-page uses the same rerank, so a parent does not need to open a separate
-recommendation page. Explicit price, closing-time, and pickup sorts stay in
-their chosen order.
+The separate, skippable first-use screen starts with six familiar choices.
+`More choices` reveals the remaining themes. Visitors can select up to three;
+selected boxes, the count, the selection-limit hint and Continue make the
+interaction explicit. Preferences can be changed in Settings.
 
-The UI uses plain language such as “Matches what you value: Responsive team”.
-It does not present a single childcare score, and it never implies that a
-centre is available just because a review mentions a related service.
+Saved centres have weight 4; comparison activity starts at 2; detail viewing
+starts at 0.5. Viewing and comparison signals have a 30-day half-life and count
+at most once per branch/action/Kuala Lumpur calendar day. Counts are capped.
+A hidden suggestion supplies a small negative signal and is not suggested
+again. Turning activity use off removes view/compare/negative learning; saved
+centres and explicitly chosen preferences still work.
 
-## Reset and controls
+A fresh API seed lookup includes relevant off-page branches, so previously
+saved or compared centres can influence a new neighbourhood search. Their
+current review topic profiles form the learned preference vector. Only IDs,
+care types and bounded counts/timestamps are stored in browser history. No
+review text, child information, request address or provider snapshot is stored
+there. Live/demo and short/regular care remain separate.
 
-The settings action “Clear local cache” removes preferences, history, and saved
-centres from this browser, then returns to the landing page so the next visit
-starts as a new user. The preference page can be reopened from the landing
-flow; the map no longer contains a second compact onboarding card.
+## Search ranking and output
+
+The server still determines the radius and nearest page membership, assesses
+age/date/hours/pickup, and applies the requested filters. Known conflicts never
+become recommendations. Unknown facts stay unknown. Review evidence cannot
+confirm a vacancy or override a closed centre.
+
+Within the current eligible page, the default order combines:
+
+```text
+0.60 proximity + 0.40 known condition fit
++ up to 0.22 selected-topic fit
++ up to 0.20 learned-topic fit × activity confidence
++ up to 0.12 service/fee similarity × activity confidence
++ up to 0.06 familiar-centre signal
+```
+
+Same-brand repetition receives a small diversity penalty after a top result.
+Explicit fee, later closing and pickup priorities keep the server's chosen
+order. The full page is reranked, not just three promoted cards. Favourites
+remain eligible in ordinary search; the separate new-suggestions panel excludes
+already-saved branches. List badges, map pins and map cards share the same
+three eligible suggestions. No profile falls back to ordinary search ranking.
+
+An all-conflict short-care search can show external alternatives; unresolved
+facts alone do not trigger that fallback. Existing month-age conversion and
+weekend missing-hours rules remain in the hard-condition layer.
+
+## Inspecting evidence and asking about it
+
+Centre details have an optional Parent reviews section with topic selection,
+relevant verbatim passages, their dates, positive/negative balance, monthly
+sample counts and the recent twelve-month subset. Each passage has a source
+record ID and a privacy-trimmed context. Both favourable and critical examples
+are shown when present; a missing side is never invented. Empty topics say so.
+
+A recurring concern requires two distinct recent supporting excerpts. `Ask the
+centre about this` opens the existing Contact page with a neutral question.
+The parent can untick it before copying. Evidence remains under More details;
+quoted allegations are not pasted into the outgoing message. Fee concerns
+merge into the existing fee question and repeated additions do not duplicate
+questions.
+
+The supplied workbook has **no original review URLs**. The UI therefore says
+“Provided review sheet” and explains the missing original link and unchecked
+reviewer identity. It does not label the excerpts as verified Google reviews.
+Provider promotional/listing text is not mixed into these counts. Importantly,
+the product has an inspectable supplied sample, not independently verified
+review provenance or complete-platform coverage.
+
+## Rebuilding and checking
+
+Raw extraction stays in ignored `.build/epic6`. The source workbook is never
+modified. Use an isolated Python environment with `numbers-parser==4.19.0`:
+
+```sh
+python scripts/extract-review-workbook.py /path/to/short-care-review.numbers .build/epic6/reviews.json
+node scripts/build-review-profiles.mjs .build/epic6/reviews.json 2026-09-29
+npm test
+npm run release
+```
+
+The build writes the bundled `server/data/review-profiles.json`, a local model
+and a reproducible evaluation report. Function packaging includes the overlay
+and data; it adds no runtime TablesDB reads or background data polling.
+
+The classifier evaluation holds out whole branches and removes normalised
+identical wording across the train/test boundary. It measures agreement with
+the supplied annotations, not independently judged accuracy or parent
+satisfaction. Regression tests cover varied preference rankings, off-page
+history, negative feedback, sparse/old evidence, manual-sort preservation,
+conflict gates, map/list consistency and enquiry deduplication.
+
+Before publication, follow AGENTS.md: local desktop/mobile visual checks, the
+release gate, explicitly authorised Function/site publication, matching public
+source digest, and a separate journey on the real production website.

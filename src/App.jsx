@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -66,7 +66,8 @@ import {
   storageKey,
   factSnapshot,
 } from "../shared/saved.mjs";
-import { personaliseSearchItems } from "../shared/recommendations.mjs";
+import { personaliseSearchItems, interestSeeds } from "../shared/recommendations.mjs";
+import { addReviewQuestion, withReviewQuestions } from "../shared/contact-message.mjs";
 const EMPTY = [];
 const focusMapSearch = () => [...document.querySelectorAll(".mobile-search-summary, .map-search-launch")].find(el => el.getClientRects().length)?.focus({ preventScroll: true });
 const initial = () => ({
@@ -435,10 +436,10 @@ export default function App({
   };
   const dirty = results && fingerprint(draft) !== fingerprint(results.request),
     activeRequest = results?.request,
-    rawItems = results?.items ?? nearby?.items ?? EMPTY,
-    items = results
-      ? personaliseSearchItems({ items: rawItems, request: results.request, library, history: interests.history })
-      : rawItems;
+    rawItems = results?.items ?? nearby?.items ?? EMPTY;
+  const items = useMemo(() => results
+      ? personaliseSearchItems({ items: rawItems, seeds: results.seeds ?? [], request: results.request, library, history: interests.history })
+      : rawItems, [results, rawItems, library, interests.history]);
   const switchMode = (next) => {
     setPickupQueryReset(null);
     requestSeq.current++;
@@ -491,7 +492,8 @@ export default function App({
     setFailure(null);
     setChoosing(false);
     try {
-      const r = await requestAPI({ action: "search", mode, request, page });
+      const seedIds = [...new Set([...interestSeeds(library, interests.history, request.careType).map(s => s.id), ...(interests.history.enabled ? interests.history.hidden.filter(s => s.careType === request.careType).map(s => s.id) : [])])].slice(0,100);
+      const r = await requestAPI({ action: "search", mode, request, page, seedIds });
       if (seq !== requestSeq.current) return;
       let savedResult = null;
       if (reopening) {
@@ -599,7 +601,7 @@ export default function App({
   };
   const prepare = (p, request = activeRequest) => {
     if (!p || !request) return;
-    setEnquiry({ p, request });
+    setEnquiry({ p: withReviewQuestions(p, questionSelection, 'contact-v2:' + p.id + scenario(request)), request });
     setDialogError(null);
     setDialog("enquiry");
   };
@@ -1471,6 +1473,12 @@ export default function App({
                   startPreparation(profile.p, profile.request)
                 }
                 onPrepare={() => prepare(profile.p, profile.request)}
+                onAskReview={topic => {
+                  const { p, selection } = addReviewQuestion(profile.p, profile.request, topic, questionSelection, 'contact-v2:' + profile.p.id + scenario(profile.request));
+                  setProfile(current => ({ ...current, p }));
+                  setQuestionSelection(selection);
+                  prepare(p, profile.request);
+                }}
                 onCompare={() => toggleCompare(profile.p.id)}
                 compared={compareIds.includes(profile.p.id)}
               />

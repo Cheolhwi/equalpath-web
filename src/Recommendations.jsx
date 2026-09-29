@@ -1,20 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Bell, Bookmark, Check, Clock3, Heart, MapPin, MessageCircle, RotateCcw, Search, Sparkles, WalletCards, X } from 'lucide-react';
+import { ArrowRight, Bell, Bookmark, Check, ChevronDown, Clock3, Heart, Leaf, MapPin, MessageCircle, RotateCcw, Search, ShieldCheck, Sparkles, WalletCards, X } from 'lucide-react';
 import { DISCOVERY_PREFERENCES, interestSeeds, recommendCentres, hideRecommendation, normalisePreferenceTopics } from '../shared/recommendations.mjs';
 import { feeSummary } from '../shared/result-summary.mjs';
 import { isShortCare } from '../shared/request.mjs';
 import { favourite } from '../shared/saved.mjs';
 import { requestAPI, errorMessage } from './api.js';
+import { FIRST_PREFERENCES } from '../shared/review-profile.mjs';
 
 export function PreferenceSetup({ history, onSave, compact = false, exiting = false }) {
   const [draft, setDraft] = useState(() => normalisePreferenceTopics(history.preferences));
   const [editing, setEditing] = useState(history.preferenceSetup === 'new');
+  const [showMore, setShowMore] = useState(false);
   useEffect(() => {
     if (!editing) setDraft(normalisePreferenceTopics(history.preferences));
   }, [history.preferences, editing]);
   const toggle = id => setDraft(current => current.includes(id) ? current.filter(value => value !== id) : current.length >= 3 ? current : [...current, id]);
   const selectedCount = draft.length;
   const choiceName = option => option.onboardingLabel ?? option.label;
+  const options = DISCOVERY_PREFERENCES.filter(p => showMore || FIRST_PREFERENCES.includes(p.id) || draft.includes(p.id));
+  const icons = { caring_teachers: Heart, secure_pickup: ShieldCheck, clean_environment: Sparkles, healthy_meals: Leaf, engaging_activities: Sparkles, responsive_team: MessageCircle, flexible_short_care: Clock3, convenient_hours: Clock3, smooth_pickup: MapPin, clear_late_rules: Bell, predictable_fees: WalletCards, value_for_money: WalletCards };
   const save = status => {
     const topics = status === 'skipped' ? [] : normalisePreferenceTopics(draft);
     onSave(topics, status === 'skipped' ? 'skipped' : topics.length ? 'complete' : 'skipped');
@@ -28,10 +32,12 @@ export function PreferenceSetup({ history, onSave, compact = false, exiting = fa
     <div className="preference-setup-heading"><div><h4 id="preference-setup-title">{compact ? 'Choose what matters most' : 'What matters to you?'}</h4><p>{compact ? 'Choose up to 3 things.' : 'Choose up to 3. We use these choices to order suggestions.'}</p></div><span aria-live="polite">{selectedCount} of 3 selected</span></div>
     {compact && <p className="preference-setup-hint"><span aria-hidden="true">1</span> Tap the boxes you want.</p>}
     <div className="preference-options" role="group" aria-label="Suggestion choices">
-      {DISCOVERY_PREFERENCES.map(option => <button key={option.id} type="button" className="preference-option" aria-pressed={draft.includes(option.id)} aria-describedby={`preference-${option.id}-description`} onClick={() => toggle(option.id)}>
-        <span className="preference-option-check" aria-hidden="true">{draft.includes(option.id) ? <Check size={16} strokeWidth={3} /> : ''}</span><span className="preference-option-icon" aria-hidden="true">{option.id === 'flexible_short_care' ? <Clock3 size={21} /> : option.id === 'smooth_pickup' ? <MapPin size={21} /> : option.id === 'clear_late_rules' ? <Bell size={21} /> : option.id === 'predictable_fees' ? <WalletCards size={21} /> : <MessageCircle size={21} />}</span><span className="preference-option-copy"><strong>{choiceName(option)}</strong><small id={`preference-${option.id}-description`}>{option.description}</small></span>
-      </button>)}
+      {options.map(option => { const Icon = icons[option.id] ?? Heart; return <button key={option.id} type="button" className="preference-option" aria-pressed={draft.includes(option.id)} aria-describedby={`preference-${option.id}-description`} onClick={() => toggle(option.id)}>
+        <span className="preference-option-check" aria-hidden="true">{draft.includes(option.id) ? <Check size={16} strokeWidth={3} /> : ''}</span><span className="preference-option-icon" aria-hidden="true"><Icon size={21} /></span><span className="preference-option-copy"><strong>{choiceName(option)}</strong><small id={`preference-${option.id}-description`}>{option.description}</small></span>
+      </button>; })}
     </div>
+    <button className="text-link preference-more" type="button" aria-expanded={showMore} onClick={()=>setShowMore(!showMore)}>{showMore ? 'Fewer choices' : 'More choices'}<ChevronDown size={16}/></button>
+    {selectedCount===3 && <p className="preference-limit" role="status">You chose 3. Untick one to choose another.</p>}
     <div className="preference-setup-actions"><button className="primary" type="button" disabled={!draft.length} onClick={() => save('complete')}>{compact ? (selectedCount ? 'Continue' : 'Choose at least one') : 'Use my choices'} <ArrowRight size={16} /></button><button className="text-link" type="button" onClick={() => save('skipped')}>Skip for now</button></div>
     <p className="preference-setup-note">You can change these choices later in Settings.</p>
   </section>;
@@ -59,7 +65,7 @@ function RecommendationHero({ cards, onOpen, hasUsuals }) {
 
 export default function Recommendations({ mode, library, interests, request, onDiscover, onOpen, onSave }) {
   const { history, update, reset, error: storageError } = interests;
-  const seedIds = interestSeeds(library, history, request?.careType).map(s => s.id).sort();
+  const seedIds = [...new Set([...interestSeeds(library, history, request?.careType).map(s => s.id), ...(history.enabled ? history.hidden.filter(s=>s.careType===request?.careType).map(s=>s.id) : [])])].slice(0,100).sort();
   const preferenceIds = normalisePreferenceTopics(history.preferences).sort();
   const key = JSON.stringify([mode, request, seedIds, preferenceIds]);
   const [data, setData] = useState(null), [failure, setFailure] = useState(''), [retry, setRetry] = useState(0), [opening, setOpening] = useState(null);
@@ -116,7 +122,7 @@ export default function Recommendations({ mode, library, interests, request, onD
         {!!cards.length && <p className="recommendations-footnote">Based on your search and public review themes. Ask the centre if they have a place for your child.</p>}
       </>}
     <details className="recommendation-controls"><summary>How suggestions work</summary>
-      <p>We check your current search, then look for centres similar to those you saved or viewed. Comparing a centre counts more than opening it once. Suggestions do not change your search sorting.</p>
+      <p>We use your choices and the centres you save, compare and view. Recent activity counts more. Prices and hours still follow the order you choose.</p>
       <p>Your choices gently reorder matching public review themes. They never remove a centre that fits your search, and missing review evidence is left unknown.</p>
       <p>Viewing history stays in this browser. It keeps centre IDs and activity counts, without your search address, care times or child’s age. Live and demo history stay separate.</p>
       <label><input type="checkbox" checked={history.enabled} onChange={e => update(h => ({ ...h, enabled: e.target.checked }))} />Use viewing history for suggestions</label>

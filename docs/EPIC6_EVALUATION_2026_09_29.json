@@ -1,0 +1,103 @@
+{
+  "asOf": "2026-09-29",
+  "sourceRows": 10211,
+  "retained": 10211,
+  "duplicates": 0,
+  "branches": 101,
+  "topicStats": {
+    "caring_teachers": {
+      "branches": 101,
+      "supported": 77,
+      "distinctScores": 78,
+      "min": 0.45125529210708165,
+      "max": 0.660517527435623
+    },
+    "secure_pickup": {
+      "branches": 101,
+      "supported": 84,
+      "distinctScores": 88,
+      "min": 0.42773225545442306,
+      "max": 0.6406411053229815
+    },
+    "clean_environment": {
+      "branches": 96,
+      "supported": 66,
+      "distinctScores": 67,
+      "min": 0.5,
+      "max": 0.7662552036182977
+    },
+    "healthy_meals": {
+      "branches": 94,
+      "supported": 90,
+      "distinctScores": 91,
+      "min": 0.4548971049861538,
+      "max": 0.758372563187004
+    },
+    "engaging_activities": {
+      "branches": 101,
+      "supported": 68,
+      "distinctScores": 75,
+      "min": 0.43492323029883867,
+      "max": 0.7569571818539389
+    },
+    "responsive_team": {
+      "branches": 99,
+      "supported": 88,
+      "distinctScores": 86,
+      "min": 0.5,
+      "max": 0.7581355828937317
+    },
+    "flexible_short_care": {
+      "branches": 101,
+      "supported": 89,
+      "distinctScores": 94,
+      "min": 0.4330206517694215,
+      "max": 0.8364294853335612
+    },
+    "convenient_hours": {
+      "branches": 101,
+      "supported": 88,
+      "distinctScores": 91,
+      "min": 0.4461749793638864,
+      "max": 0.7887897178795709
+    },
+    "smooth_pickup": {
+      "branches": 101,
+      "supported": 101,
+      "distinctScores": 101,
+      "min": 0.39725673980981857,
+      "max": 0.7340557868112527
+    },
+    "clear_late_rules": {
+      "branches": 94,
+      "supported": 47,
+      "distinctScores": 80,
+      "min": 0.37615194579674993,
+      "max": 0.7422917413948784
+    },
+    "predictable_fees": {
+      "branches": 101,
+      "supported": 101,
+      "distinctScores": 99,
+      "min": 0.5656771875270188,
+      "max": 0.7940892719249248
+    },
+    "value_for_money": {
+      "branches": 101,
+      "supported": 101,
+      "distinctScores": 94,
+      "min": 0.601831685665949,
+      "max": 0.8394354259102035
+    }
+  },
+  "classifier": {
+    "method": "hierarchical-tf-idf-centroids",
+    "heldOutBranches": 21,
+    "trainReviews": 8120,
+    "testReviews": 2091,
+    "precision": 0.8548335974643423,
+    "recall": 0.8844072798819479,
+    "f1": 0.869369006366347,
+    "limitation": "Agreement with supplied topic annotations. Not independent human evaluation or online recommendation quality."
+  }
+}

@@ -3,6 +3,7 @@ import { ArrowRight, ArrowUpRight, Check, ChevronDown, ClipboardList, Copy, Mess
 import { PublishedContacts, SourceLink } from "./ProviderViews.jsx";
 import { contactIntro, contactMessage, contactQuestions } from "../shared/contact-message.mjs";
 import "./enquiry.css";
+import { ReviewQuote } from './ReviewEvidence.jsx';
 
 export default function Enquiry({ p, request, selection, onSelection, onPreparation }) {
   const [copyState, setCopyState] = useState("");
@@ -47,6 +48,7 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
             {questions.map(q => <div key={q.id} className={`contact-question ${ids.includes(q.id) ? "" : "not-selected"}`} data-question-id={q.id}>
               <label><input type="checkbox" checked={ids.includes(q.id)} onChange={() => toggle(q.id)} /><span>{q.text}</span></label>
               {!ids.includes(q.id) && <small className="question-excluded">Not included</small>}
+              {q.checks.some(c => c.reviewTopic) && <small className="question-review-note">Added from parent reviews</small>}
               {q.conflicts.length > 0 && <p className="contact-question-warning">{q.conflicts.map(c => c.why).join(" ")}</p>}
             </div>)}
           </div>
@@ -64,6 +66,7 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
           </div>}
           {questions.flatMap(q => q.checks).map(q => <div className="contact-evidence-item" key={q.id} data-check-id={q.id}>
             <strong>{q.topic}</strong><p>{q.why}</p>
+            {q.reviewExcerpts?.map(review => <ReviewQuote key={review.id} review={review} topic={q.reviewTopic} />)}
             {q.check && <><p>{q.check.reason}</p>{q.check.source && <SourceLink source={q.check.source} />}{q.id === "age" && p.age?.alternative?.source && <SourceLink source={p.age.alternative.source} />}</>}
             {q.fee && (p.fees?.length || p.cost?.available) ? <><strong>{q.fee.label}</strong><p>{q.fee.note}</p>{p.cost?.available && <SourceLink source={p.cost.source} />}{!p.cost?.available && [...new Map((p.fees ?? []).filter(f => f.source).map(f => [f.source.url ?? f.source.label, f.source])).values()].map((source, i) => <SourceLink key={i} source={source} />)}</> : null}
           </div>)}
