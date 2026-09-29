@@ -81,7 +81,7 @@ const initial = () => ({
   radius: searchRadius(undefined, new URLSearchParams(location.search).get("care") === "regular" ? "regular" : "short_term"),
   query: "",
   includeUnknown: true,
-  includeConflicts: true,
+  includeConflicts: false,
   sort: "distance",
 });
 const scenario = (r) =>

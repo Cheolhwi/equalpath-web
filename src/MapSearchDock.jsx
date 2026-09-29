@@ -24,7 +24,7 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
     draft.query?.trim() && `Name / area: ${draft.query.trim()}`,
     searchRadius(draft.radius, draft.careType) !== searchRadius(undefined, draft.careType) && `Within ${draft.radius} km`,
     !draft.includeUnknown && "Hide centres with unconfirmed details",
-    !draft.includeConflicts && "Hide centres that don’t meet my needs",
+    draft.includeConflicts && "Include centres that don’t meet my needs",
   ].filter(Boolean);
   const closeOptions = () => { pendingFocus.current = lastTrigger.current; setPart(null); };
   const toggle = (name, event) => { pendingFocus.current = null; lastTrigger.current = event.currentTarget; setPart(p => p === name ? null : name); };

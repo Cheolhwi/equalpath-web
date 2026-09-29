@@ -166,9 +166,11 @@ test("one deduplicated enquiry list carries unknown service conditions without a
   assert.ok(q.some((x) => x.id === "coverage"));
   assert.ok(q.some((x) => x.text.includes(req.date)));
 });
-test("nearby search excludes missing coordinates instead of counting unlocated centres", async () => {
+test("search excludes conflicts and missing coordinates before counting centres", async () => {
   const r = await api(body);
-  assert.equal(r.items.length, 9);
+  assert.equal(r.items.length, 7);
+  assert.equal(r.total, 7);
+  assert.ok(r.items.every(p => p.fit.counts.conflict === 0));
   assert.equal(r.missingLocations, 0);
   assert.ok(r.items.every(p => p.location && Number.isFinite(p.distanceKm) && p.distanceKm <= 5));
   assert.equal(r.items.some(p => p.id === "demo-cloud"), false);
@@ -204,7 +206,7 @@ test("no result is distinct from source failure", async () => {
 test("request revisions update evaluations and stale facts cannot be presented as current", async () => {
   const r = await api({
     ...body,
-    request: { ...req, deadline: "17:00", end: "18:00" },
+    request: { ...req, deadline: "17:00", end: "18:00", includeConflicts: true },
   });
   assert.equal(
     r.items

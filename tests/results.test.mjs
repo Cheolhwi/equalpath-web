@@ -10,6 +10,14 @@ import { canonicalRequest } from "../shared/request.mjs";
 const origin = { lat: 3.139, lng: 101.6869 };
 const places = [{ id:"a", location:{lat:3.15,lng:101.7} },{ id:"b",location:{lat:3.16,lng:101.72} }];
 const response = { ok:true, json:async()=>({code:"Ok",durations:[[433, null]],distances:[[5485.2,null]],sources:[{distance:10}],destinations:[{distance:10},{distance:10}]}) };
+test('including conflicts requires an explicit boolean opt-in for both care types', () => {
+  for (const careType of ['regular', 'short_term']) {
+    for (const includeConflicts of [undefined, null, false, 'true', 1]) {
+      assert.equal(canonicalRequest({pickup:demoPickup,careType,includeConflicts}).includeConflicts, false);
+    }
+    assert.equal(canonicalRequest({pickup:demoPickup,careType,includeConflicts:true}).includeConflicts, true);
+  }
+});
 test("regular care retains its 10 km cap and 20-item pages, including unlimited requests", async()=>{
   const base = fixtureCatalog.items[0];
   const north = km => ({ lat: origin.lat + km / 6371 * 180 / Math.PI, lng: origin.lng });
@@ -48,7 +56,7 @@ test("no located centres within range returns an empty result without expanding 
     const r=await api(body);assert.equal(r.total,0);assert.deepEqual(r.items,[]);
   }
 });
-test("short-care search reports only fully checked centres as explicit matches", async () => {
+test("search excludes known conflicts by default but keeps centres with details to confirm", async () => {
   const base = fixtureCatalog.items[0];
   const request = { pickup: demoPickup, date: "2026-09-14", deadline: "13:00", end: "18:00", age: "4", transport: "self" };
   const api = createAPI({
@@ -65,10 +73,17 @@ test("short-care search reports only fully checked centres as explicit matches",
     drivingRoutes: async (_, rows) => rows,
   });
   const result = await api({ action: "search", request });
-  assert.equal(result.total, 3);
+  assert.equal(result.request.includeConflicts, false);
+  assert.equal(result.request.includeUnknown, true);
+  assert.equal(result.total, 2);
+  assert.deepEqual(result.items.map(p => p.id).sort(), ['confirmed', 'needs-confirmation']);
   // The unconfirmed candidate still counts as a usable result. Only the
   // known conflict is excluded from the no-match fallback count.
   assert.equal(result.explicitMatchCount, 2);
+  const optedIn = await api({ action: 'search', request: { ...request, includeConflicts: true } });
+  assert.equal(optedIn.total, 3);
+  assert.equal(optedIn.explicitMatchCount, 2);
+  assert.ok(optedIn.items.find(p => p.id === 'does-not-fit').fit.counts.conflict > 0);
   assert.deepEqual(
     result.items.find((p) => p.id === "confirmed").fit.conditions
       .filter((condition) => condition.id !== "transfer")
@@ -97,7 +112,7 @@ test("remote road snaps and null route values are not represented as zero-minute
   const out=await routes(origin,[...places,{id:"c",location:null}]);
   assert.equal(out[0].driving.reason,"location_too_far_from_road");assert.equal(out[1].driving.reason,"no_route");assert.equal(out[2].driving.reason,"missing_location");
 });
-test("each short-care page of ten retains close conflicts, ranks them last and stays stable across strategies",async()=>{
+test("explicit conflict opt-in retains nearest pages; default filtering counts and fills pages with eligible centres",async()=>{
   const base=fixtureCatalog.items[0];
   const items=Array.from({length:45},(_,i)=>({...base,id:String(i).padStart(2,"0"),name:`Centre ${44-i}`,location:{lat:origin.lat+(i+1)*.0009,lng:origin.lng},admission:{value:i%7!==0}})).reverse();
   const batches=[];
@@ -106,7 +121,7 @@ test("each short-care page of ten retains close conflicts, ranks them last and s
   for(const sort of ["distance","price","closing","pickup","name"]){
     const pages=[];
     for(let page=0;page<5;page++){
-      const result=await api({action:"search",request:{...request,sort},page});
+      const result=await api({action:"search",request:{...request,sort,includeConflicts:true},page});
       pages.push(...result.items);
       const expected=Array.from({length:Math.min(10,45-page*10)},(_,i)=>String(i+page*10).padStart(2,"0"));
       assert.deepEqual(result.items.map(p=>p.id).sort(),expected);
@@ -120,15 +135,28 @@ test("each short-care page of ten retains close conflicts, ranks them last and s
   }
   const without=await api({action:"search",request:{...request,includeConflicts:false}});
   assert.equal(without.total,38);assert.equal(without.items.length,10);assert.ok(without.items.every(p=>!p.fit.counts.conflict));
+  const eligibleIds = items.filter(p => p.admission.value).map(p => p.id).sort();
+  const defaultPages = [];
+  for (let page = 0; page < 4; page++) {
+    const result = await api({ action: 'search', request, page });
+    assert.equal(result.total, 38);
+    assert.equal(result.explicitMatchCount, 38);
+    assert.ok(result.items.every(p => p.fit.counts.conflict === 0));
+    assert.deepEqual(result.items.map(p => p.id).sort(), eligibleIds.slice(page * 10, (page + 1) * 10));
+    defaultPages.push(...result.items.map(p => p.id));
+  }
+  assert.deepEqual(defaultPages.sort(), eligibleIds);
   const before=batches.length;
   await api({action:"nearby",center:origin});assert.equal(batches.length,before);
 });
-test("a short-care neighbourhood of conflicting centres still returns the nearest ten without suggesting them",async()=>{
+test("all-conflict searches return zero by default; explicit opt-in can still inspect the nearest ten",async()=>{
   const base=fixtureCatalog.items[0];
   const items=Array.from({length:25},(_,i)=>({...base,id:String(i).padStart(2,"0"),location:origin,admission:{value:false}})).reverse();
   const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},drivingRoutes:async(_,rows)=>rows});
   const request={pickup:demoPickup,date:"2026-09-14",deadline:"13:00",end:"18:00",transport:"self"};
-  const result=await api({action:"search",request});
+  const empty=await api({action:"search",request});
+  assert.equal(empty.total,0);assert.equal(empty.explicitMatchCount,0);assert.deepEqual(empty.items,[]);
+  const result=await api({action:"search",request:{...request,includeConflicts:true}});
   assert.equal(result.total,25);assert.equal(result.items.length,10);
   assert.deepEqual(result.items.map(p=>p.id),Array.from({length:10},(_,i)=>String(i).padStart(2,"0")));
   assert.ok(result.items.every(p=>p.fit.counts.conflict>0&&!p.suggested));

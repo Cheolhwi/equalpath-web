@@ -11,10 +11,10 @@ test('missing short-stay and monthly quotes reset the active sort before results
   const api=apiFor([provider('near',0,[{...fee,basis:'month'}]),provider('far',1)]);
   const short=await api({action:'search',request});
   assert.equal(short.request.sort,'distance');assert.equal(short.ordering.factor,'distance');assert.equal(short.ordering.available.price,false);
-  assert.deepEqual(short.ordering.fallback,{from:'price',to:'distance',reason:'No fees listed nearby.'});
+  assert.deepEqual(short.ordering.fallback,{from:'price',to:'distance',reason:'No fees for these results.'});
   assert.deepEqual(short.items.map(p=>p.id),['near','far']);assert.ok(short.items.some(p=>p.suggested));
   const regular=await apiFor([provider('hourly',0,[fee])])({action:'search',request:{...request,careType:'regular'}});
-  assert.equal(regular.request.sort,'distance');assert.equal(regular.ordering.unavailableReasons.price,'No monthly fees listed nearby.');
+  assert.equal(regular.request.sort,'distance');assert.equal(regular.ordering.unavailableReasons.price,'No monthly fees for these results.');
 });
 test('page-specific availability does not claim the whole radius has no quote and quoted later pages remain sortable',async()=>{
   const api=apiFor(Array.from({length:12},(_,i)=>provider(String(i).padStart(2,'0'),i,i>=10?[{...fee,amount:42-i}]:[])));
@@ -45,6 +45,6 @@ test('foreign-currency fees and empty results give accurate reasons without reta
   const foreign=await apiFor([provider('usd',0,[{...fee,currency:'USD'}])])({action:'search',request});
   assert.match(foreign.ordering.unavailableReasons.price,/No comparable MYR fees/);assert.equal(foreign.request.sort,'distance');
   const empty=await apiFor([])({action:'search',request});
-  assert.equal(empty.total,0);assert.equal(empty.request.sort,'distance');assert.match(empty.ordering.unavailableReasons.price,/No fees listed nearby/);
+  assert.equal(empty.total,0);assert.equal(empty.request.sort,'distance');assert.match(empty.ordering.unavailableReasons.price,/No fees for these results/);
   assert.ok(Object.values(empty.ordering.unavailableReasons).every(reason=>!reason.includes('Unavailable')));
 });

@@ -81,7 +81,7 @@ export function canonicalRequest(input) {
       .trim()
       .slice(0, 100),
     includeUnknown: input.includeUnknown !== false,
-    includeConflicts: input.includeConflicts !== false,
+    includeConflicts: input.includeConflicts === true,
     sort: (isShortCare(input) ? ["distance", "price", "closing", "pickup", "name"] : ["distance", "price", "pickup", "name"]).includes(input.sort)
       ? input.sort
       : "distance",
