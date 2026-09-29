@@ -156,13 +156,13 @@ export function learnedPreferenceWeights({ seeds, library, history, careType, no
   }
   return { weights: Object.fromEntries(Object.entries(weights).map(([id,w]) => [id, w / Math.max(1,total)])), confidence: Math.min(1,total/8) };
 }
-export function rankCentres({ candidates, seeds: currentSeeds = [], request, library, history, preferences = history.preferences, now = Date.now(), excludeSaved = false }) {
+export function rankCentres({ candidates, seeds: currentSeeds = [], request, library, history, preferences = history.preferences, now = Date.now(), excludeSaved = false, excludeHidden = true }) {
   const interests = interestSeeds(library, history, request.careType, now);
   const fresh = new Map([...currentSeeds, ...candidates].map(p => [p.id, p]));
   const seeds = interests.filter(s => fresh.has(s.id));
   const saved = new Set(library.favourites.filter(f => (f.careType ?? 'short_term') === request.careType).map(f => f.id));
   const hidden = new Set(history.hidden.filter(v => v.careType === request.careType).map(v => v.id));
-  const pool = candidates.filter(p => p.careType === request.careType && p.location && p.fit && p.fit.counts.conflict === 0 && (!excludeSaved || !saved.has(p.id)) && !hidden.has(p.id));
+  const pool = candidates.filter(p => p.careType === request.careType && p.location && p.fit && p.fit.counts.conflict === 0 && (!excludeSaved || !saved.has(p.id)) && (!excludeHidden || !hidden.has(p.id)));
   const learned = learnedPreferenceWeights({ seeds: [...fresh.values()], library, history, careType: request.careType, now });
   const relevant = new Set(['admission', 'care', ...(request.age ? ['age'] : []), ...(request.transport === 'institution' ? ['transport', 'coverage', 'pickup'] : [])]);
   const scored = pool.map(p => {
@@ -183,10 +183,13 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
     const anchor = similarities.filter(s=>s.meaningful&&s.id!==p.id).sort((a,b)=>b.value*b.weight-a.value*a.weight)[0];
     const label = DISCOVERY_PREFERENCES.find(t=>t.id===supported[0]?.id)?.label;
     const reason = label ? `Matches your choices: ${label}` : own?.saved ? 'A centre you saved' : own?.compared ? 'You compared this centre before' : learnedTopic?.value>.01 ? `Based on your activity: ${learnedTopic.label}` : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
-    return { p, score, reason, basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
+    return { p, score, reason, hidden: hidden.has(p.id), basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
   });
   const priority = (a,b) => {
     const contact = Number(hasContact(b.p))-Number(hasContact(a.p)); if(contact) return contact;
+    // Hidden suggestions remain ordinary search results, but are ranked after
+    // the other candidates in their contact group and never highlighted.
+    if(a.hidden!==b.hidden)return Number(a.hidden)-Number(b.hidden);
     if(!['price','closing','pickup'].includes(request.sort))return 0;
     const x=priorityValue(a.p,request.sort,request.date),y=priorityValue(b.p,request.sort,request.date);
     if(!Number.isFinite(x)||!Number.isFinite(y))return Number(!Number.isFinite(x))-Number(!Number.isFinite(y));
@@ -208,16 +211,17 @@ export function recommendCentres(options) {
 // One page order and one suggestion set drive the list, pins and map cards.
 export function personaliseSearchItems({ items, seeds = [], request, library, history, now = Date.now() }) {
   if(!Array.isArray(items)||!items.length||!request||!library||!history)return items??[];
-  const hasSignals=history.preferences?.length||interestSeeds(library,history,request.careType,now).length||(history.enabled&&history.hidden.some(h=>h.careType===request.careType));
-  if(!hasSignals)return items;
-  const ranked=rankCentres({candidates:items,seeds:[...seeds,...items],request,library,history,now});
+  // Every eligible result goes through the same scoring pass, including a
+  // visitor who skips preferences. Empty signals contribute zero; distance,
+  // current condition fit and diversity provide the cold-start order.
+  const ranked=rankCentres({candidates:items,seeds:[...seeds,...items],request,library,history,now,excludeHidden:false});
   const byId=new Map(ranked.map((r,index)=>[r.p.id,{...r,index}]));
   const order=request.sort==='distance' ? [...items].sort((a,b)=>{
     const conflicts=Number(a.fit?.counts?.conflict>0)-Number(b.fit?.counts?.conflict>0);
     return conflicts||Number(hasContact(b))-Number(hasContact(a))||(byId.get(a.id)?.index??Infinity)-(byId.get(b.id)?.index??Infinity);
   }) : items;
-  const eligible=order.filter(p=>byId.has(p.id));
+  const eligible=order.filter(p=>byId.has(p.id)&&!byId.get(p.id).hidden);
   const contactable=eligible.some(hasContact)?eligible.filter(hasContact):eligible;
   const suggested=new Set(contactable.slice(0,3).map(p=>p.id));
-  return order.map(p=>{const match=byId.get(p.id);const personal=match&&match.reason!=='Near your chosen location';return {...p,suggested:suggested.has(p.id),personalised:!!personal&&suggested.has(p.id),personalisedReason:personal?match.reason:null,personalisedRank:match?match.index+1:null};});
+  return order.map(p=>{const match=byId.get(p.id);const personal=match&&!match.hidden&&match.reason!=='Near your chosen location';return {...p,suggested:suggested.has(p.id),personalised:!!personal&&suggested.has(p.id),personalisedReason:personal?match.reason:null,personalisedRank:match?match.index+1:null,rerankScore:match?.score??null};});
 }

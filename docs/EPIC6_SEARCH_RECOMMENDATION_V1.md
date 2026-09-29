@@ -91,10 +91,19 @@ Within the current eligible page, the default order combines:
 
 Same-brand repetition receives a small diversity penalty after a top result.
 Explicit fee, later closing and pickup priorities keep the server's chosen
-order. The full page is reranked, not just three promoted cards. Favourites
+order. Every eligible result in the full page is scored and reranked, including
+all ten short-care results when a page is full, not just three promoted cards.
+New visitors, skipped preference setup and disabled activity use run through
+the same pass; absent personal signals contribute zero, leaving proximity,
+known condition fit and diversity. Hidden suggestions remain scored ordinary
+results below other candidates in their contact group, without highlights.
+Favourites
 remain eligible in ordinary search; the separate new-suggestions panel excludes
 already-saved branches. List badges, map pins and map cards share the same
-three eligible suggestions. No profile falls back to ordinary search ranking.
+three eligible suggestions. Each eligible result has an internal score and
+rank for verification; only the top three receive suggestion highlights.
+The API still selects page membership by distance inside the requested radius;
+this is page-wide reranking, not global reranking before pagination.
 
 An all-conflict short-care search can show external alternatives; unresolved
 facts alone do not trigger that fallback. Existing month-age conversion and

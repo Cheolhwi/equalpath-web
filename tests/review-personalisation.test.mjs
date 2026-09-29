@@ -46,19 +46,49 @@ test('off-page saved and compared branches teach a topic profile, while other ca
  assert.equal(learnedPreferenceWeights({...inputs,seeds:[seed],history,careType:'regular'}).confidence,0);
  assert.equal(learnedPreferenceWeights({...inputs,seeds:[seed],history:{...history,enabled:false},careType:'short_term'}).confidence,0);
 });
-test('all page candidates are reranked, favourites remain eligible, and map suggestions use the same top three',()=>{
- const items=Array.from({length:6},(_,i)=>p(String(i),{clean_environment:topic(i+2)}));
- const library={favourites:[{id:'5',careType:'short_term'}]};
+test('all ten page candidates are reranked, favourites remain eligible, and map suggestions use the same top three',()=>{
+ const items=Array.from({length:10},(_,i)=>p(String(i),{clean_environment:topic(i+2)}));
+ const library={favourites:[{id:'9',careType:'short_term'}]};
  const history={...emptyInterests(),preferences:['clean_environment']};
  const result=personaliseSearchItems({...inputs,items,library,history});
- assert.equal(result[0].id,'5');assert.deepEqual(result.filter(p=>p.suggested).map(p=>p.id),result.slice(0,3).map(p=>p.id));
+ assert.equal(result[0].id,'9');assert.deepEqual(result.filter(p=>p.suggested).map(p=>p.id),result.slice(0,3).map(p=>p.id));
+ assert.deepEqual(result.map(p=>p.personalisedRank),[1,2,3,4,5,6,7,8,9,10]);
+ assert.ok(result.every(p=>Number.isFinite(p.rerankScore)));
+ assert.deepEqual(result.slice(3).map(p=>p.id),['6','5','4','3','2','1','0']);
  assert.equal(result.at(-1).id,'0');
- assert.ok(!recommendCentres({...inputs,candidates:items,seeds:items,library,history}).some(x=>x.p.id==='5'));
+ assert.ok(!recommendCentres({...inputs,candidates:items,seeds:items,library,history}).some(x=>x.p.id==='9'));
+});
+test('new, skipped and opted-out visitors still score and rerank all ten results',()=>{
+ const items=Array.from({length:10},(_,i)=>p(String(i),{}, {
+  distanceKm:.5+i*.02,
+  fit:{counts:{conflict:0},conditions:[{id:'care',state:i%2?'supported':'unknown'}]},
+ }));
+ for(const history of [emptyInterests(),{...emptyInterests(),preferenceSetup:'skipped'},{...emptyInterests(),enabled:false}]){
+  const result=personaliseSearchItems({...inputs,items,history});
+  assert.equal(result.length,10);
+  assert.deepEqual(result.map(p=>p.id),['1','3','5','7','9','0','2','4','6','8']);
+  assert.deepEqual(result.map(p=>p.personalisedRank),[1,2,3,4,5,6,7,8,9,10]);
+  assert.ok(result.every(p=>Number.isFinite(p.rerankScore)&&!p.personalised));
+  assert.deepEqual(result.filter(p=>p.suggested).map(p=>p.id),['1','3','5']);
+ }
+});
+test('hidden ordinary results are scored without becoming suggestions or removing page members',()=>{
+ const items=Array.from({length:10},(_,i)=>p(String(i)));
+ const history=hideRecommendation(emptyInterests(),items[0]);
+ const result=personaliseSearchItems({...inputs,items,history});
+ assert.equal(result.length,10);
+ assert.equal(result.at(-1).id,'0');
+ assert.equal(result.at(-1).personalisedRank,10);
+ assert.ok(Number.isFinite(result.at(-1).rerankScore));
+ assert.equal(result.at(-1).suggested,false);
+ assert.deepEqual(result.filter(p=>p.suggested).map(p=>p.id),['1','2','3']);
 });
 test('explicit sorts, conflicts and radius membership are not overturned by personalisation',()=>{
  const items=[p('cheap',{}, {fees:[{amount:5,basis:'hour'}]}),p('favourite',{caring_teachers:topic(40)},{fees:[{amount:30,basis:'hour'}]}),p('conflict',{caring_teachers:topic(99)},{fit:{counts:{conflict:1},conditions:[]}})];
  const result=personaliseSearchItems({...inputs,items,request:{...request,sort:'price'},history:{...emptyInterests(),preferences:['caring_teachers']}});
  assert.deepEqual(result.map(p=>p.id),items.map(p=>p.id));assert.equal(result[2].suggested,false);
+ assert.ok(result.slice(0,2).every(p=>Number.isFinite(p.rerankScore)));
+ assert.equal(result[2].rerankScore,null);
  const hidden=hideRecommendation({...emptyInterests(),preferences:['caring_teachers']},items[1]);
  assert.equal(personaliseSearchItems({...inputs,items,history:hidden}).find(p=>p.id==='favourite').suggested,false);
 });
@@ -115,6 +145,22 @@ test('search API refreshes same-type off-page seed profiles without changing pag
  assert.deepEqual(withSeeds.items.map(p=>p.id),basic.items.map(p=>p.id));
  assert.ok(withSeeds.seeds.find(p=>p.id===id)?.reviewProfile.topics);
  await assert.rejects(api({action:'search',mode:'live',request,seedIds:Array(101).fill(id)}));
+});
+test('both live short-care pages enter reranking with their exact eligible membership',async()=>{
+ const api=createAPI({drivingRoutes:async(_,rows)=>rows,reverseGeocode:async()=>({pickup:null})});
+ const allIds=[];
+ for(const page of [0,1]){
+  const response=await api({action:'search',mode:'live',page,request:{...request,radius:10,includeConflicts:false}});
+  assert.equal(response.items.length,Math.min(10,response.total-page*10));
+  assert.ok(response.items.length>0);
+  const ranked=personaliseSearchItems({...inputs,request:response.request,items:response.items,seeds:response.seeds});
+  assert.deepEqual(ranked.map(p=>p.id).sort(),response.items.map(p=>p.id).sort());
+  assert.deepEqual(ranked.map(p=>p.personalisedRank),Array.from({length:response.items.length},(_,i)=>i+1));
+  assert.ok(ranked.every(p=>Number.isFinite(p.rerankScore)&&!p.fit.counts.conflict&&p.distanceKm<=10));
+  allIds.push(...ranked.map(p=>p.id));
+ }
+ assert.ok(allIds.length>10);
+ assert.equal(new Set(allIds).size,allIds.length);
 });
 test('corpus classifier learns topic vocabulary and abstains for unrelated text',()=>{
  const rows=[...Array(4)].flatMap(()=>[{topics:'staff',review_text:'Patient caring teachers comfort children kindly'},{topics:'cleanliness',review_text:'Clean rooms washed toys spotless floors'}]);

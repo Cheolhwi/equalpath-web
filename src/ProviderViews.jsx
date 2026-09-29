@@ -169,6 +169,8 @@ export function ProviderCard({
       className={`provider-row ${selected ? "selected" : ""} ${p.fit.counts.conflict ? "lower-priority" : ""} ${p.suggested ? "suggested" : ""}`}
       id={"card-" + p.id}
       data-provider-id={p.id}
+      data-rerank-position={p.personalisedRank ?? undefined}
+      data-rerank-score={p.rerankScore ?? undefined}
     >
       <div className="provider-main" onClick={e=>{
         if(!e.target.closest('button, a, .registration-badge-wrap'))onSelect();
