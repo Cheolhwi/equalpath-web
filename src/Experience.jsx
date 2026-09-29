@@ -103,8 +103,9 @@ export default function Experience() {
       { reduced },
     );
   }, [phase, reduced, openMapOrPreferences, activeArtwork, readyArtworks, loadStage]);
-  const home = useCallback(() => {
+  const home = useCallback((options = {}) => {
     cancelEntrance.current();
+    if (options.fresh) hasEntered.current = false;
     history.replaceState(null, "", `${location.pathname}${location.search}`);
     setActiveArtwork(0);
     setHomeVisit(n => n + 1);

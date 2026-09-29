@@ -212,7 +212,7 @@ export default function App({
       window.dispatchEvent(new CustomEvent("equalpath-motion-change", { detail: { reduced: false } }));
       setClearCacheConfirm(false);
       close();
-      onHome?.();
+      onHome?.({ fresh: true });
       notify("Local data cleared. EqualPath is ready for a new start.");
     } catch {
       setClearCacheConfirm(false);
