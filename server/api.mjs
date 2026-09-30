@@ -31,6 +31,12 @@ import { applyReviewProfiles } from "./review-profiles.mjs";
 import { createPlaceSearch } from "./places.mjs";
 import { createDrivingRoutes } from "./driving.mjs";
 export function createAPI({ store = createPublishedStore(), placeSearch = createPlaceSearch(), reverseGeocode = placeSearch.reverse, drivingRoutes = createDrivingRoutes() } = {}) {
+  const enrichedCatalogs = new WeakMap();
+  const enrich = catalog => {
+    if (!enrichedCatalogs.has(catalog)) enrichedCatalogs.set(catalog,
+      applyReviewProfiles(applyCompletedShortCareData(applyReviewEvidence(catalog))));
+    return enrichedCatalogs.get(catalog);
+  };
   return async function handle(body) {
     if (!body || typeof body !== "object" || Array.isArray(body))
       throw new ServiceError("INVALID_REQUEST", 400);
@@ -50,7 +56,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       if (!regions.includes(regionAt(body.point))) throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
       return {contract:CONTRACT,mode,regions,...(mode === "demo" ? {pickup:null} : await reverseGeocode(body.point))};
     }
-    const catalog = mode === "demo" ? fixtureCatalog : applyReviewProfiles(applyCompletedShortCareData(applyReviewEvidence(await store.catalog()))),
+    const catalog = mode === "demo" ? fixtureCatalog : enrich(await store.catalog()),
       allItems = body.features?.includes?.('area-fees-v1') === true ? catalog.items : catalog.items.map(p=>p.fees?.some(f=>f.verification==='area_estimate') ? {...p,fees:p.fees.filter(f=>f.verification!=='area_estimate')} : p);
     const careType = body.request?.careType ?? body.careType ?? "short_term";
     if (!["regular", "short_term"].includes(careType)) throw new ServiceError("INVALID_REQUEST", 422, { careType: "Choose a care type." });

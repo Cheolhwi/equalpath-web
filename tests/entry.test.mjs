@@ -33,6 +33,7 @@ test("entry returns controlled examples only when demo mode is requested explici
   assert.equal(r.status, 200);
   assert.equal(r.body.mode, "demo");
   assert.equal(r.body.available, 10);
+  assert.match(r.headers['Server-Timing'], /^app;dur=\d+\.\d, first;dur=[01]$/);
 });
 test("age lower-exclusive endpoint cannot fully support a completed age interval", () => {
   assert.equal(
