@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import Recommendations from "./Recommendations.jsx";
 import useInterests from "./useInterests.js";
-import useSearchRoutes from "./useSearchRoutes.js";
+import useSearchRoutes, { clearSearchRouteCache } from "./useSearchRoutes.js";
 import Comparison from "./Comparison.jsx";
 import MapSearchDock from "./MapSearchDock.jsx";
 import SearchActions from "./SearchActions.jsx";
@@ -205,6 +205,7 @@ export default function App({
   };
   const clearLocalCache = () => {
     try {
+      clearSearchRouteCache();
       Object.keys(window.localStorage)
         .filter(key => key.startsWith("equalpath:"))
         .forEach(key => window.localStorage.removeItem(key));

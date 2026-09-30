@@ -25,6 +25,8 @@ This is the runbook for the standalone `Cheolhwi/equalpath-web` repository. The 
 
    This runs `npm test`, the dry-run-safe `scripts/deploy-api.mjs`, `npm run build`, and `scripts/check-build.mjs`. A frontend release does not require a Function deployment. Use `node scripts/deploy-api.mjs --deploy` only for a separately authorised `web-provider-query` publication and record that scope.
 
+The Function package precomputes separate short-care and regular-care catalogues and individual review files from checked-in data. After a source-data change, run `node scripts/prepare-search-catalog.mjs` before the release gate; the parity test rejects stale checked-in artifacts. No database reads occur during this preparation.
+
 3. Record the source identity from `dist/build-info.json`:
 
    ```sh

@@ -1,0 +1,13 @@
+# Search cold-start optimization — 30 September 2026
+
+The production runtime remains Node 22, 0.5 vCPU / 512 MB. Short-care pages retain ten results and all ten retain the same personalised reranking. No owner records, database reads, DNS or compute-plan changes are involved.
+
+The deployment compiler derives immutable short-care and regular-care partitions from the verified bundled catalogue and current checked-in overlays. Short-care requests decode 3,328,994 bytes instead of the 19,487,205-byte full catalogue. All review topic observations stay available for ranking; review passages and completion evidence are separately validated, cached per centre, and loaded only for an explicit review/legacy full-detail request. Runtime imports no longer pull in publication-only provider parsing and full review datasets through the shared error/fixture helpers.
+
+Route results are reused in bounded browser session memory, keyed by mode, source version, origin and public centre ID. Date/time/age edits do not refetch identical road routes; changed origins, versions and newly added centres do. No coordinates are added to persistent storage. Clear local cache invalidates pending cache writes. A server-side 6.5-second total budget includes the route queue, and routing failures trigger a short circuit break. Unknown routes never become invented estimates.
+
+Validation includes wire-contract parity with the prior full catalogue across weekday/weekend, age, late-night/conflict and regular-care cases; review on-demand reads; integrity failures; deterministic publication; route caching/isolation/reset; and bounded queue failure. Local Chrome-based browser inspection covered desktop 1280×720 and mobile 390×844, first-use preferences, live-data search, time updates, drive-time reuse and review expansion. One local visible update took 285 ms including browser-control overhead; this is not a cloud measurement.
+
+Five independent local Node processes per version measured a median startup-plus-first-search of 101.8 ms before and 35.9 ms after; sample resident memory fell from about 208 MB to 87 MB. Local timings do not establish cloud cold-start speed. Production deployment, first-request timings and remaining CI results are recorded separately in the release receipt.
+
+Browser-test collection now succeeds (139 tests). The duplicate map-search case was removed; gallery tests explicitly represent a returning visitor and the reduced-motion test sets the actual site preference. A separate new-visitor test retains preference-before-map coverage. Collection success does not mean those browser journeys have passed.

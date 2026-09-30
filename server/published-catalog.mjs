@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { gunzipSync } from "node:zlib";
-import { ServiceError } from "./appwrite-store.mjs";
+import { ServiceError } from "./service-error.mjs";
 
 export const snapshotSchema = "equalpath-published-catalog-v1";
 const dataURL = new URL("./data/catalog-snapshot.json.gz", import.meta.url);

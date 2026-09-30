@@ -9,26 +9,8 @@ const index = JSON.parse(
 );
 const reviewedFees = JSON.parse(readFileSync(new URL('./data/reviewed-fees.json', import.meta.url)));
 export const supplementVersion = "service-review-2026-09-13-v7";
-export function safeURL(value) {
-  try {
-    const u = new URL(value);
-    return ["https:", "http:"].includes(u.protocol) &&
-      !u.username &&
-      !u.password &&
-      !/^(localhost|127\.|10\.|192\.168\.|\[)/.test(u.hostname)
-      ? u.href
-      : null;
-  } catch {
-    return null;
-  }
-}
-export const source = (
-  label,
-  url,
-  retrievedAt = null,
-  sourceDate = null,
-  kind = "public_directory",
-) => ({ label, url: safeURL(url), retrievedAt, sourceDate, kind });
+import { source, safeURL } from "./provider-source.mjs";
+export { source, safeURL } from "./provider-source.mjs";
 export function phoneFact(display, evidence) {
   let n = String(display ?? "").replace(/[^\d+]/g, "");
   if (n.startsWith("0")) n = "+60" + n.slice(1);

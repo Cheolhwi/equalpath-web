@@ -52,6 +52,7 @@ test.beforeEach(async({page})=>{
   await page.route('**/api',route=>route.fulfill({json:{ok:true,mode:'live',items:[],available:0,total:0,regions:['Kuala Lumpur','Selangor']}}));
   await page.addInitScript(()=>{
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
+    localStorage.setItem('equalpath:interests:v1:live', JSON.stringify({version:1,enabled:true,visits:[],hidden:[],preferences:[],preferenceSetup:'skipped'}));
     window.landingStates=[];
     new MutationObserver(()=>{
       const el=document.querySelector('.care-scene');
@@ -136,6 +137,7 @@ test('mobile entry keeps the selected artwork visible through every curtain stag
   await expect(page.locator('#pickup-search')).not.toBeFocused();
 });
 test('reduced-motion mobile landing opens raised, with visible controls and keyboard focus preserved',async({page})=>{
+  await page.addInitScript(() => localStorage.setItem('equalpath:motion:v1','reduce'));
   test.setTimeout(90000);await page.setViewportSize({width:390,height:844});
   await page.goto('/');const scene=page.locator('.care-scene');
   await expect(scene).toHaveAttribute('data-scene-status','ready',{timeout:60000});

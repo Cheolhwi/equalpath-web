@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync } from "node:fs";
 import { pathToFileURL } from "node:url";
+import { prepareSearchCatalog } from "./prepare-search-catalog.mjs";
 const root = resolve(import.meta.dirname, ".."),
   backend = resolve(root, "../appwrite-backend"),
   cli = resolve(backend, "node_modules/.bin/appwrite"),
@@ -39,6 +40,9 @@ for (const f of [
   "server/providers.mjs",
   "server/appwrite-store.mjs",
   "server/published-catalog.mjs",
+  "server/search-catalog.mjs",
+  "server/service-error.mjs",
+  "server/provider-source.mjs",
   "server/review-evidence.mjs",
   "server/review-profiles.mjs",
   "server/completed-short-care.mjs",
@@ -74,11 +78,13 @@ writeFileSync(
     type: "module",
   }),
 );
+await prepareSearchCatalog(resolve(path, "server/data/search-index"));
 // Import the isolated package before any remote mutation: local source files
 // must not mask a missing runtime dependency in the uploaded function.
 await import(pathToFileURL(resolve(path, "server/function.mjs")).href);
-const { createPublishedStore } = await import(pathToFileURL(resolve(path, "server/published-catalog.mjs")).href);
-await createPublishedStore().catalog();
+const { createSearchStore } = await import(pathToFileURL(resolve(path, "server/search-catalog.mjs")).href);
+const preparedStore = createSearchStore();
+for (const careType of ["short_term", "regular"]) await preparedStore.catalog(careType);
 if (!process.argv.includes("--deploy")) {
   console.log(
     JSON.stringify({

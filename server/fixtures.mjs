@@ -1,4 +1,4 @@
-import { source } from "./providers.mjs";
+import { source } from "./provider-source.mjs";
 const s = source(
   "Controlled example — fictional facts",
   null,

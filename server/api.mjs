@@ -23,20 +23,24 @@ import {
 import { feesForCare } from "../shared/result-summary.mjs";
 import { regionAt, regions, distanceKm } from "./geography.mjs";
 import { fixtureCatalog, demoPickup } from "./fixtures.mjs";
-import { ServiceError } from "./appwrite-store.mjs";
-import { createPublishedStore } from "./published-catalog.mjs";
-import { applyReviewEvidence } from "./review-evidence.mjs";
-import { applyCompletedShortCareData } from "./completed-short-care.mjs";
-import { applyReviewProfiles } from "./review-profiles.mjs";
+import { ServiceError } from "./service-error.mjs";
+import { createSearchStore } from "./search-catalog.mjs";
 import { createPlaceSearch } from "./places.mjs";
 import { createDrivingRoutes } from "./driving.mjs";
-export function createAPI({ store = createPublishedStore(), placeSearch = createPlaceSearch(), reverseGeocode = placeSearch.reverse, drivingRoutes = createDrivingRoutes() } = {}) {
+export function createAPI({ store = createSearchStore(), placeSearch = createPlaceSearch(), reverseGeocode = placeSearch.reverse, drivingRoutes = createDrivingRoutes() } = {}) {
   const enrichedCatalogs = new WeakMap();
-  const enrich = catalog => {
-    if (!enrichedCatalogs.has(catalog)) enrichedCatalogs.set(catalog,
-      applyReviewProfiles(applyCompletedShortCareData(applyReviewEvidence(catalog))));
+  const enrich = async catalog => {
+    if (store.prepared) return catalog;
+    if (!enrichedCatalogs.has(catalog)) enrichedCatalogs.set(catalog, (async () => {
+      const [{ applyReviewEvidence }, { applyCompletedShortCareData }, { applyReviewProfiles }] = await Promise.all([
+        import('./review-evidence.mjs'), import('./completed-short-care.mjs'), import('./review-profiles.mjs'),
+      ]);
+      return applyReviewProfiles(applyCompletedShortCareData(applyReviewEvidence(catalog)));
+    })());
     return enrichedCatalogs.get(catalog);
   };
+  const completeRows = rows => store.prepared
+    ? Promise.all(rows.map(async p => ({ ...p, ...await store.extras(p.id) }))) : rows;
   return async function handle(body) {
     if (!body || typeof body !== "object" || Array.isArray(body))
       throw new ServiceError("INVALID_REQUEST", 400);
@@ -56,10 +60,10 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       if (!regions.includes(regionAt(body.point))) throw new ServiceError("OUTSIDE_SERVICE_AREA", 422);
       return {contract:CONTRACT,mode,regions,...(mode === "demo" ? {pickup:null} : await reverseGeocode(body.point))};
     }
-    const catalog = mode === "demo" ? fixtureCatalog : enrich(await store.catalog()),
-      allItems = body.features?.includes?.('area-fees-v1') === true ? catalog.items : catalog.items.map(p=>p.fees?.some(f=>f.verification==='area_estimate') ? {...p,fees:p.fees.filter(f=>f.verification!=='area_estimate')} : p);
     const careType = body.request?.careType ?? body.careType ?? "short_term";
     if (!["regular", "short_term"].includes(careType)) throw new ServiceError("INVALID_REQUEST", 422, { careType: "Choose a care type." });
+    const catalog = mode === "demo" ? fixtureCatalog : await enrich(await store.catalog(careType)),
+      allItems = body.features?.includes?.('area-fees-v1') === true ? catalog.items : catalog.items.map(p=>p.fees?.some(f=>f.verification==='area_estimate') ? {...p,fees:p.fees.filter(f=>f.verification!=='area_estimate')} : p);
     if (mode === "live" && catalog.shortCareReady === false && !["health", "places"].includes(body.action)) throw new ServiceError("SOURCE_INCOMPLETE");
     const shortIds = mode === "live" && Array.isArray(catalog.shortCareIds) ? new Set(catalog.shortCareIds) : null;
     const items = (shortIds ? allItems.filter(p => shortIds.has(p.id) === (careType === "short_term")) : allItems)
@@ -91,7 +95,8 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       if (typeof body.id !== "string") throw new ServiceError("INVALID_SELECTION", 400);
       const provider = items.find(p => p.id === body.id);
       if (!provider) throw new ServiceError("PLACE_UNAVAILABLE", 404);
-      return { ...meta, id: provider.id, reviewProfile: provider.reviewProfile ?? null };
+      const [complete] = mode === "live" ? await completeRows([provider]) : [provider];
+      return { ...meta, id: provider.id, reviewProfile: complete.reviewProfile ?? null };
     }
     if (body.action === "nearby") {
       const center = { lat: body.center?.lat, lng: body.center?.lng };
@@ -173,7 +178,8 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       // Refresh only the requested public IDs; never accept destination coordinates.
       return { version: catalog.version, items: (await withDriving(rows)).map(p => ({ id: p.id, driving: p.driving })) };
     }
-    const summary = body.features?.includes?.('search-summary-v1') === true ? searchSummary : p => p;
+    const compact = body.features?.includes?.('search-summary-v1') === true;
+    const present = async rows => compact ? rows.map(searchSummary) : mode === 'live' ? completeRows(rows) : rows;
     const hydrate = (p) => {
       const fit = assess(p, request);
       const dated = isShortCare(request);
@@ -202,7 +208,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
         (!q || [p.name, p.registeredName, p.address, p.district].join(' ').toLowerCase().includes(q)))
         .map(hydrate).filter(p => !p.fit.counts.conflict && (request.includeUnknown || p.fit.conditions.filter(c => c.id !== 'transfer').every(c => c.state !== 'unknown')))
         .sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
-      return { ...meta, request, items: candidates.slice(0, 100).map(summary), total: candidates.length, limit: 100,
+      return { ...meta, request, items: await present(candidates.slice(0, 100)), total: candidates.length, limit: 100,
         seeds, checkedAt: new Date().toISOString() };
     }
     if (body.action === "search") {
@@ -246,7 +252,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       return {
         ...meta,
         request,
-        items: (drivingDeferred ? suggested.map(p => ({ ...p, driving: { state: 'loading' } })) : await withDriving(suggested)).map(summary),
+        items: await present(drivingDeferred ? suggested.map(p => ({ ...p, driving: { state: 'loading' } })) : await withDriving(suggested)),
         drivingDeferred,
         seeds,
         total: candidates.length,
@@ -279,7 +285,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
     return {
       ...meta,
       request,
-      items: await withDriving(ordered),
+      items: await present(await withDriving(ordered)),
       ordering: order,
     };
   };

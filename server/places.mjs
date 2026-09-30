@@ -1,4 +1,4 @@
-import { ServiceError } from "./appwrite-store.mjs";
+import { ServiceError } from "./service-error.mjs";
 import { regionAt, regions, distanceKm } from "./geography.mjs";
 
 export function placeQuery(value) {

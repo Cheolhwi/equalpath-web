@@ -7,14 +7,8 @@ import { applyProviderAdditions } from "./provider-additions.mjs";
 import { shortCareCollection } from "./profile-evidence.mjs";
 const endpoint = "https://sgp.cloud.appwrite.io/v1",
   project = "6a916a6c0030a70a9d75";
-export class ServiceError extends Error {
-  constructor(code, status = 503, fields = null) {
-    super(code);
-    this.code = code;
-    this.status = status;
-    this.fields = fields;
-  }
-}
+import { ServiceError } from "./service-error.mjs";
+export { ServiceError } from "./service-error.mjs";
 const query = (method, attribute, values) =>
   JSON.stringify({ method, ...(attribute ? { attribute } : {}), values });
 // Publication/export adapter only. User-facing API handlers use published-catalog.mjs.

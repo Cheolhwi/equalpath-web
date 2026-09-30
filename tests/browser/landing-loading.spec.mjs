@@ -4,7 +4,10 @@ const out = process.env.QA_EVIDENCE_DIR || ".build/landing-loading";
 mkdirSync(out, { recursive: true });
 test.beforeEach(async ({ page }) => {
   await page.route("**/api", route => route.fulfill({ json: { ok: true, mode: "live", items: [], available: 0, total: 0, regions: ["Kuala Lumpur", "Selangor"] } }));
-  await page.addInitScript(() => localStorage.setItem("equalpath:tour:v1", '{"version":1,"status":"skipped"}'));
+  await page.addInitScript(() => {
+    localStorage.setItem('equalpath:tour:v1', '{"version":1,"status":"skipped"}');
+    localStorage.setItem('equalpath:interests:v1:live', JSON.stringify({version:1,enabled:true,visits:[],hidden:[],preferences:[],preferenceSetup:'skipped'}));
+  });
 });
 
 test("cold artwork stays behind the animated loader until the first drawn frame; the opening then runs visibly", async ({ page }) => {
@@ -76,6 +79,7 @@ test("cold artwork stays behind the animated loader until the first drawn frame;
 
 test("failed artwork has a retry, and reduced-motion loading stays still", async ({ page }) => {
   test.setTimeout(90000);
+  await page.addInitScript(() => localStorage.setItem("equalpath:motion:v1", "reduce"));
   const pattern = "**/images/care-gallery/robin-v3/*.webp";
   await page.route(pattern, route => route.abort());
   await page.goto("/", { waitUntil: "domcontentloaded" });
@@ -108,4 +112,22 @@ test("waiting is optional and a direct search link never mounts the artwork load
   await page.reload();
   await expect(page.locator(".landing")).toHaveCount(0);
   await expect(page.locator("#pickup-search")).toBeVisible();
+});
+
+test('a new visitor sees preferences before the map, then can skip into search', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.removeItem('equalpath:interests:v1:live');
+    window.mapBeforePreferences = false;
+    new MutationObserver(() => {
+      if (document.querySelector('.equalpath') && !localStorage.getItem('equalpath:interests:v1:live'))
+        window.mapBeforePreferences = true;
+    }).observe(document, { subtree: true, childList: true });
+  });
+  await page.goto('/#discover', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase', 'preferences');
+  await expect(page.locator('.equalpath')).toHaveCount(0);
+  expect(await page.evaluate(() => window.mapBeforePreferences)).toBe(false);
+  await page.getByRole('button', { name: 'Skip for now', exact: true }).click();
+  await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase', 'ready');
+  await expect(page.locator('.equalpath')).toBeVisible();
 });
