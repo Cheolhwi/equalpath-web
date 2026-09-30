@@ -37,21 +37,9 @@ for (const f of [
   "server/function.mjs",
   "server/geography.mjs",
   "server/fixtures.mjs",
-  "server/providers.mjs",
-  "server/appwrite-store.mjs",
-  "server/published-catalog.mjs",
   "server/search-catalog.mjs",
   "server/service-error.mjs",
   "server/provider-source.mjs",
-  "server/review-evidence.mjs",
-  "server/review-profiles.mjs",
-  "server/completed-short-care.mjs",
-  "server/hours-overlay.mjs",
-  "server/services-overlay.mjs",
-  "server/admissions-overlay.mjs",
-  "server/provider-additions.mjs",
-  "server/profile-evidence.mjs",
-  "server/fees-overlay.mjs",
   "shared/request.mjs",
   "shared/conditions.mjs",
   "shared/result-summary.mjs",
@@ -59,14 +47,6 @@ for (const f of [
   "shared/published-ages.mjs",
   "shared/whatsapp.mjs",
   "server/data/service-boundaries.json",
-  "server/data/provenance-index.json",
-  "server/data/reviewed-fees.json",
-  "server/data/boundary-source.json",
-  "server/data/catalog-snapshot.json.gz",
-  "server/data/catalog-snapshot.meta.json",
-  "server/data/short-care-review-evidence-20260922.json",
-  "server/data/short-care-completed-20260923.json",
-  "server/data/review-profiles.json",
 ])
   cpSync(resolve(root, f), resolve(path, f));
 writeFileSync(
@@ -85,6 +65,14 @@ await import(pathToFileURL(resolve(path, "server/function.mjs")).href);
 const { createSearchStore } = await import(pathToFileURL(resolve(path, "server/search-catalog.mjs")).href);
 const preparedStore = createSearchStore();
 for (const careType of ["short_term", "regular"]) await preparedStore.catalog(careType);
+// Exercise the actual isolated API, including review hydration and demo mode.
+// Publication-only imports are intentionally not shipped to the cloud runtime.
+const { api: packagedAPI } = await import(pathToFileURL(resolve(path, "server/api.mjs")).href);
+for (const careType of ["short_term", "regular"])
+  await packagedAPI({ action: "health", mode: "live", careType });
+const shortCatalog = await preparedStore.catalog("short_term");
+await packagedAPI({ action: "reviews", mode: "live", id: shortCatalog.items[0].id });
+await packagedAPI({ action: "health", mode: "demo" });
 if (!process.argv.includes("--deploy")) {
   console.log(
     JSON.stringify({

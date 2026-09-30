@@ -27,6 +27,8 @@ This is the runbook for the standalone `Cheolhwi/equalpath-web` repository. The 
 
 The Function package precomputes separate short-care and regular-care catalogues and individual review files from checked-in data. After a source-data change, run `node scripts/prepare-search-catalog.mjs` before the release gate; the parity test rejects stale checked-in artifacts. No database reads occur during this preparation.
 
+Only the prepared catalogues, review files and runtime modules are uploaded. Raw source snapshots and publication-only enrichment modules stay in the repository. The packaging check exercises both live collections, review hydration and demo mode from the isolated upload directory.
+
 3. Record the source identity from `dist/build-info.json`:
 
    ```sh
@@ -65,6 +67,20 @@ The verifier waits only within its bounded window. If the public digest is still
 4. Do not make empty commits, poll forever, disable TLS, or treat a stale preview/CDN response as a successful release.
 
 Keep these outcomes separate in the receipt: local checks, local browser visual checks, Appwrite build/deployment, public HTTPS/digest/backend verification, and CI. Existing automatic browser CI results may be reported, but they are not evidence of a new manual run and must not be silently marked passed.
+
+## Cloud search readiness
+
+The authorised search Function uses Appwrite's own once-per-minute schedule to keep the runtime and both immutable catalogues prepared. This is a cloud configuration, independent of a visitor opening the landing page or this computer remaining online. It performs no database, place-search or driving requests and does not change compute specifications. It adds at most 1,440 scheduled executions per day (43,200 per 30 days); this is metered usage, not a guarantee of a permanently allocated instance.
+
+After the warmup-capable Function deployment is ready and active:
+
+```sh
+node scripts/configure-search-warmup.mjs --enable
+```
+
+Without a flag the script is dry-run only. It verifies the intended active deployment, retains existing settings and records `evidence/search-warmup.json`. To disable only this schedule, run it with `--disable`.
+
+Check a real public search after a scheduled tick and after an idle period. `Server-Timing` includes `prewarmed;dur=1` only if that serving process completed a scheduled warmup; `warm-age` records milliseconds since that warmup. A low latency with `prewarmed=0` is not evidence that the cloud schedule worked. Record response time, result counts, and the original production-page journey separately. Platform recycling, deployment and burst-created instances may still start cold; do not promise that cron eliminates every cold start.
 
 ## Verification split by change type
 
