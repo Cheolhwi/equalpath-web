@@ -2,12 +2,13 @@ import { test, expect } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 const out = process.env.QA_EVIDENCE_DIR || ".build/landing-loading";
 mkdirSync(out, { recursive: true });
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, testInfo) => {
   await page.route("**/api", route => route.fulfill({ json: { ok: true, mode: "live", items: [], available: 0, total: 0, regions: ["Kuala Lumpur", "Selangor"] } }));
-  await page.addInitScript(() => {
+  await page.addInitScript(({ newVisitor }) => {
     localStorage.setItem('equalpath:tour:v1', '{"version":1,"status":"skipped"}');
-    localStorage.setItem('equalpath:interests:v1:live', JSON.stringify({version:1,enabled:true,visits:[],hidden:[],preferences:[],preferenceSetup:'skipped'}));
-  });
+    if (newVisitor) localStorage.removeItem('equalpath:interests:v1:live');
+    else localStorage.setItem('equalpath:interests:v1:live', JSON.stringify({version:1,enabled:true,visits:[],hidden:[],preferences:[],preferenceSetup:'skipped'}));
+  }, { newVisitor: testInfo.title.startsWith('a new visitor sees preferences') });
 });
 
 test("cold artwork stays behind the animated loader until the first drawn frame; the opening then runs visibly", async ({ page }) => {
@@ -116,16 +117,20 @@ test("waiting is optional and a direct search link never mounts the artwork load
 
 test('a new visitor sees preferences before the map, then can skip into search', async ({ page }) => {
   await page.addInitScript(() => {
-    localStorage.removeItem('equalpath:interests:v1:live');
     window.mapBeforePreferences = false;
     new MutationObserver(() => {
-      if (document.querySelector('.equalpath') && !localStorage.getItem('equalpath:interests:v1:live'))
+      const app = document.querySelector('.equalpath');
+      if ((document.querySelector('.maplibregl-canvas') || (app && app.getAttribute('aria-hidden') !== 'true')) &&
+          !localStorage.getItem('equalpath:interests:v1:live'))
         window.mapBeforePreferences = true;
     }).observe(document, { subtree: true, childList: true });
   });
   await page.goto('/#discover', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase', 'preferences');
-  await expect(page.locator('.equalpath')).toHaveCount(0);
+  // The inert application shell stays mounted; the map must not be rendered
+  // or exposed to assistive technology before preferences are completed.
+  await expect(page.locator('.equalpath')).toHaveAttribute('aria-hidden', 'true');
+  await expect(page.locator('.maplibregl-canvas')).toHaveCount(0);
   expect(await page.evaluate(() => window.mapBeforePreferences)).toBe(false);
   await page.getByRole('button', { name: 'Skip for now', exact: true }).click();
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase', 'ready');
