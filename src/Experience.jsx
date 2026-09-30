@@ -67,7 +67,8 @@ export default function Experience() {
   const enterButton = useRef(null);
   const hasEntered = useRef(phase === "ready");
   const moving = phase !== "welcome" && phase !== "ready";
-  const keepLanding = phase !== "ready" || sceneStatus === "ready";
+  const keepLanding = phase === "welcome" || phase === "entering" || sceneStatus === "ready";
+  const mapActive = phase === "ready" || preferenceExit || (phase === "entering" && !entryPreferences);
   const displayedArtwork = moving ? entryArtwork : activeArtwork;
   const artwork = careArtworks[displayedArtwork];
   const finish = useCallback(() => {
@@ -213,7 +214,7 @@ export default function Experience() {
         "--entrance-reveal": `${ENTRANCE_REVEAL_MS}ms`,
       }}
     >
-      <App introPhase={phase} introReduced={reduced} onHome={home} />
+      <App introPhase={phase} introReduced={reduced} mapActive={mapActive} onHome={home} />
       <Pointer reduced={reduced} />
       {(phase === "preferences" || (phase === "entering" && entryPreferences)) && (
         <section className="preference-onboarding" aria-labelledby="preference-onboarding-title"
@@ -233,7 +234,7 @@ export default function Experience() {
       {keepLanding && (
         <section
           className="landing"
-          hidden={phase === "ready"}
+          hidden={phase === "ready" || phase === "preferences"}
           data-load-state={loadStage}
           aria-label="Welcome to EqualPath"
           aria-hidden={moving || undefined}
@@ -247,7 +248,7 @@ export default function Experience() {
               <SceneBoundary key={sceneAttempt} onError={sceneError}>
                 <Suspense fallback={null}>
                   <CareScene reduced={reduced} animateOpening={!hasEntered.current}
-                    active={phase !== "ready"} homeVisit={homeVisit}
+                    active={phase === "welcome" || phase === "entering"} homeVisit={homeVisit}
                     leaving={moving} presented={loadStage === "ready"}
                     onStatusChange={setSceneStatus} onArtworkChange={setActiveArtwork} onEnter={enter} />
                 </Suspense>

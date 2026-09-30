@@ -1,8 +1,8 @@
 import { API_URL, APPWRITE_PROJECT } from "./config.js";
 import { nearbyCacheKey } from "../shared/map-search.mjs";
 const nearbyCache = new Map(), nearbyPending = new Map();
-export async function requestAPI(body) {
-  if (body.action !== "nearby") return fetchAPI(body);
+export async function requestAPI(body, options = {}) {
+  if (body.action !== "nearby") return fetchAPI(body, options);
   const key = nearbyCacheKey(body), hit = nearbyCache.get(key);
   if (hit?.expires > Date.now()) return hit.value;
   if (nearbyPending.has(key)) return nearbyPending.get(key);
@@ -14,11 +14,14 @@ export async function requestAPI(body) {
   nearbyPending.set(key, job);
   return job;
 }
-async function fetchAPI(body) {
-  body={...body,features:['area-fees-v1']};
+async function fetchAPI(body, { signal, timeoutMs = 75000 } = {}) {
+  body={...body,features:['area-fees-v1', 'search-summary-v1', 'defer-driving-v1']};
   const controller = new AbortController(),
-    timer = setTimeout(() => controller.abort(), 75000),
+    timer = setTimeout(() => controller.abort(), timeoutMs),
     execution = API_URL.endsWith("/executions");
+  const abort = () => controller.abort();
+  if (signal?.aborted) abort();
+  else signal?.addEventListener('abort', abort, { once: true });
   try {
     const res = await fetch(API_URL, {
       method: "POST",
@@ -57,6 +60,7 @@ async function fetchAPI(body) {
     throw e;
   } finally {
     clearTimeout(timer);
+    signal?.removeEventListener('abort', abort);
   }
 }
 export const errorMessage = (e) =>

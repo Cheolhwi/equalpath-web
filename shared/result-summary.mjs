@@ -54,5 +54,6 @@ export function feeSummary(p) {
   return labels.length ? { label: `${primary.length ? '' : 'Extras: '}${labels.slice(0, 2).join(" · ")}`, note: p.careType==='short_term' ? 'Ask about the minimum stay and any extra charges.' : fees.every(f=>f.verification==='area_estimate')?'Estimated from nearby centres. Ask this centre for its price.':`${labels.length > 2 ? "More rates in details. " : ""}Listed fees. Ask what is included.` } : { label: "Ask the centre", note: p.careType==='short_term' ? "Short-stay price not listed." : "No published fee found." };
 }
 export function drivingLabel(driving) {
+  if (driving?.state === "loading") return "Checking drive time…";
   return driving?.state === "available" ? `About ${driving.minutes} min by car` : "Driving time unavailable";
 }

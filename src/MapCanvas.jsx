@@ -72,6 +72,8 @@ export default function MapCanvas({
     topInset,
     cameraReduced: reduced || introReduced,
   };
+  // Drive-time enrichment only changes card text, not pins or the user's view.
+  const pinKey = JSON.stringify(items.map(p => [p.id, p.name, p.location, p.fit?.counts?.conflict, p.suggested, p.personalised, p.personalisedReason]));
   // Exact shared addresses need separate hit targets. Offsets depend only on
   // stable centre IDs, so zooming/selecting cannot make pins switch places.
   const pinOffsets = useMemo(() => {
@@ -90,8 +92,8 @@ export default function MapCanvas({
       });
     }
     return offsets;
-  }, [items]);
-  useEffect(() => { setDismissedCards([]); }, [items, showSuggestions]);
+  }, [pinKey]);
+  useEffect(() => { setDismissedCards([]); }, [pinKey, showSuggestions]);
   const fit = ({ immediate = false } = {}) => {
     setDismissedCards([]);
     const m = map.current;
@@ -290,10 +292,10 @@ export default function MapCanvas({
           .addTo(m),
       );
     }
-  }, [items, pickup, selected, retry, choosing]);
+  }, [pinKey, pickup, selected, retry, choosing]);
   useEffect(() => {
     if (autoFit && !choosing) fit();
-  }, [items, pickup, retry, autoFit]);
+  }, [pinKey, pickup, retry, autoFit]);
   useEffect(() => {
     lastView.current = viewTarget;
     if (map.current && introPhase === "ready") map.current.easeTo({ center: [viewTarget.center.lng, viewTarget.center.lat], zoom: viewTarget.zoom, padding: 0, duration: reduced ? 0 : 450 });

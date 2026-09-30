@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -23,8 +23,8 @@ import {
 } from "lucide-react";
 import Recommendations from "./Recommendations.jsx";
 import useInterests from "./useInterests.js";
+import useSearchRoutes from "./useSearchRoutes.js";
 import Comparison from "./Comparison.jsx";
-import MapCanvas from "./MapCanvas.jsx";
 import MapSearchDock from "./MapSearchDock.jsx";
 import SearchActions from "./SearchActions.jsx";
 import Dialog from "./Dialog.jsx";
@@ -109,12 +109,17 @@ const fingerprint = (r) =>
         r.sort,
       ])
     : "";
+const MapCanvas = lazy(() => import('./MapCanvas.jsx'));
 export default function App({
   introPhase = "ready",
   introArea = 0,
   introReduced = false,
+  mapActive = true,
   onHome,
 }) {
+  // Start the map on entry, then retain the same instance on return visits.
+  const [mapStarted, setMapStarted] = useState(mapActive);
+  useEffect(() => { if (mapActive) setMapStarted(true); }, [mapActive]);
   const [mode, setMode] = useState(
       new URLSearchParams(location.search).get("mode") === "demo"
         ? "demo"
@@ -177,7 +182,7 @@ export default function App({
   }, []);
   useEffect(() => {
     if (dialog === 'details' && profile?.p && !dialogBusy && !tourOpen) interests.record([profile.p], 'view');
-  }, [dialog, profile, dialogBusy, tourOpen, interests.record]);
+  }, [dialog, profile?.p?.id, profile?.p?.careType, dialogBusy, tourOpen, interests.record]);
   const [searchFocus, setSearchFocus] = useState(null), [dockHeight, setDockHeight] = useState(150);
   const [searchCollapsed, setSearchCollapsed] = useState(false);
   const [pickupQueryReset, setPickupQueryReset] = useState(null);
@@ -185,11 +190,13 @@ export default function App({
   const tourSnapshot = useRef(null), tourData = useRef(null), tourSequence = useRef(0);
   const mapView = useRef(DEFAULT_MAP), rememberedPickup = useRef(null);
   const requestSeq = useRef(0),
+    searchController = useRef(null),
     dialogSeq = useRef(0),
     listRef = useRef(null),
     submitRef = useRef(null),
     toastTimer = useRef(null);
   const draftRef = useRef(draft);
+  useEffect(() => () => searchController.current?.abort(), [mode]);
   draftRef.current = draft;
   const notify = (text) => {
     setToast(text);
@@ -222,7 +229,7 @@ export default function App({
   };
   useEffect(() => {
     const point=draft.pickup;
-    if (mode!=="live" || tourOpen || !needsPickupAddress(point)) { setPickupAddress(null); return; }
+    if (!mapActive || mode!=="live" || tourOpen || !needsPickupAddress(point)) { setPickupAddress(null); return; }
     let alive=true;
     setPickupAddress("loading");
     requestAPI({action:"reverse",mode,point:{lat:point.lat,lng:point.lng}}).then(r=>{
@@ -236,7 +243,7 @@ export default function App({
       setPickupAddress(null);
     }).catch(()=>{if(alive)setPickupAddress("unavailable");});
     return ()=>{alive=false;};
-  },[mode,tourOpen,draft.pickup?.lat,draft.pickup?.lng,draft.pickup?.label,addressRetry]);
+  },[mapActive,mode,tourOpen,draft.pickup?.lat,draft.pickup?.lng,draft.pickup?.label,addressRetry]);
   const reloadLibrary = () => {
     try {
       setLibrary(readLibrary(window.localStorage, mode));
@@ -336,9 +343,6 @@ export default function App({
     setNearby(null);
     if (mode === "live") setDraft((d) => ({ ...d, pickup: saved?.pickup ?? null }));
     setHealth(null);
-    requestAPI({ action: "health", mode, careType: draftRef.current.careType })
-      .then((h) => alive && setHealth(h))
-      .catch(() => alive && setHealth({ unavailable: true }));
     if (mode === "demo")
       setDraft({
         ...initial(),
@@ -361,7 +365,7 @@ export default function App({
     };
   }, [mode]);
   useEffect(() => {
-    if (results || tourOpen) return;
+    if (!mapActive || results || tourOpen) return;
     let alive = true;
     setNearby(null);
     setNearbyBusy(true);
@@ -369,11 +373,11 @@ export default function App({
     const timer = setTimeout(() => {
       requestAPI({ action: "nearby", mode, careType: draft.careType, center: browseCenter })
         .then((r) => { if (alive) { setNearby(r); setHealth(r); } })
-        .catch((e) => { if (alive) setNearbyError(e); })
+        .catch((e) => { if (alive) { setNearbyError(e); setHealth({ unavailable: true }); } })
         .finally(() => { if (alive) setNearbyBusy(false); });
     }, 300);
     return () => { alive = false; clearTimeout(timer); };
-  }, [mode, draft.careType, browseCenter, results, nearbyReload, tourOpen]);
+  }, [mapActive, mode, draft.careType, browseCenter, results, nearbyReload, tourOpen]);
   useEffect(() => {
     const key = (e) => {
       if (e.key === "Escape" && !e.defaultPrevented && !dialog && !tourOpen && mobilePane === "list" && !document.querySelector('dialog[open], [role="dialog"], [role="listbox"]')) {
@@ -437,9 +441,19 @@ export default function App({
   const dirty = results && fingerprint(draft) !== fingerprint(results.request),
     activeRequest = results?.request,
     rawItems = results?.items ?? nearby?.items ?? EMPTY;
-  const items = useMemo(() => results
+  const rankedItems = useMemo(() => results
       ? personaliseSearchItems({ items: rawItems, seeds: results.seeds ?? [], request: results.request, library, history: interests.history })
       : rawItems, [results, rawItems, library, interests.history]);
+  const items = useSearchRoutes(results, rankedItems, mode);
+  useEffect(() => {
+    if (!results?.drivingDeferred) return;
+    const refresh = current => {
+      if (!current?.p || fingerprint(current.request) !== fingerprint(results.request)) return current;
+      const driving = items.find(p => p.id === current.p.id)?.driving;
+      return driving && driving !== current.p.driving ? { ...current, p: { ...current.p, driving } } : current;
+    };
+    setProfile(refresh); setEnquiry(refresh); setPreparation(refresh);
+  }, [items, results]);
   const switchMode = (next) => {
     setPickupQueryReset(null);
     requestSeq.current++;
@@ -488,12 +502,15 @@ export default function App({
       return;
     }
     const seq = ++requestSeq.current;
+    searchController.current?.abort();
+    const controller = new AbortController();
+    searchController.current = controller;
     setBusy(true);
     setFailure(null);
     setChoosing(false);
     try {
       const seedIds = [...new Set([...interestSeeds(library, interests.history, request.careType).map(s => s.id), ...(interests.history.enabled ? interests.history.hidden.filter(s => s.careType === request.careType).map(s => s.id) : [])])].slice(0,100);
-      const r = await requestAPI({ action: "search", mode, request, page, seedIds });
+      const r = await requestAPI({ action: "search", mode, request, page, seedIds }, { signal: controller.signal });
       if (seq !== requestSeq.current) return;
       let savedResult = null;
       if (reopening) {
@@ -1233,7 +1250,7 @@ export default function App({
           {nearbyError && !failure && <p className="map-search-status" role="status">Centres could not load<button onClick={() => setNearbyReload(v => v + 1)}>Retry</button></p>}
         </div>}
 
-        <MapCanvas
+        {(mapStarted || mapActive) && <Suspense fallback={null}><MapCanvas
           key={mode}
           items={items}
           viewTarget={mapTarget}
@@ -1283,7 +1300,7 @@ export default function App({
           introPhase={introPhase}
           introArea={introArea}
           introReduced={introReduced}
-        />
+        /></Suspense>}
       </div>
       {compareIds.length > 0 && (
         <div className="compare-tray">
@@ -1473,8 +1490,8 @@ export default function App({
                   startPreparation(profile.p, profile.request)
                 }
                 onPrepare={() => prepare(profile.p, profile.request)}
-                onAskReview={topic => {
-                  const { p, selection } = addReviewQuestion(profile.p, profile.request, topic, questionSelection, 'contact-v2:' + profile.p.id + scenario(profile.request));
+                onAskReview={(topic, reviewProfile) => {
+                  const { p, selection } = addReviewQuestion({ ...profile.p, reviewProfile: reviewProfile ?? profile.p.reviewProfile }, profile.request, topic, questionSelection, 'contact-v2:' + profile.p.id + scenario(profile.request));
                   setProfile(current => ({ ...current, p }));
                   setQuestionSelection(selection);
                   prepare(p, profile.request);

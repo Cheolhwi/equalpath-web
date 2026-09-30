@@ -338,12 +338,20 @@ export class ArchiveScene {
   }
   async load(assetUrl = publicAsset("assets/archive-cassette.glb")) {
     this.labelMark.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(labelMarkSvg)}`;
-    await this.labelMark.decode();
-    if (this.disposed) return;
-    const gltf = await new GLTFLoader().loadAsync(
-      assetUrl,
-    );
-    if (this.disposed) { disposeThreeTree(gltf.scene); return; }
+    // The model and artwork are independent: fetch/decode them together rather
+    // than leaving the artwork behind the model's network and parsing time.
+    const [model, artwork, labelDecoded] = await Promise.allSettled([
+      new GLTFLoader().loadAsync(assetUrl), loadCareArtworks(), this.labelMark.decode(),
+    ]);
+    if (this.disposed || model.status === 'rejected' || artwork.status === 'rejected' || labelDecoded.status === 'rejected') {
+      if (model.status === 'fulfilled') disposeThreeTree(model.value.scene);
+      if (artwork.status === 'fulfilled') artwork.value.forEach(texture => texture.dispose());
+      if (this.disposed) return;
+      throw [model, artwork, labelDecoded].find(result => result.status === 'rejected')?.reason;
+    }
+    const gltf = model.value;
+    const artworkTextures = artwork.value;
+    this.artworkTextures = artworkTextures;
     gltf.scene.updateMatrixWorld(true);
     const meshes: THREE.Mesh[] = [];
     gltf.scene.traverse((o) => {
@@ -477,9 +485,6 @@ export class ArchiveScene {
       this.instances.push(inst);
       this.scene.add(inst);
     }
-    const artworkTextures = await loadCareArtworks();
-    if (this.disposed) { artworkTextures.forEach(texture => texture.dispose()); return; }
-    this.artworkTextures = artworkTextures;
     for (const mesh of createChildcareMeshes(artworkTextures[0])) {
       const name = mesh.userData.surface;
       const material = mesh.material as THREE.MeshPhysicalMaterial;

@@ -38,7 +38,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
     if (!["live", "demo"].includes(mode))
       throw new ServiceError("INVALID_MODE", 400);
     if (
-      !["health", "places", "reverse", "nearby", "search", "details", "compare", "recommendations"].includes(
+      !["health", "places", "reverse", "nearby", "search", "details", "compare", "recommendations", "routes", "reviews"].includes(
         body.action,
       )
     )
@@ -80,6 +80,13 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
         "Straight-line distance; not road distance or travel time.",
     };
     if (body.action === "health") return { ...meta, ok: true };
+    if (body.action === "reviews") {
+      if (body.version && body.version !== catalog.version) throw new ServiceError("FACTS_CHANGED", 409);
+      if (typeof body.id !== "string") throw new ServiceError("INVALID_SELECTION", 400);
+      const provider = items.find(p => p.id === body.id);
+      if (!provider) throw new ServiceError("PLACE_UNAVAILABLE", 404);
+      return { ...meta, id: provider.id, reviewProfile: provider.reviewProfile ?? null };
+    }
     if (body.action === "nearby") {
       const center = { lat: body.center?.lat, lng: body.center?.lng };
       if (!regions.includes(regionAt(center)))
@@ -139,7 +146,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
     if (Object.keys(errors).length)
       throw new ServiceError("INVALID_REQUEST", 422, errors);
     const request = canonicalRequest(body.request);
-    if (mode === "live" && needsPickupAddress(request.pickup) && reverseGeocode) {
+    if (mode === "live" && body.action !== "routes" && !(body.action === "search" && body.features?.includes?.('defer-driving-v1')) && needsPickupAddress(request.pickup) && reverseGeocode) {
       try { const r=await reverseGeocode(request.pickup); if (r.pickup) request.pickup=r.pickup; } catch { /* An address outage must not block care search. */ }
     }
     const withDriving = rows => mode === "demo" ? rows.map(p => ({ ...p, driving: { state: "unavailable", reason: "demo" } })) : drivingRoutes(request.pickup, rows);
@@ -150,6 +157,17 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       });
     if (body.version && body.version !== catalog.version)
       throw new ServiceError("FACTS_CHANGED", 409);
+    if (body.action === "routes") {
+      const ids = body.ids;
+      if (!Array.isArray(ids) || !ids.length || ids.length > pageSize || new Set(ids).size !== ids.length || ids.some(id => typeof id !== 'string'))
+        throw new ServiceError("INVALID_SELECTION", 400);
+      const rows = ids.map(id => items.find(p => p.id === id));
+      if (rows.some(p => !p || !withinRadius(request.pickup, p.location, request.radius)))
+        throw new ServiceError("PLACE_UNAVAILABLE", 404);
+      // Refresh only the requested public IDs; never accept destination coordinates.
+      return { version: catalog.version, items: (await withDriving(rows)).map(p => ({ id: p.id, driving: p.driving })) };
+    }
+    const summary = body.features?.includes?.('search-summary-v1') === true ? searchSummary : p => p;
     const hydrate = (p) => {
       const fit = assess(p, request);
       const dated = isShortCare(request);
@@ -178,7 +196,7 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
         (!q || [p.name, p.registeredName, p.address, p.district].join(' ').toLowerCase().includes(q)))
         .map(hydrate).filter(p => !p.fit.counts.conflict && (request.includeUnknown || p.fit.conditions.filter(c => c.id !== 'transfer').every(c => c.state !== 'unknown')))
         .sort((a, b) => a.distanceKm - b.distanceKm || a.id.localeCompare(b.id));
-      return { ...meta, request, items: candidates.slice(0, 100), total: candidates.length, limit: 100,
+      return { ...meta, request, items: candidates.slice(0, 100).map(summary), total: candidates.length, limit: 100,
         seeds, checkedAt: new Date().toISOString() };
     }
     if (body.action === "search") {
@@ -217,10 +235,13 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       // The external no-match fallback is reserved for pages where every
       // candidate has a known conflict (the grey-pin state).
       const explicitMatchCount = candidates.filter((p) => p.fit?.counts?.conflict === 0).length;
+      const drivingDeferred = mode === "live" && body.features?.includes?.('defer-driving-v1') === true;
+      const suggested = suggestProviders(pageItems, request);
       return {
         ...meta,
         request,
-        items: await withDriving(suggestProviders(pageItems, request)),
+        items: (drivingDeferred ? suggested.map(p => ({ ...p, driving: { state: 'loading' } })) : await withDriving(suggested)).map(summary),
+        drivingDeferred,
         seeds,
         total: candidates.length,
         explicitMatchCount,
@@ -256,6 +277,16 @@ export function createAPI({ store = createPublishedStore(), placeSearch = create
       ordering: order,
     };
   };
+}
+function searchSummary(provider) {
+  // Search/reranking need topic observations, not hundreds of review passages
+  // or the original completion workbook. Full evidence remains on demand.
+  const { completedShortCare, reviewEvidence, ...result } = provider;
+  if (provider.reviewProfile) {
+    const { excerpts, ...profile } = provider.reviewProfile;
+    result.reviewProfile = { ...profile, excerpts: [], deferred: true };
+  }
+  return result;
 }
 function withinRadius(center, location, radius) {
   const distance = distanceKm(center, location);
