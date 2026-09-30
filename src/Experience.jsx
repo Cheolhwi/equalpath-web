@@ -16,7 +16,8 @@ import { careArtworks } from "./care-artworks.js";
 import { warmSearchService } from "./api.js";
 import { ENTRANCE_COVER_MS, ENTRANCE_REVEAL_MS, startEntrance } from "./entrance.js";
 import { hasStoredMotionPreference, readMotionPreference, writeMotionPreference } from "./motion-preference.js";
-import { emptyInterests, readInterests, updateInterests } from "../shared/recommendations.mjs";
+import { emptyInterests, readInterests } from "../shared/recommendations.mjs";
+import { saveInterests } from "./interest-store.js";
 import "./landing.css";
 
 const mapHash = ["#discover", "#request-form"];
@@ -186,7 +187,7 @@ export default function Experience() {
 
   const savePreferences = (topics, status) => {
     try {
-      const next = updateInterests(window.localStorage, "live", historyState => ({
+      const next = saveInterests("live", historyState => ({
         ...historyState,
         preferences: topics,
         preferenceSetup: status,
