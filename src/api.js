@@ -1,6 +1,12 @@
 import { API_URL, APPWRITE_PROJECT } from "./config.js";
 import { nearbyCacheKey } from "../shared/map-search.mjs";
 const nearbyCache = new Map(), nearbyPending = new Map();
+let warmup;
+export function warmSearchService() {
+  // One anonymous request per document, never a polling/keep-alive loop.
+  // Start the cloud runtime while the visitor reads the welcome/preferences.
+  return warmup ??= requestAPI({ action: 'health', mode: 'live' }, { timeoutMs: 10000 }).catch(() => null);
+}
 export async function requestAPI(body, options = {}) {
   if (body.action !== "nearby") return fetchAPI(body, options);
   const key = nearbyCacheKey(body), hit = nearbyCache.get(key);

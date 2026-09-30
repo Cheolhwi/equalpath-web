@@ -13,6 +13,7 @@ import Pointer from "./Pointer.jsx";
 import LandingLoader from "./LandingLoader.jsx";
 import { PreferenceSetup } from "./Recommendations.jsx";
 import { careArtworks } from "./care-artworks.js";
+import { warmSearchService } from "./api.js";
 import { ENTRANCE_COVER_MS, ENTRANCE_REVEAL_MS, startEntrance } from "./entrance.js";
 import { hasStoredMotionPreference, readMotionPreference, writeMotionPreference } from "./motion-preference.js";
 import { emptyInterests, readInterests, updateInterests } from "../shared/recommendations.mjs";
@@ -127,6 +128,11 @@ export default function Experience() {
   }, []);
 
   useEffect(() => () => cancelEntrance.current(), []);
+  useEffect(() => {
+    if (!liveMode() || !['welcome', 'preferences'].includes(phase)) return;
+    const timer = setTimeout(() => { warmSearchService(); }, 250);
+    return () => clearTimeout(timer);
+  }, [phase]);
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
     const changed = (event) => {
