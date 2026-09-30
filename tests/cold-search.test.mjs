@@ -51,10 +51,14 @@ test('missing or corrupted search artifacts fail closed without database fallbac
   assert.equal(fetch.mock.callCount(),0);
 });
 
-test('release preparation exactly reproduces the checked-in derived catalog', async () => {
+test('release preparation preserves catalog content across compression runtimes', async () => {
   const directory=await mkdtemp(join(tmpdir(),'equalpath-prepared-'));
   try {
     const result=await prepareSearchCatalog(directory);
-    assert.deepEqual(result,JSON.parse(await readFile(new URL('manifest.json',root),'utf8')));
+    // Node/zlib releases can encode identical bytes into slightly different
+    // gzip sizes. Identity is the uncompressed SHA-256, byte count, membership
+    // and source version; keep every one of those checks across platforms.
+    const identity = value => JSON.parse(JSON.stringify(value, (key, field) => key === 'compressedBytes' ? undefined : field));
+    assert.deepEqual(identity(result),identity(JSON.parse(await readFile(new URL('manifest.json',root),'utf8'))));
   } finally {await rm(directory,{recursive:true,force:true});}
 });
