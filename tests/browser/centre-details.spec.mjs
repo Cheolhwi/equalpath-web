@@ -40,5 +40,5 @@ test('mobile details keep long names, missing fees and contacts usable with keyb
   await dialog.locator('.fit-check').first().locator(':scope > summary').focus();await page.keyboard.press('Enter');await expect(dialog.locator('.fit-check').first()).toHaveAttribute('open','');
   await dialog.locator('.centre-next').scrollIntoViewIfNeeded();await dialog.locator('.centre-contact > summary').click();await expect(dialog.locator('.centre-contact')).toContainText('No phone number listed');await expect(dialog.getByRole('link',{name:'More about this centre'})).toHaveAttribute('href',source.url);
   await page.screenshot({path:out+'/details-mobile-actions.png'});
-  await dialog.getByRole('button',{name:'Get ready for child care',exact:true}).click();await expect(page.getByRole('heading',{name:'Get ready for child care',exact:true})).toBeVisible();
+  await dialog.getByRole('button',{name:'Get ready for childcare',exact:true}).click();await expect(page.getByRole('heading',{name:'Get ready for childcare',exact:true})).toBeVisible();
 });

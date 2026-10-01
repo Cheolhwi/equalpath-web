@@ -12,7 +12,7 @@ export function comparisonFact(p, id, request) {
       if (p.age?.basis === 'type_reference') note = conflict ? 'Outside the age guide' : 'Age guide · ask this centre';
       break;
     case 'admission':
-      value = known ? 'Short visits listed' : conflict ? 'Not offered' : 'Ask the centre';
+      value = known ? 'Offered' : conflict ? 'Not offered' : 'Ask the centre';
       break;
     case 'care':
       value = p.careEndTimeLabel ?? p.businessHoursLabel ?? 'Hours not listed';

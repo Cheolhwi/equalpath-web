@@ -25,7 +25,7 @@ test('the short message copies only checked questions and preserves actual depar
   const p = hydrate(fixtureProviders[1]), groups = contactQuestions(p, request);
   const selected = groups.filter(q => q.id !== 'fees'), message = contactMessage(p, request, selected);
   assert.ok(message.startsWith(contactIntro(p, request)));
-  assert.match(message, /Leave at: 13:00 · Pick up child at: 18:00/);
+  assert.match(message, /leaving at 13:00\nI’ll collect my child at: 18:00/);
   assert.match(message, /4 years old/);
   assert.ok(!message.includes(groups.find(q => q.id === 'fees').text));
   assert.ok(!message.includes('Published care hours'));
@@ -49,7 +49,7 @@ test('specific booking, supervision and toilet requirements stay in their own vi
 test('long-term requests do not acquire a visit date or short-stay price, and estimates remain questions', () => {
   const r = { ...request, careType: 'regular', date: '', deadline: '', end: '', age: '' };
   const p = hydrate(fixtureProviders[0], r), groups = contactQuestions(p, r), message = contactMessage(p, r, groups);
-  assert.match(message, /long-term childcare/);
+  assert.match(message, /regular childcare/);
   assert.doesNotMatch(message, /Leave at|Pick up child at|Date:|Age not chosen/);
   assert.match(groups.find(q => q.id === 'fees').text, /registration, meals/);
   const short = hydrate(fixtureProviders[0]);

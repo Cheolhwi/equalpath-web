@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { displayName, placeLabel, categoryLabel } from "../shared/display.mjs";
 import { Bookmark, ArrowRight, Trash2, Pencil, Save, CalendarDays, Clock3, Users, RefreshCw, Check, CircleHelp } from "lucide-react";
 import {
   favourite,
@@ -119,7 +120,7 @@ export function SavedCheckPanel({ entries, currentRequest, checking, result, onS
       <div className="saved-check-result-heading"><strong>Checked {result.items.length} of {entries.length} saved {entries.length === 1 ? "centre" : "centres"}</strong><small>{result.checkedAt ? `Just checked · ${result.request?.date ?? "current details"}` : ""}</small></div>
       {result.failed > 0 && <p className="notice">{result.failed} centre{result.failed === 1 ? "" : "s"} could not be checked. Your saved item is still here.</p>}
       <div className="saved-check-result-list">{result.items.map((item) => { const status = checkStatus(item); return <div className="saved-check-result" key={item.id}>
-        <div><strong>{item.name}</strong><span className={`saved-check-status ${status.tone}`}><span aria-hidden="true">{status.tone === "supported" ? "✓" : status.tone === "unknown" ? "?" : "!"}</span>{status.label}</span></div>
+        <div><strong>{displayName(item.name)}</strong><span className={`saved-check-status ${status.tone}`}><span aria-hidden="true">{status.tone === "supported" ? "✓" : status.tone === "unknown" ? "?" : "!"}</span>{status.label}</span></div>
         <button className="text-link" type="button" onClick={() => onOpen(item, result.request)}>View details <ArrowRight size={14} /></button>
       </div>; })}</div>
     </div>}
@@ -138,10 +139,10 @@ export function SavedLibrary({ library, failure, onRetry, onReopen, onEditFavour
     {tab === "suggestions" ? suggestions : <>
       {!!entries.length && <SavedCheckPanel entries={entries} currentRequest={currentRequest} checking={savedCheck?.status === "checking"} result={savedCheck} onStartSearch={onStartSearch} onCheck={onCheckSaved} onOpen={onOpenSaved} />}
       {!entries.length && <div className="empty-state"><Bookmark size={30} /><h3>Save childcare you like</h3>
-        <p>Tap Save on any childcare option to keep it here.</p>
+        <p>Select Save on any centre to keep it here.</p>
         <button className="primary" onClick={onDiscover}>Find childcare <ArrowRight size={16} /></button></div>}
       {entries.map(item => <article className="saved-row" key={item.id}>
-        <div className="section-kicker">{item.category} · {item.region}</div><h3>{item.name}</h3>
+        <div className="section-kicker">{[categoryLabel(item), placeLabel(item)].filter(Boolean).join(" · ")}</div><h3>{displayName(item.name)}</h3>
         {item.reason && <p>{item.reason}</p>}<small>Saved {item.savedAt?.slice(0, 10)}</small>
         <details className="saved-source-dates"><summary>When were these details checked?</summary>
           <small>Details saved {item.snapshot?.capturedAt?.slice(0, 10) ?? "date unavailable"}</small><small>{factDates(item.snapshot?.facts)}</small></details>

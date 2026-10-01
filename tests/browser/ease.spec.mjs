@@ -24,7 +24,7 @@ async function setup(page, care = "regular") {
 for (const width of [320,390,1440]) test(`${width}px: a new visitor can search without optional fields and recover from a failed search`, async ({page}) => {
   await page.setViewportSize({width,height:844});
   const {errors,calls}=await setup(page);
-  await expect(page.getByRole('radio',{name:'Long term',exact:true})).toBeChecked();
+  await expect(page.getByRole('radio',{name:'Regular',exact:true})).toBeChecked();
   await expect(page.getByRole('group',{name:'Child’s age',exact:true})).toBeVisible();
   const find=page.getByRole('button',{name:'Find childcare',exact:true});
   await expect(find).toBeInViewport();
@@ -50,7 +50,7 @@ for (const width of [320,390,1440]) test(`${width}px: a new visitor can search w
 });
 test('phone: short-stay errors keep the action visible and point to the correct time',async({page})=>{
   await page.setViewportSize({width:390,height:844}); await setup(page);
-  await page.getByRole('radio',{name:'Short time',exact:true}).check();
+  await page.getByRole('radio',{name:'A few hours',exact:true}).check();
   const find=page.getByRole('button',{name:'Find childcare',exact:true});
   await chooseAge(page); await find.click();
   await expect(page.locator('#deadline')).toBeFocused();
@@ -58,7 +58,7 @@ test('phone: short-stay errors keep the action visible and point to the correct 
   await expect(find).toBeInViewport();
   await page.locator('#deadline').fill('17:00'); await page.locator('#care-end').fill('16:00');
   await chooseAge(page); await find.click(); await expect(page.locator('#care-end')).toBeFocused();
-  await expect(page.locator('#care-end-error')).toContainText('later pickup time');
+  await expect(page.locator('#care-end-error')).toContainText('end time after the start time');
   await page.screenshot({path:`out-of-order-times.png`.replace(/^/,`${out}/`)});
   await page.locator('#care-end').fill('18:00');
   await expect(page.locator('#deadline')).toHaveValue('17:00');
@@ -68,7 +68,7 @@ test('phone: short-stay errors keep the action visible and point to the correct 
 for (const width of [390, 1440]) test(`${width}px: short care opens directly, with weekly care as a secondary search`, async ({page}) => {
   await page.setViewportSize({width,height:844});
   const {calls,errors}=await setup(page, "");
-  await expect(page.getByRole('radio',{name:'Short time',exact:true})).toBeChecked();
+  await expect(page.getByRole('radio',{name:'A few hours',exact:true})).toBeChecked();
   await expect(page.locator('.care-type-choice input').first()).toHaveValue('short_term');
   await expect(page.locator('#deadline')).toBeVisible();
   await expect(page.locator('#care-end')).toBeVisible();
@@ -90,7 +90,7 @@ for (const width of [390, 1440]) test(`${width}px: short care opens directly, wi
   expect(request.careType).toBe('short_term'); expect(request.radius).toBe(5);
   expect(request.age).toBe('4-6'); expect(request.transport).toBe('');
   await page.getByRole('button',{name:'Change search',exact:true}).click();
-  await page.getByRole('radio',{name:'Long term',exact:true}).check();
+  await page.getByRole('radio',{name:'Regular',exact:true}).check();
   await expect(page.locator('#service-date, #deadline, #care-end')).toHaveCount(0);
   await expect(page.locator('.provider-row')).toHaveCount(0);
   expect(errors).toEqual([]);

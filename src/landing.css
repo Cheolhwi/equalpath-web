@@ -37,94 +37,210 @@
   to { opacity: 1; transform: translateY(0); }
 }
 .preference-onboarding {
+  /* Quiet sage-on-paper palette shared with the landing. The onboarding sits
+     outside .equalpath, so it also supplies the tokens PreferenceSetup uses. */
+  --ob-paper: #f2f0e6;
+  --ob-tile: #f9f8f3;
+  --ob-line: #d3d6c8;
+  --ob-line-strong: #a2a991;
+  --ob-sage: #6b7951;
+  --ob-sage-deep: #515d3c;
+  --ob-tint: #e4e8d8;
+  --ink: var(--landing-ink);
+  --muted: #696e62;
+  --rule: var(--ob-line);
+  --paper: var(--ob-tile);
+  --soft: var(--ob-tint);
+  --accent: var(--ob-sage);
   position: fixed;
   inset: 0;
   z-index: 26;
   display: grid;
   place-items: center;
   overflow: auto;
-  padding: clamp(24px, 6vw, 76px);
-  background: color-mix(in srgb, var(--landing-paper) 94%, #dfe5d5);
-  color: var(--landing-ink);
+  overscroll-behavior: contain;
+  padding: clamp(32px, 7vh, 80px) clamp(24px, 6vw, 88px);
+  background: var(--ob-paper);
+  color: var(--ink);
   font-family: MiSans, "DM Sans", sans-serif;
 }
-.preference-onboarding-shell {
-  width: min(960px, 100%);
-}
-.preference-onboarding-heading {
-  max-width: 760px;
-  margin-bottom: 28px;
-}
-.preference-onboarding-heading > span {
-  display: block;
-  margin-bottom: 12px;
-  color: #687453;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .14em;
-}
-.preference-onboarding-heading h1 {
-  max-width: 760px;
-  margin: 0;
-  font-size: clamp(36px, 5vw, 62px);
-  line-height: 1.05;
-  letter-spacing: -.045em;
-}
-.preference-onboarding-heading p {
-  max-width: 680px;
-  margin: 14px 0 0;
-  color: var(--landing-muted);
-  font-size: clamp(16px, 2vw, 20px);
-  line-height: 1.45;
-}
+.preference-onboarding-shell { width: min(1080px, 100%); }
+
+/* Desktop: the question and the decision on the left, the choices on the
+   right. With more choices open, the decision stays in view while the
+   question scrolls away. */
 .preference-onboarding .preference-setup-compact {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "intro main" "footer main";
+  column-gap: clamp(40px, 7vw, 104px);
   margin: 0;
-  padding: clamp(24px, 3vw, 34px);
-  border: 1px solid color-mix(in srgb, var(--landing-rule) 80%, transparent);
-  border-radius: 28px;
-  background: #fffefaee;
-  box-shadow: 0 24px 70px #30362c18;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
 }
-.preference-onboarding .preference-setup-heading h4 {
-  font-size: clamp(22px, 2.5vw, 28px);
+.preference-onboarding .preference-setup-intro { grid-area: intro; }
+.preference-onboarding .preference-setup-main { grid-area: main; min-width: 0; }
+.preference-onboarding .preference-setup-footer {
+  grid-area: footer;
+  align-self: start;
+  position: sticky;
+  top: 32px;
+  padding-top: 40px;
 }
-.preference-onboarding .preference-setup-heading p {
-  margin-top: 6px;
-  font-size: 15px;
+.preference-onboarding-brand {
+  margin: 0 0 clamp(28px, 7vh, 64px);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.07em;
 }
-.preference-onboarding .preference-setup-heading > span { padding: 8px 11px; border-radius: 999px; background: #eef1e7; color: #687453; font-size: 13px; white-space: nowrap; }
-.preference-onboarding .preference-setup-hint { display:flex; align-items:center; gap:8px; margin: 18px 0 0; color:var(--landing-muted); font-size:13px; }
-.preference-onboarding .preference-setup-hint span { display:grid; place-items:center; width:20px; height:20px; border-radius:50%; background:#687453; color:#fffefa; font-size:11px; font-weight:700; }
+.preference-onboarding h1 {
+  max-width: 7.6em;
+  margin: 0;
+  font-size: clamp(46px, 5.4vw, 74px);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.052em;
+  text-wrap: balance;
+}
+.preference-onboarding-lede {
+  max-width: 25em;
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+/* Choices: one calm list, icon first and the tick where the eye ends. */
 .preference-onboarding .preference-options {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin: 22px 0 26px;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 0;
 }
 .preference-onboarding .preference-option {
-  min-height: 94px;
-  padding: 16px 18px;
+  gap: 16px;
+  min-height: 76px;
+  padding: 14px 20px 14px 14px;
+  border: 1px solid var(--ob-line);
   border-radius: 18px;
-  border-color: #bec5b2;
-  background: #fffefa;
-  box-shadow: 0 2px 8px #30362c0b;
+  background: var(--ob-tile);
+  box-shadow: none;
+  transition: border-color 160ms ease, background-color 160ms ease, opacity 160ms ease;
 }
+.preference-onboarding .preference-option:hover { transform: none; border-color: var(--ob-line-strong); background: #fcfbf7; }
 .preference-onboarding .preference-option[aria-pressed="true"] {
-  border-width: 2px;
-  border-color: var(--accent);
-  background: #edf1e6;
-  box-shadow: 0 4px 12px #5260441c;
+  border-color: var(--ob-sage);
+  background: var(--ob-tint);
+  box-shadow: inset 0 0 0 1px var(--ob-sage);
 }
-.preference-onboarding .preference-option-icon { flex-basis: 44px; width:44px; height:44px; border-radius:14px; }
-.preference-onboarding .preference-option strong { font-size: 17px; }
-.preference-onboarding .preference-option small { margin-top: 5px; font-size: 13px; }
-.preference-onboarding .preference-option-check { flex-basis: 28px; width:28px; height:28px; border: 2px solid #7e896e; border-radius:9px; background: #f5f6ee; }
-.preference-onboarding .preference-setup-actions { padding-top: 20px; border-top: 1px solid color-mix(in srgb, var(--landing-rule) 55%, transparent); }
-.preference-onboarding .preference-setup-actions .primary { min-height: 52px; min-width: 196px; padding-inline: 22px; border: 1px solid var(--landing-ink); border-radius: 999px; background: var(--landing-ink); color: var(--landing-paper); font-size: 15px; font-weight: 650; }
-.preference-onboarding .preference-setup-actions .primary:hover:not(:disabled) { background: #566345; border-color: #566345; }
-.preference-onboarding .preference-setup-actions .primary:disabled { border-color: #c2c5ba; background: #c2c5ba; color: #fffefa; opacity: 1; }
-.preference-onboarding .preference-setup-actions .text-link { min-height: 48px; font-size: 15px; }
-.preference-onboarding .preference-setup-note { margin-top: 16px; font-size: 13px; }
+.preference-onboarding .preference-option:focus-visible { outline: 3px solid #6b795159; outline-offset: 3px; }
+.preference-onboarding [data-full] .preference-option[aria-disabled="true"] { opacity: 0.5; cursor: default; }
+.preference-onboarding [data-full] .preference-option[aria-disabled="true"]:hover { border-color: var(--ob-line); background: var(--ob-tile); }
+.preference-onboarding .preference-option-icon {
+  order: 1;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--ob-tint);
+  color: var(--ob-sage-deep);
+  transition: background-color 160ms ease;
+}
+.preference-onboarding .preference-option[aria-pressed="true"] .preference-option-icon { background: var(--ob-tile); }
+.preference-onboarding .preference-option-copy { order: 2; }
+.preference-onboarding .preference-option-check {
+  order: 3;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--ob-line-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ob-tile);
+}
+.preference-onboarding .preference-option[aria-pressed="true"] .preference-option-check { border-color: var(--ob-sage); background: var(--ob-sage); }
+.preference-onboarding .preference-option strong { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.preference-onboarding .preference-option small { margin-top: 4px; color: var(--muted); font-size: 13.5px; line-height: 1.35; }
+.preference-onboarding .preference-more {
+  gap: 6px;
+  margin-top: 10px;
+  padding: 0 6px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.preference-onboarding .preference-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+.preference-onboarding .preference-more svg { transition: transform 160ms ease; }
+.preference-onboarding .preference-more[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* Decision: three slots fill as choices are made. */
+.preference-onboarding .preference-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 20px;
+  margin: 0 0 18px;
+  font-size: 14px;
+}
+.preference-onboarding .preference-pips { display: inline-flex; gap: 4px; }
+.preference-onboarding .preference-pips i {
+  width: 22px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--ob-line);
+  transition: background-color 200ms ease;
+}
+.preference-onboarding .preference-pips i[data-on] { background: var(--ob-sage); }
+.preference-onboarding .preference-setup-actions { gap: 22px; flex-wrap: nowrap; }
+.preference-onboarding .preference-setup-actions .primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 180px;
+  min-height: 52px;
+  padding: 0 26px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--ob-paper);
+  font-size: 15px;
+  font-weight: 600;
+}
+.preference-onboarding .preference-setup-actions .primary:hover:not(:disabled) { border-color: var(--ob-sage-deep); background: var(--ob-sage-deep); }
+.preference-onboarding .preference-setup-actions .primary:disabled { border-color: var(--ob-line-strong); background: transparent; color: #8c9182; opacity: 1; cursor: not-allowed; }
+.preference-onboarding .preference-setup-actions .text-link { min-height: 48px; color: var(--ink); font-size: 15px; text-underline-offset: 3px; }
+.preference-onboarding .preference-setup-note { margin: 18px 0 0; color: var(--muted); font-size: 13px; }
 .preference-onboarding-error { margin: 12px 0 0; color: #8b5e1a; font-size: 13px; }
+
+/* Narrow screens: one column, choices first, and the decision held at the
+   bottom of the screen. */
+@media (max-width: 860px) {
+  .preference-onboarding { place-items: start stretch; padding: 40px clamp(18px, 6vw, 48px) 0; }
+  .preference-onboarding-shell { width: min(640px, 100%); margin: 0 auto; }
+  .preference-onboarding .preference-setup-compact {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas: "intro" "main" "footer";
+  }
+  .preference-onboarding .preference-setup-intro { margin-bottom: 26px; }
+  .preference-onboarding .preference-setup-footer {
+    top: auto;
+    bottom: 0;
+    margin-top: 20px;
+    padding: 14px 0 calc(14px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--ob-line);
+    background: color-mix(in srgb, var(--ob-paper) 92%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .preference-onboarding .preference-progress { margin-bottom: 12px; }
+  .preference-onboarding .preference-setup-note { margin-top: 10px; font-size: 12px; }
+}
 .experience.phase-entering {
   overflow: clip;
 }
@@ -371,12 +487,13 @@
 }
 .landing-brand p {
   margin: 10px 0 0;
-  font-size: 9px;
-  letter-spacing: 0.17em;
+  font-size: 14px;
+  letter-spacing: 0.005em;
+  color: var(--landing-muted);
 }
 .landing-region {
   padding-top: 2px;
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.8;
   letter-spacing: 0.12em;
   text-align: right;
@@ -396,7 +513,7 @@
   min-width: 78px;
 }
 .care-scene-caption > span:first-child {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.15em;
   color: var(--landing-muted);
 }
@@ -465,7 +582,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 0.1em;
   color: var(--landing-muted);
   pointer-events: none;
@@ -476,7 +593,7 @@
   gap: 9px;
   min-height: 36px;
   pointer-events: auto;
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 0.08em;
 }
 .experience[data-intro-reduced="true"] *,
@@ -488,21 +605,22 @@
   transition-duration: 0ms !important;
 }
 @media (max-width: 650px) {
-  .preference-onboarding { align-items: start; padding: 30px 18px 38px; }
-  .preference-onboarding-heading { margin-bottom: 18px; }
-  .preference-onboarding-heading > span { margin-bottom: 9px; font-size: 9px; }
-  .preference-onboarding-heading h1 { font-size: clamp(32px, 10vw, 46px); }
-  .preference-onboarding-heading p { margin-top: 10px; font-size: 15px; }
-  .preference-onboarding .preference-setup-compact { padding: 18px; border-radius: 22px; }
-  .preference-onboarding .preference-setup-heading > span { padding: 6px 9px; font-size: 12px; }
-  .preference-onboarding .preference-options { grid-template-columns: 1fr; gap: 9px; margin: 16px 0 20px; }
-  .preference-onboarding .preference-option { min-height: 74px; padding: 12px 13px; }
-  .preference-onboarding .preference-option-icon { flex-basis: 38px; width:38px; height:38px; border-radius:12px; }
+  .preference-onboarding { padding: 28px 18px 0; }
+  /* On phones the decision bar runs edge to edge. */
+  .preference-onboarding .preference-setup-footer { margin-inline: -18px; padding-inline: 18px; }
+  .preference-onboarding-brand { margin-bottom: 26px; font-size: 15px; }
+  .preference-onboarding h1 { font-size: clamp(36px, 11vw, 46px); }
+  .preference-onboarding-lede { margin-top: 12px; font-size: 15px; }
+  .preference-onboarding .preference-setup-intro { margin-bottom: 20px; }
+  .preference-onboarding .preference-option { gap: 13px; min-height: 68px; padding: 11px 16px 11px 11px; border-radius: 16px; }
+  .preference-onboarding .preference-option-icon { flex-basis: 40px; width: 40px; height: 40px; }
+  .preference-onboarding .preference-option-check { flex-basis: 24px; width: 24px; height: 24px; }
   .preference-onboarding .preference-option strong { font-size: 16px; }
-  .preference-onboarding .preference-option small { font-size: 12px; }
-  .preference-onboarding .preference-setup-actions { display:grid; grid-template-columns:1fr; gap:8px; }
-  .preference-onboarding .preference-setup-actions .primary { width:100%; }
-  .preference-onboarding .preference-setup-actions .text-link { width:100%; }
+  .preference-onboarding .preference-option small { margin-top: 2px; font-size: 13px; }
+  .preference-onboarding .preference-progress { font-size: 13px; }
+  .preference-onboarding .preference-setup-actions { gap: 14px; }
+  .preference-onboarding .preference-setup-actions .primary { flex: 1; min-width: 0; min-height: 50px; }
+  .preference-onboarding .preference-setup-actions .text-link { flex: 0 0 auto; }
   .landing-header {
     top: 28px;
     left: 24px;
@@ -512,12 +630,12 @@
     font-size: 27px;
   }
   .landing-brand p {
-    font-size: 7px;
-    margin-top: 9px;
-    letter-spacing: 0.12em;
+    font-size: 13px;
+    margin-top: 8px;
+    letter-spacing: 0;
   }
   .landing-region {
-    font-size: 7px;
+    font-size: 9px;
   }
   .care-scene-controls {
     left: 24px;
@@ -542,10 +660,10 @@
     left: 24px;
     right: 24px;
     bottom: 20px;
-    font-size: 7px;
+    font-size: 9px;
   }
   .motion-toggle {
-    font-size: 7px;
+    font-size: 9px;
   }
 }
 @media (max-height: 650px) and (max-width: 650px) {

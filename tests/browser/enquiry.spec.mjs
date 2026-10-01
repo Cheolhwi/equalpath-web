@@ -93,7 +93,7 @@ test("combined questions retain warnings and all their source checks without cop
   await copyButton(dialog).click();
   const message = await page.evaluate(() => window.copiedQuestions);
   expect(message).not.toContain("Published care hours");
-  expect(message).toContain("Leave at: 13:00 · Pick up child at: 18:00");
+  expect(message).toContain("leaving at 13:00\nI’ll collect my child at: 18:00");
   expect(message).toContain("Can you pick up my child from KL Sentral by 13:00?");
   await expect(dialog.getByRole("link", { name: `Open WhatsApp for ${name}` })).toHaveAttribute("href", "https://wa.me/60312345678");
 });
@@ -110,8 +110,8 @@ test("mobile supports manual copy, missing contacts and the checklist", async ({
   expect(await manual.evaluate(el => el.selectionEnd - el.selectionStart)).toBe((await manual.inputValue()).length);
   await expect(dialog.locator(".enquiry-contact")).toContainText("No phone number listed");
   await page.screenshot({ path: `${out}/manual-copy-390.png` });
-  await dialog.getByRole("button", { name: "Get ready for child care", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Get ready for child care", exact: true })).toBeVisible();
+  await dialog.getByRole("button", { name: "Get ready for childcare", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Get ready for childcare", exact: true })).toBeVisible();
 });
 test("320px dark view keeps questions and copy usable without horizontal scrolling", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 700 });

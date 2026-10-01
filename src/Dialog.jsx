@@ -59,7 +59,7 @@ export default function Dialog({
       <div className="dialog-content" inert={closing || undefined}>
         <div className="dialog-top">
           <div className="dialog-heading">
-            <span className="dialog-kicker">{kicker}</span>
+            {kicker && <span className="dialog-kicker">{kicker}</span>}
             <div className="dialog-title-row"><h2 id={titleId}>{title}</h2>{titleAccessory}</div>
           </div>
           <button onClick={onClose} aria-label="Close dialog">

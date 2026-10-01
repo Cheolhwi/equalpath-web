@@ -28,11 +28,12 @@ import {
 import { todayKL, isShortCare } from "../shared/request.mjs";
 import { drivingLabel, feeSummary, formatFee, feesForCare } from "../shared/result-summary.mjs";
 import { registrationBadge } from "../shared/registration.mjs";
+import { displayName, placeLabel, placeLine, categoryLabel } from "../shared/display.mjs";
 export function OrderingNote({ ordering, radius }) {
   if (!ordering) return null;
   const text = ordering.factor === "distance"
     ? ordering.pageSelection === "nearest"
-      ? `Each page shows the next ${ordering.pageSize ?? 20} nearest centres${radius ? ` within ${radius} km` : ""}. Centres with conflicting details appear last.`
+      ? `Each page shows the next ${ordering.pageSize ?? 20} nearest centres${radius ? ` within ${radius} km` : ""}. On each page, centres that fit your search best come first.`
       : "Compare nearby options, with conflicting details last."
     : ordering.explanation;
   return <p>{text}</p>;
@@ -149,6 +150,11 @@ export function RegistrationBadge({p}) {
     </div>}
   </div>;
 }
+const matchedLabel = n => `${n} ${n === 1 ? "thing matches" : "things match"}`;
+// Arrival time always needs confirming, so it does not make a card stand out.
+// Pickup-service checks only count when the parent asked the centre to pick up.
+const PICKUP_CHECKS = ["transport", "coverage", "pickup"];
+const toAsk = (p, transport) => (p.fit?.conditions ?? []).filter(c => c.state === "unknown" && c.id !== "transfer" && (transport === "institution" || !PICKUP_CHECKS.includes(c.id))).length;
 export function ProviderCard({
   p,
   index,
@@ -159,8 +165,10 @@ export function ProviderCard({
   onCompare,
   saved,
   onSave,
+  transport,
 }) {
   const fees = feeSummary(p);
+  const ask = toAsk(p, transport);
   const revealRef = useCardReveal();
   return (
     <article
@@ -176,14 +184,12 @@ export function ProviderCard({
         if(!e.target.closest('button, a, .registration-badge-wrap'))onSelect();
       }}>
         <div className="row-kicker">
-          <span>
-            {p.district || p.category}
-          </span>
-
+          <span className="row-number" aria-label={`Map point ${index + 1}`}>{String(index + 1).padStart(2, "0")}</span>
+          <span>{placeLabel(p) || categoryLabel(p)}</span>
         </div>
         <div className="provider-heading">
           <button className="provider-select" aria-label={"Select " + p.name} aria-pressed={selected} onClick={onSelect}>
-            <h3>{p.name}</h3>
+            <h3>{displayName(p.name)}</h3>
           </button>
           <RegistrationBadge p={p} />
         </div>
@@ -197,15 +203,15 @@ export function ProviderCard({
         </div>
         <div className="row-facts">
           <span><Wallet size={16} aria-hidden="true" />Fee</span>
-          <strong>{fees.label}</strong>
+          <strong className={fees.estimate ? "fee-estimate" : undefined}>{fees.label}</strong>
         </div>
         <div className="row-status">
           {p.personalised && <span className="personalised-tag"><Heart size={12} aria-hidden="true" />{p.personalisedReason}</span>}
-          {p.suggested && !p.personalised && <span className="suggestion-tag"><Star size={12} fill="currentColor" />Suggested first</span>}
-          <Status state={p.fit.counts.conflict ? "conflict" : "unknown"}>
+          {p.suggested && !p.personalised && <span className="suggestion-tag"><Star size={12} fill="currentColor" />Suggested</span>}
+          <Status state={p.fit.counts.conflict ? "conflict" : ask ? "unknown" : "supported"}>
             {p.fit.counts.conflict
               ? `${p.fit.counts.conflict} ${p.fit.counts.conflict === 1 ? "issue" : "issues"} to check`
-              : "Ask the centre"}
+              : ask ? `${ask} to ask` : "No known issues"}
           </Status>
         </div>
       </div>
@@ -361,15 +367,15 @@ export function Costs({ p }) {
   );
 }
 const detailAgeLabel = p => (p.age?.rangeLabel ?? p.age?.wording ?? "Not listed").replace(/\s*\(controlled example\)/i, "").replace(/(\d+) years? to under (\d+) years?/i, "$1–under $2 years");
-const checkLabels = { care: "Care ends at", age: "Age", admission: "Care for a few hours", transport: "Centre pickup", coverage: "Pickup area", pickup: "Pickup time", transfer: "Travel time" };
+const checkLabels = { care: "Care ends at", age: "Age", admission: "Care for a few hours", transport: "Centre pickup", coverage: "Pickup area", pickup: "Pickup time", transfer: "Arrival time" };
 function checkValue(c, p, request) {
   switch (c.id) {
     case "care": return `${p.careEndTimeLabel ?? p.businessHoursLabel ?? "Hours not listed"} · you need ${request.end}`;
     case "age": return detailAgeLabel(p);
     case "admission": return p.admission?.value === true ? "Care for a few hours listed" : p.admission?.value === false ? "Care for a few hours not offered" : "Ask if they can take your child on this date";
-    case "transport": return request.transport === "self" ? "You’ll handle pickup" : p.transport?.exists === true ? "Pickup service listed" : p.transport?.exists === false ? "Centre pickup not offered" : "Pickup service not listed";
-    case "coverage": return request.transport === "self" ? "Centre pickup not needed" : c.state === "supported" ? "Pickup from your address is listed" : c.state === "conflict" ? "Outside the listed pickup area" : "Ask if they can pick up from your address";
-    case "pickup": return request.transport === "self" ? `You’ll handle pickup by ${request.deadline}` : `Leave pickup address by ${request.deadline}`;
+    case "transport": return request.transport === "self" ? "You’ll bring your child" : p.transport?.exists === true ? "Pickup service listed" : p.transport?.exists === false ? "Centre pickup not offered" : "Pickup service not listed";
+    case "coverage": return request.transport === "self" ? "Centre pickup not needed" : c.state === "supported" ? "Pickup from your starting point is listed" : c.state === "conflict" ? "Outside the listed pickup area" : "Ask if they can pick up from your starting point";
+    case "pickup": return request.transport === "self" ? `You’ll leave with your child by ${request.deadline}` : `Leave your starting point by ${request.deadline}`;
     case "transfer": return p.driving?.state === "available" ? `About ${p.driving.minutes} min driving, plus time to drop off your child` : "Ask about driving and drop-off time";
     default: return c.label;
   }
@@ -389,20 +395,25 @@ function CareSchedule({ p }) {
 export function Details({ p, request, onPrepare, onAskReview, onCompare, compared, onSave, saved, onPreparation }) {
   const counts = p.fit.counts, fees = feeSummary(p), badge = registrationBadge(p, todayKL());
   const shortCare = isShortCare(request);
-  const date = shortCare ? new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(request.date + "T12:00:00+08:00")) : "Long term";
+  const date = shortCare ? new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(request.date + "T12:00:00+08:00")) : "Regular care";
   const checks = [...p.fit.conditions].sort((a, b) => ({conflict:0,unknown:1,supported:2,reference:3}[a.state] - {conflict:0,unknown:1,supported:2,reference:3}[b.state]));
   const care = p.fit.conditions.find(c => c.id === "care");
+  // Pickup-service questions are optional until the parent asks the centre to pick up.
+  const optionalPickup = c => c.state === "unknown" && request.transport !== "institution" && PICKUP_CHECKS.includes(c.id);
+  const askChecks = checks.filter(c => c.state === "unknown" && !optionalPickup(c));
+  const pickupChecks = checks.filter(optionalPickup);
+  const matched = checks.filter(c => c.state === "supported" || c.state === "reference");
   const renderCheck = c => <details key={c.id} className={`fit-check ${c.state}`} data-condition-id={c.id} open={c.state === "conflict"}>
     <summary><div><strong>{checkLabels[c.id] ?? c.label}</strong>{c.state === "conflict" && <span>{checkValue(c,p,request)}</span>}</div><Status state={c.state}>{c.statusLabel}</Status><ChevronDown size={15} className="disclosure-chevron" /></summary>
     <div className="fit-check-explanation"><p>{c.reason}</p><SourceDisclosure source={c.source} extra={c.id === "age" && p.age?.alternative ? <SourceLink source={p.age.alternative.source} /> : null} /></div>
   </details>;
   return <div className="centre-details">
-    <div className="centre-identity"><span>{p.category} · {p.district}, {p.region}</span><p><MapPin size={14} />{p.address ?? "Exact address not listed"}</p></div>
+    <div className="centre-identity"><span>{[categoryLabel(p), placeLine(p)].filter(Boolean).join(" · ")}</span><p><MapPin size={14} />{p.address ?? "Exact address not listed"}</p></div>
     {p.mode === "demo" && <p className="demo-notice">Demo centre — fictional details.</p>}
     <details className="centre-request" aria-label="Your visit">
       <summary>Your search · {date}<ChevronDown size={16} aria-hidden="true" /></summary>
       <p><MapPin size={13} /><span>From {request.pickup.label}</span></p>
-      {shortCare && <CareJourney request={request} centreName={p.name} />}
+      {shortCare && <CareJourney request={request} centreName={displayName(p.name)} />}
     </details>
     <dl className={`centre-metrics ${shortCare ? "" : "regular-metrics"}`} aria-label="Key information">
       {shortCare && <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care ends at</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>}
@@ -412,14 +423,15 @@ export function Details({ p, request, onPrepare, onAskReview, onCompare, compare
     </dl>
     <div className="centre-layout">
       <section className="centre-fit centre-section" aria-label="Your care needs">
-        <div className="centre-section-heading"><h3>Before you choose</h3><span className="check-totals"><CheckCircle2 size={15} aria-hidden="true" />{counts.supported} match <HelpCircle size={15} aria-hidden="true" />{counts.unknown} to ask</span></div>
-        <div className={`fit-verdict ${counts.conflict ? "conflict" : counts.unknown ? "unknown" : "supported"}`}>
-          {counts.conflict ? <AlertTriangle size={19} /> : counts.unknown ? <HelpCircle size={19} /> : <CheckCircle2 size={19} />}
-          <div><strong>{counts.conflict ? `${counts.conflict} ${counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match` : counts.unknown ? "Ask the centre before you decide" : "The listed details match your request"}</strong><p>{counts.conflict ? "Check the issues below before arranging care." : shortCare ? "Ask if they can take your child on your date." : "Ask if your child can join."}</p></div>
+        <div className="centre-section-heading"><h3>Before you choose</h3><span className="check-totals"><CheckCircle2 size={15} aria-hidden="true" />{matched.length} matched <HelpCircle size={15} aria-hidden="true" />{askChecks.length} to ask</span></div>
+        <div className={`fit-verdict ${counts.conflict ? "conflict" : askChecks.length ? "unknown" : "supported"}`}>
+          {counts.conflict ? <AlertTriangle size={19} /> : askChecks.length ? <HelpCircle size={19} /> : <CheckCircle2 size={19} />}
+          <div><strong>{counts.conflict ? `${counts.conflict} ${counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match` : askChecks.length ? "Ask the centre before you decide" : "The listed details match your request"}</strong><p>{counts.conflict ? "Check the issues below before arranging care." : shortCare ? "Ask if they can take your child on your date." : "Ask if your child can join."}</p></div>
         </div>
         <div className="fit-checks condition-list">{checks.filter(c => c.state === "conflict").map(renderCheck)}
-          {checks.some(c => c.state === "unknown") && <details className="unknown-checks"><summary><HelpCircle size={17} aria-hidden="true" />{counts.unknown} things to ask about<ChevronDown size={15} aria-hidden="true" /></summary>{checks.filter(c => c.state === "unknown").map(renderCheck)}</details>}
-          {checks.some(c => c.state === "supported" || c.state === "reference") && <details className="matched-checks"><summary><CheckCircle2 size={17} aria-hidden="true" />More details<ChevronDown size={15} aria-hidden="true" /></summary>{checks.filter(c => c.state === "supported" || c.state === "reference").map(renderCheck)}</details>}
+          {askChecks.length > 0 && <details className="unknown-checks"><summary><HelpCircle size={17} aria-hidden="true" />{askChecks.length} {askChecks.length === 1 ? "thing" : "things"} to ask about<ChevronDown size={15} aria-hidden="true" /></summary>{askChecks.map(renderCheck)}</details>}
+          {matched.length > 0 && <details className="matched-checks"><summary><CheckCircle2 size={17} aria-hidden="true" />{matchedLabel(matched.length)}<ChevronDown size={15} aria-hidden="true" /></summary>{matched.map(renderCheck)}</details>}
+          {pickupChecks.length > 0 && <details className="matched-checks pickup-checks"><summary><Car size={17} aria-hidden="true" />If you’d like the centre to pick up your child<ChevronDown size={15} aria-hidden="true" /></summary>{pickupChecks.map(renderCheck)}</details>}
         </div>
       </section>
       <aside className="centre-next" aria-label="Contact and next steps">
@@ -427,7 +439,7 @@ export function Details({ p, request, onPrepare, onAskReview, onCompare, compare
           <button className="primary" onClick={onPrepare}>Contact the centre <ArrowRight size={16} /></button>
           <div className="centre-shortlist"><button className="secondary" aria-pressed={compared} onClick={onCompare}>{compared ? <Check size={15} /> : <Plus size={15} />}Compare</button><button className="secondary" aria-pressed={saved} onClick={onSave}><Bookmark size={15} />{saved ? "Saved centre" : "Save centre"}</button></div>
           <details className="centre-contact"><summary>Phone & website<ChevronDown size={16} aria-hidden="true" /></summary><PublishedContacts p={p} compact />{p.sourcePage && <a className="centre-listing" href={p.sourcePage} target="_blank" rel="noreferrer">More about this centre <ArrowUpRight size={13} /></a>}</details>
-          <div className="centre-preparation"><h4>After the centre says yes</h4><button onClick={onPreparation}><ClipboardList size={15} />Get ready for child care<ArrowRight size={14} /></button></div>
+          <div className="centre-preparation"><h4>After the centre says yes</h4><button onClick={onPreparation}><ClipboardList size={15} />Get ready for childcare<ArrowRight size={14} /></button></div>
         </div>
       </aside>
       <ReviewEvidence p={p} onAsk={onAskReview} />

@@ -266,8 +266,8 @@ for (const width of [320, 390, 927, 1440]) test(`${width}px: scrolled results an
   expect((await top.boundingBox()).y).toBe(before.y);
   expect((await top.boundingBox()).y).toBeGreaterThanOrEqual((await dialog.boundingBox()).y);
   await page.screenshot({ path: `${out}/contact-scroll-${width}.png` });
-  await page.getByRole('button', { name: 'Get ready for child care', exact: true }).click();
-  await expect(dialog.getByRole('heading', { level: 2 })).toHaveText('Get ready for child care');
+  await page.getByRole('button', { name: 'Get ready for childcare', exact: true }).click();
+  await expect(dialog.getByRole('heading', { level: 2 })).toHaveText('Get ready for childcare');
   await expect.poll(() => body.evaluate(el => el.scrollTop)).toBe(0);
   expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   expect(await body.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);

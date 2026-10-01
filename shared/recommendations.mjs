@@ -182,7 +182,7 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
     const learnedTopic = DISCOVERY_PREFERENCES.map(t=>({...t,value:learned.weights[t.id]*(reviewEvidence(p,t.id,now).score-.5)})).sort((a,b)=>b.value-a.value)[0];
     const anchor = similarities.filter(s=>s.meaningful&&s.id!==p.id).sort((a,b)=>b.value*b.weight-a.value*a.weight)[0];
     const label = DISCOVERY_PREFERENCES.find(t=>t.id===supported[0]?.id)?.label;
-    const reason = label ? `Matches your choices: ${label}` : own?.saved ? 'A centre you saved' : own?.compared ? 'You compared this centre before' : learnedTopic?.value>.01 ? `Based on your activity: ${learnedTopic.label}` : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
+    const reason = label ? `Matches your choices: ${label}` : own?.saved ? 'A centre you saved' : own?.compared ? 'You compared this centre before' : learnedTopic?.value>.01 ? `Parents mention: ${learnedTopic.label}` : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
     return { p, score, reason, hidden: hidden.has(p.id), basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
   });
   const priority = (a,b) => {

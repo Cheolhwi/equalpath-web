@@ -98,7 +98,7 @@ test('regular detail, question copy and printable preparation do not require or 
   assert.match(text,/long-term childcare/);assert.doesNotMatch(text,/one-off|Invalid Date|undefined|Leave pickup address by:|Date:/);
   const sheet=preparationFor(p,request),html=preparationHTML(sheet);
   assert.equal(sheet.date,null);assert.ok(sheet.sequence.every(s=>s.time===null));
-  assert.match(html,/Long term/);assert.doesNotMatch(html,/Invalid Date|undefined/);
+  assert.match(html,/Regular care/);assert.doesNotMatch(html,/Invalid Date|undefined/);
   const unspecified=assess(p,{...request,age:'',transport:''});
   assert.equal(unspecified.counts.unknown,0);
   const pickup=assess({...p,transport:{exists:true,coverage:{exhaustive:true}}},{...request,transport:'institution'});

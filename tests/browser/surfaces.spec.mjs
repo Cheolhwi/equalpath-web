@@ -37,12 +37,12 @@ for (const width of [390, 1440]) test(`${width}px: centre, compare, contact and 
   await capture(page, `compare-${width}`);
   await expect(page.locator('.comparison-scroll thead h3')).toHaveCount(2);
   await page.getByRole('button', { name: 'More details', exact: true }).click();
-  await expect(page.getByRole('rowheader', { name: 'Arrive at childcare', exact: true })).toBeVisible();
+  await expect(page.getByRole('rowheader', { name: 'Arrival time', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Show less', exact: true }).click();
   await page.locator('thead').getByRole('button', { name: /^Contact / }).first().click();
   await capture(page, `contact-${width}`);
   await expect(page.getByRole('button', { name: 'Copy message', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Get ready for child care', exact: true }).click();
+  await page.getByRole('button', { name: 'Get ready for childcare', exact: true }).click();
   await capture(page, `preparation-${width}`);
   await page.locator('.ready-item input').first().check();
   await expect(page.getByRole('progressbar', { name: 'Packing checklist progress' })).toHaveAttribute('value', '1');

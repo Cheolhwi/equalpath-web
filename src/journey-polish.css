@@ -1,0 +1,57 @@
+/* Journey polish, 1 Oct 2026: small consistency fixes found while walking the
+   search → results → details → contact → compare → checklist journey. */
+
+/* Header: the settings button was a block box with an inline icon, so its
+   icon sat on the text baseline, 3px above the Quick tour icon. Centre both. */
+.equalpath .header-end > button {
+  display: inline-flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+@media (min-width: 761px) { .equalpath .header-end > button { min-height: 44px; } }
+.equalpath .header-end > button > svg { display: block; flex-shrink: 0; }
+
+/* Search panel: the section rule sat directly under the sticky header and
+   read as an empty divider. */
+.map-first .request-heading { border-top: 0; padding-top: 4px; }
+
+/* Popover field labels keep their icon beside the text, not at the far edge. */
+.dock-popover .field > label { justify-content: flex-start; }
+
+/* Result cards carry the same number as their map pin. */
+.equalpath .row-kicker { justify-content: flex-start; align-items: center; gap: 10px; }
+.equalpath .row-kicker span:first-child { max-width: none; }
+.equalpath .row-kicker span:last-child { text-align: left; }
+.row-number {
+  display: inline-grid; place-items: center; flex-shrink: 0;
+  min-width: 24px; height: 24px; padding: 0 5px; border-radius: 12px;
+  border: 1px solid var(--rule); background: var(--paper); color: var(--ink);
+  font-size: 11px; font-weight: 650; letter-spacing: 0; font-variant-numeric: tabular-nums;
+}
+.provider-row.suggested .row-number { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+/* Area estimates are guidance, not a centre's price: keep them quieter so a
+   published fee stands out in a list of estimates. */
+.equalpath .fee-estimate { color: var(--muted); font-weight: 450; }
+
+/* The personal reason on a map card is one line; long reasons truncate. */
+.map-card-personalised { max-width: calc(100% - 8px); }
+.map-card-personalised > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Checklist without a chosen centre offers the shortlist directly. */
+.checklist-choices { display: grid; gap: 8px; width: min(420px, 100%); margin: 6px auto 12px; }
+.checklist-choices button { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; text-align: left; }
+.checklist-choices button span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 760px) {
+  /* With the results sheet open, the map's locate and zoom buttons would sit
+     on top of the cards. The map is behind the sheet, so hide them. */
+  .map-first.mobile-list .map-tools { display: none; }
+}
+
+@media (max-width: 760px) {
+  /* An open search popover sits above the map controls, not under them. */
+  .map-first .map-wrap:has(.dock-popover) .map-tools { display: none; }
+  /* Give the care type a little more room so chip values never touch. */
+  .dock-options { grid-template-columns: 1.25fr .95fr 1fr .9fr; column-gap: 6px; }
+  .dock-options > .search-chip strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}

@@ -67,7 +67,7 @@ test("result cards show drive time and fee basis, while conflicts stay below oth
   const row=page.locator(".provider-row").first();await expect(row).toContainText("About 8 min by car");await expect(row).toContainText("estimated total");
   await expect(row.locator(".row-facts > span")).toHaveText(["Age","Drive","Fee"]);
   await expect(row).not.toContainText("5.5 km by road");
-  await expect(row.locator(".suggestion-tag")).toHaveText("Suggested first");
+  await expect(row.locator(".suggestion-tag")).toHaveText("Suggested");
   await expect(row.locator(".state-pill")).toBeVisible();
   await expect(row).not.toContainText("Care ends at");
   await expect(row).not.toContainText("straight-line");

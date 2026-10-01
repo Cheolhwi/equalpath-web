@@ -2,15 +2,16 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Bookmark, Car, Check, Heart, Plus, X } from "lucide-react";
 import { feeSummary, drivingLabel } from "../shared/result-summary.mjs";
 import { followMapCard, placeMapCards } from "../shared/map-cards.mjs";
+import { displayName } from "../shared/display.mjs";
 
 function Card({ p, index, selected, saved, compared, onOpen, onClose, onSave, onCompare }) {
   return <>
     <div className="map-centre-card-main">
       <span className="map-card-number" aria-label={`Map point ${index}`}>{String(index).padStart(2, "0")}</span>
-      <strong>{p.name}</strong>
-      {p.personalised && <span className="map-card-personalised"><Heart size={12} aria-hidden="true" />For you</span>}
+      <strong>{displayName(p.name)}</strong>
+      {p.personalised && <span className="map-card-personalised" title={p.personalisedReason}><Heart size={12} aria-hidden="true" /><span>{p.personalisedReason ?? "For you"}</span></span>}
       <span className="map-card-drive"><Car size={14} aria-hidden="true" />{drivingLabel(p.driving)}</span>
-      <span className="map-card-fee">Fee: {feeSummary(p).label}</span>
+      <span className={`map-card-fee${feeSummary(p).estimate ? " fee-estimate" : ""}`}>Fee: {feeSummary(p).label}</span>
     </div>
     <div className="map-card-actions" aria-label={`Actions for ${p.name}`}>
       <button className={saved ? "is-saved" : ""} aria-label={`${saved ? "Edit saved centre" : "Save"}: ${p.name}`} onClick={() => onSave(p)}><Bookmark size={15} fill={saved ? "currentColor" : "none"} aria-hidden="true" />{saved ? "Saved" : "Save"}</button>

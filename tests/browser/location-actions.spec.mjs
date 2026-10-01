@@ -34,7 +34,7 @@ for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1440, 900]]
   test(`${width}px: both location actions are direct and map selection shows You`, async ({ page }) => {
     await page.setViewportSize({ width, height });
     await setup(page);
-    const manual = page.getByRole('button', { name: 'Choose your location', exact: true });
+    const manual = page.getByRole('button', { name: 'Pick on map', exact: true });
     const device = page.getByRole('button', { name: 'Use my location', exact: true });
     for (const button of [manual, device]) {
       await expect(button).toBeInViewport();
@@ -75,7 +75,7 @@ test('blocked device location leaves the manual map action directly available', 
   await page.getByRole('button', { name: 'Use my location', exact: true }).click();
   await expect(page.getByText(/Location access is blocked/)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Retry my location', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Choose your location', exact: true }).click();
+  await page.getByRole('button', { name: 'Pick on map', exact: true }).click();
   await page.getByRole('button', { name: 'Use this location', exact: true }).click();
   await expect(page.locator('.pickup-pin')).toHaveText('You');
 });
@@ -84,7 +84,7 @@ test('switching to map selection cancels device location and ignores a late resp
   await setup(page, 'pending');
   await page.getByRole('button', { name: 'Use my location', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Cancel location', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Choose your location', exact: true }).click();
+  await page.getByRole('button', { name: 'Pick on map', exact: true }).click();
   expect(await page.evaluate(() => window.geoCleared)).toContain(1);
   await page.getByRole('button', { name: 'Use this location', exact: true }).click();
   await expect(page.locator('#pickup-search')).toHaveValue('Jalan Stesen Sentral, Kuala Lumpur');

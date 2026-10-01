@@ -51,9 +51,11 @@ export function contactQuestions(p, request, now = Date.now()) {
   } else {
     const pickupIds = ['transport', 'coverage', 'pickup', 'transfer'];
     const hasPickupQuestion = rows.some(q => pickupIds.slice(0, 3).includes(q.id));
-    add('pickup', pickupIds, hasPickupQuestion
+    // Without a stated plan, ask whether pickup exists rather than assuming it.
+    const pickupText = request.transport === 'institution'
       ? `Can you pick up my child from ${request.pickup.label}${short ? ` by ${request.deadline}` : ''}?${short ? ' When would they arrive?' : ''}`
-      : 'When would my child arrive at the centre?');
+      : `Do you offer pickup from ${request.pickup.label}${short ? ` by ${request.deadline}` : ''}? If not, what time should my child arrive?`;
+    add('pickup', pickupIds, hasPickupQuestion ? pickupText : 'When would my child arrive at the centre?');
   }
   // Unknown future question types remain visible instead of being silently lost.
   const covered = new Set(groups.flatMap(q => q.checks.map(c => c.id)));
@@ -72,8 +74,8 @@ export function contactQuestions(p, request, now = Date.now()) {
 export function contactIntro(p, request) {
   const age = request.age === '' ? '' : `\nMy child is ${childAge(request.age).toLowerCase()}${request.age === '0' ? ' old' : ''}.`;
   return isShortCare(request)
-    ? `Hello, I need childcare for a short time.${age}\nDate: ${visitDate(request.date)}\nLeaving from: ${request.pickup.label}\nLeave at: ${request.deadline} · Pick up child at: ${request.end}`
-    : `Hello, I’m looking for long-term childcare.${age}\nLocation: ${request.pickup.label}`;
+    ? `Hello, I’m looking for childcare for a few hours.${age}\nDate: ${visitDate(request.date)}\nMy child will come from: ${request.pickup.label}, leaving at ${request.deadline}\nI’ll collect my child at: ${request.end}`
+    : `Hello, I’m looking for regular childcare.${age}\nArea: ${request.pickup.label}`;
 }
 export function contactMessage(p, request, selected) {
   return [contactIntro(p, request), ...selected.map((q, i) => `${i + 1}. ${q.text}`), 'Thank you!'].join('\n\n');

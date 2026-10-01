@@ -62,14 +62,14 @@ for (const width of [320, 390, 768, 1440]) test(`${width}px comparison keeps fac
 
 test('long term comparison does not show short visit or invented care times', async ({ page }) => {
   await start(page, true); await page.locator('.compare-tray-open').click();
-  await expect(page.locator('.compare-visit')).toContainText('Long term');
+  await expect(page.locator('.compare-visit')).toContainText('Regular care');
   await expect(page.locator('[data-fact="admission"], [data-fact="care"]')).toHaveCount(0);
-  await expect(page.locator('.compare-visit')).not.toContainText('Pick up child at');
+  await expect(page.locator('.compare-visit')).not.toContainText(/\d{2}:\d{2}–\d{2}:\d{2}/);
 });
 
 test('map picking and notices use contained rounded controls', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 }); await start(page);
-  await openSearch(page); await page.getByRole('button', { name: 'Choose your location', exact: true }).click();
+  await openSearch(page); await page.getByRole('button', { name: 'Pick on map', exact: true }).click();
   const picker = page.locator('.map-pick-confirm');
   await expect(picker).toContainText('Move the map to place the pin.');
   await expect(picker.locator('details')).not.toHaveAttribute('open');

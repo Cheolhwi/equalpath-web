@@ -1,4 +1,5 @@
 import { useId, useLayoutEffect, useRef, useState } from "react";
+import { displayName } from "../shared/display.mjs";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, ClipboardList, Copy, MessageCircle } from "lucide-react";
 import { PublishedContacts, SourceLink } from "./ProviderViews.jsx";
 import { contactIntro, contactMessage, contactQuestions } from "../shared/contact-message.mjs";
@@ -29,7 +30,7 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
   };
   return <div className="enquiry-page simple-contact">
     <section className="request-context enquiry-visit" aria-label="Centre and visit">
-      <h3>{p.name}</h3>
+      <h3>{displayName(p.name)}</h3>
       <section className="enquiry-contact" aria-label="Contact the centre">
         <div className="contact-buttons"><PublishedContacts p={p} compact showSources={false} /></div>
         {p.sourcePage && <a className="text-link contact-website" aria-label="Centre website or listing" href={p.sourcePage} target="_blank" rel="noreferrer">Website<ArrowUpRight size={14} /></a>}
@@ -73,6 +74,6 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
         </details>
       </section>
     </div>
-    <section className="enquiry-next"><div><h3>After the centre says yes</h3><p>Check pickup times and what to bring.</p></div><button className="secondary" onClick={onPreparation}><ClipboardList size={18} />Get ready for child care<ArrowRight size={16} /></button></section>
+    <section className="enquiry-next"><div><h3>After the centre says yes</h3><p>Check pickup times and what to bring.</p></div><button className="secondary" onClick={onPreparation}><ClipboardList size={18} />Get ready for childcare<ArrowRight size={16} /></button></section>
   </div>;
 }

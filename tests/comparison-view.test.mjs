@@ -13,7 +13,7 @@ test('comparison keeps unknown ages and type guidance distinct from acceptance',
 });
 test('comparison uses the assessed state for short visits and hours, never inferred acceptance', () => {
   assert.equal(comparisonFact(provider('admission', 'unknown', { admission: { value: true } }), 'admission', request).value, 'Ask the centre');
-  assert.equal(comparisonFact(provider('admission', 'supported'), 'admission', request).value, 'Short visits listed');
+  assert.equal(comparisonFact(provider('admission', 'supported'), 'admission', request).value, 'Offered');
   assert.equal(comparisonFact(provider('admission', 'conflict'), 'admission', request).value, 'Not offered');
   for (const [state, note] of [['supported', 'Open at 15:00'], ['unknown', 'Ask about 15:00'], ['conflict', 'Outside listed care hours']]) {
     const fact = comparisonFact(provider('care', state, { careEndTimeLabel: '18:00' }), 'care', request);

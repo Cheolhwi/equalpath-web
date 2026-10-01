@@ -28,7 +28,7 @@ export function monthlyFeeFrom(p) {
     .map(f => f.amount ?? f.min).filter(n => Number.isFinite(n) && n >= 0);
   return values.length ? Math.min(...values) : null;
 }
-const period = basis => !basis || basis === 'unspecified' ? ' · period not listed' : basis === 'one_off' ? ' one-time' : basis === 'deposit' ? ' deposit' : ` / ${basis}`;
+const period = basis => !basis || basis === 'unspecified' ? ' (billing period not stated)' : basis === 'one_off' ? ' one-time' : basis === 'deposit' ? ' deposit' : ` / ${basis}`;
 export function formatFee(f) {
   const min=f.amount??f.min,max=f.amount??f.max;
   if(!Number.isFinite(min))return 'Amount not listed';
@@ -51,7 +51,8 @@ export function feeSummary(p) {
     const [currency, basis, status] = key.split("|");
     return `${status === 'area_estimate' ? 'Estimated ' : status === 'estimate' ? 'Est. ' : ''}${formatFee({currency,basis,min,max:open?null:max})}`;
   });
-  return labels.length ? { label: `${primary.length ? '' : 'Extras: '}${labels.slice(0, 2).join(" · ")}`, note: p.careType==='short_term' ? 'Ask about the minimum stay and any extra charges.' : fees.every(f=>f.verification==='area_estimate')?'Estimated from nearby centres. Ask this centre for its price.':`${labels.length > 2 ? "More rates in details. " : ""}Listed fees. Ask what is included.` } : { label: "Ask the centre", note: p.careType==='short_term' ? "Short-stay price not listed." : "No published fee found." };
+  const estimate = [...groups.keys()].every(key => key.endsWith('|area_estimate'));
+  return labels.length ? { label: `${primary.length ? '' : 'Extras: '}${labels.slice(0, 2).join(" · ")}`, estimate, note: p.careType==='short_term' ? 'Ask about the minimum stay and any extra charges.' : fees.every(f=>f.verification==='area_estimate')?'Estimated from nearby centres. Ask this centre for its price.':`${labels.length > 2 ? "More rates in details. " : ""}Listed fees. Ask what is included.` } : { label: "Ask the centre", note: p.careType==='short_term' ? "Short-stay price not listed." : "No published fee found." };
 }
 export function drivingLabel(driving) {
   if (driving?.state === "loading") return "Checking drive time…";

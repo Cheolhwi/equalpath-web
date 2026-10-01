@@ -21,7 +21,7 @@ test("first entry opens the map without a tutorial; optional Quick tour can be s
   await mock(page);await page.goto("/#discover");
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
   await openSearch(page);
-  await expect(page.getByRole("radio",{name:"Short time",exact:true})).toBeChecked();
+  await expect(page.getByRole("radio",{name:"A few hours",exact:true})).toBeChecked();
   await expect(tour(page)).toHaveCount(0);
   await page.getByRole("button",{name:"Quick tour",exact:true}).click();
   await expect(tour(page)).toBeVisible();
@@ -46,16 +46,17 @@ test("guided sample uses map controls, cards, checks, comparison and contact, th
   await expect(tour(page).getByRole("button",{name:"Next",exact:true})).toBeEnabled();
   expect(calls.filter(b=>b.action==="search")).toEqual([expect.objectContaining({mode:"demo",request:expect.objectContaining({end:"18:00"})})]);
   await next(page);await expect(page.locator(".map-card-actions").first()).toBeVisible();
-  await expect(tour(page)).toContainText("Tap Save to keep a centre in Saved");
+  await expect(tour(page)).toContainText("Save keeps a centre for later");
   await next(page);await expect(page.locator(".tour-behind .condition-list")).toBeVisible();
   await page.screenshot({path:`${evidence}/tour-checks.png`});
   await next(page);await expect(page.locator(".tour-behind .comparison-scroll")).toContainText("Garden Learning House");
-  await expect(page.locator(".tour-behind .comparison-scroll")).toContainText("Riverside Care");
+  // Known mismatches are hidden by default, so the example compares two matching demo centres.
+  await expect(page.locator(".tour-behind .comparison-scroll thead h3")).toHaveCount(2);
   await next(page);await expect(page.locator(".tour-behind .question-list")).toBeVisible();
   await page.screenshot({path:`${evidence}/tour-questions.png`});
   await tour(page).getByRole("button",{name:"Back to my map",exact:true}).click();
   await expect(tour(page)).toHaveCount(0);await expect(page.locator(".tour-behind")).toHaveCount(0);
-  await expect(page.locator("#pickup-search")).toHaveValue("My pickup point");await openSearch(page);await expect(page.locator("#deadline")).toHaveValue("");await expect(page.getByRole("radio",{name:"Short time"})).toBeChecked();
+  await expect(page.locator("#pickup-search")).toHaveValue("My pickup point");await openSearch(page);await expect(page.locator("#deadline")).toHaveValue("");await expect(page.getByRole("radio",{name:"A few hours"})).toBeChecked();
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:map:v1:live")))).toEqual(memory);
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:tour:v1")))).toEqual({version:1,status:"completed"});
   await page.reload();await openSearch(page);await expect(page.locator(".nearby-card").first()).toBeVisible();
@@ -129,7 +130,7 @@ test("failed example can be retried; blocked storage and keyboard skip keep the 
   await tour(page).getByRole("button",{name:"Retry example",exact:true}).click();
   await expect(tour(page).getByRole("button",{name:"Next",exact:true})).toBeEnabled();
   await page.keyboard.press("Escape");await expect(tour(page)).toHaveCount(0);
-  await openSearch(page);await expect(page.locator("#deadline")).toHaveValue("");await expect(page.getByRole("radio",{name:"Short time"})).toBeChecked();
+  await openSearch(page);await expect(page.locator("#deadline")).toHaveValue("");await expect(page.getByRole("radio",{name:"A few hours"})).toBeChecked();
   await expect(page.locator("#pickup-search")).toHaveValue("");
   await expect(page.getByRole("button",{name:"Find childcare",exact:true})).toBeEnabled();
 });

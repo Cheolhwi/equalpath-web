@@ -30,8 +30,8 @@ const choose = async (popup, hour, minute) => {
 test("themed time selection preserves exact minutes, commits explicitly and keeps request validation", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   const searches = await start(page);
-  const trigger = page.getByRole("button", { name: "Choose when will your child leave? time", exact: true });
-  const popup = page.getByRole("dialog", { name: "When will your child leave? time", exact: true });
+  const trigger = page.getByRole("button", { name: "Choose start time", exact: true });
+  const popup = page.getByRole("dialog", { name: "Start time", exact: true });
   await trigger.click();
   const hour = popup.getByRole("listbox", { name: "Hour", exact: true });
   const minute = popup.getByRole("listbox", { name: "Minute", exact: true });
@@ -58,7 +58,7 @@ test("themed time selection preserves exact minutes, commits explicitly and keep
   await expect(page.locator("#deadline")).toHaveValue("09:30");
   await page.locator("#care-end").fill("09:00");
   await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();
-  await expect(page.getByText("Choose a later pickup time on the same day.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Choose an end time after the start time, on the same day.", { exact: true })).toBeVisible();
   expect(searches).toHaveLength(0);
   await page.locator("#care-end").fill("17:45");
   await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();
@@ -70,7 +70,7 @@ test("mobile pickers fit the viewport, respect dark mode and dismiss without clo
   const errors = []; page.on("pageerror", (error) => errors.push(error.message));
   await page.setViewportSize({ width: 320, height: 568 });
   await start(page);
-  await page.getByRole("button", { name: "Choose when will you pick up your child? time", exact: true }).click();
+  await page.getByRole("button", { name: "Choose end time", exact: true }).click();
   const popup = page.locator(".time-picker");
   let box = await popup.boundingBox();
   expect(box.x).toBeGreaterThanOrEqual(0); expect(box.x + box.width).toBeLessThanOrEqual(320);
@@ -78,7 +78,7 @@ test("mobile pickers fit the viewport, respect dark mode and dismiss without clo
   expect(await popup.evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
   await page.screenshot({ path: `${out}/time-mobile.png` });
   await page.keyboard.press("Escape");
-  await page.getByRole("button", { name: "Choose when will your child leave? time", exact: true }).click();
+  await page.getByRole("button", { name: "Choose start time", exact: true }).click();
   await choose(popup, "03", "05"); await page.keyboard.press("Escape");
   await expect(page.locator(".discovery-panel")).toBeVisible();
   await expect(page.locator("#deadline")).toHaveValue("13:00");
@@ -86,7 +86,7 @@ test("mobile pickers fit the viewport, respect dark mode and dismiss without clo
   await page.getByRole("button", { name: "Display and data settings", exact: true }).click();
   await page.getByRole("button", { name: "Dark", exact: true }).click();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
-  await page.getByRole("button", { name: "Choose when will your child leave? time", exact: true }).click();
+  await page.getByRole("button", { name: "Choose start time", exact: true }).click();
   const darkFill = await popup.evaluate((el) => getComputedStyle(el).backgroundColor);
   const channels = darkFill.match(/[\d.]+/g).map(Number);
   expect(Math.max(...channels.slice(0, 3))).toBeLessThan(90);

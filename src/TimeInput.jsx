@@ -13,7 +13,7 @@ function normalise(value) {
 
 // The OS time popup does not inherit the site's palette. Keep a text field and
 // provide a themed, minute-precise picker without changing the HH:mm contract.
-export default function TimeInput({ id, label, pickerLabel = label, value, onChange, invalid, describedBy, variant = "field", allowClear = true, icon: Icon = Clock3, shortLabel, onOpen, pending = false }) {
+export default function TimeInput({ id, label, pickerLabel = label, value, onChange, invalid, describedBy, variant = "field", allowClear = true, icon: Icon = Clock3, shortLabel, onOpen, pending = false, suggest }) {
   const generatedId = useId(), popupId = `${generatedId}-time`;
   const inputId = id || generatedId;
   const displayLabel = pickerLabel.replace(/^Template /, "").replace(/^./, (letter) => letter.toUpperCase());
@@ -30,7 +30,9 @@ export default function TimeInput({ id, label, pickerLabel = label, value, onCha
   const show = () => {
     onOpen?.();
     const time = normalise(value);
-    const initial = minutes(time) !== null ? time : new Intl.DateTimeFormat("en-GB", {
+    // An empty field opens on the caller's suggestion (for example 09:00 on a
+    // future date), otherwise on the current Malaysian time.
+    const initial = minutes(time) !== null ? time : minutes(suggest ?? "") !== null ? suggest : new Intl.DateTimeFormat("en-GB", {
       timeZone: "Asia/Kuala_Lumpur", hour: "2-digit", minute: "2-digit", hourCycle: "h23",
     }).format(new Date());
     setDraft(initial.split(":").map(Number));

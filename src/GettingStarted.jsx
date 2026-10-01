@@ -5,13 +5,13 @@ import "./tour.css";
 
 const steps = [
   { title: "Find childcare on the map", icon: MapPin },
-  { title: "Choose your location", target: ".dock-address-row", icon: MapPin, body: "Type an address, tap Choose your location to place a pin, or use your phone’s location." },
-  { title: "Date, age and times", target: ".dock-filter-panel", icon: Clock3, body: "Choose a date, age, Start and End. Tap Find care to search. After any change, tap Update results." },
-  { title: "Your results are on the map", target: ".mobile-search-summary, .map-centre-card:not(.leaving)", icon: Search, body: "Tap a numbered pin to see a centre. On a phone, the search tools fold away. Tap Change search to edit them." },
-  { title: "Save or compare a centre", target: ".map-centre-card:not(.leaving) .map-card-actions", icon: Bookmark, body: "Tap Save to keep a centre in Saved. Tap Compare to see up to 3 centres side by side. Tap Details to learn more." },
-  { title: "Check the centre’s details", target: ".condition-list", icon: CheckCircle2, body: "Tap Details on a map card to see fees, ages and care hours. Ask the centre about any details that need checking." },
-  { title: "Compare your choices", target: ".comparison-scroll", icon: Scale, body: "Add 2 or 3 centres, then tap Compare. Read their fees and services side by side." },
-  { title: "Contact the centre", target: ".enquiry-contact", icon: MessageCircle, body: "Call or message to ask if they have a place for your child. A short message is ready. Untick any question you don’t need, then copy and send it yourself." },
+  { title: "Set your starting point", target: ".dock-address-row", icon: MapPin, body: "Type a school, station or address. You can also pick a spot on the map or use your device’s location." },
+  { title: "Date, age and times", target: ".dock-filter-panel", icon: Clock3, body: "Choose the date and your child’s age, set the start and end times, then select Find childcare." },
+  { title: "Your results are on the map", target: ".mobile-search-summary, .map-centre-card:not(.leaving)", icon: Search, body: "Select a numbered pin to see a centre. The list uses the same numbers. On a phone, use Change search to edit your search." },
+  { title: "Save or compare a centre", target: ".map-centre-card:not(.leaving) .map-card-actions", icon: Bookmark, body: "Save keeps a centre for later. Compare lines up to 3 centres side by side. Details shows everything we know." },
+  { title: "Check the centre’s details", target: ".condition-list", icon: CheckCircle2, body: "See fees, ages and care hours, and which details match your search. Anything we couldn’t confirm is listed to ask the centre." },
+  { title: "Compare your choices", target: ".comparison-scroll", icon: Scale, body: "Add 2 or 3 centres, then open Compare to read their fees and services side by side." },
+  { title: "Contact the centre", target: ".enquiry-contact", icon: MessageCircle, body: "Call or message to ask if they have a place for your child. A short message is ready: untick any question you don’t need, then copy it and send it yourself." },
 ];
 const visibleTarget = selector => selector && [...document.querySelectorAll(selector)].find(el => el.getClientRects().length);
 

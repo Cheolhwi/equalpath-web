@@ -1,7 +1,7 @@
 export const CONTRACT = "equalpath-web-p03-v1";
 export const MAX_SEARCH_RADIUS_KM = 10;
 export const isShortCare = (request) => request?.careType !== "regular";
-export const careTypeLabel = (request) => isShortCare(request) ? "Care for a few hours" : "Long-term childcare";
+export const careTypeLabel = (request) => isShortCare(request) ? "A few hours of care" : "Regular childcare";
 export const SHORT_CARE_RADIUS_KM = 5;
 // Short care starts nearby; expanding to 10 km is an explicit user choice.
 export const searchRadius = (value, careType = "regular") => Number(value) === MAX_SEARCH_RADIUS_KM ? MAX_SEARCH_RADIUS_KM : Number(value) === 5 ? 5 : careType === "short_term" ? SHORT_CARE_RADIUS_KM : MAX_SEARCH_RADIUS_KM;
@@ -41,10 +41,10 @@ export function requestErrors(r, { requireAge = false } = {}) {
       errors.date = "Choose a date for care.";
     const start = minutes(r?.deadline),
       end = minutes(r?.end);
-    if (start === null) errors.deadline = "When will your child leave the pickup address?";
-    if (end === null) errors.end = "When will you pick up your child from childcare?";
+    if (start === null) errors.deadline = "Choose a start time.";
+    if (end === null) errors.end = "Choose an end time.";
     else if (start !== null && end <= start)
-      errors.end = "Choose a later pickup time on the same day.";
+      errors.end = "Choose an end time after the start time, on the same day.";
   }
   if (
     r?.age !== "" &&
@@ -91,6 +91,6 @@ export const requestKey = (r) => JSON.stringify(r);
 export const needsPickupAddress = (p) => !!p && /^(Map point\b|Selected location$|My current location$)/i.test(p.label ?? "");
 export function requestCaption(r) {
   return r
-    ? `${needsPickupAddress(r.pickup) ? "Selected pickup location" : r.pickup.label} · ${isShortCare(r) ? `${r.date} · leave by ${r.deadline} · pick up from childcare at ${r.end}` : "Long-term childcare"}`
+    ? `${needsPickupAddress(r.pickup) ? "Selected starting point" : r.pickup.label} · ${isShortCare(r) ? `${r.date} · ${r.deadline}–${r.end}` : "Regular childcare"}`
     : "";
 }

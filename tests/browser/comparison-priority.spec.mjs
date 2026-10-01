@@ -25,11 +25,11 @@ test('restored map points gain a street address and priority highlights switch, 
   await page.locator('.compare-address summary').click(); await expect(page.locator('.compare-address')).toContainText('Jalan Stesen Sentral');
   await expect(highlighted).toHaveCount(1);await expect(highlighted).toHaveAttribute('data-provider-id','near');
   await expect(page.locator('thead').getByRole('button',{name:/^Contact Test /})).toHaveCount(3);
-  await expect(page.getByRole('rowheader',{name:'Arrive at childcare',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('rowheader',{name:'Arrival time',exact:true})).toHaveCount(0);
   await page.getByRole('button',{name:'More details',exact:true}).click();
-  await expect(page.getByRole('rowheader',{name:'Arrive at childcare',exact:true})).toBeVisible();
+  await expect(page.getByRole('rowheader',{name:'Arrival time',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'Show less',exact:true}).click();
-  await expect(page.getByRole('rowheader',{name:'Arrive at childcare',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('rowheader',{name:'Arrival time',exact:true})).toHaveCount(0);
   await page.screenshot({path:dir+'/comparison-nearest-desktop.png'});
   await page.getByRole('combobox',{name:'Comparison priority',exact:true}).click();await page.getByRole('option',{name:'Open later',exact:true}).click();await expect(highlighted).toHaveCount(2);
   expect(await highlighted.evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort())).toEqual(['late','tied']);

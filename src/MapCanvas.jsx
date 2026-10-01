@@ -257,12 +257,12 @@ export default function MapCanvas({
         el.textContent = String(
           items.findIndex((x) => x.id === p.id) + 1,
         ).padStart(2, "0");
-        el.title = p.name + (conflict ? " · Some details don’t match" : p.personalised ? ` · ${p.personalisedReason}` : p.suggested ? " · Suggested first" : "");
+        el.title = p.name + (conflict ? " · Some details don’t match" : p.personalised ? ` · ${p.personalisedReason}` : p.suggested ? " · Suggested" : "");
         if (conflict) el.setAttribute("aria-description", "Some details don’t match this request. Select to check.");
         if (p.suggested) {
           const badge = document.createElement("span");
           badge.className = "pin-star"; badge.textContent = "★"; badge.setAttribute("aria-hidden", "true"); el.appendChild(badge);
-          el.setAttribute("aria-description", "Suggested first: no known conflicts, stronger condition matches on this page.");
+          el.setAttribute("aria-description", "Suggested: fits your search well on this page.");
         }
         el.setAttribute("aria-label", "Select " + p.name + " on map");
         el.setAttribute("aria-pressed", String(p.id === selected));
@@ -353,7 +353,7 @@ export default function MapCanvas({
   return (
     <section
       className={`map-region ${choosing ? "choosing" : ""}${entries.length ? " has-point-cards" : ""}`}
-      aria-label="Flat childcare map"
+      aria-label="Childcare map"
       data-map-status={status}
       data-map-pitch={camera.pitch}
       data-map-bearing={camera.bearing}
@@ -367,14 +367,14 @@ export default function MapCanvas({
           <div className="map-legend" aria-label="Map legend">
             <span>{items.filter(p => p.location).length} centres</span>
             {pickup && <span><b className="map-legend-pickup">You</b> Your location</span>}
-            {items.some(p => p.suggested) && <span className="map-suggestion-legend"><b>★</b> Suggested first</span>}
+            {items.some(p => p.suggested) && <span className="map-suggestion-legend"><b>★</b> Suggested</span>}
           </div>
         </>}
       </div>
       {choosing ? <>
         <div className="map-center-pin" aria-hidden="true"><MapPin size={40} fill="currentColor" /></div>
         <div className="map-pick-confirm">
-          <strong><MapPin size={20} aria-hidden="true" />Choose your location</strong>
+          <strong><MapPin size={20} aria-hidden="true" />Pick a location</strong>
           <p>Move the map to place the pin.</p>
           <details><summary>Map coordinates</summary><small>{camera.lat?.toFixed(5)}, {camera.lng?.toFixed(5)}</small></details>
           <div><button className="secondary" onClick={onCancel}>Cancel</button><button className="primary" onClick={() => {

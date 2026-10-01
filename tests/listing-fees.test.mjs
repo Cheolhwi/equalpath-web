@@ -17,7 +17,7 @@ test('starting prices remain open ended, including Malay fee wording',()=>{
 });
 test('a range without a billing period does not become a monthly fee',()=>{
   const [f]=listingFeeFacts('RM800 - RM1,000',evidence);assert.equal(f.basis,'unspecified');
-  assert.equal(formatFee(f),'MYR 800–1,000 · period not listed');assert.match(f.conditions,/Billing period is not stated/);
+  assert.equal(formatFee(f),'MYR 800–1,000 (billing period not stated)');assert.match(f.conditions,/Billing period is not stated/);
 });
 test('placeholder, non-currency amounts and reversed ranges are excluded',()=>{
   for(const s of ['<input placeholder="RM450">','W5L0048','Phone 012-3456789','RM900 - RM300'])assert.deepEqual(listingFeeFacts(s,evidence),[]);

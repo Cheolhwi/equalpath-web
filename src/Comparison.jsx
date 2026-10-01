@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { ArrowRight, Baby, CalendarDays, Car, CheckCircle2, ChevronDown, Clock3, HelpCircle, MapPin, MessageCircle, Star, Users, Wallet, X, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Award, Baby, CalendarDays, Car, CheckCircle2, ChevronDown, Clock3, HelpCircle, MapPin, MessageCircle, Users, Wallet, X, AlertTriangle } from 'lucide-react';
 import SelectMenu, { sortOptions } from './SelectMenu.jsx';
 import { SourceLink } from './ProviderViews.jsx';
 import { bestForPriority } from '../shared/conditions.mjs';
 import { comparisonFact, comparisonPriorityLabel } from '../shared/comparison-view.mjs';
 import { feeSummary, feesForCare, formatFee } from '../shared/result-summary.mjs';
 import { isShortCare, todayKL } from '../shared/request.mjs';
+import { displayName } from '../shared/display.mjs';
 
 function Fact({ p, id, request }) {
   const { value, note, state, condition } = comparisonFact(p, id, request);
@@ -28,19 +29,19 @@ export default function Comparison({ items, onRemove, onPrepare, sort, onSort, o
   const shortDate = request.date ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${request.date}T12:00:00Z`)) : '';
   const extraRows = [
     ['transport', 'Centre picks up', Users],
-    ['coverage', 'Pickup from your address', MapPin],
+    ['coverage', 'Pickup from your starting point', MapPin],
     ['pickup', 'Pickup by the centre', Clock3],
-    ['transfer', 'Arrive at childcare', Car],
+    ['transfer', 'Arrival time', Car],
   ].filter(([id]) => items.some(p => p.fit.conditions.some(c => c.id === id)) &&
     (more || (id === 'transport' && request.transport === 'institution') || items.some(p => p.fit.conditions.some(c => c.id === id && c.state === 'conflict'))));
   const conditionRow = (id, label, Icon) => <tr key={id} data-fact={id}><th scope="row"><Icon size={18} aria-hidden="true" />{label}</th>{items.map(p => <td key={p.id} {...cellProps(p)}><Fact p={p} id={id} request={request} /></td>)}</tr>;
   return <div className="compare-view">
     <div className="compare-visit" aria-label="Your search">
-      <span><Clock3 size={17} />{short ? 'Short time' : 'Long term'}</span>
+      <span><Clock3 size={17} />{short ? 'A few hours' : 'Regular care'}</span>
       {short && <span><CalendarDays size={17} />{shortDate}</span>}
       <span><Baby size={17} />{String(request.age).replace('-', '–')} years</span>
-      {short && <span><Users size={17} />Pick up child at <strong>{request.end}</strong></span>}
-      <details className="compare-address"><summary><MapPin size={16} />Your starting address<ChevronDown size={14} /></summary><p>{request.pickup.label}</p>{short && <p>Go to childcare at {request.deadline}</p>}</details>
+      {short && <span><Clock3 size={17} /><strong>{request.deadline}–{request.end}</strong></span>}
+      <details className="compare-address"><summary><MapPin size={16} />Starting point<ChevronDown size={14} /></summary><p>{request.pickup.label}</p></details>
     </div>
     <div className="compare-toolbar">
       <p>Choose a centre to contact.</p>
@@ -51,22 +52,22 @@ export default function Comparison({ items, onRemove, onPrepare, sort, onSort, o
     {items.length > 2 && <details className="compare-pair" aria-label="Choose two centres to compare">
       <summary><span>2 of {items.length} centres</span><span>Change centres<ChevronDown size={14} /></span></summary>
       <div>{visibleIds.map((id, index) => <SelectMenu key={index} label={`Centre ${index + 1}`} value={id}
-        options={items.filter(p => p.id === id || !visibleIds.includes(p.id)).map(p => ({ value: p.id, label: p.name }))}
+        options={items.filter(p => p.id === id || !visibleIds.includes(p.id)).map(p => ({ value: p.id, label: displayName(p.name) }))}
         onChange={next => setPair(visibleIds.map((value, i) => i === index ? next : value))} />)}</div>
     </details>}
     <div className="comparison-scroll compare-table">
       <table aria-label="Compare childcare centres">
         <colgroup><col />{items.map(p => <col key={p.id} />)}</colgroup>
         <thead><tr><th scope="col"><span className="sr-only">What to compare</span></th>{items.map(p => <th scope="col" key={p.id} {...cellProps(p)} className={best.ids.includes(p.id) ? 'comparison-best' : undefined}>
-          <div className="compare-centre-top"><span>{best.ids.includes(p.id) && <span className="comparison-best-tag"><Star size={13} fill="currentColor" />{comparisonPriorityLabel(best.label)}</span>}</span><button className="remove-compare" aria-label={`Remove ${p.name} from comparison`} onClick={() => onRemove(p.id)}><X size={17} /></button></div>
-          <h3>{p.name}</h3>
+          <div className="compare-centre-top"><span>{best.ids.includes(p.id) && <span className="comparison-best-tag"><Award size={13} aria-hidden="true" />{comparisonPriorityLabel(best.label)}</span>}</span><button className="remove-compare" aria-label={`Remove ${p.name} from comparison`} onClick={() => onRemove(p.id)}><X size={17} /></button></div>
+          <h3>{displayName(p.name)}</h3>
           <button className="primary compare-contact" aria-label={`Contact ${p.name}`} onClick={() => onPrepare(p)}><MessageCircle size={16} />Contact<ArrowRight size={16} /></button>
         </th>)}</tr></thead>
         <tbody>
           <tr data-fact="fees"><th scope="row"><Wallet size={18} />Fee</th>{items.map(p => <td key={p.id} {...cellProps(p)}><details className="compare-fact compare-fees"><summary><strong>{feeSummary(p).label}</strong><ChevronDown size={14} /></summary><p>{feeSummary(p).note}</p>{feesForCare(p).map((f, i) => <div key={i}><strong>{formatFee(f)}</strong><p>{f.conditions}</p><SourceLink source={f.source} /></div>)}</details></td>)}</tr>
           <tr data-fact="drive"><th scope="row"><Car size={18} />By car</th>{items.map(p => <td key={p.id} {...cellProps(p)}><strong>{p.driving?.state === 'available' ? `About ${p.driving.minutes} min` : 'Time not available'}</strong></td>)}</tr>
           {conditionRow('age', 'Age', Baby)}
-          {short && conditionRow('admission', 'Short time', Clock3)}
+          {short && conditionRow('admission', 'Short visits', Clock3)}
           {short && conditionRow('care', 'Care ends', Clock3)}
           {extraRows.map(([id, label, Icon]) => conditionRow(id, label, Icon))}
           {more && <>

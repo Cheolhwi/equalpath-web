@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { ArrowRight, Minus, Plus } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import App from "./App.jsx";
 import Pointer from "./Pointer.jsx";
 import LandingLoader from "./LandingLoader.jsx";
@@ -228,12 +228,11 @@ export default function Experience() {
           tabIndex={-1} inert={phase !== "preferences" || preferenceExit}
           aria-hidden={phase !== "preferences" || preferenceExit || undefined}>
           <div className="preference-onboarding-shell">
-            <header className="preference-onboarding-heading">
-              <span>WELCOME TO EQUALPATH</span>
-              <h1 id="preference-onboarding-title">What do you need?</h1>
-              <p>Choose up to 3 things. We will use them to find childcare for you.</p>
-            </header>
-            <PreferenceSetup compact history={preferenceHistory} exiting={preferenceExit} onSave={savePreferences} />
+            <PreferenceSetup compact history={preferenceHistory} exiting={preferenceExit} onSave={savePreferences} intro={<>
+              <p className="preference-onboarding-brand">EQUALPATH</p>
+              <h1 id="preference-onboarding-title">What matters most to you?</h1>
+              <p className="preference-onboarding-lede">Pick up to 3. Centres that parents praise for these move up in your results.</p>
+            </>} />
             {preferenceError && <p className="preference-onboarding-error" role="alert">{preferenceError}</p>}
           </div>
         </section>
@@ -267,12 +266,12 @@ export default function Experience() {
                 <h1>
                   EQUALPATH
                 </h1>
-                <p>FIND CHILDCARE</p>
+                <p>Find childcare that fits your day.</p>
               </div>
               <span className="landing-region">
-                CHILDCARE
+                KUALA LUMPUR
                 <br />
-                KL + SELANGOR
+                &amp; SELANGOR
               </span>
             </header>
             <div className="landing-entry">
@@ -300,8 +299,7 @@ export default function Experience() {
                 })}
                 aria-pressed={reduced}
               >
-                {reduced ? "REDUCED MOTION" : "MOTION ON"}
-                {reduced ? <Minus size={12} /> : <Plus size={12} />}
+                {reduced ? "REDUCE MOTION: ON" : "REDUCE MOTION: OFF"}
               </button>
             </footer>
           </div>

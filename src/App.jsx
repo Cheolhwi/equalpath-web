@@ -20,6 +20,7 @@ import {
   Users,
   ChevronDown,
   Heart,
+  Settings,
 } from "lucide-react";
 import Recommendations from "./Recommendations.jsx";
 import useInterests from "./useInterests.js";
@@ -50,6 +51,7 @@ import GettingStarted from "./GettingStarted.jsx";
 import ShortCareAlternatives, { ShortCareMapAlternatives, hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
 import { saveTour } from "../shared/tour.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
+import { displayName, placeLine, shortDateLabel } from "../shared/display.mjs";
 import { assess, costFor, enquiries } from "../shared/conditions.mjs";
 import { hasStoredMotionPreference, readMotionPreference, writeMotionPreference } from "./motion-preference.js";
 import {
@@ -717,7 +719,10 @@ export default function App({
       }
       if (seq !== tourSequence.current) return;
       const r = tourData.current;
-      const garden = r.items.find((p) => p.id === "demo-garden"), river = r.items.find((p) => p.id === "demo-river");
+      // Known mismatches are hidden by default, so the second example is the
+      // next centre in the demo results rather than a fixed conflicting one.
+      const garden = r.items.find((p) => p.id === "demo-garden") ?? r.items[0];
+      const river = r.items.find((p) => p.id === "demo-river") ?? r.items.find((p) => p.id !== garden?.id);
       setDraft(r.request); setResults(r); setSelected(garden.id); setFormOpen(false);
       if (step <= 4) { setCompareIds([]); return; }
       if (step === 5) { setProfile({ p: garden, request: r.request }); setDialog("details"); return; }
@@ -737,6 +742,10 @@ export default function App({
     comparison && scenario(comparison.request) !== scenario(activeRequest);
   const retryDialog = () => loadComparison();
   const searchState = busy ? "loading" : failure ? "failed" : dirty ? "pending" : results ? "applied" : "ready";
+  // Centres already on the shortlist can go straight to a checklist.
+  const checklistChoices = results && !dirty
+    ? items.filter((p) => compareIds.includes(p.id) || library.favourites.some((f) => f.id === p.id)).slice(0, 4)
+    : [];
   return (
     <main
       className={`equalpath map-first ${theme} mobile-${mobilePane}`}
@@ -812,7 +821,7 @@ export default function App({
             aria-label="Display and data settings"
             onClick={() => setDialog("settings")}
           >
-            <SlidersHorizontal size={19} />
+            <Settings size={19} />
           </button>
         </div>
       </header>
@@ -857,23 +866,22 @@ export default function App({
             </p>
             <strong className="request-care-type">{careTypeLabel(activeRequest)}</strong>
             {isShortCare(activeRequest) && <div>
-              <strong>{activeRequest.date}</strong>
+              <strong>{shortDateLabel(activeRequest.date)}</strong>
               <span>
-                Leave {activeRequest.deadline} → Pick up {activeRequest.end}
+                {activeRequest.deadline}–{activeRequest.end}
               </span>
             </div>}
             <small>
-              {activeRequest.age === ""
+              {[activeRequest.age === ""
                 ? "Age not chosen"
                 : activeRequest.age === "0"
                   ? "Under 1 year"
-                  : `Age ${activeRequest.age}`}{" "}
-              ·{" "}
-              {activeRequest.transport === "self"
-                ? "I’ll handle pickup"
+                  : `Age ${activeRequest.age.replace("-", "–")}`,
+              activeRequest.transport === "self"
+                ? "You bring your child"
                 : activeRequest.transport === "institution"
-                  ? "Centre pickup"
-                  : "Pickup not chosen"}
+                  ? "Centre picks up"
+                  : null].filter(Boolean).join(" · ")}
             </small>
           </div>
         )}
@@ -903,6 +911,7 @@ export default function App({
             hideLabel
             onQueryChange={value => setPickupQueryReset({value})}
             label={isShortCare(draft) ? "Where will your child leave from?" : "Where do you need care?"}
+            placeholder={isShortCare(draft) ? "Starting point, e.g. KL Sentral" : "Home, work or school, e.g. KL Sentral"}
             queryReset={pickupQueryReset}
             active={introPhase === "ready" && !dialog && !tourOpen}
             mode={mode}
@@ -946,8 +955,8 @@ export default function App({
               <label htmlFor="deadline"><MapPin size={19} aria-hidden="true" />Start</label>
               <TimeInput
                 id="deadline"
-                shortLabel="Start"
-                label="When will your child leave?"
+                suggest={draft.date && draft.date !== todayKL() ? "09:00" : undefined}
+                label="Start"
                 value={draft.deadline}
                 onChange={(value) => setField("deadline", value)}
                 invalid={!!errors.deadline}
@@ -961,8 +970,7 @@ export default function App({
               <label htmlFor="care-end"><Building2 size={19} aria-hidden="true" />End</label>
               <TimeInput
                 id="care-end"
-                shortLabel="End"
-                label="When will you pick up your child?"
+                label="End"
                 value={draft.end}
                 onChange={(value) => setField("end", value)}
                 invalid={!!errors.end}
@@ -976,11 +984,11 @@ export default function App({
           </div>}
           {!isShortCare(draft) && <AgeRangeChoice value={draft.age} onChange={value => setField("age", value)} error={errors.age} />}
           <details className="optional-preferences">
-            <summary><Users size={17} aria-hidden="true" /><span>Pickup help <small>{draft.transport === "self" ? "I’ll handle it" : draft.transport === "institution" ? "The centre" : "Optional"}</small></span><ChevronDown size={16} aria-hidden="true" /></summary>
+            <summary><Users size={17} aria-hidden="true" /><span>Getting to the centre <small>{draft.transport === "self" ? "I’ll bring my child" : draft.transport === "institution" ? "Centre picks up" : "Optional"}</small></span><ChevronDown size={16} aria-hidden="true" /></summary>
           <div>
             <div className="field">
               <label htmlFor="transport">
-                Who handles pickup?
+                Who takes your child to the centre?
               </label>
               <select
                 id="transport"
@@ -988,8 +996,8 @@ export default function App({
                 onChange={(e) => setField("transport", e.target.value)}
               >
                 <option value="">Not sure yet</option>
-                <option value="institution">The centre</option>
-                <option value="self">I’ll handle it</option>
+                <option value="institution">The centre picks my child up</option>
+                <option value="self">I’ll bring my child</option>
               </select>
             </div>
           </div>
@@ -1008,7 +1016,7 @@ export default function App({
               />
             </div>
             <div className="field">
-              <label htmlFor="radius">Distance</label>
+              <label htmlFor="radius">Search radius</label>
               <select
                 id="radius"
                 value={searchRadius(draft.radius, draft.careType)}
@@ -1032,7 +1040,7 @@ export default function App({
                 checked={draft.includeUnknown}
                 onChange={(e) => setField("includeUnknown", e.target.checked)}
               />
-              Include centres with details to confirm
+              Include centres with missing details
             </label>
             <label className="checkbox">
               <input
@@ -1121,6 +1129,7 @@ export default function App({
                   onCompare={() => toggleCompare(p.id)}
                   saved={library.favourites.some((x) => x.id === p.id)}
                   onSave={() => editFavourite(p)}
+                  transport={results.request.transport}
                 />
               ))}
               {!items.length && (
@@ -1128,15 +1137,12 @@ export default function App({
                   <Search size={29} />
                   <h2>No centres found</h2>
                   <p>
-                    Area:{" "}
-                    {results.request.radius} km from pickup
-                    .{" "}
-                    {results.request.query &&
-                      `Name / area: “${results.request.query}”. `}
+                    We looked within {results.request.radius} km of your starting point
+                    {results.request.query ? ` for “${results.request.query}”` : ""}.{" "}
                     {!results.request.includeUnknown &&
-                      "Unknown conditions are excluded. "}
+                      "Centres with missing details are hidden. "}
                     {!results.request.includeConflicts &&
-                      "Known conflicts are excluded."}
+                      "Centres that don’t meet your needs are hidden."}
                   </p>
                   <button
                     className="secondary"
@@ -1156,7 +1162,7 @@ export default function App({
                         search(null, 0, r);
                       }}
                     >
-                      Include centres with details to confirm
+                      Include centres with missing details
                     </button>
                   )}
                 </div>
@@ -1197,8 +1203,8 @@ export default function App({
             )}
             {results.missingLocations > 0 && (
               <p className="location-limit">
-                {results.missingLocations} matching records have no coordinates.
-                They remain in the list; their distance cannot be checked.
+                {results.missingLocations} {results.missingLocations === 1 ? "centre has" : "centres have"} no map location.
+                They stay in the list, but we can’t check their distance.
               </p>
             )}
           </>
@@ -1209,9 +1215,9 @@ export default function App({
             {nearbyBusy && <p role="status">Finding nearby centres…</p>}
             {nearbyError && !failure && <p role="status">{errorMessage(nearbyError)} <button className="text-link" onClick={() => setNearbyReload((v) => v + 1)}>Retry nearby centres</button></p>}
             {!nearbyBusy && nearby && <p>{nearby.total} centres within {nearby.radius} km · showing {nearby.items.length}</p>}
-            {!nearbyBusy && nearby?.total === 0 && <p>No centres nearby. Choose another pickup address.</p>}
+            {!nearbyBusy && nearby?.total === 0 && <p>No centres nearby. Try another starting point.</p>}
             {items.map((p) => <button key={p.id} id={"card-" + p.id} className={`nearby-card ${selected === p.id ? "selected" : ""}`} onClick={() => openDetails(p)} aria-label={`Select ${p.name}`} aria-pressed={selected === p.id}>
-              <strong>{p.name}</strong><span>{[p.district, p.region].filter(Boolean).join(" · ")}</span><span>Fees · {feeSummary(p).label}</span><span className="nearby-action">View centre <ArrowRight size={16} /></span>
+              <strong>{displayName(p.name)}</strong><span>{placeLine(p)}</span><span>Fees · {feeSummary(p).label}</span><span className="nearby-action">View centre <ArrowRight size={16} /></span>
             </button>)}
           </div>
         )}
@@ -1220,7 +1226,7 @@ export default function App({
           {mode === "demo"
             ? "Fictional examples"
             : health && !health.unavailable
-              ? `${health.available.toLocaleString()} centres in the directory`
+              ? `${health.available.toLocaleString()} ${isShortCare(draft) ? "researched centres · coursework demo" : "centres in the directory"}`
               : health?.unavailable ? "Centre information unavailable" : "Loading centres…"}
           <button onClick={() => setDialog("sources")}>Data & sources</button>
         </footer>
@@ -1339,9 +1345,9 @@ export default function App({
               : dialog === "save-favourite"
                 ? "Save this centre"
                   : dialog === "preparation"
-                    ? "Get ready for child care"
+                    ? "Get ready for childcare"
                     : dialog === "details"
-                      ? profile?.p.name
+                      ? displayName(profile?.p.name ?? "")
                       : dialog === "compare"
                         ? "Compare childcare"
                         : dialog === "enquiry"
@@ -1352,19 +1358,7 @@ export default function App({
                               ? "Why this order?"
                               : "About our information"
           }
-          kicker={
-            dialog === "preparation"
-              ? "CHECKLIST"
-              : ["saved", "save-favourite"].includes(dialog)
-                ? "YOUR SAVED ITEMS"
-                : dialog === "details"
-                  ? "CENTRE DETAILS"
-                  : dialog === "enquiry"
-                    ? "CONTACT"
-                    : dialog === "compare"
-                      ? "COMPARE"
-                      : "INFORMATION"
-          }
+          kicker={dialog === "details" ? "CENTRE DETAILS" : ""}
           wide={["details", "saved", "enquiry"].includes(dialog) || (dialog === "compare" && compareIds.length >= 2) || (dialog === "preparation" && !!preparation)}
           onClose={close}
         >
@@ -1437,12 +1431,20 @@ export default function App({
             ) : (
               <div className="empty-state">
                 <h3>Choose a centre first</h3>
-                <p>
-                  Choose a centre to make a checklist for your visit.
-                </p>
-                <button className="primary" onClick={close}>
-                  Find childcare <ArrowRight size={16} />
-                </button>
+                {checklistChoices.length ? <>
+                  <p>Pick a centre from your shortlist to make a checklist for your visit.</p>
+                  <div className="checklist-choices">
+                    {checklistChoices.map((p) => <button key={p.id} className="secondary" onClick={() => startPreparation(p, results.request)}>
+                      <span>{displayName(p.name)}</span><ArrowRight size={16} aria-hidden="true" />
+                    </button>)}
+                  </div>
+                  <button className="text-link" onClick={close}>Find another centre</button>
+                </> : <>
+                  <p>Open a centre and select “Get ready for childcare” to make a checklist for your visit.</p>
+                  <button className="primary" onClick={close}>
+                    Find childcare <ArrowRight size={16} />
+                  </button>
+                </>}
               </div>
             ))}
           {dialog === "details" && profile && (
@@ -1509,8 +1511,8 @@ export default function App({
                 <h3>{compareIds.length === 1 ? "Add one more option" : "Find a few options first"}</h3>
                 <p>
                   {compareIds.length === 1
-                    ? "Tap Compare on one more centre."
-                    : "Tap Compare on 2 or 3 centres."}
+                    ? "Select Compare on one more centre to see them side by side."
+                    : "Select Compare on 2 or 3 centres to see them side by side."}
                 </p>
                 <button className="primary" onClick={close}>
                   Find childcare <ArrowRight size={16} />
@@ -1597,12 +1599,18 @@ export default function App({
             <div className="prose">
               <OrderingNote ordering={results?.ordering} radius={results?.request.radius} />
               <p>
-                When a detail is missing, that centre appears after those with
-                information we can compare. This order doesn’t rate care quality
-                or mean the centre can take your child.
+                Fit is based on what centres publish, such as care hours, ages
+                and fees. Your choices and the centres you save or view can move
+                a centre up. The order doesn’t rate care quality or mean the
+                centre has a place for your child.
               </p>
               <p>
-                The list and map show the same results. Centres we can’t locate
+                {results?.request.includeConflicts
+                  ? "Centres whose details don’t match your search come last, with grey pins."
+                  : "Centres whose details don’t match your search are hidden. To see them, turn on “Include centres that don’t meet all my needs” in More filters."}
+              </p>
+              <p>
+                The list and map use the same numbers. Centres we can’t place
                 on the map still appear in the list.
               </p>
             </div>
@@ -1650,8 +1658,8 @@ export default function App({
                 />
               </label>
               <div className="setting-line setting-line-clear">
-                <span><strong>Clear local cache</strong><small>Start fresh on this browser. This deletes all saved centres, preferences, viewing history and settings in both real and demo mode.</small></span>
-                {clearCacheConfirm ? <span className="setting-confirm-actions"><strong role="alert">Delete everything from this browser?</strong><button className="secondary" onClick={clearLocalCache}>Clear everything</button><button className="text-link" onClick={() => setClearCacheConfirm(false)}>Cancel</button></span> : <button className="secondary" onClick={() => setClearCacheConfirm(true)}>Clear local cache</button>}
+                <span><strong>Clear data on this device</strong><small>Start fresh in this browser. This deletes your saved centres, choices, viewing history and settings, for both real and demo centres.</small></span>
+                {clearCacheConfirm ? <span className="setting-confirm-actions"><strong role="alert">Delete everything from this browser?</strong><button className="secondary" onClick={clearLocalCache}>Clear everything</button><button className="text-link" onClick={() => setClearCacheConfirm(false)}>Cancel</button></span> : <button className="secondary" onClick={() => setClearCacheConfirm(true)}>Clear data</button>}
               </div>
               <div className="data-mode">
                 <h3>Try the demo</h3>

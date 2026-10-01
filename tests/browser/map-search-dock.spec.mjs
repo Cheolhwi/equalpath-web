@@ -71,7 +71,7 @@ test('required fields open on the map; long term keeps age, and filters do not s
   await page.getByRole('button',{name:'Find childcare',exact:true}).click();
   await expect(page.locator('#pickup-search')).toBeFocused();
   await page.locator('#pickup-search').fill('KL Sentral');await page.getByRole('button',{name:'Find address',exact:true}).click();await page.locator('.place-results').getByRole('button',{name:/KL Sentral/}).click();
-  await page.locator('[data-field="care"]').click();await page.getByRole('radio',{name:'Long term',exact:true}).click();
+  await page.locator('[data-field="care"]').click();await page.getByRole('radio',{name:'Regular',exact:true}).click();
   await expect(page.locator('[data-field="date"],#deadline,#care-end')).toHaveCount(0);
   await page.getByRole('button',{name:'Find childcare',exact:true}).click();
   await expect(page.locator('#age')).toBeFocused();await page.getByRole('radio',{name:'1–3 years',exact:true}).click();
@@ -97,7 +97,7 @@ test('map time chips save on outside click, cancel with Escape and support dark/
 
 for (const width of [320, 390, 1440]) test(`${width}px: simple choices open as small anchored menus, above nearby actions`, async ({page}) => {
   await page.setViewportSize({width, height: 844}); await setup(page);
-  for (const [field, choice] of [['age', '4–6 years'], ['care', 'Long term']]) {
+  for (const [field, choice] of [['age', '4–6 years'], ['care', 'Regular']]) {
     const trigger = page.locator(`[data-field="${field}"]`);
     await trigger.click();
     const box = await page.locator('.dock-popover').boundingBox(), anchor = await trigger.boundingBox();
@@ -111,7 +111,7 @@ for (const width of [320, 390, 1440]) test(`${width}px: simple choices open as s
     await page.screenshot({path:`${out}/${field}-menu-${width}.png`});
     await page.getByRole('radio', {name: choice, exact: true}).click();
     await expect(page.locator('.dock-popover')).toHaveCount(0); await expect(trigger).toBeFocused();
-    await expect(trigger).toContainText(field === 'age' ? '4–6' : 'Long term');
+    await expect(trigger).toContainText(field === 'age' ? '4–6' : 'Regular');
     await trigger.click(); await page.keyboard.press('Escape');
     await expect(page.locator('.dock-popover')).toHaveCount(0); await expect(trigger).toBeFocused();
   }
@@ -136,7 +136,7 @@ for (const width of [320, 390]) test(`${width}px: search collapses to a summary,
   await expect(page.locator('#deadline')).toContainText('16:00');
   await expect(page.locator('#care-end')).toContainText('18:00');
   await expect(page.locator('[data-field="age"]')).toContainText('4–6');
-  await expect(page.getByRole('button', {name:'Choose your location', exact:true})).toBeVisible();
+  await expect(page.getByRole('button', {name:'Pick on map', exact:true})).toBeVisible();
   await expect(page.getByRole('button', {name:'Use my location', exact:true})).toBeVisible();
   await page.getByRole('button', {name:'Hide search', exact:true}).click();
   await expect(summary).toBeFocused();
@@ -196,7 +196,7 @@ test('mobile search stays expanded for no results, failures and edits made while
 for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly pending until Update succeeds, and reverting clears the pending state`, async ({page}) => {
   await page.setViewportSize({width, height: 900});
   const {calls, errors} = await setup(page);
-  await expect(page.locator('.search-apply-status')).toContainText('Then tap Find care');
+  await expect(page.locator('.search-apply-status')).toContainText('Then select Find childcare');
   await fillMapSearch(page);
   await page.getByRole('button', {name:'Find childcare', exact:true}).click();
   await expect.poll(() => calls.filter(c => c.action === 'search').length).toBe(1);
@@ -235,7 +235,7 @@ for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly p
     await route.fallback();
   });
   await page.locator('[data-field="more"]').click();
-  await expect(page.locator('.filter-review')).toContainText('Changes apply when you tap Update results');
+  await expect(page.locator('.filter-review')).toContainText('Changes apply when you select Update results');
   await page.locator('.filter-review').getByRole('button', {name:'Update results', exact:true}).click();
   await seen;
   await expect(page.locator('.search-actions')).toHaveAttribute('data-state', 'loading');

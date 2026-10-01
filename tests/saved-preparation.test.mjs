@@ -245,7 +245,7 @@ test("5.6 standalone export preserves dates, contacts, draft, blank offline spac
     "03 1234 5678",
     "2026-09-14",
     "2026-09-13T10:00:00Z",
-    "At the pickup address",
+    "At the starting point",
     "Collector identification",
     "Health, allergy",
     "pickup permission",

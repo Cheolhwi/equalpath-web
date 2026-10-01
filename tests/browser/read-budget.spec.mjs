@@ -36,7 +36,7 @@ for (const width of [1440, 390]) test(`published catalogue works without TablesD
   await expect(page.locator(".comparison-scroll table")).toBeVisible();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.getByRole("button", { name: "Change search", exact: true }).click();
-  await page.getByRole("radio", { name: "Short time" }).check();
+  await page.getByRole("radio", { name: "A few hours" }).check();
   await page.locator("#service-date").fill("2026-09-21");
   await page.locator("#deadline").fill("13:00");
   await page.locator("#care-end").fill("17:00");

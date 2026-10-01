@@ -17,12 +17,12 @@ export function preparationFor(
     request.transport === "institution"
       ? "Ask the centre for pickup"
       : request.transport === "self"
-        ? "I’ll handle pickup"
-        : "Choose who will handle pickup";
+        ? "I’ll bring my child"
+        : "Choose who takes your child to the centre";
   const groups = [
     {
       id: "usual",
-      name: "At the pickup address",
+      name: "At the starting point",
       party: request.pickup.label,
       contact: "Speak to the person handing over your child.",
       questions: [
@@ -141,7 +141,7 @@ export function preparationFor(
     }));
   const sequence = [
     {
-      title: "Leave the pickup address",
+      title: "Leave the starting point",
       time: shortCare ? request.deadline : null,
       timeLabel: "By",
       place: request.pickup.label,
@@ -151,7 +151,7 @@ export function preparationFor(
         "Agree who will pick up your child and what they need to bring.",
     },
     {
-      title: "At childcare",
+      title: "At the centre",
       time: null,
       timeLabel: "Arrival time",
       place: p.name,
@@ -164,7 +164,7 @@ export function preparationFor(
       detail: "Confirm the arrival time with the centre. Allow time for the drive after pickup.",
     },
     {
-      title: "Pick up from childcare",
+      title: "Collect your child",
       time: shortCare ? request.end : null,
       timeLabel: "At",
       place: p.name,
@@ -184,9 +184,9 @@ export function preparationFor(
     dateLabel: shortCare ? new Intl.DateTimeFormat("en-GB", {
       weekday: "short", day: "numeric", month: "short", year: "numeric",
       timeZone: "Asia/Kuala_Lumpur",
-    }).format(new Date(`${request.date}T12:00:00+08:00`)) : "Long term",
+    }).format(new Date(`${request.date}T12:00:00+08:00`)) : "Regular care",
     request: requestCaption(request),
-    interval: shortCare ? `Leave pickup address by ${request.deadline} · Pick up from childcare at ${request.end}` : "Your regular care arrangements",
+    interval: shortCare ? `Leave by ${request.deadline} · Collect your child at ${request.end}` : "Your regular care arrangements",
     transport,
     groups,
     packing,
@@ -229,11 +229,11 @@ export function preparationHTML(sheet, checked = []) {
     `<ul${tickable ? ' class="checklist"' : ""}>${list.map((x) => `<li>${tickable ? selected.has(x.id) ? "☑ " : "☐ " : ""}${escape(x.text)}${sourceHTML(x.source)}</li>`).join("")}</ul>`;
   const groups = ["receiving", "usual", "transport"].map((id) => sheet.groups.find((g) => g.id === id));
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EqualPath checklist — ${escape(sheet.name)}</title><style>${preparationCSS}</style></head><body><main>
-  <p class="brand">EQUALPATH / YOUR VISIT${sheet.mode === "demo" ? " / FICTIONAL DEMO" : ""}</p><h1>Get ready for child care</h1>
+  <p class="brand">EQUALPATH / YOUR VISIT${sheet.mode === "demo" ? " / FICTIONAL DEMO" : ""}</p><h1>Get ready for childcare</h1>
   <div class="visit"><div><small>CARE AT</small><strong>${escape(sheet.name)}</strong></div><div><strong>${escape(sheet.dateLabel)}</strong>${sheet.date ? `<small>${escape(sheet.date)} · Malaysia time</small>` : ""}</div></div>
   <p class="notice">${escape(sheet.notice)}</p>
   ${sheet.conflicts.length ? `<h2>Check before you go</h2>${items(sheet.conflicts.map((c) => ({ id: c.id, text: c.label + ": " + c.reason, source: c.source })), false)}` : ""}
-  <h2>Your pickup plan</h2><div class="plan">${sheet.sequence.map((x, i) => `<section class="step"><h3>${i + 1}. ${escape(x.title)}</h3><strong class="time">${x.time ? `${escape(x.timeLabel)} ${escape(x.time)}` : "Agree a time"}</strong><p class="place">${escape(x.place)}</p>${x.address ? `<p>${escape(x.address)}</p>` : ""}<p class="detail">${escape(x.detail)}</p></section>`).join("")}</div><p class="notice">${escape(sheet.transport)}</p>
+  <h2>Your plan for the day</h2><div class="plan">${sheet.sequence.map((x, i) => `<section class="step"><h3>${i + 1}. ${escape(x.title)}</h3><strong class="time">${x.time ? `${escape(x.timeLabel)} ${escape(x.time)}` : "Agree a time"}</strong><p class="place">${escape(x.place)}</p>${x.address ? `<p>${escape(x.address)}</p>` : ""}<p class="detail">${escape(x.detail)}</p></section>`).join("")}</div><p class="notice">${escape(sheet.transport)}</p>
   <h2>Contact the centre</h2>${sheet.phone ? `<p>Telephone: ${escape(sheet.phone.display)}</p>` : ""}${sheet.whatsapp.map((x) => `<p>WhatsApp: ${escape(x.display)}${x.scope === "website" ? " (website number; ask for this centre)" : ""}</p>`).join("")}${!sheet.phone && !sheet.whatsapp.length ? "<p>No contact number listed. Check the centre’s listing.</p>" : ""}<p class="notice">Keep the pickup contact and driver’s number handy too.</p>
   <h2>01 / Check the plan</h2>${groups.map((g) => `<section class="party"><h3>${escape(g.name)}</h3><p>${escape(g.party)}</p>${items(g.questions, false)}</section>`).join("")}
   <h2>02 / Before you leave</h2>${items(sheet.packing)}${sheet.published.length ? `<h3>The centre also asks for</h3>${items(sheet.published)}` : '<p class="notice">Ask the centre if they need anything else.</p>'}

@@ -15,4 +15,5 @@ import "./search-actions.css";
 import "./comparison.css";
 import "./enquiry-flow.css";
 import "./recommendations.css";
+import "./journey-polish.css";
 createRoot(document.getElementById("root")).render(<Experience />);

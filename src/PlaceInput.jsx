@@ -5,7 +5,6 @@ import {
   Check,
   X,
   LocateFixed,
-  ArrowUpRight,
 } from "lucide-react";
 import { requestAPI } from "./api.js";
 import { currentLocation } from "./geolocation.js";
@@ -24,6 +23,7 @@ export default function PlaceInput({
   onQueryChange,
   leading,
   trailing,
+  placeholder = "e.g. KL Sentral",
 }) {
   const [query, setQuery] = useState(value?.label ?? ""),
     [options, setOptions] = useState([]),
@@ -148,7 +148,7 @@ export default function PlaceInput({
           id={idPrefix + "-search"}
           aria-invalid={!!error}
           aria-describedby={error ? idPrefix + "-error" : idPrefix + "-help"}
-          placeholder="e.g. KL Sentral"
+          placeholder={placeholder}
           value={query}
           onChange={(e) => {
             stopLocating();
@@ -192,14 +192,14 @@ export default function PlaceInput({
           </span>
         </div>
       )}
-      <div className="geolocation-control" role="group" aria-label="Choose your location">
+      <div className="geolocation-control" role="group" aria-label="Other ways to set your location">
         {onMap && <button className="choose-location" type="button" onClick={() => {
           token.current++;
           stopLocating();
           setBusy(false);
           setOpen(false);
           onMap();
-        }}><MapPin size={18} aria-hidden="true" /><span>Choose your location</span></button>}
+        }}><MapPin size={18} aria-hidden="true" /><span>Pick on map</span></button>}
         <button type="button" onClick={locate} disabled={geoBusy}>
           <LocateFixed size={18} aria-hidden="true" />
           <span>{geoBusy
@@ -246,7 +246,7 @@ export default function PlaceInput({
               >
                 <strong>{p.label}</strong>
                 <span>{p.address ?? p.region}</span>
-                <ArrowUpRight size={14} />
+                <MapPin size={14} aria-hidden="true" />
               </button>
             ))}
           {message && <p role="status">{message}</p>}

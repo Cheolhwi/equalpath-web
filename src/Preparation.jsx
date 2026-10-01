@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { displayName } from "../shared/display.mjs";
 import { Download, Printer, ArrowRight, CalendarDays, ChevronDown, AlertTriangle, MapPin, Building2, Backpack, Shirt, Phone, Apple, BedDouble, Baby, Moon, CarFront, NotebookTabs, ClipboardCheck, MessageCircle } from "lucide-react";
 import { preparationFor, preparationHTML } from "../shared/preparation.mjs";
 import { requestErrors } from "../shared/request.mjs";
@@ -23,7 +24,7 @@ const packingPictures = {
   "transport-items": [CarSeat, "Check car seat"], "self-items": [NotebookTabs, "Driver’s details"],
 };
 const journeyPictures = [CarFront, Building2, ParentAndChild];
-const journeyLabels = ["Go to childcare", "Child care", "Pick up child"];
+const journeyLabels = ["Leave for the centre", "At the centre", "Collect your child"];
 
 export default function Preparation({
   p,
@@ -116,10 +117,10 @@ export default function Preparation({
     <div className="preparation preparation-visual">
       <header className="preparation-overview">
         <div>
-          <h3>{p.name}</h3>
+          <h3>{displayName(p.name)}</h3>
         </div>
         <div className="preparation-date">
-          <CalendarDays size={18} aria-hidden="true" />{sheet.date ? <time dateTime={sheet.date}>{sheet.dateLabel}</time> : <strong>Long term</strong>}
+          <CalendarDays size={18} aria-hidden="true" />{sheet.date ? <time dateTime={sheet.date}>{sheet.dateLabel}</time> : <strong>Regular care</strong>}
         </div>
       </header>
       <div className="ready-plan-note"><span>Draft plan</span><button className="text-link" onClick={onEnquiry}>Contact the centre<ArrowRight size={15} aria-hidden="true" /></button></div>
@@ -146,7 +147,7 @@ export default function Preparation({
       )}
       <div className="preparation-layout">
         <section className="preparation-plan" aria-labelledby="pickup-plan-title">
-          <h3 id="pickup-plan-title" className="sr-only">Your pickup plan</h3>
+          <h3 id="pickup-plan-title" className="sr-only">Your plan for the day</h3>
           <ol className="preparation-sequence">
             {sheet.sequence.map((step, i) => {
               const Picture = journeyPictures[i];
@@ -154,7 +155,7 @@ export default function Preparation({
                 <span className="ready-journey-picture" aria-hidden="true"><Picture size={48} strokeWidth={1.5} /></span>
                 {i < 2 && <ArrowRight className="ready-journey-arrow" size={24} aria-hidden="true" />}
                 <h4>{journeyLabels[i]}</h4>
-                {i === 1 ? <p className="ready-centre-name">{step.place}</p> : <div className={`preparation-step-time${step.time ? "" : " needs-time"}`}>
+                {i === 1 ? <p className="ready-centre-name">{displayName(step.place)}</p> : <div className={`preparation-step-time${step.time ? "" : " needs-time"}`}>
                   {step.time && onTimesChange ? <TimeInput variant="button" allowClear={false} label={journeyLabels[i]} pickerLabel={i === 0 ? "When will your child leave this address?" : "When will you pick up your child from childcare?"}
                     value={step.time} onChange={value => changeTime(i === 0 ? "deadline" : "end", value)}
                     describedBy={timeError ? "preparation-time-error" : undefined} />
