@@ -13,8 +13,10 @@ async function openDetails(page,{conflict=true,missing=false}={}){
   const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items:[p]})},drivingRoutes:async(_,rows)=>rows.map(x=>({...x,driving:missing?{state:'unavailable'}:{state:'available',minutes:8,distanceKm:3.2,source}}))});
   await page.route('**/api',async route=>route.fulfill({json:{ok:true,...await api(route.request().postDataJSON())}}));
   await page.addInitScript(()=>{localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL Sentral',lat:3.139,lng:101.6869}}));});
-  await page.goto('/?care=short_term#discover');await openSearch(page);await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('18:00');await revealPreferences(page); await chooseAge(page, '4');await revealPreferences(page); await page.locator('#transport').selectOption('self');await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);await page.getByRole('button',{name:'View details for '+p.name,exact:true}).click();
-  return page.getByRole('dialog');
+  await page.goto('/?care=short_term#discover');await openSearch(page);await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('18:00');await revealPreferences(page); await chooseAge(page, '4');await revealPreferences(page); await page.locator('#transport').selectOption('self');if(conflict) await page.locator('.search-refinements > summary').click();if(conflict) await page.getByRole('checkbox',{name:'Include centres that don’t meet all my needs',exact:true}).check();await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);await page.getByRole('button',{name:'View details for '+p.name,exact:true}).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toHaveCSS('opacity', '1');
+  return dialog;
 }
 test('details put useful facts and next action first, retain evidence and prioritise mismatches',async({page})=>{
   const dialog=await openDetails(page);
@@ -36,8 +38,10 @@ test('mobile details keep long names, missing fees and contacts usable with keyb
   await expect(dialog.locator('.centre-metrics')).toContainText('Ask the centre');await expect(dialog.locator('.centre-metrics')).toContainText('Ask the centre');
   expect(await dialog.evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
   await page.screenshot({path:out+'/details-mobile.png'});
-  await dialog.locator('.unknown-checks > summary').click();
-  await dialog.locator('.fit-check').first().locator(':scope > summary').focus();await page.keyboard.press('Enter');await expect(dialog.locator('.fit-check').first()).toHaveAttribute('open','');
+  // Things to ask are open by default; each one still folds with the keyboard.
+  await expect(dialog.locator('.unknown-checks')).toHaveAttribute('open','');await expect(dialog.locator('.fit-check').first()).toHaveAttribute('open','');
+  await dialog.locator('.fit-check').first().locator(':scope > summary').focus();await page.keyboard.press('Enter');await expect(dialog.locator('.fit-check').first()).not.toHaveAttribute('open','');
+  await page.keyboard.press('Enter');await expect(dialog.locator('.fit-check').first()).toHaveAttribute('open','');
   await dialog.locator('.centre-next').scrollIntoViewIfNeeded();await dialog.locator('.centre-contact > summary').click();await expect(dialog.locator('.centre-contact')).toContainText('No phone number listed');await expect(dialog.getByRole('link',{name:'More about this centre'})).toHaveAttribute('href',source.url);
   await page.screenshot({path:out+'/details-mobile-actions.png'});
   await dialog.getByRole('button',{name:'Get ready for childcare',exact:true}).click();await expect(page.getByRole('heading',{name:'Get ready for childcare',exact:true})).toBeVisible();

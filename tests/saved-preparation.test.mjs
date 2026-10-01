@@ -86,7 +86,7 @@ test("4.1.3 / 4.4.2 quota and denied storage preserve the previous saved version
         },
         "demo",
       ),
-    /could not be read/,
+    /couldn’t read your saved centres/,
   );
 });
 test("unreadable / unsupported storage never gets silently replaced", () => {
@@ -203,7 +203,7 @@ test("5.2 / 5.4 handover questions belong to three parties and do not assert ass
   assert.match(sheet.groups[2].party, /Check who will pick up/);
   for (const id of ["release", "identity", "delay"])
     assert.ok(sheet.groups[0].questions.some((x) => x.id === id));
-  assert.match(sheet.notice, /does not give permission to pick up/);
+  assert.match(sheet.notice, /doesn’t give anyone permission to collect your child/);
   assert.ok(
     !sheet.groups
       .flatMap((g) => g.questions)
@@ -214,7 +214,7 @@ test("5.3 sequence distinguishes requests and published facts; coordinates never
   const sheet = preparationFor(await provider(r), r);
   assert.equal(sheet.sequence.length, 3);
   assert.equal(sheet.sequence[0].basis, "Your request");
-  assert.match(sheet.sequence[1].detail, /Confirm the arrival time/);
+  assert.match(sheet.sequence[1].detail, /Agree the arrival time/);
   assert.equal(sheet.sequence[1].time, null);
   assert.equal(sheet.sequence[0].time, r.deadline);
   assert.equal(sheet.sequence[2].time, r.end);
@@ -244,11 +244,10 @@ test("5.6 standalone export preserves dates, contacts, draft, blank offline spac
   for (const value of [
     "03 1234 5678",
     "2026-09-14",
-    "2026-09-13T10:00:00Z",
+    "Prepared 13 Sep 2026",
     "At the starting point",
-    "Collector identification",
+    "Who may collect your child",
     "Health, allergy",
-    "pickup permission",
     "☑",
     '<div class="line"></div>',
   ])

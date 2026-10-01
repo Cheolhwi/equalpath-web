@@ -1,6 +1,6 @@
 # Epic 6: search, review evidence and recommendations
 
-Implementation record, 29 September 2026. This file describes the current code;
+Implementation record, updated 1 October 2026. This file describes the current code;
 the earlier exported diagrams show the original five-theme design. This is a
 local implementation record, not a production release receipt.
 
@@ -79,19 +79,38 @@ age/date/hours/pickup, and applies the requested filters. Known conflicts never
 become recommendations. Unknown facts stay unknown. Review evidence cannot
 confirm a vacancy or override a closed centre.
 
-Within the current eligible page, the default order combines:
+Within the current eligible page, **Recommended** is the default search order.
+It combines these transparent heuristic contributions (not trained weights):
 
 ```text
-0.60 proximity + 0.40 known condition fit
+(0.45 − 0.10 × activity confidence) proximity + 0.40 known condition fit
 + up to 0.22 selected-topic fit
 + up to 0.20 learned-topic fit × activity confidence
 + up to 0.12 service/fee similarity × activity confidence
-+ up to 0.06 familiar-centre signal
++ up to 0.24 familiar-centre signal
 ```
 
-Same-brand repetition receives a small diversity penalty after a top result.
-Explicit fee, later closing and pickup priorities keep the server's chosen
-order. Every eligible result in the full page is scored and reranked, including
+The familiar-centre contribution is 0.24 for a current save, 0.12 for one fresh
+comparison and 0.03 for one fresh detail view. Activity caps and decay still
+apply. A save is a strong signal about that branch, not proof that the visitor
+likes all of its attributes. Inferred topic fit and service/fee similarity remain
+confidence-limited. Saved/compared explanations take precedence over the initial
+preference explanation so the effect is visible when a branch is highlighted.
+
+Same-brand repetition receives a 0.12 diversity penalty after a top result.
+In positions 2–5, a candidate can receive a bounded 0.035 bonus for a strong
+review theme not yet represented. Its two strongest supported themes qualify
+only with a score of at least 0.60 and confidence of at least 0.25. Sparse or
+stale evidence cannot create novelty. This deterministic adjustment applies
+inside existing contact/hidden groups; it cannot override eligibility. There
+is no fixed five-personalised/five-factual split and no random exploration.
+
+**Nearest first**, fee, later closing, pickup and name search sorts keep the
+server's factual order, without history-based promotion or preference badges.
+Contact availability does not outrank a chosen factual sort in search; the
+contactable suggestion pool and comparison contact preference remain intact.
+Recommended retains contact priority. Every eligible result in a Recommended
+page is scored and reranked, including
 all ten short-care results when a page is full, not just three promoted cards.
 New visitors, skipped preference setup and disabled activity use run through
 the same pass; absent personal signals contribute zero, leaving proximity,
@@ -104,6 +123,19 @@ three eligible suggestions. Each eligible result has an internal score and
 rank for verification; only the top three receive suggestion highlights.
 The API still selects page membership by distance inside the requested radius;
 this is page-wide reranking, not global reranking before pagination.
+
+Map previews and result-list cards show up to two short branch-characteristic
+tags under the centre name only for non-suggested, non-personalised results
+(for example, Kind teachers / Fun activities). Suggested results retain their
+recommendation reason without the additional tags.
+These use the strongest supported review themes with the same 0.60 score and
+0.25 confidence thresholds as diversity. They describe the branch independently
+of personal preferences and saves; changing which centres are suggested changes
+which cards show tags. One strong theme gives one tag, and missing, sparse or stale
+evidence gives no filler tags. Accessible labels identify parent reviews as
+their basis. Both surfaces use the same selector and compact search profiles,
+without fetching review text or adding API requests. Map-card placement reserves
+room for the tags, including wrapping on narrow phones.
 
 An all-conflict short-care search can show external alternatives; unresolved
 facts alone do not trigger that fallback. Existing month-age conversion and

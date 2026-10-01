@@ -16,16 +16,16 @@ export function comparisonFact(p, id, request) {
       break;
     case 'care':
       value = p.careEndTimeLabel ?? p.businessHoursLabel ?? 'Hours not listed';
-      note = known ? `Open at ${request.end}` : conflict ? 'Outside listed care hours' : `Ask about ${request.end}`;
+      note = known ? `Still open at ${request.end}` : conflict ? `Not open at ${request.end}` : `Ask about ${request.end}`;
       break;
     case 'transport':
-      value = request.transport === 'self' ? 'You will take your child' : p.transport?.exists === true ? 'Pickup service listed' : p.transport?.exists === false ? 'No pickup service' : 'Ask the centre';
+      value = request.transport === 'self' ? 'You’ll bring your child' : p.transport?.exists === true ? 'Pickup service listed' : p.transport?.exists === false ? 'No pickup service listed' : 'Ask the centre';
       break;
     case 'coverage':
-      value = request.transport === 'self' ? 'You will take your child' : known ? 'Your address is covered' : conflict ? 'Your address is not covered' : 'Ask about your address';
+      value = request.transport === 'self' ? 'You’ll bring your child' : known ? 'Covers your starting point' : conflict ? 'Doesn’t cover your starting point' : 'Ask about your starting point';
       break;
     case 'pickup':
-      value = request.transport === 'self' ? `You will leave by ${request.deadline}` : known ? `By ${request.deadline}` : conflict ? `Later than ${request.deadline}` : `Ask about ${request.deadline}`;
+      value = request.transport === 'self' ? `You’ll leave by ${request.deadline}` : known ? `By ${request.deadline}` : conflict ? `Later than ${request.deadline}` : `Ask about ${request.deadline}`;
       break;
     case 'transfer': value = 'Ask when to arrive'; break;
     default: value = c?.label ?? 'Not needed';

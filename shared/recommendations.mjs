@@ -132,6 +132,15 @@ export function preferenceEvidence(p, id, request, now = Date.now()) {
 export function preferenceMatches(p, preferences, request, now = Date.now()) {
   return normalisePreferenceTopics(preferences).map(id => ({ id, ...preferenceEvidence(p, id, request, now) }));
 }
+const strongestReviewTopics = topics => topics
+  .filter(t => t.evidence.state === 'supported' && t.evidence.score >= .6 && t.evidence.confidence >= .25)
+  .sort((a,b) => b.evidence.score-a.evidence.score || a.id.localeCompare(b.id)).slice(0,2);
+// Describe this branch, independently of a visitor's choices or saved history.
+// Do not fill empty slots with sparse, stale or negative review evidence.
+export function centreHighlights(provider, now = Date.now()) {
+  return strongestReviewTopics(DISCOVERY_PREFERENCES.map(t => ({ ...t, evidence: reviewEvidence(provider, t.id, now) })))
+    .map(({ id, label }) => ({ id, label }));
+}
 // Rebuild the interest vector from fresh branch facts. Nothing about a child or
 // a search is written into history; hidden branches contribute a bounded dislike.
 export function learnedPreferenceWeights({ seeds, library, history, careType, now = Date.now() }) {
@@ -164,6 +173,7 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
   const hidden = new Set(history.hidden.filter(v => v.careType === request.careType).map(v => v.id));
   const pool = candidates.filter(p => p.careType === request.careType && p.location && p.fit && p.fit.counts.conflict === 0 && (!excludeSaved || !saved.has(p.id)) && (!excludeHidden || !hidden.has(p.id)));
   const learned = learnedPreferenceWeights({ seeds: [...fresh.values()], library, history, careType: request.careType, now });
+  const preferencesToMatch = normalisePreferenceTopics(preferences);
   const relevant = new Set(['admission', 'care', ...(request.age ? ['age'] : []), ...(request.transport === 'institution' ? ['transport', 'coverage', 'pickup'] : [])]);
   const scored = pool.map(p => {
     const checks = p.fit.conditions.filter(c => relevant.has(c.id));
@@ -173,17 +183,35 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
     const similarities = seeds.map(s => ({ ...s, ...centreSimilarity(p, fresh.get(s.id)) }));
     const totalWeight = seeds.reduce((sum,s) => sum+s.weight,0);
     const similarity = similarities.reduce((sum,s) => sum+s.value*s.weight,0)/(totalWeight||1);
-    const matches = preferenceMatches(p, preferences, request, now);
+    // Reuse each topic calculation for explicit fit, learned fit and diversity.
+    const topics = DISCOVERY_PREFERENCES.map(t => ({ ...t, evidence: reviewEvidence(p, t.id, now) }));
+    const evidenceById = new Map(topics.map(t => [t.id, t.evidence]));
+    const matches = preferencesToMatch.map(id => ({ id, ...evidenceById.get(id) }));
     const explicit = matches.reduce((n,e) => n+(e.score-.5)*2,0)/Math.max(1,matches.length);
     const learnedTotal = Object.values(learned.weights).reduce((s,w)=>s+Math.abs(w),0);
-    const learnedFit = DISCOVERY_PREFERENCES.reduce((sum,t)=>sum+learned.weights[t.id]*(reviewEvidence(p,t.id,now).score-.5)*2,0)/Math.max(.01,learnedTotal);
-    const score = .6*near+.4*known + .22*explicit + .2*learned.confidence*learnedFit + .12*learned.confidence*similarity + (own ? .06*Math.min(1,own.weight/4) : 0);
+    const learnedFit = topics.reduce((sum,t)=>sum+learned.weights[t.id]*(t.evidence.score-.5)*2,0)/Math.max(.01,learnedTotal);
+    // Distance stays useful in cold start, but a few extra kilometres must not
+    // drown out an explicit save. Learning other traits remains confidence-limited.
+    // Current saves contribute .24; one fresh compare .12; one view only .03.
+    const scoreParts = {
+      distance: (.45 - .1 * learned.confidence) * near,
+      known: .4 * known,
+      preferences: .22 * explicit,
+      learned: .2 * learned.confidence * learnedFit,
+      similarity: .12 * learned.confidence * similarity,
+      familiarity: own ? .24 * Math.min(1, own.weight / 4) : 0,
+    };
+    const score = Object.values(scoreParts).reduce((sum, value) => sum + value, 0);
     const supported = matches.filter(e => e.state==='supported' && e.score>.5).sort((a,b)=>b.score-a.score);
-    const learnedTopic = DISCOVERY_PREFERENCES.map(t=>({...t,value:learned.weights[t.id]*(reviewEvidence(p,t.id,now).score-.5)})).sort((a,b)=>b.value-a.value)[0];
+    const learnedTopic = topics.map(t=>({...t,value:learned.weights[t.id]*(t.evidence.score-.5)})).sort((a,b)=>b.value-a.value)[0];
     const anchor = similarities.filter(s=>s.meaningful&&s.id!==p.id).sort((a,b)=>b.value*b.weight-a.value*a.weight)[0];
     const label = DISCOVERY_PREFERENCES.find(t=>t.id===supported[0]?.id)?.label;
-    const reason = label ? `Matches your choices: ${label}` : own?.saved ? 'A centre you saved' : own?.compared ? 'You compared this centre before' : learnedTopic?.value>.01 ? `Parents mention: ${learnedTopic.label}` : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
-    return { p, score, reason, hidden: hidden.has(p.id), basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
+    const reason = own?.saved ? 'A centre you saved' : own?.compared ? 'You compared this centre before' : label ? `Matches your choices: ${label}` : learnedTopic?.value>.01 ? `Parents mention: ${learnedTopic.label}` : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
+    // Only well-supported positive review themes can add diversity. Missing or
+    // stale reviews never manufacture a strength, and different branch IDs alone
+    // do not imply different care. Keep the two strongest themes per centre.
+    const strengths = strongestReviewTopics(topics).map(t => t.id);
+    return { p, score, scoreParts, strengths, reason, hidden: hidden.has(p.id), basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
   });
   const priority = (a,b) => {
     const contact = Number(hasContact(b.p))-Number(hasContact(a.p)); if(contact) return contact;
@@ -197,7 +225,12 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
   };
   const chosen=[]; const brand=p=>p.name?.split(/\s[—–]\s/)[0].toLowerCase();
   while(scored.length){
-    const adjusted=x=>x.score-(chosen.slice(0,3).some(c=>brand(c.p)===brand(x.p))?.12:0);
+    // A small, deterministic novelty bonus in positions 2–5 lets comparable
+    // options with different strengths be seen. It cannot cross fit/contact
+    // groups, displace a clearly stronger candidate, or shuffle every search.
+    const seenTopics = new Set(chosen.flatMap(c => c.strengths));
+    const adjusted=x=>x.score-(chosen.slice(0,3).some(c=>brand(c.p)===brand(x.p))?.12:0)
+      +(chosen.length>0 && chosen.length<5 && x.strengths.some(id=>!seenTopics.has(id)) ? .035 : 0);
     scored.sort((a,b)=>priority(a,b)||adjusted(b)-adjusted(a)||a.p.distanceKm-b.p.distanceKm||a.p.id.localeCompare(b.p.id));
     chosen.push(scored.shift());
   }
@@ -216,12 +249,20 @@ export function personaliseSearchItems({ items, seeds = [], request, library, hi
   // current condition fit and diversity provide the cold-start order.
   const ranked=rankCentres({candidates:items,seeds:[...seeds,...items],request,library,history,now,excludeHidden:false});
   const byId=new Map(ranked.map((r,index)=>[r.p.id,{...r,index}]));
-  const order=request.sort==='distance' ? [...items].sort((a,b)=>{
+  const recommended=request.sort==='recommended';
+  const order=recommended ? [...items].sort((a,b)=>{
     const conflicts=Number(a.fit?.counts?.conflict>0)-Number(b.fit?.counts?.conflict>0);
     return conflicts||Number(hasContact(b))-Number(hasContact(a))||(byId.get(a.id)?.index??Infinity)-(byId.get(b.id)?.index??Infinity);
   }) : items;
   const eligible=order.filter(p=>byId.has(p.id)&&!byId.get(p.id).hidden);
   const contactable=eligible.some(hasContact)?eligible.filter(hasContact):eligible;
   const suggested=new Set(contactable.slice(0,3).map(p=>p.id));
-  return order.map(p=>{const match=byId.get(p.id);const personal=match&&!match.hidden&&match.reason!=='Near your chosen location';return {...p,suggested:suggested.has(p.id),personalised:!!personal&&suggested.has(p.id),personalisedReason:personal?match.reason:null,personalisedRank:match?match.index+1:null,rerankScore:match?.score??null};});
+  return order.map((p,index) => {
+    const match = byId.get(p.id);
+    const personal = recommended && match && !match.hidden && match.reason !== 'Near your chosen location';
+    return { ...p, suggested: suggested.has(p.id), personalised: !!personal && suggested.has(p.id),
+      personalisedReason: personal ? match.reason : null,
+      personalisedRank: match ? (recommended ? match.index : index) + 1 : null,
+      rerankScore: match?.score ?? null };
+  });
 }

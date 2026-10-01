@@ -30,7 +30,7 @@ import MapSearchDock from "./MapSearchDock.jsx";
 import SearchActions from "./SearchActions.jsx";
 import Dialog from "./Dialog.jsx";
 import DialogPresence from "./DialogPresence.jsx";
-import SelectMenu, { sortOptions } from "./SelectMenu.jsx";
+import SelectMenu, { searchSortOptions } from "./SelectMenu.jsx";
 import TimeInput from "./TimeInput.jsx";
 import CareTypeChoice from "./CareTypeChoice.jsx";
 import {
@@ -49,7 +49,7 @@ import Enquiry from "./Enquiry.jsx";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import GettingStarted from "./GettingStarted.jsx";
 import ShortCareAlternatives, { ShortCareMapAlternatives, hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
-import { saveTour } from "../shared/tour.mjs";
+import { saveTour, tourSeen } from "../shared/tour.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { displayName, placeLine, shortDateLabel } from "../shared/display.mjs";
 import { assess, costFor, enquiries } from "../shared/conditions.mjs";
@@ -84,7 +84,7 @@ const initial = () => ({
   query: "",
   includeUnknown: true,
   includeConflicts: false,
-  sort: "distance",
+  sort: "recommended",
 });
 const scenario = (r) =>
   r
@@ -168,6 +168,8 @@ export default function App({
     [savedCheck, setSavedCheck] = useState(null),
     [preparation, setPreparation] = useState(null);
   const [tourOpen, setTourOpen] = useState(false);
+  // First visit: offer the tour once, without starting it on its own.
+  const [tourInvite, setTourInvite] = useState(() => { try { return !tourSeen(window.localStorage); } catch { return false; } });
   const interests = useInterests(mode, tourOpen);
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
@@ -224,10 +226,10 @@ export default function App({
       setClearCacheConfirm(false);
       close();
       onHome?.({ fresh: true });
-      notify("Local data cleared. EqualPath is ready for a new start.");
+      notify("Data cleared. You can start again.");
     } catch {
       setClearCacheConfirm(false);
-      notify("Local data could not be cleared. Please try again.");
+      notify("We couldn’t clear your data. Please try again.");
     }
   };
   useEffect(() => {
@@ -411,7 +413,8 @@ export default function App({
     setPickupQueryReset({ value: pickup.label });
     const view = { center: { lat: pickup.lat, lng: pickup.lng }, zoom: 13 };
     rememberMap(view, pickup);
-    setMapTarget(view);
+    // Centre the starting point in the part of the map the search box leaves free.
+    setMapTarget({ ...view, clearOfSearch: true });
     setBrowseCenter(view.center);
     setResults(null);
     setSelected(null);
@@ -428,7 +431,7 @@ export default function App({
       setCompareIds([]); setComparison(null); setCompareSort("distance");
       setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({}); setDialog(null);
       setErrors({}); setFailure(null); setFormOpen(true);
-      setDraft(x => ({ ...x, careType: value, radius: searchRadius(undefined, value), date: value === "short_term" ? todayKL() : "", deadline: "", end: "", sort: "distance" }));
+      setDraft(x => ({ ...x, careType: value, radius: searchRadius(undefined, value), date: value === "short_term" ? todayKL() : "", deadline: "", end: "", sort: "recommended" }));
       return;
     }
     if (field === "pickup") {
@@ -757,7 +760,7 @@ export default function App({
       aria-hidden={introPhase !== "ready" || undefined}
     >
       <a className="skip-link" href="#request-form" onClick={() => { setMobilePane("map"); setSearchFocus({field:"pickup",at:Date.now()}); }}>
-        Skip to your request
+        Skip to search
       </a>
       <header className="app-header">
         <button
@@ -830,64 +833,61 @@ export default function App({
         id="search-panel"
         inert={mobilePane !== "list" || undefined}
         aria-hidden={mobilePane !== "list" || undefined}
-        aria-label="Find care for this request"
+        aria-label="Search and results"
       >
         {mobilePane === "list" && <>
         <div className="intro">
           <h1>Find childcare</h1>
           <button className="close-search-panel" aria-label="Close search panel" onClick={() => { setMobilePane("map"); requestAnimationFrame(() => focusMapSearch()); }}><X size={21} /></button>
         </div>
-        {tourOpen && <p className="demo-notice">Tutorial · fictional centres and sample details. Your search will be restored when you finish or skip.</p>}
+        {tourOpen && <p className="demo-notice">Quick tour: these centres are examples. Your own search comes back when the tour ends.</p>}
         {mode === "demo" && (
           <p className="demo-notice">
-            Demo · fictional centres and prices.{" "}
+            Demo: these centres and prices are made up.{" "}
             <button onClick={() => switchMode("live")}>
               Back to real centres
             </button>
           </p>
         )}
-        {!tourOpen && <SavedCentreReminder favourites={library.favourites}
+        {!tourOpen && !results && <SavedCentreReminder favourites={library.favourites}
           onChoose={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }} />}
-        <div className={`request-heading ${results ? "" : "request-heading-empty"}`}>
-          {results && <strong>Your search</strong>}
-          {results && (
-            <button onClick={() => setFormOpen((v) => !v)}>
-              {formOpen ? "Show results" : "Change search"}{" "}
-              <SlidersHorizontal size={13} />
+        <div className={`request-heading ${results && formOpen ? "" : "request-heading-empty"}`}>
+          {results && formOpen && <strong>Your search</strong>}
+          {results && formOpen && (
+            <button onClick={() => setFormOpen(false)}>
+              Show results <SlidersHorizontal size={13} />
             </button>
           )}
         </div>
         {browseSelection && !results && <p className="notice-panel">To check {browseSelection.name}, fill in the times below.</p>}
         {!formOpen && activeRequest && (
           <div className="compact-request">
-            <p>
-              <MapPin size={14} />
-              {activeRequest.pickup.label}
-            </p>
-            <strong className="request-care-type">{careTypeLabel(activeRequest)}</strong>
-            {isShortCare(activeRequest) && <div>
-              <strong>{shortDateLabel(activeRequest.date)}</strong>
-              <span>
-                {activeRequest.deadline}–{activeRequest.end}
-              </span>
-            </div>}
-            <small>
-              {[activeRequest.age === ""
-                ? "Age not chosen"
-                : activeRequest.age === "0"
-                  ? "Under 1 year"
-                  : `Age ${activeRequest.age.replace("-", "–")}`,
-              activeRequest.transport === "self"
-                ? "You bring your child"
-                : activeRequest.transport === "institution"
-                  ? "Centre picks up"
-                  : null].filter(Boolean).join(" · ")}
-            </small>
+            <div className="compact-request-text">
+              <p>
+                <MapPin size={14} />
+                {activeRequest.pickup.label}
+              </p>
+              <small>
+                <strong className="request-care-type">{careTypeLabel(activeRequest)}</strong>
+                {[isShortCare(activeRequest) ? `${shortDateLabel(activeRequest.date)}, ${activeRequest.deadline}–${activeRequest.end}` : null,
+                activeRequest.age === ""
+                  ? "Age not chosen"
+                  : activeRequest.age === "0"
+                    ? "Under 1 year"
+                    : `Age ${activeRequest.age.replace("-", "–")}`,
+                activeRequest.transport === "self"
+                  ? "You bring your child"
+                  : activeRequest.transport === "institution"
+                    ? "Centre picks up"
+                    : null].filter(Boolean).map(part => ` · ${part}`).join("")}
+              </small>
+            </div>
+            {results && <button className="compact-request-change" onClick={() => setFormOpen(true)}>Change search <SlidersHorizontal size={13} /></button>}
           </div>
         )}
         {reopening && (
           <div className="notice-panel">
-            <strong>Rechecking {reopening.name}</strong>
+            <strong>Checking {reopening.name} again</strong>
             <p>
               {isShortCare(draft) ? "Choose a new date to check this centre." : "Check your choices, then search again."}
             </p>
@@ -925,7 +925,7 @@ export default function App({
             }}
           />
           {pickupAddress && <p className="pickup-address-status" role="status">
-            {pickupAddress === "loading" ? "Finding the nearby street…" : <>Street address unavailable. Your selected location is kept. <button type="button" className="text-link" onClick={()=>setAddressRetry(n=>n+1)}>Retry address</button></>}
+            {pickupAddress === "loading" ? "Finding the street name…" : <>We couldn’t find the street name. Your pin is still set. <button type="button" className="text-link" onClick={()=>setAddressRetry(n=>n+1)}>Retry address</button></>}
           </p>}
           {isShortCare(draft) && <div data-tour="care-times" className="care-time-fields">
           <div className="care-day-age">
@@ -1054,14 +1054,11 @@ export default function App({
           <SearchActions busy={busy} results={results} dirty={dirty} failure={failure} submitRef={submitRef} reopening={reopening} />
 
         </form>
-        <div className="request-save-actions">
+        {!results && <div className="request-save-actions">
           <button className="text-link" onClick={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }}>
             Saved centres{library.favourites.length > 0 && ` (${library.favourites.length})`}
           </button>
-          {!!library.favourites.length && !!activeRequest && <button className="text-link" onClick={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }}>
-            Check saved centres with this search <ArrowRight size={14} />
-          </button>}
-        </div>
+        </div>}
         {failure && (
           <div className="error-box" role="alert">
             <strong>We couldn’t load centres</strong>
@@ -1074,7 +1071,7 @@ export default function App({
             <strong>
               {busy ? "Updating results…" : "Showing previous results"}
             </strong>
-            <p>{dirty ? "Your new choices have not been applied. " : ""}{requestCaption(results.request)}</p>
+            <p>{dirty ? "Your changes aren’t in these results yet. " : ""}{requestCaption(results.request)}</p>
             {!busy && !formOpen && (
               <button onClick={() => search(null)}>
                 Update results <ArrowRight size={12} />
@@ -1093,7 +1090,7 @@ export default function App({
                 label="Order search results"
                 value={results.request.sort}
                 disabled={busy}
-                options={sortOptions(results.request.careType).filter(o => o.value !== "closing" || isShortCare(results.request))}
+                options={searchSortOptions(results.request.careType).filter(o => o.value !== "closing" || isShortCare(results.request))}
                 available={results.ordering?.available}
                 unavailableReasons={results.ordering?.unavailableReasons}
                 onChange={(sort) => {
@@ -1151,7 +1148,7 @@ export default function App({
                       setMobilePane("list");
                     }}
                   >
-                    Adjust your search <ArrowRight size={15} />
+                    Change your search <ArrowRight size={15} />
                   </button>
                   {!draft.includeUnknown && (
                     <button
@@ -1309,6 +1306,14 @@ export default function App({
           introReduced={introReduced}
         /></Suspense>}
       </div>
+      {tourInvite && introPhase === "ready" && !tourOpen && !results && !draft.pickup && !dialog && !choosing && (
+        <aside className="tour-invite" aria-label="Quick tour">
+          <CircleHelp size={20} aria-hidden="true" />
+          <p><strong>New here?</strong> A 1-minute tour shows how to search, compare and contact centres.</p>
+          <button className="primary" onClick={() => { setTourInvite(false); startTour(); }}>Show me</button>
+          <button className="tour-invite-close" aria-label="Not now" onClick={() => { setTourInvite(false); try { saveTour(window.localStorage, "skipped"); } catch { /* still hidden for this visit */ } }}><X size={16} /></button>
+        </aside>
+      )}
       {compareIds.length > 0 && (
         <div className="compare-tray">
           <span className="compare-tray-count"><Scale size={18} aria-hidden="true" /><strong>{compareIds.length}</strong> {compareIds.length === 1 ? "centre" : "centres"}</span>
@@ -1405,7 +1410,7 @@ export default function App({
             (preparation ? (
               <>
                 {dialogBusy && (
-                  <p role="status">Rechecking current conditions…</p>
+                  <p role="status">Checking the latest details…</p>
                 )}
                 {dialogError && (
                   <div className="error-box" role="alert">
@@ -1538,7 +1543,7 @@ export default function App({
                   <>
                     {requestChanged && (
                       <p className="notice">
-                        Your search details have changed. Update your search to compare options for your new plans.
+                        Your search has changed. Update your search to compare centres for the new plan.
                       </p>
                     )}
                     <div
@@ -1571,8 +1576,8 @@ export default function App({
             enquiry &&
             scenario(enquiry.request) !== scenario(activeRequest) && (
               <p className="notice">
-                These questions use your earlier search details. Open a centre
-                from the updated results to prepare a new list.
+                These questions use your earlier search. For new questions,
+                open a centre from your new results.
               </p>
             )}
           {dialog === "enquiry" && enquiry && (
@@ -1599,19 +1604,22 @@ export default function App({
             <div className="prose">
               <OrderingNote ordering={results?.ordering} radius={results?.request.radius} />
               <p>
-                Fit is based on what centres publish, such as care hours, ages
-                and fees. Your choices and the centres you save or view can move
-                a centre up. The order doesn’t rate care quality or mean the
-                centre has a place for your child.
+                {results?.request.sort === "recommended"
+                  ? "Recommended puts centres higher when their listed hours, ages and fees fit your search. Your choices, and the centres you save, compare or look at, also count. We also mix in centres with different strengths."
+                  : "This page follows the order you chose. Your saved centres and the centres you looked at don’t change it."}
+              </p>
+              <p>
+                The order is not a score for care quality. It also doesn’t mean
+                a centre has a place for your child.
               </p>
               <p>
                 {results?.request.includeConflicts
-                  ? "Centres whose details don’t match your search come last, with grey pins."
-                  : "Centres whose details don’t match your search are hidden. To see them, turn on “Include centres that don’t meet all my needs” in More filters."}
+                  ? "Centres with details that don’t match your search come last and have grey pins."
+                  : "Centres with details that don’t match your search are hidden. To show them, open More filters and tick “Include centres that don’t meet all my needs”."}
               </p>
               <p>
-                The list and map use the same numbers. Centres we can’t place
-                on the map still appear in the list.
+                Each centre has the same number in the list and on the map.
+                Centres without a map location are still in the list.
               </p>
             </div>
           )}
@@ -1658,15 +1666,15 @@ export default function App({
                 />
               </label>
               <div className="setting-line setting-line-clear">
-                <span><strong>Clear data on this device</strong><small>Start fresh in this browser. This deletes your saved centres, choices, viewing history and settings, for both real and demo centres.</small></span>
+                <span><strong>Clear data on this device</strong><small>Deletes everything EqualPath keeps in this browser: saved centres, your choices, viewing history and settings, for real and demo centres.</small></span>
                 {clearCacheConfirm ? <span className="setting-confirm-actions"><strong role="alert">Delete everything from this browser?</strong><button className="secondary" onClick={clearLocalCache}>Clear everything</button><button className="text-link" onClick={() => setClearCacheConfirm(false)}>Cancel</button></span> : <button className="secondary" onClick={() => setClearCacheConfirm(true)}>Clear data</button>}
               </div>
               <div className="data-mode">
                 <h3>Try the demo</h3>
                 <p>
-                  Explore fictional centres with different care hours and pickup
-                  options. Switching between the demo and real centres clears
-                  your current search and selection.
+                  Try made-up centres with different hours and pickup options.
+                  Switching between demo and real centres clears your current
+                  search.
                 </p>
                 <button
                   className="secondary"
@@ -1681,56 +1689,47 @@ export default function App({
             </>
           )}
           {dialog === "sources" && (
-            <div className="prose">
+            <div className="prose about-information">
+              <h3>Where we cover</h3>
               <p>
-                Only Kuala Lumpur and Selangor are served. Putrajaya and other
-                states are excluded.{" "}
-                {health &&
-                  !health.unavailable &&
-                  `${health.available.toLocaleString()} records are available; ${health.withheld} are held for region or branch checks.`}
+                Kuala Lumpur and Selangor only. Putrajaya and other states are not included.
+                {health && !health.unavailable &&
+                  ` You can search ${health.available.toLocaleString()} centres. We hide ${health.withheld.toLocaleString()} more until we can check their area or branch.`}
               </p>
+              <h3>Where the information comes from</h3>
+              <ul>
+                <li><strong>JKM</strong>: the government list of registered childcare centres.</li>
+                <li><strong>CariSchool</strong>: a school directory. It lists KPM codes, but we haven’t checked these codes with the government.</li>
+                <li>Centres’ own websites and listings, for contacts, hours, services and fees.</li>
+              </ul>
+              <p>Every detail shows its source and the date we checked it.</p>
+              <h3>What we check, and what we can’t</h3>
               <p>
-                <strong>JKM</strong> is an imported registration source.{" "}
-                <strong>CariSchool</strong> supplies separate branch
-                descriptions and KPM code claims; a directory claim is not
-                official KPM verification. Contact and service facts keep their
-                own source links and retrieval dates.
+                We check the listed care hours, ages and fees against your search.
+                We can’t see if a centre has a free place today. Being registered
+                doesn’t tell you how good the care is. Always ask the centre before
+                your child goes.
               </p>
+              <h3>Your privacy</h3>
               <p>
-                We check the listed care hours for your date. Ask the centre
-                about pickup and whether they can take your child.
-                Driving times are estimates and do not include current traffic.
+                There is no account, and we never contact a centre for you. Your
+                search is only sent to find results. This browser remembers your
+                last map position and starting point, the centres you save, and
+                which centres you looked at (for suggestions). It doesn’t save
+                dates or your child’s age. You can turn suggestions history off in
+                Saved → For you → How suggestions work.
               </p>
+              <h3>Maps and driving times</h3>
               <p>
-                Geographic checks use a versioned{" "}
-                <a
-                  href="https://www.geoboundaries.org/api/current/gbOpen/MYS/ADM1/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  OSM / geoBoundaries administrative boundary dataset
-                </a>{" "}
-                representing 2017, under ODbL. Contradictory coordinates are
-                withheld; this is not a survey-grade boundary service.
-              </p>
-              <p>
-                Your current request stays in this browser’s active page and is
-                sent only for the current query. There is no parent account,
-                child identity form or automatic contact. This browser remembers
-                your last map location and pickup point, plus centres you save.
-                Dates and child ages are not saved automatically.
-                Viewed and compared centre IDs are remembered here to help suggest other centres.
-                In Saved → For you → How suggestions work, you can turn viewing history off or clear it.
-                Address searches use OpenStreetMap data through Photon; map tiles
-                come from the map provider.
-                Driving estimates send only pickup and centre coordinates to the
-                OSRM routing service. They use road data without live traffic.
-                <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noreferrer"> OSRM / OpenStreetMap routing</a> · <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noreferrer">Fix the map</a>.
-              </p>
-              <p>
-                A registration record or an old listing does not show whether
-                a centre can take your child now, or how good the care is.
-                Check with the centre before your child goes.
+                Address search uses OpenStreetMap data through Photon. Driving
+                times come from the{" "}
+                <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noreferrer">OSRM / OpenStreetMap routing</a>{" "}
+                service, which only receives the two map points. They don’t
+                include traffic. Area checks use the{" "}
+                <a href="https://www.geoboundaries.org/api/current/gbOpen/MYS/ADM1/" target="_blank" rel="noreferrer">OSM / geoBoundaries boundary data</a>{" "}
+                (2017, ODbL licence), so places near a state border may be
+                left out. See a mistake on the map?{" "}
+                <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noreferrer">Fix the map</a>.
               </p>
               <button
                 className="secondary"

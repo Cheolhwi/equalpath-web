@@ -58,7 +58,7 @@ test('one shared care plan checks every saved centre', async ({ page }) => {
   await page.getByRole('navigation').getByRole('button', { name: /^Saved/ }).click();
   const dialog = page.getByRole('dialog', { name: 'Saved for later', exact: true });
   await expect(dialog.getByRole('heading', { name: 'Check all saved centres', exact: true })).toBeVisible();
-  await expect(dialog.getByText('Enter one plan for all 2 saved centres.', { exact: true })).toBeVisible();
+  await expect(dialog.getByText('Use one date and time for all 2 saved centres.', { exact: true })).toBeVisible();
   await dialog.getByLabel('Date for all saved centres').fill('2026-09-24');
   await dialog.getByLabel('Child’s age for all saved centres').selectOption('1-3');
   await dialog.getByLabel('Start time for all saved centres').fill('09:00');
@@ -67,6 +67,6 @@ test('one shared care plan checks every saved centre', async ({ page }) => {
   await expect(dialog.getByText('Checked 2 of 2 saved centres', { exact: true })).toBeVisible();
   await expect(dialog.getByRole('button', { name: 'View details', exact: true })).toHaveCount(2);
   await dialog.getByLabel('Date for all saved centres').fill('2026-09-25');
-  await expect(dialog.getByText('This plan changed. Check again to refresh every saved centre.', { exact: true })).toBeVisible();
+  await expect(dialog.getByText('You changed the plan. Check again to update every saved centre.', { exact: true })).toBeVisible();
   await expect(dialog.getByText('Checked 2 of 2 saved centres', { exact: true })).toHaveCount(0);
 });

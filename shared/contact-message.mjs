@@ -62,7 +62,7 @@ export function contactQuestions(p, request, now = Date.now()) {
   for (const row of rows.filter(q => !covered.has(q.id))) add(row.id, [row.id], row.text);
   for (const concern of reviewConcerns(p, now).filter(c => p.reviewQuestionIds?.includes(c.id))) {
     const evidence = { id: `review:${concern.id}`, topic: concern.label,
-      why: `${concern.recentNegative} recent reviews raise a concern. This is a sample of reported experiences, not a confirmed service fact.`,
+      why: `${concern.recentNegative} recent ${concern.recentNegative === 1 ? 'review mentions' : 'reviews mention'} a problem. These are parents’ experiences, not checked facts.`,
       reviewTopic: concern.id, reviewExcerpts: concern.excerpts, check: { source: p.reviewProfile.source } };
     const existing = groups.find(q => q.id === concern.mergesWith);
     if (existing) existing.checks.push(evidence);

@@ -14,7 +14,7 @@ First-use choices ───────────────→ preference fi
 Saved / compared / viewed / hidden → learned interests from fresh seed profiles
                                    ↓
 Current search → radius / nearest page / age / time / pickup checks
-  → conflict-free candidates → personalised rerank
+  → conflict-free candidates → Recommended scoring → bounded diversity rerank
   → one ordered list + the same top-three map suggestions
   → inspect topic passages → choose concern → Contact question → copy
                                    ↓
@@ -22,8 +22,12 @@ Current search → radius / nearest page / age / time / pickup checks
 ```
 
 Unknown review evidence stays neutral. Reviews do not prove a vacancy. Known
-service conflicts cannot be overridden by preferences. Explicit price, closing
-and pickup sorts remain authoritative. Cold start is skippable; browser-local
+service conflicts cannot be overridden by preferences. Recommended lowers
+distance influence and gives stronger weight to current saves. Explicit Nearest
+first, price, closing and pickup searches follow facts without personalisation.
+All ten eligible page results still participate in Recommended; a small novelty
+bonus exposes different supported review strengths among comparable candidates.
+There is no fixed five-plus-five split. Cold start is skippable; browser-local
 reset returns to the landing page and removes saved centres and interests.
 
 The source workbook has no original review URLs, so those links remain a data

@@ -88,7 +88,7 @@ test("result cards show drive time and fee basis, while conflicts stay below oth
   await page.screenshot({path:dir+"/results-mobile.png"});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByRole('button',{name:'Close search panel'}).click();
-  await page.getByRole("button",{name:"Fit pickup and results",exact:true}).click();
+  await page.getByRole("button",{name:"Show all results on the map",exact:true}).click();
   await expect.poll(async()=>page.locator(".provider-pin.suggested").evaluateAll(pins=>pins.every(pin=>{const r=pin.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=105&&r.bottom<innerHeight-65;}))).toBe(true);
   await page.screenshot({path:dir+"/suggestions-mobile.png"});
   await openResults(page);
@@ -96,7 +96,7 @@ test("result cards show drive time and fee basis, while conflicts stay below oth
 });
 test("route outage keeps results and published prices, without fake drive estimates",async({page})=>{
   const calls=[];await setup(page,calls,false);await search(page);
-  await expect(page.locator(".provider-row").first()).toContainText("Driving time unavailable");
+  await expect(page.locator(".provider-row").first()).toContainText("Drive time not available");
   await expect(page.locator(".provider-row").first().locator(".row-facts > span")).toHaveText(["Age","Drive","Fee"]);
   await expect(page.locator(".provider-row").first()).not.toContainText("km by road");
   await expect(page.locator(".provider-row").first()).not.toContainText("0 min");

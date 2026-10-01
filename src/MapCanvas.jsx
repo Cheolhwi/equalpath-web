@@ -42,6 +42,7 @@ export default function MapCanvas({
     lastView = useRef(viewTarget),
     selectionStart = useRef(null),
     markers = useRef([]),
+    displayOffsets = useRef(new Map()),
     latest = useRef({
       items,
       pickup,
@@ -94,7 +95,35 @@ export default function MapCanvas({
     return offsets;
   }, [pinKey]);
   useEffect(() => { setDismissedCards([]); }, [pinKey, showSuggestions]);
+  // Pins that touch on screen at this zoom are nudged apart (and away from the
+  // "You" pin) so each number can be read and tapped. Earlier numbers keep
+  // their place, so pins never swap.
+  const declutter = () => {
+    const m = map.current;
+    if (!m) return;
+    const size = 40, placed = [], next = new Map();
+    const pickupPoint = latest.current.pickup && !latest.current.choosing ? m.project([latest.current.pickup.lng, latest.current.pickup.lat]) : null;
+    if (pickupPoint) placed.push({ x: pickupPoint.x, y: pickupPoint.y - 26 });
+    for (const marker of markers.current) {
+      const id = marker.getElement().dataset.providerId;
+      if (!id) continue;
+      const base = pinOffsets.get(id) ?? [0, 0], point = m.project(marker.getLngLat());
+      let [dx, dy] = base;
+      const clashes = () => placed.some(q => Math.hypot(point.x + dx - q.x, point.y + dy - q.y) < size);
+      for (let k = 0; clashes() && k < 18; k++) {
+        const angle = Math.PI / 2 + (k % 6) * Math.PI / 3, r = size * (1 + Math.floor(k / 6));
+        dx = base[0] + Math.cos(angle) * r; dy = base[1] + Math.sin(angle) * r;
+      }
+      placed.push({ x: point.x + dx, y: point.y + dy });
+      marker.setOffset([dx, dy]);
+      next.set(id, [dx, dy]);
+    }
+    displayOffsets.current = next;
+  };
+  latest.current.declutter = declutter;
+  const lastFitAt = useRef(0);
   const fit = ({ immediate = false } = {}) => {
+    lastFitAt.current = Date.now();
     setDismissedCards([]);
     const m = map.current;
     if (!m) return;
@@ -124,7 +153,8 @@ export default function MapCanvas({
     m.fitBounds(bounds, {
       padding: {
         top: Math.min(latest.current.topInset + 50, height * 0.55),
-        bottom: Math.min(compact ? 110 : 100, height * 0.2),
+        // On phones a centre card covers the bottom of the map after a search.
+        bottom: Math.min(compact ? (latest.current.autoFit ? 230 : 110) : 100, height * (compact ? 0.32 : 0.2)),
         left: compact ? 48 : 150,
         right: compact ? 48 : 150,
       },
@@ -174,7 +204,8 @@ export default function MapCanvas({
           lng: m.getCenter().lng,
         });
     });
-    m.on("movestart", (e) => { if (e.originalEvent) userMove.current = true; });
+    m.on("movestart", (e) => { if (e.originalEvent) { userMove.current = true; lastFitAt.current = 0; } });
+    m.on("zoomend", () => latest.current.declutter?.());
     m.on("moveend", () => {
       if (latest.current.introPhase !== "ready" || latest.current.choosing) { userMove.current = false; return; }
       const center = m.getCenter();
@@ -258,7 +289,7 @@ export default function MapCanvas({
           items.findIndex((x) => x.id === p.id) + 1,
         ).padStart(2, "0");
         el.title = p.name + (conflict ? " · Some details don’t match" : p.personalised ? ` · ${p.personalisedReason}` : p.suggested ? " · Suggested" : "");
-        if (conflict) el.setAttribute("aria-description", "Some details don’t match this request. Select to check.");
+        if (conflict) el.setAttribute("aria-description", "Some details don’t match your search. Select to see why.");
         if (p.suggested) {
           const badge = document.createElement("span");
           badge.className = "pin-star"; badge.textContent = "★"; badge.setAttribute("aria-hidden", "true"); el.appendChild(badge);
@@ -280,8 +311,8 @@ export default function MapCanvas({
       const el = document.createElement("div");
       el.className = "pickup-pin";
       el.textContent = "You";
-      el.title = "Your chosen location: " + pickup.label;
-      el.setAttribute("aria-label", "Your chosen location: " + pickup.label);
+      el.title = "Your starting point: " + pickup.label;
+      el.setAttribute("aria-label", "Your starting point: " + pickup.label);
       markers.current.push(
         new maplibregl.Marker({
           element: el,
@@ -292,13 +323,27 @@ export default function MapCanvas({
           .addTo(m),
       );
     }
+    declutter();
   }, [pinKey, pickup, selected, retry, choosing]);
   useEffect(() => {
     if (autoFit && !choosing) fit();
   }, [pinKey, pickup, retry, autoFit]);
+  // On phones the search box shrinks to a summary right after a search. Refit
+  // once to the space that frees up, unless the user has moved the map since.
+  useEffect(() => {
+    if (!autoFit || choosing || !map.current || Date.now() - lastFitAt.current > 2500) return;
+    const id = setTimeout(() => fit(), 120);
+    return () => clearTimeout(id);
+  }, [topInset]);
   useEffect(() => {
     lastView.current = viewTarget;
-    if (map.current && introPhase === "ready") map.current.easeTo({ center: [viewTarget.center.lng, viewTarget.center.lat], zoom: viewTarget.zoom, padding: 0, duration: reduced ? 0 : 450 });
+    if (!map.current || introPhase !== "ready") return;
+    // A newly chosen starting point must not sit under the search box.
+    // Use a one-off offset, not camera padding: padding would stay on the
+    // camera and stop later "fit all results" moves from fitting.
+    const h = map.current.getContainer().clientHeight;
+    const offset = viewTarget.clearOfSearch ? [0, (Math.min(latest.current.topInset, h * 0.6) - 40) / 2] : [0, 0];
+    map.current.easeTo({ center: [viewTarget.center.lng, viewTarget.center.lat], zoom: viewTarget.zoom, padding: 0, offset, duration: reduced ? 0 : 450 });
   }, [viewTarget]);
   useEffect(() => {
     const m = map.current;
@@ -347,7 +392,7 @@ export default function MapCanvas({
   const cardItems = picked ? [picked] : showSuggestions ? items.filter(p => p.suggested).slice(0, 3).filter(p => !dismissedCards.includes(p.id)) : [];
   const entries = m && width && cardsVisible && !choosing ? cardItems.filter(p => p.location).map(p => {
     const point = m.project([p.location.lng, p.location.lat]);
-    const [dx, dy] = pinOffsets.get(p.id) ?? [0, 0];
+    const [dx, dy] = displayOffsets.current.get(p.id) ?? pinOffsets.get(p.id) ?? [0, 0];
     return { x: point.x + dx, y: point.y + dy, id: p.id, p, selected: p.id === selected, index: items.findIndex(item => item.id === p.id) + 1 };
   }).filter(p => p.x >= 0 && p.x <= width && p.y >= 0 && p.y <= height) : [];
   return (
@@ -383,9 +428,9 @@ export default function MapCanvas({
           }}>Use this location</button></div>
         </div>
       </> : null}
-      <MapCards entries={entries} pins={m ? items.filter(p => p.location).map(p => { const point = m.project([p.location.lng, p.location.lat]); const [dx, dy] = pinOffsets.get(p.id) ?? [0, 0]; return { x: point.x + dx, y: point.y + dy }; }) : []} width={width} height={height} compact={width < 600} topInset={topInset} hasCompare={hasCompare} reduced={reduced || introReduced} onOpen={onOpen} onSave={onSave} onCompare={onCompare} savedIds={savedIds} compareIds={compareIds} onClose={id => selected ? onClosePreview() : setDismissedCards(ids => [...ids, id])} />
+      <MapCards entries={entries} pins={m ? items.filter(p => p.location).map(p => { const point = m.project([p.location.lng, p.location.lat]); const [dx, dy] = displayOffsets.current.get(p.id) ?? pinOffsets.get(p.id) ?? [0, 0]; return { x: point.x + dx, y: point.y + dy }; }) : []} width={width} height={height} compact={width < 600} topInset={topInset} hasCompare={hasCompare} reduced={reduced || introReduced} onOpen={onOpen} onSave={onSave} onCompare={onCompare} savedIds={savedIds} compareIds={compareIds} onClose={id => selected ? onClosePreview() : setDismissedCards(ids => [...ids, id])} />
       <div className="map-tools">
-        <button onClick={fit} aria-label="Fit pickup and results">
+        <button onClick={fit} aria-label="Show all results on the map">
           <LocateFixed size={19} />
         </button>
         <button onClick={() => { userMove.current = true; map.current?.zoomIn(); }} aria-label="Zoom in">

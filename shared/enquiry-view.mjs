@@ -5,8 +5,8 @@ import { feeSummary } from "./result-summary.mjs";
 // Keep its IDs so selections stay tied to the same centre and dated request.
 const topics = {
   age: "Age", admission: "Care for a few hours", transport: "Centre pickup",
-  coverage: "Pickup area", pickup: "Pickup time", care: "Time to go home",
-  transfer: "Travel time", capacity: "Can they take your child?", fees: "Fee",
+  coverage: "Pickup area", pickup: "Pickup time", care: "Care ends at",
+  transfer: "Arrival time", capacity: "Can they take your child?", fees: "Fee",
 };
 export const visitDate = date => new Intl.DateTimeFormat("en-GB", {
   weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur",
@@ -71,25 +71,25 @@ function whyAsk(q, p, r, c) {
   if (q.id === "capacity") return "Ask the centre if they can take your child on your date.";
   if (q.id === "admission" && p.admission?.requirements?.length) return p.admission.requirements.join(" ");
   if (q.id === "fees") return p.cost?.available
-    ? "The estimate still needs to be agreed with the centre."
-    : "Programme fees and budget estimates don’t give the total for a short visit.";
+    ? "This is our estimate. Ask the centre to confirm it."
+    : "We don’t know the total price for a short visit.";
   if (c?.state === "conflict") return {
     age: "Your child’s age is outside the listed range.",
     admission: "The listed service doesn’t offer care for a few hours.",
     transport: "The listed service doesn’t offer centre pickup.",
-    coverage: "Your pickup address is outside the listed area.",
+    coverage: "Your starting point is outside the listed pickup area.",
     pickup: `The listed pickup times are after ${r.deadline}.`,
-    care: `The listed hours or pickup rules don’t cover ${r.end} on this date.`,
+    care: `The listed hours don’t cover ${r.end} on this date.`,
   }[q.id] ?? "The listed details don’t match this part of your request.";
-  if (q.id === "age") return p.age?.alternative ? "The sources list different age ranges." : r.age === "" ? "You haven’t selected an age yet." : "We couldn’t confirm that the listed ages cover your child.";
-  if (q.id === "transport" && !r.transport) return "You haven’t chosen who will arrange pickup yet.";
+  if (q.id === "age") return p.age?.alternative ? "The sources list different age ranges." : r.age === "" ? "You haven’t chosen an age yet." : "We aren’t sure the listed ages include your child.";
+  if (q.id === "transport" && !r.transport) return "You haven’t said who takes your child to the centre.";
   return {
     admission: "Care for a few hours hasn’t been confirmed for this centre.",
-    transport: isShortCare(r) ? "Pickup for this visit needs checking." : "Regular pickup needs checking.",
-    coverage: "Ask if the centre can pick up from your address.",
-    pickup: `Pickup by ${r.deadline} hasn’t been confirmed.`,
-    care: `Care until ${r.end} needs checking for this date.`,
-    transfer: "Driving time does not include drop-off time or current traffic.",
+    transport: isShortCare(r) ? "Ask if the centre can pick up your child for this visit." : "Ask if the centre offers regular pickup.",
+    coverage: "Ask if the centre can pick up from your starting point.",
+    pickup: `Ask if the centre can pick up your child by ${r.deadline}.`,
+    care: `Ask if your child can stay until ${r.end} on this date.`,
+    transfer: "Driving times don’t include traffic or the time to drop off.",
   }[q.id] ?? "This detail needs checking with the centre.";
 }
 export function enquiryView(p, request) {

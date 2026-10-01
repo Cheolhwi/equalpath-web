@@ -7,10 +7,10 @@ import { requestAPI } from './api.js';
 
 // A mixed review counts on both sides, so the parts can add up to more than the total.
 const balance = ({ reviewCount, positiveCount, negativeCount }) => {
-  const parts = [`${positiveCount} positive`, `${negativeCount} ${negativeCount === 1 ? 'raises' : 'raise'} a concern`];
+  const parts = [`${positiveCount} positive`, `${negativeCount} negative`];
   const neutral = reviewCount - positiveCount - negativeCount;
   if (neutral > 0) parts.push(`${neutral} neutral`);
-  if (neutral < 0) parts.push('some say both');
+  if (neutral < 0) parts.push('some are mixed');
   return parts.join(' · ');
 };
 const dateLabel = date => date ? new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z')) : 'Date not provided';
@@ -60,13 +60,13 @@ export default function ReviewEvidence({ p, onAsk }) {
   return <details className="centre-reviews extra-details" open={opened} onToggle={toggle}>
     {heading}
     <div className="review-evidence-body">
-      <p className="review-scope">Parents’ experiences can help you choose what to ask. They do not confirm a place for your child.</p>
+      <p className="review-scope">Reviews can help you decide what to ask. They don’t tell you if there is a place for your child.</p>
       <div className="review-topic-select"><SelectMenu label="Read about" value={topic} options={DISCOVERY_PREFERENCES.map(t=>({value:t.id,label:t.label}))} onChange={value=>{setTopic(value);setExpanded(false);}}/></div>
       <div className="review-topic-summary" role="status"><strong>{evidence.reviewCount ? `${evidence.reviewCount} ${evidence.reviewCount === 1 ? 'review mentions' : 'reviews mention'} ${selected.label.toLowerCase()}` : `No reviews mention ${selected.label.toLowerCase()} yet`}</strong>{evidence.reviewCount > 0 && <span>{balance(evidence)} · {evidence.recentCount} in the past year</span>}{evidence.reviewCount > 0 && evidence.recentCount<2&&<span>Too few recent reviews to judge this.</span>}</div>
       {ordered.slice(0,expanded?ordered.length:2).map(review=><ReviewQuote key={review.id} review={review} topic={topic}/>)}
       {!ordered.length&&evidence.reviewCount>0&&<p>No quotes about this topic yet.</p>}
       {ordered.length>2&&<button type="button" className="text-link" onClick={()=>setExpanded(!expanded)}>{expanded?'Show fewer reviews':'Read more reviews'}<ChevronDown size={16}/></button>}
-      {concern&&onAsk&&<div className="review-ask"><p>{concern.recentNegative} recent reviews raise a concern about this.</p><button className="secondary" type="button" onClick={()=>onAsk(topic,profile)}>Ask the centre about this<ArrowRight size={16}/></button></div>}
+      {concern&&onAsk&&<div className="review-ask"><p>{concern.recentNegative} recent {concern.recentNegative === 1 ? 'review mentions' : 'reviews mention'} a problem with this.</p><button className="secondary" type="button" onClick={()=>onAsk(topic,profile)}>Ask the centre about this<ArrowRight size={16}/></button></div>}
     </div>
   </details>;
 }

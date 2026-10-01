@@ -53,3 +53,18 @@ export function categoryLabel(p) {
 export const shortDateLabel = (date) => date
   ? new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`))
   : "";
+
+// Register addresses are often all capitals. Tidy each all-caps part on its
+// own, so "TINGKAT 2, JALAN SETIABAKTI, ... WP Kuala Lumpur" reads normally.
+export function displayAddress(address) {
+  if (typeof address !== "string" || !address.trim()) return address;
+  return address.split(/(,\s*|\.\s+)/).map(part => /^(,\s*|\.\s+)$/.test(part) ? part : tidyCaps(part)).join("");
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// "2026-09-14" or an ISO timestamp → "14 Sep 2026". Other text is returned as is.
+export function dateLabel(value) {
+  const m = typeof value === "string" && value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m || +m[2] < 1 || +m[2] > 12) return value;
+  return `${+m[3]} ${MONTHS[+m[2] - 1]} ${m[1]}`;
+}

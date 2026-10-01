@@ -420,7 +420,7 @@ export function enquiries(p, r, fit = assess(p, r)) {
   return [...new Map(questions.map((q) => [q.id, q])).values()];
 }
 export const priorityValue = (p, sort, date) =>
-    sort === "distance"
+    sort === "distance" || sort === "recommended"
       ? p.distanceKm
       : sort === "price"
         ? feePriorityValue(p)
@@ -443,7 +443,7 @@ const preferContactable = items => {
   const contactable = items.filter(hasContact);
   return contactable.length ? contactable : items;
 };
-export function sortProviders(items, sort, date) {
+export function sortProviders(items, sort, date, { contactFirst = true } = {}) {
   return [...items].sort((a, b) => {
     // Conflicts always rank below every result without a known conflict,
     // within the supplied page or comparison, regardless of secondary ordering.
@@ -452,7 +452,7 @@ export function sortProviders(items, sort, date) {
     if (group) return group;
     if (conflicts(a) !== conflicts(b)) return conflicts(a) - conflicts(b);
     const contact = Number(hasContact(b)) - Number(hasContact(a));
-    if (contact) return contact;
+    if (contactFirst && contact) return contact;
     if (sort === "price" && feePriorityGroup(a) !== feePriorityGroup(b)) return feePriorityGroup(a) - feePriorityGroup(b);
     let x = priorityValue(a,sort,date),
       y = priorityValue(b,sort,date);

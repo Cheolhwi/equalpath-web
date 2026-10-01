@@ -126,7 +126,7 @@ for (const width of [320, 390, 1280, 1440]) test(`${width}px: map first, search 
   await expect(page.locator(".provider-pin[aria-pressed='true']")).toHaveCount(0);
   await expect(page.locator(".map-centre-card.selected:not(.leaving)")).toHaveCount(0);
   expect(calls.filter(c => ["nearby", "search"].includes(c.action)).length).toBe(count);
-  await page.getByRole("button", { name: "Fit pickup and results", exact: true }).click();
+  await page.getByRole("button", { name: "Show all results on the map", exact: true }).click();
   await checkCards(page);
   await page.locator(".map-quick-actions").getByRole("button", { name: /^All/ }).click();
   await expect(page.locator(".provider-row").first()).toBeVisible();

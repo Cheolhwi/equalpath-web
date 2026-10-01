@@ -1,5 +1,6 @@
 import { useId, useLayoutEffect, useRef, useState } from "react";
 import { displayName } from "../shared/display.mjs";
+import { plainReason } from "../shared/plain-copy.mjs";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, ClipboardList, Copy, MessageCircle } from "lucide-react";
 import { PublishedContacts, SourceLink } from "./ProviderViews.jsx";
 import { contactIntro, contactMessage, contactQuestions } from "../shared/contact-message.mjs";
@@ -49,7 +50,7 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
             {questions.map(q => <div key={q.id} className={`contact-question ${ids.includes(q.id) ? "" : "not-selected"}`} data-question-id={q.id}>
               <label><input type="checkbox" checked={ids.includes(q.id)} onChange={() => toggle(q.id)} /><span>{q.text}</span></label>
               {!ids.includes(q.id) && <small className="question-excluded">Not included</small>}
-              {q.checks.some(c => c.reviewTopic) && <small className="question-review-note">Added from parent reviews</small>}
+              {q.checks.some(c => c.reviewTopic) && <small className="question-review-note">Based on parent reviews</small>}
               {q.conflicts.length > 0 && <p className="contact-question-warning">{q.conflicts.map(c => c.why).join(" ")}</p>}
             </div>)}
           </div>
@@ -57,7 +58,7 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
         </div>
         <div className="message-copy-action">
           <button className="primary" disabled={!selected.length} onClick={copy}>{copyState === "copied" ? <Check size={18} /> : <Copy size={18} />}{copyState === "copied" ? "Copied" : "Copy message"}</button>
-          <p className="enquiry-copy-status" role="status">{!selected.length ? "Tick a question to include it." : copyState === "copied" ? "Paste it into WhatsApp or a text message to send." : copyState === "manual" ? "Copy did not work. Copy the selected text below." : "Copies your details and the checked questions."}</p>
+          <p className="enquiry-copy-status" role="status">{!selected.length ? "Tick a question to include it." : copyState === "copied" ? "Paste it into WhatsApp or a text message to send." : copyState === "manual" ? "Copying didn’t work. Select the text below and copy it." : "Copies your details and the ticked questions."}</p>
         </div>
         {copyState === "manual" && <textarea className="enquiry-manual-message" ref={messageRef} readOnly aria-label="Message to copy" value={text} />}
         <details className="contact-question-evidence"><summary>More details<ChevronDown size={16} aria-hidden="true" /></summary>
@@ -68,7 +69,7 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
           {questions.flatMap(q => q.checks).map(q => <div className="contact-evidence-item" key={q.id} data-check-id={q.id}>
             <strong>{q.topic}</strong><p>{q.why}</p>
             {q.reviewExcerpts?.map(review => <ReviewQuote key={review.id} review={review} topic={q.reviewTopic} />)}
-            {q.check && <><p>{q.check.reason}</p>{q.check.source && <SourceLink source={q.check.source} />}{q.id === "age" && p.age?.alternative?.source && <SourceLink source={p.age.alternative.source} />}</>}
+            {q.check && <>{plainReason(q.check.reason) !== q.why && <p>{plainReason(q.check.reason)}</p>}{q.check.source && <SourceLink source={q.check.source} />}{q.id === "age" && p.age?.alternative?.source && <SourceLink source={p.age.alternative.source} />}</>}
             {q.fee && (p.fees?.length || p.cost?.available) ? <><strong>{q.fee.label}</strong><p>{q.fee.note}</p>{p.cost?.available && <SourceLink source={p.cost.source} />}{!p.cost?.available && [...new Map((p.fees ?? []).filter(f => f.source).map(f => [f.source.url ?? f.source.label, f.source])).values()].map((source, i) => <SourceLink key={i} source={source} />)}</> : null}
           </div>)}
         </details>

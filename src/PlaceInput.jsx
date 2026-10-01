@@ -17,7 +17,7 @@ export default function PlaceInput({
   active = true,
   idPrefix = "pickup",
   queryReset,
-  label = "Pickup address",
+  label = "Starting point",
   hideLabel = false,
   compact = false,
   onQueryChange,
@@ -34,15 +34,18 @@ export default function PlaceInput({
     [geoMessage, setGeoMessage] = useState(""),
     [geoFailed, setGeoFailed] = useState(false),
     geoController = useRef(null),
+    suggestTimer = useRef(null),
     token = useRef(0);
+  const cancelSuggest = () => { clearTimeout(suggestTimer.current); suggestTimer.current = null; };
   useEffect(() => {
     if (value?.label) setQuery(value.label);
   }, [value?.label]);
   useEffect(() => {
-    if (queryReset) { token.current++; setQuery(queryReset.value); setOptions([]); setOpen(false); setBusy(false); }
+    if (queryReset) { cancelSuggest(); token.current++; setQuery(queryReset.value); setOptions([]); setOpen(false); setBusy(false); }
   }, [queryReset]);
   useEffect(
     () => () => {
+      cancelSuggest();
       token.current++;
       geoController.current?.abort();
     },
@@ -57,6 +60,7 @@ export default function PlaceInput({
   };
   useEffect(() => {
     if (!active) {
+      cancelSuggest();
       token.current++;
       stopLocating();
       setBusy(false);
@@ -98,7 +102,10 @@ export default function PlaceInput({
       }
     }
   };
-  const find = async (q) => {
+  // quiet: a suggestion while typing. It never shows an error, and an empty
+  // result just closes the list; Enter or the search button still explain.
+  const find = async (q, { quiet = false } = {}) => {
+    cancelSuggest();
     stopLocating();
     const seq = ++token.current;
     if (q.trim().length < 2) {
@@ -111,22 +118,27 @@ export default function PlaceInput({
     try {
       const r = await requestAPI({ action: "places", mode, query: q });
       if (seq === token.current) {
-        setOptions(r.items);
-        if (!r.items.length)
+        // The place service can return the same place twice; show it once.
+        const items = r.items.filter((p, i, all) => all.findIndex(o => o.label === p.label && (o.address ?? "") === (p.address ?? "")) === i);
+        setOptions(items);
+        if (!items.length && quiet) setOpen(false);
+        else if (!items.length)
           setMessage(
-            "No address found in KL or Selangor. Try a shorter name or choose on the map.",
+            "No address found in KL or Selangor. Try a shorter name, or pick a spot on the map.",
           );
       }
     } catch {
-      if (seq === token.current)
+      if (seq === token.current && quiet) setOpen(false);
+      else if (seq === token.current)
         setMessage(
-          "Place search is unavailable. Retry, or select a public pickup point on the map.",
+          "Address search isn’t working right now. Try again, or pick a spot on the map.",
         );
     } finally {
       if (seq === token.current) setBusy(false);
     }
   };
   useEffect(() => {
+    cancelSuggest();
     token.current++;
     stopLocating();
     setBusy(false);
@@ -160,6 +172,10 @@ export default function PlaceInput({
             token.current++;
             setBusy(false);
             setGeoMessage("");
+            // Suggest addresses after a short pause in typing.
+            cancelSuggest();
+            const typed = e.target.value;
+            if (typed.trim().length >= 3) suggestTimer.current = setTimeout(() => find(typed, { quiet: true }), 600);
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -219,7 +235,7 @@ export default function PlaceInput({
               token.current++;
               stopLocating();
               setGeoMessage(
-                "Location cancelled. Search an address or choose on the map.",
+                "Your location wasn’t used. Search for an address or pick a spot on the map.",
               );
             }}
           >
@@ -229,7 +245,7 @@ export default function PlaceInput({
       </div>}
       <span className="sr-only" id={idPrefix + "-help"}>Choose a school, station or other public address in KL or Selangor.</span>
       {open && (
-        <div className="place-results" aria-label="Pickup search results">
+        <div className="place-results" aria-label="Address results">
           {busy && <p role="status">Finding addresses…</p>}
           {!busy &&
             options.map((p) => (

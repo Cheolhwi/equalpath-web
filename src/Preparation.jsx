@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { displayName } from "../shared/display.mjs";
+import { dateLabel, displayName } from "../shared/display.mjs";
+import { plainReason } from "../shared/plain-copy.mjs";
 import { Download, Printer, ArrowRight, CalendarDays, ChevronDown, AlertTriangle, MapPin, Building2, Backpack, Shirt, Phone, Apple, BedDouble, Baby, Moon, CarFront, NotebookTabs, ClipboardCheck, MessageCircle } from "lucide-react";
 import { preparationFor, preparationHTML } from "../shared/preparation.mjs";
 import { requestErrors } from "../shared/request.mjs";
@@ -19,9 +20,9 @@ function CarSeat({ size, strokeWidth }) {
 
 const packingPictures = {
   bag: [Backpack, "Bag with name"], clothes: [Shirt, "Spare clothes"], water: [WaterBottle, "Water bottle"],
-  instructions: [Phone, "Contact numbers"], meal: [Apple, "Check food"], rest: [BedDouble, "Check nap time"],
+  instructions: [Phone, "Phone numbers"], meal: [Apple, "Food"], rest: [BedDouble, "Nap time"],
   young: [Baby, "Baby items"], evening: [Moon, "Evening pickup"],
-  "transport-items": [CarSeat, "Check car seat"], "self-items": [NotebookTabs, "Driver’s details"],
+  "transport-items": [CarSeat, "Car seat"], "self-items": [NotebookTabs, "Centre address"],
 };
 const journeyPictures = [CarFront, Building2, ParentAndChild];
 const journeyLabels = ["Leave for the centre", "At the centre", "Collect your child"];
@@ -109,8 +110,9 @@ export default function Preparation({
         <input type="checkbox" aria-label={item.text} checked={checked.includes(item.id)} onChange={() => toggle(item.id)} />
         <span className="ready-item-picture" aria-hidden="true"><Picture size={42} strokeWidth={1.6} /></span>
         <span className="ready-item-label">{label}</span>
+        {label !== item.text && <span className="ready-item-text">{item.text}</span>}
       </label>
-      <details className="ready-item-detail"><summary aria-label={`Details: ${label}`}>Details<ChevronDown size={13} aria-hidden="true" /></summary><p>{item.text}</p>{item.source && <SourceLink source={item.source} />}</details>
+      {item.source && <div className="ready-item-source"><SourceLink source={item.source} /></div>}
     </div>;
   };
   return (
@@ -134,12 +136,12 @@ export default function Preparation({
       )}
       {failure && <p className="error-box" role="alert">{failure}</p>}
       {!!sheet.conflicts.length && (
-        <section className="preparation-conflicts" aria-label="Arrangements to resolve">
+        <section className="preparation-conflicts" aria-label="Things to sort out">
           <h3><AlertTriangle size={18} aria-hidden="true" />Check before you go</h3>
           {sheet.conflicts.map((c) => (
             <details key={c.id} open>
               <summary>{c.label}<ChevronDown size={16} aria-hidden="true" /></summary>
-              <p>{c.reason}</p>
+              <p>{plainReason(c.reason)}</p>
               {c.source && <SourceLink source={c.source} />}
             </details>
           ))}
@@ -156,10 +158,10 @@ export default function Preparation({
                 {i < 2 && <ArrowRight className="ready-journey-arrow" size={24} aria-hidden="true" />}
                 <h4>{journeyLabels[i]}</h4>
                 {i === 1 ? <p className="ready-centre-name">{displayName(step.place)}</p> : <div className={`preparation-step-time${step.time ? "" : " needs-time"}`}>
-                  {step.time && onTimesChange ? <TimeInput variant="button" allowClear={false} label={journeyLabels[i]} pickerLabel={i === 0 ? "When will your child leave this address?" : "When will you pick up your child from childcare?"}
+                  {step.time && onTimesChange ? <TimeInput variant="button" allowClear={false} label={journeyLabels[i]} pickerLabel={i === 0 ? "Start" : "End"}
                     value={step.time} onChange={value => changeTime(i === 0 ? "deadline" : "end", value)}
                     describedBy={timeError ? "preparation-time-error" : undefined} />
-                    : step.time ? <><span className="sr-only">{step.timeLabel} </span><strong>{step.time}</strong></> : <strong>Ask centre</strong>}
+                    : step.time ? <><span className="sr-only">{step.timeLabel} </span><strong>{step.time}</strong></> : <strong>Ask the centre</strong>}
                 </div>}
               </li>;
             })}
@@ -209,9 +211,9 @@ export default function Preparation({
           <details className="preparation-about">
             <summary>About this checklist<ChevronDown size={16} aria-hidden="true" /></summary>
             <p>{sheet.notice}</p>
-            <p>Add private care notes after printing.</p>
+            <p>Write private notes, such as allergies, on the printed copy.</p>
             <p>Your ticks stay while this checklist is open. Download or print it before closing.</p>
-            <p>Prepared {sheet.preparationDate}. {sheet.date ? "Times and pickup choices come from your request; arrival still needs to be agreed." : "Agree your usual hours and pickup arrangements with the centre."}</p>
+            <p>Prepared {dateLabel(sheet.preparationDate)}. {sheet.date ? "Times come from your search. Agree the arrival time with the centre." : "Agree your usual hours and pickup arrangements with the centre."}</p>
             {sheet.sequence.filter((step) => step.source).map((step) => (
               <div key={step.title}><strong>{step.title === "At childcare" ? "Centre address" : "Care hours"}</strong><SourceLink source={step.source} /></div>
             ))}

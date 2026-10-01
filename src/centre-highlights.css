@@ -1,0 +1,23 @@
+.centre-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  min-width: 0;
+}
+.centre-highlight {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 4px 8px;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  border-radius: 6px;
+  background: var(--soft);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.25;
+}
+.provider-row .centre-highlights { margin: 2px 0 12px; }
+.map-centre-card .centre-highlights { flex-shrink: 0; width: 100%; }
+.map-centre-card .centre-highlight { padding: 3px 7px; }

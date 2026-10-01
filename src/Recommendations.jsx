@@ -108,7 +108,7 @@ export default function Recommendations({ mode, library, interests, request, onD
   return <section className="recommendations" aria-labelledby="recommendations-title">
     <header className="recommendations-heading">
       <div className="recommendations-emblem"><Heart size={23} aria-hidden="true" /></div>
-      <div><h3 id="recommendations-title">You may also like</h3><p>{history.preferences?.length ? 'Using your choices, your current search and the centres you’ve saved.' : 'Choose what matters, and we’ll use it with your search.'}</p></div>
+      <div><h3 id="recommendations-title">You may also like</h3><p>{history.preferences?.length ? 'Based on your choices, your search and the centres you’ve saved.' : 'Tell us what matters to you, and we’ll suggest centres for your search.'}</p></div>
     </header>
     <PreferenceSetup history={history} onSave={(topics, status) => update(h => ({ ...h, preferences: topics, preferenceSetup: status }))} />
     {request && <div className="recommendations-context"><MapPin size={17} aria-hidden="true" /><span>{request.pickup.label}
@@ -116,10 +116,10 @@ export default function Recommendations({ mode, library, interests, request, onD
       <button className="text-link" onClick={onDiscover}>Change search <ArrowRight size={15} /></button></div>}
     {storageError && <p className="notice" role="status">{storageError}</p>}
     {failure && <div className="error-box" role="alert"><p>{failure}</p><button onClick={() => setRetry(n => n + 1)}>Try again</button></div>}
-    {!request ? <div className="recommendations-empty"><Search size={26} /><h4>What care do you need this time?</h4><p>Search first so we can check the location, age and times.</p><button className="primary" onClick={onDiscover}>Find childcare <ArrowRight size={16} /></button></div>
+    {!request ? <div className="recommendations-empty"><Search size={26} /><h4>What care do you need this time?</h4><p>Search first, so we can check the place, age and times.</p><button className="primary" onClick={onDiscover}>Find childcare <ArrowRight size={16} /></button></div>
       : !ready && !failure ? <p className="recommendations-loading" role="status">Checking centre details…</p>
       : ready && <>
-        {!seedIds.length && !history.preferences?.length && <p className="notice">Start with nearby centres. Saving and comparing will help us suggest others.</p>}
+        {!seedIds.length && !history.preferences?.length && <p className="notice">These are nearby centres. Save or compare a few, and the suggestions will get better.</p>}
         <RecommendationHero cards={cards} onOpen={open} hasUsuals={seedIds.length > 0} />
         <div id="recommendation-list" className="recommendation-grid">{cards.map(({ p, reason, basedOn, preferenceMatches }) => <article className="recommendation-card" key={p.id}>
           <div className="recommendation-reason"><Heart size={15} aria-hidden="true" /><span>{reason}</span></div>
@@ -127,21 +127,21 @@ export default function Recommendations({ mode, library, interests, request, onD
           <p className="recommendation-area">{placeLabel(p)}</p>
           <p className="recommendation-fee"><span>Fee</span><strong>{feeSummary(p).label}</strong></p>
           {basedOn && <p className="recommendation-anchor">Similar to {displayName(basedOn)}</p>}
-          {preferenceMatches?.filter(match => match.state === 'supported').length > 1 && <p className="recommendation-tags">Also fits: {preferenceMatches.filter(match => match.state === 'supported').slice(1).map(match => DISCOVERY_PREFERENCES.find(option => option.id === match.id)?.label).filter(Boolean).join(', ')}</p>}
-          <p className="recommendation-check">{p.fit.conditions.some(c => ['admission', 'care', 'age'].includes(c.id) && c.state === 'unknown') ? 'Some details need checking with the centre.' : 'Listed details fit your search.'}</p>
+          {preferenceMatches?.filter(match => match.state === 'supported').length > 1 && <p className="recommendation-tags">Parents also mention: {preferenceMatches.filter(match => match.state === 'supported').slice(1).map(match => DISCOVERY_PREFERENCES.find(option => option.id === match.id)?.label).filter(Boolean).join(', ')}</p>}
+          <p className="recommendation-check">{p.fit.conditions.some(c => ['admission', 'care', 'age'].includes(c.id) && c.state === 'unknown') ? 'Some details need checking with the centre.' : 'The listed details fit your search.'}</p>
           <div className="recommendation-actions"><button className="secondary" onClick={() => onSave(favourite(p))}><Bookmark size={16} />Save</button>
             <button className="primary" disabled={!!opening} onClick={() => open(p)}>{opening === p.id ? 'Checking…' : 'View centre'}<ArrowRight size={16} /></button></div>
           <button className="recommendation-dismiss text-link" onClick={() => update(h => hideRecommendation(h, p))} aria-label={`Not interested in ${p.name}`}><X size={14} />Not interested</button>
         </article>)}</div>
         {!cards.length && <div className="recommendations-empty"><Check size={26} /><h4>No new suggestions for this search</h4><p>Try another location or time. Your saved centres are still in Childcare.</p><button className="secondary" onClick={onDiscover}>Change search <ArrowRight size={16} /></button></div>}
-        {!!cards.length && <p className="recommendations-footnote">Based on your search and public review themes. Ask the centre if they have a place for your child.</p>}
+        {!!cards.length && <p className="recommendations-footnote">Based on your search and what parents say in reviews. Ask the centre if they have a place for your child.</p>}
       </>}
     <details className="recommendation-controls"><summary>How suggestions work</summary>
-      <p>We use your choices and the centres you save, compare and view. Recent activity counts more. Prices and hours still follow the order you choose.</p>
-      <p>Your choices gently reorder matching public review themes. They never remove a centre that fits your search, and missing review evidence is left unknown.</p>
-      <p>Viewing history stays in this browser. It keeps centre IDs and activity counts, without your search address, care times or child’s age. Live and demo history stay separate.</p>
+      <p>We use your choices and the centres you save, compare and look at. Recent activity counts more.</p>
+      <p>Your choices move a centre up when parents praise those things in reviews. They never remove a centre that fits your search.</p>
+      <p>Your viewing history stays in this browser. It only keeps which centres you looked at, not your address, times or child’s age.</p>
       <label><input type="checkbox" checked={history.enabled} onChange={e => update(h => ({ ...h, enabled: e.target.checked }))} />Use viewing history for suggestions</label>
-      <p className="notice">Saved centres still help when this is off. Clear history also restores hidden suggestions; your saved items stay.</p>
+      <p className="notice">When this is off, your saved centres are still used. Clearing history also brings back suggestions you hid. Your saved centres stay.</p>
       <button className="secondary" onClick={reset}><RotateCcw size={15} />Clear viewing history</button>
     </details>
   </section>;

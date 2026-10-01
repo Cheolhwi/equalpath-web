@@ -1,4 +1,5 @@
 import { timeLabel, isShortCare } from "./request.mjs";
+import { dateLabel } from "./display.mjs";
 // Explicit, browser-local saves only. No request history or child profile.
 export const storageKey = (mode) => `equalpath:saved:v1:${mode}`;
 export const emptyLibrary = () => ({
@@ -43,7 +44,7 @@ export function readLibrary(storage, mode) {
     return data;
   } catch {
     throw new SaveError(
-      "Saved items could not be read. Existing storage has been left untouched. Retry in this browser.",
+      "We couldn’t read your saved centres. Nothing was deleted. Please try again.",
     );
   }
 }
@@ -52,38 +53,38 @@ export function updateLibrary(storage, mode, change) {
   const next = change(clone(previous));
   if (next.favourites.length > 100 || next.templates.length > 30)
     throw new SaveError(
-      "This browser can keep up to 100 institutions and 30 templates. Remove an unused item first.",
+      "You can save up to 100 centres. Remove one first.",
     );
   try {
     storage.setItem(storageKey(mode), JSON.stringify(next));
   } catch {
     throw new SaveError(
-      "Not saved: browser storage is unavailable or full. The previous saved version is unchanged; your current page is still available.",
+      "Not saved: this browser’s storage is full or turned off. Your earlier saved version is unchanged.",
     );
   }
   return next;
 }
 const FACTS = {
-  name: "Branch name",
-  category: "Institution type",
+  name: "Centre name",
+  category: "Centre type",
   region: "Region",
   district: "District",
   address: "Address",
-  location: "Published location",
+  location: "Map location",
   phone: "Telephone",
   whatsapp: "WhatsApp",
   registration: "Registration record",
-  age: "Admission age",
-  admission: "Temporary admission",
-  transport: "Transport and coverage",
-  pickupWindows: "Pickup windows",
-  careWindows: "Care schedule",
+  age: "Ages",
+  admission: "Care for a few hours",
+  transport: "Pickup service",
+  pickupWindows: "Pickup times",
+  careWindows: "Care hours",
   businessHours: "Opening hours",
-  dateExceptions: "Date exceptions",
-  lateRule: "Late collection",
-  fees: "Published fees",
-  feeRule: "Fee basis",
-  preparationRequirements: "Published preparation requirements",
+  dateExceptions: "Special dates",
+  lateRule: "Late pickup",
+  fees: "Fees",
+  feeRule: "How fees are charged",
+  preparationRequirements: "What to bring",
 };
 export function factSnapshot(p, capturedAt = new Date().toISOString()) {
   return {
@@ -98,7 +99,7 @@ export function favourite(
   previous,
   now = new Date().toISOString(),
 ) {
-  if (!p?.id) throw new SaveError("Choose an institution first.");
+  if (!p?.id) throw new SaveError("Choose a centre first.");
   return {
     id: p.id,
     careType: p.careType ?? previous?.careType ?? "short_term",
@@ -193,7 +194,7 @@ export function compareFacts(before, after) {
 }
 export function factDescription(value) {
   if (value == null || (Array.isArray(value) && !value.length))
-    return "Not published";
+    return "Not listed";
   if (typeof value !== "object") return String(value);
   if (Array.isArray(value)) return value.map(factDescription).join("; ");
   if (Number.isFinite(value.start) && Number.isFinite(value.end))
@@ -210,14 +211,14 @@ export function factDescription(value) {
     .map(([k, v]) => `${k.replace(/([A-Z])/g, " $1")}: ${factDescription(v)}`)
     .join(" · ");
 }
+// The latest date we read any source for these facts, e.g. "Checked 23 Sep 2026".
 export function factDates(value) {
-  const dates = new Set();
+  let latest = "";
   const visit = (v) => {
     if (!v || typeof v !== "object") return;
-    if (v.retrievedAt) dates.add(`Retrieved ${v.retrievedAt.slice(0, 10)}`);
-    if (v.sourceDate) dates.add(`Source date ${v.sourceDate}`);
+    if (typeof v.retrievedAt === "string" && v.retrievedAt.slice(0, 10) > latest) latest = v.retrievedAt.slice(0, 10);
     Object.values(v).forEach(visit);
   };
   visit(value);
-  return [...dates].join(" · ") || "Source / retrieval date unavailable";
+  return latest ? `Checked ${dateLabel(latest)}` : "Check date not available";
 }

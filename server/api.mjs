@@ -242,7 +242,9 @@ export function createAPI({ store = createSearchStore(), placeSearch = createPla
       const order = ordering(request.sort, pageCandidates, request.date, request.radius, pageSize, careType, candidates,
         Boolean(request.query || !request.includeUnknown || !request.includeConflicts));
       request.sort = order.factor;
-      const pageItems = sortProviders(pageCandidates, request.sort, request.date);
+      // Explicit search sorts follow published facts. Contact preference is
+      // retained for Recommended and suggestions, not ahead of a chosen fee/distance.
+      const pageItems = sortProviders(pageCandidates, request.sort, request.date, { contactFirst: request.sort === "recommended" });
       // Unknown details remain candidates that can be checked with the centre.
       // The external no-match fallback is reserved for pages where every
       // candidate has a known conflict (the grey-pin state).
@@ -305,6 +307,7 @@ function withinRadius(center, location, radius) {
   return Number.isFinite(distance) && distance <= radius;
 }
 const sortAvailability = (items, date) => ({
+  recommended: true,
   name: true,
   distance: items.some(p => Number.isFinite(p.distanceKm)),
   price: items.some(p => Number.isFinite(priorityValue(p, "price", date))),
@@ -341,7 +344,9 @@ function ordering(requestedSort, items, date, radius = null, pageSize = 20, care
     explanation: (radius !== null
       ? `Each page shows the next ${pageSize} nearest centres within ${radius} km. Your priority sorts that page, with conflicting details last. `
       : "Compare options for your priority, with conflicting details last. ") + (
-      sort === "distance"
+      sort === "recommended"
+        ? "Recommended uses your preferences and current centre details to order this page."
+        : sort === "distance"
         ? "Nearest first; missing locations last."
         : sort === "price"
           ? careType === "short_term"

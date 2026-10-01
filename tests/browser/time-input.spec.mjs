@@ -24,7 +24,10 @@ async function start(page) {
 }
 const choose = async (popup, hour, minute) => {
   await popup.getByRole("listbox", { name: "Hour", exact: true }).getByRole("option", { name: hour, exact: true }).click();
-  await popup.getByRole("listbox", { name: "Minute", exact: true }).getByRole("option", { name: minute, exact: true }).click();
+  // The list shows 5-minute steps; other minutes are typed on the minute list.
+  const minutes = popup.getByRole("listbox", { name: "Minute", exact: true });
+  if (Number(minute) % 5) { await minutes.focus(); await minutes.pressSequentially(minute); }
+  else await minutes.getByRole("option", { name: minute, exact: true }).click();
 };
 
 test("themed time selection preserves exact minutes, commits explicitly and keeps request validation", async ({ page }) => {
@@ -68,6 +71,7 @@ test("themed time selection preserves exact minutes, commits explicitly and keep
 
 test("mobile pickers fit the viewport, respect dark mode and dismiss without closing their parent", async ({ page }) => {
   const errors = []; page.on("pageerror", (error) => errors.push(error.message));
+  await page.addInitScript(() => localStorage.setItem('equalpath:motion:v1', 'reduce'));
   await page.setViewportSize({ width: 320, height: 568 });
   await start(page);
   await page.getByRole("button", { name: "Choose end time", exact: true }).click();

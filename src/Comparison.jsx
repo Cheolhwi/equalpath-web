@@ -6,14 +6,15 @@ import { bestForPriority } from '../shared/conditions.mjs';
 import { comparisonFact, comparisonPriorityLabel } from '../shared/comparison-view.mjs';
 import { feeSummary, feesForCare, formatFee } from '../shared/result-summary.mjs';
 import { isShortCare, todayKL } from '../shared/request.mjs';
-import { displayName } from '../shared/display.mjs';
+import { displayAddress, displayName } from '../shared/display.mjs';
+import { plainEvidence, plainReason } from '../shared/plain-copy.mjs';
 
 function Fact({ p, id, request }) {
   const { value, note, state, condition } = comparisonFact(p, id, request);
   const Icon = state === 'conflict' ? AlertTriangle : state === 'supported' && !(id === 'age' && p.age?.basis === 'type_reference') ? CheckCircle2 : HelpCircle;
   return <details className={`compare-fact ${state}`}>
     <summary><div><strong>{value}</strong>{note && <span><Icon size={14} aria-hidden="true" />{note}</span>}</div><ChevronDown size={14} aria-hidden="true" /></summary>
-    {condition?.reason && <p>{condition.reason}</p>}
+    {condition?.reason && <p>{plainReason(condition.reason)}</p>}
     <SourceLink source={condition?.source} />
     {id === 'age' && p.age?.alternative && <SourceLink source={p.age.alternative.source} />}
   </details>;
@@ -28,11 +29,13 @@ export default function Comparison({ items, onRemove, onPrepare, sort, onSort, o
   const cellProps = p => ({ 'data-provider-id': p.id, 'data-mobile-hidden': !visibleIds.includes(p.id) || undefined, style: { '--mobile-column': visibleIds.indexOf(p.id) + 1 } });
   const shortDate = request.date ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${request.date}T12:00:00Z`)) : '';
   const extraRows = [
-    ['transport', 'Centre picks up', Users],
+    ['transport', 'Centre pickup', Users],
     ['coverage', 'Pickup from your starting point', MapPin],
-    ['pickup', 'Pickup by the centre', Clock3],
+    ['pickup', 'Pickup time', Clock3],
     ['transfer', 'Arrival time', Car],
   ].filter(([id]) => items.some(p => p.fit.conditions.some(c => c.id === id)) &&
+    // Pickup area and time only matter once the parent asks the centre to pick up.
+    !(['coverage', 'pickup'].includes(id) && request.transport !== 'institution') &&
     (more || (id === 'transport' && request.transport === 'institution') || items.some(p => p.fit.conditions.some(c => c.id === id && c.state === 'conflict'))));
   const conditionRow = (id, label, Icon) => <tr key={id} data-fact={id}><th scope="row"><Icon size={18} aria-hidden="true" />{label}</th>{items.map(p => <td key={p.id} {...cellProps(p)}><Fact p={p} id={id} request={request} /></td>)}</tr>;
   return <div className="compare-view">
@@ -44,9 +47,8 @@ export default function Comparison({ items, onRemove, onPrepare, sort, onSort, o
       <details className="compare-address"><summary><MapPin size={16} />Starting point<ChevronDown size={14} /></summary><p>{request.pickup.label}</p></details>
     </div>
     <div className="compare-toolbar">
-      <p>Choose a centre to contact.</p>
       <div className="compare-sort-control"><span>Sort by</span><SelectMenu label="Comparison priority" value={sort}
-        options={sortOptions(items[0]?.careType).filter(o => o.value !== 'closing' || request.date).map(o => ({ ...o, label: o.value === 'closing' ? 'Open later' : o.value === 'pickup' ? 'Pickup service first' : o.label }))}
+        options={sortOptions(items[0]?.careType).filter(o => o.value !== 'closing' || request.date).map(o => ({ ...o, label: o.value === 'closing' ? 'Open latest' : o.value === 'pickup' ? 'Pickup service first' : o.label }))}
         available={ordering?.available} unavailableReasons={ordering?.unavailableReasons} onChange={onSort} /></div>
     </div>
     {items.length > 2 && <details className="compare-pair" aria-label="Choose two centres to compare">
@@ -64,22 +66,22 @@ export default function Comparison({ items, onRemove, onPrepare, sort, onSort, o
           <button className="primary compare-contact" aria-label={`Contact ${p.name}`} onClick={() => onPrepare(p)}><MessageCircle size={16} />Contact<ArrowRight size={16} /></button>
         </th>)}</tr></thead>
         <tbody>
-          <tr data-fact="fees"><th scope="row"><Wallet size={18} />Fee</th>{items.map(p => <td key={p.id} {...cellProps(p)}><details className="compare-fact compare-fees"><summary><strong>{feeSummary(p).label}</strong><ChevronDown size={14} /></summary><p>{feeSummary(p).note}</p>{feesForCare(p).map((f, i) => <div key={i}><strong>{formatFee(f)}</strong><p>{f.conditions}</p><SourceLink source={f.source} /></div>)}</details></td>)}</tr>
-          <tr data-fact="drive"><th scope="row"><Car size={18} />By car</th>{items.map(p => <td key={p.id} {...cellProps(p)}><strong>{p.driving?.state === 'available' ? `About ${p.driving.minutes} min` : 'Time not available'}</strong></td>)}</tr>
+          <tr data-fact="fees"><th scope="row"><Wallet size={18} />Fee</th>{items.map(p => <td key={p.id} {...cellProps(p)}><details className="compare-fact compare-fees"><summary><strong>{feeSummary(p).label}</strong><ChevronDown size={14} /></summary><p>{feeSummary(p).note}</p>{feesForCare(p).map((f, i) => <div key={i}><strong>{formatFee(f)}</strong><p>{plainEvidence(f.conditions)}</p><SourceLink source={f.source} /></div>)}</details></td>)}</tr>
+          <tr data-fact="drive"><th scope="row"><Car size={18} />By car</th>{items.map(p => <td key={p.id} {...cellProps(p)}><strong>{p.driving?.state === 'available' ? `About ${p.driving.minutes} min` : 'Not available'}</strong></td>)}</tr>
           {conditionRow('age', 'Age', Baby)}
-          {short && conditionRow('admission', 'Short visits', Clock3)}
-          {short && conditionRow('care', 'Care ends', Clock3)}
+          {short && conditionRow('admission', 'Care for a few hours', Clock3)}
+          {short && conditionRow('care', 'Care ends at', Clock3)}
           {extraRows.map(([id, label, Icon]) => conditionRow(id, label, Icon))}
           {more && <>
-            <tr><th scope="row"><MapPin size={18} />Address</th>{items.map(p => <td key={p.id} {...cellProps(p)}>{p.address || 'Address not listed'}<SourceLink source={p.addressSource} /></td>)}</tr>
-            {!short && <tr><th scope="row"><Clock3 size={18} />Opening hours</th>{items.map(p => <td key={p.id} {...cellProps(p)}>{p.businessHours?.notes || 'Ask the centre'}<SourceLink source={p.businessHours?.source} /></td>)}</tr>}
-            <tr><th scope="row"><CheckCircle2 size={18} />Registration</th>{items.map(p => <td key={p.id} {...cellProps(p)}><strong>{[p.registration?.authority, p.registration?.number].filter(Boolean).join(' · ') || 'No record found'}</strong><p>{p.registration?.until && p.registration.until < todayKL() ? 'Old record · ask about renewal' : p.mode === 'demo' ? 'Demo centre' : p.registration?.official ? 'Official record found' : 'Not yet checked with the government'}</p><SourceLink source={p.registration?.source} /></td>)}</tr>
+            <tr><th scope="row"><MapPin size={18} />Address</th>{items.map(p => <td key={p.id} {...cellProps(p)}>{displayAddress(p.address) || 'Address not listed'}<SourceLink source={p.addressSource} /></td>)}</tr>
+            {!short && <tr><th scope="row"><Clock3 size={18} />Opening hours</th>{items.map(p => <td key={p.id} {...cellProps(p)}>{plainEvidence(p.businessHours?.notes) || 'Ask the centre'}<SourceLink source={p.businessHours?.source} /></td>)}</tr>}
+            <tr><th scope="row"><CheckCircle2 size={18} />Registration</th>{items.map(p => <td key={p.id} {...cellProps(p)}><strong>{[p.registration?.authority, p.registration?.number].filter(Boolean).join(' · ') || 'No record found'}</strong><p>{p.registration?.until && p.registration.until < todayKL() ? 'Registration ended · ask the centre' : p.mode === 'demo' ? 'Demo centre' : p.registration?.official ? 'On the government list' : 'Not found in a government register yet'}</p><SourceLink source={p.registration?.source} /></td>)}</tr>
           </>}
         </tbody>
       </table>
     </div>
     <button className="secondary compare-expand" aria-expanded={more} onClick={() => setMore(!more)}>{more ? 'Show less' : 'More details'}<ChevronDown size={16} /></button>
-    <p className="compare-footnote">Ask the centre to confirm your visit and price. Driving times do not include live traffic.</p>
-    <details className="compare-ranking"><summary>About this order<ChevronDown size={14} /></summary><p>Centres with details that do not fit your search come last.</p><p className="comparison-priority-message">{best.ids.length > 1 ? 'These centres share the same value for your chosen order.' : best.ids.length ? 'The marked centre comes first for your chosen order.' : 'Not enough details to mark a centre.'}</p>{sort === 'price' && <p>Hourly, daily and monthly prices are kept separate. Estimates are labelled.</p>}</details>
+    <p className="compare-footnote">Ask the centre to confirm your visit and the price. Driving times don’t include traffic.</p>
+    <details className="compare-ranking"><summary>About this order<ChevronDown size={14} /></summary><p>Centres with details that don’t match your search come last.</p><p className="comparison-priority-message">{best.ids.length > 1 ? 'These centres are equal for this order.' : best.ids.length ? 'The marked centre is the best for this order.' : 'There aren’t enough details to mark one centre.'}</p>{sort === 'price' && <p>Hourly, daily and monthly prices are compared separately. Estimated prices say so.</p>}</details>
   </div>;
 }

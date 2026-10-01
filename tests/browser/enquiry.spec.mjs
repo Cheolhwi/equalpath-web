@@ -33,6 +33,8 @@ async function openQuestions(page, { missing = false, clipboard = true, transpor
   await page.locator("#service-date").fill("2026-09-14");
   await page.locator("#deadline").fill("13:00"); await page.locator("#care-end").fill("18:00");
   await revealPreferences(page); await chooseAge(page, "4"); await revealPreferences(page); await page.locator("#transport").selectOption(transport);
+  await page.locator(".search-refinements > summary").click();
+  await page.getByRole("checkbox", { name: "Include centres that don’t meet all my needs", exact: true }).check();
   await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
   await page.getByRole("button", { name: `View details for ${name}`, exact: true }).click();
   await page.getByRole("button", { name: "Contact the centre", exact: true }).click();
@@ -83,11 +85,11 @@ for (const width of [390, 1440]) test(`${width}px: one ready message, visible ch
 });
 test("combined questions retain warnings and all their source checks without copying internal explanations", async ({ page }) => {
   const dialog = await openQuestions(page);
-  await expect(dialog.locator('[data-question-id="visit"]')).toContainText("The listed hours or pickup rules don’t cover 18:00");
+  await expect(dialog.locator('[data-question-id="visit"]')).toContainText("The listed hours don’t cover 18:00");
   await expect(dialog.locator('.contact-question-evidence')).not.toHaveAttribute('open');
   await dialog.locator('.contact-question-evidence > summary').click();
   const care = dialog.locator('[data-check-id="care"]');
-  await expect(care).toContainText("Published care hours: 08:00–17:00. Your pickup from childcare: 18:00.");
+  await expect(care).toContainText("Open 08:00–17:00. You collect your child at 18:00.");
   await expect(care.getByRole("link")).toHaveAttribute("href", source.url);
   await expect(dialog.locator('[data-check-id]')).toHaveCount(8);
   await copyButton(dialog).click();
@@ -106,7 +108,7 @@ test("mobile supports manual copy, missing contacts and the checklist", async ({
   const manual = dialog.getByRole("textbox", { name: "Message to copy" });
   await expect(manual).toBeFocused();
   await expect(manual).toHaveValue(await expectedMessage(dialog));
-  await expect(dialog.getByRole("status")).toContainText("Copy did not work");
+  await expect(dialog.getByRole("status")).toContainText("Copying didn’t work");
   expect(await manual.evaluate(el => el.selectionEnd - el.selectionStart)).toBe((await manual.inputValue()).length);
   await expect(dialog.locator(".enquiry-contact")).toContainText("No phone number listed");
   await page.screenshot({ path: `${out}/manual-copy-390.png` });

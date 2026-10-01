@@ -43,15 +43,15 @@ test("comparison winners and ties use the same contact preference; missing price
   assert.deepEqual(bestForPriority([rows[0], missing], "price", date).ids, []);
   assert.ok(suggestProviders([rows[0], missing], { ...request, sort: "price" }).every(p => !p.suggested));
 });
-test("contact ranking preserves the nearest 20, radius and totals, and recalculates fallback on the next page", async () => {
+test("search factual sorts preserve the nearest 20; Recommended prefers contactable centres without changing membership", async () => {
   const items = Array.from({ length: 25 }, (_, i) => provider(`p-${String(i).padStart(2, "0")}`, i + 1, i === 18 ? { phone } : {}));
   const far = provider("far-with-phone", 1, { location: { lat: 3.5, lng: 101.6869 }, phone });
   const api = createAPI({ store: { catalog: async () => ({ ...fixtureCatalog, items: [...items, far] }) }, drivingRoutes: async (_, rows) => rows });
-  for (const sort of ["distance", "price", "name"]) {
+  for (const sort of ["recommended", "distance", "price", "name"]) {
     const first = await api({ action: "search", request: { ...request, sort } });
     assert.equal(first.total, 25); assert.equal(first.items.length, 20);
     assert.deepEqual(first.items.map(p => p.id).sort(), items.slice(0, 20).map(p => p.id));
-    assert.equal(first.items[0].id, "p-18");
+    assert.equal(first.items[0].id, sort === "recommended" ? "p-18" : "p-00");
     assert.doesNotMatch(first.ordering.explanation, /phone|WhatsApp|contact/i);
     assert.deepEqual(first.items.filter(p => p.suggested).map(p => p.id), ["p-18"]);
     const next = await api({ action: "search", request: { ...request, sort }, page: 1 });

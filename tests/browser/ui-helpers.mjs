@@ -1,6 +1,11 @@
 import { expect } from "@playwright/test";
 
 export async function openSearch(page) {
+  const onboarding = page.locator('.preference-onboarding');
+  if (await onboarding.isVisible()) {
+    await onboarding.getByRole('button', { name: 'Skip for now', exact: true }).click();
+    await expect(onboarding).toBeHidden();
+  }
   if (await page.locator(".mobile-search-summary").isVisible()) await page.locator(".mobile-search-summary").click();
   if (await page.locator(".map-search-launch").isVisible()) await page.locator(".map-search-launch").click();
   const change = page.getByRole('button', {name:'Change search', exact:true});

@@ -6,7 +6,7 @@ import { emptyLibrary } from '../shared/saved.mjs';
 import { mergeSearchRoutes } from '../shared/search-routes.mjs';
 import { drivingLabel } from '../shared/result-summary.mjs';
 
-const request = {careType:'short_term',pickup:{label:'KL Sentral',address:'Jalan Thambipillay',lat:3.1331,lng:101.6861,region:'Kuala Lumpur'},date:'2026-09-30',deadline:'10:00',end:'12:00',age:'1-3',transport:'self',radius:10,sort:'distance',includeUnknown:true,includeConflicts:false};
+const request = {careType:'short_term',pickup:{label:'KL Sentral',address:'Jalan Thambipillay',lat:3.1331,lng:101.6861,region:'Kuala Lumpur'},date:'2026-09-30',deadline:'10:00',end:'12:00',age:'1-3',transport:'self',radius:10,sort:'recommended',includeUnknown:true,includeConflicts:false};
 const features = ['area-fees-v1','search-summary-v1','defer-driving-v1'];
 const noRoutes = async (_, rows) => rows.map(p=>({...p,driving:{state:'unavailable'}}));
 const body = {action:'search',mode:'live',request};

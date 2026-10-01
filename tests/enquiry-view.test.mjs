@@ -28,8 +28,8 @@ test("questions retain API membership and link by condition ID, with conflicts f
 });
 test("unspecified pickup and age are described as user choices, not missing provider facts; self transport omits pickup questions", () => {
   const r = { ...request, age: "", transport: "" }, p = hydrated(fixtureProviders[0], r), rows = enquiryView(p, r);
-  assert.match(rows.find(q => q.id === "age").why, /haven’t selected an age/);
-  assert.match(rows.find(q => q.id === "transport").why, /haven’t chosen/);
+  assert.match(rows.find(q => q.id === "age").why, /haven’t chosen an age/);
+  assert.match(rows.find(q => q.id === "transport").why, /haven’t said who takes your child/);
   const self = { ...request, transport: "self" }, selfRows = enquiryView(hydrated(fixtureProviders[0], self), self);
   assert.ok(selfRows.every(q => !["transport", "coverage", "pickup"].includes(q.id)));
   assert.match(selfRows.find(q => q.id === "transfer").text, /What time should I arrive/);

@@ -15,11 +15,11 @@ test('comparison uses the assessed state for short visits and hours, never infer
   assert.equal(comparisonFact(provider('admission', 'unknown', { admission: { value: true } }), 'admission', request).value, 'Ask the centre');
   assert.equal(comparisonFact(provider('admission', 'supported'), 'admission', request).value, 'Offered');
   assert.equal(comparisonFact(provider('admission', 'conflict'), 'admission', request).value, 'Not offered');
-  for (const [state, note] of [['supported', 'Open at 15:00'], ['unknown', 'Ask about 15:00'], ['conflict', 'Outside listed care hours']]) {
+  for (const [state, note] of [['supported', 'Still open at 15:00'], ['unknown', 'Ask about 15:00'], ['conflict', 'Not open at 15:00']]) {
     const fact = comparisonFact(provider('care', state, { careEndTimeLabel: '18:00' }), 'care', request);
     assert.equal(fact.note, note); assert.equal(fact.state, state); assert.equal(fact.condition.reason, 'Source detail');
   }
 });
 test('self pickup does not present a centre pickup service as confirmed', () => {
-  assert.equal(comparisonFact(provider('transport', 'supported'), 'transport', { ...request, transport: 'self' }).value, 'You will take your child');
+  assert.equal(comparisonFact(provider('transport', 'supported'), 'transport', { ...request, transport: 'self' }).value, 'You’ll bring your child');
 });

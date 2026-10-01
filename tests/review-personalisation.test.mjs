@@ -9,7 +9,7 @@ import { createAPI } from '../server/api.mjs';
 import { demoPickup } from '../server/fixtures.mjs';
 import { trainReviewClassifier, predictReviewTopics } from '../scripts/review-learning.mjs';
 const now=Date.parse('2026-09-29T12:00:00Z');
-const request={careType:'short_term',pickup:demoPickup,date:'2026-09-30',deadline:'10:00',end:'12:00',age:'1',transport:'self',radius:5,sort:'distance',query:'',includeUnknown:true,includeConflicts:true};
+const request={careType:'short_term',pickup:demoPickup,date:'2026-09-30',deadline:'10:00',end:'12:00',age:'1',transport:'self',radius:5,sort:'recommended',query:'',includeUnknown:true,includeConflicts:true};
 const topic=(positive,negative=0,date='2026-09-20')=>({count:positive+negative,observations:[{date,count:positive+negative,positive,negative}]});
 const p=(id,topics={},extra={})=>({id,name:id,careType:'short_term',location:demoPickup,distanceKm:1,phone:{display:'123'},fit:{counts:{conflict:0},conditions:[{id:'care',state:'supported'}]},reviewProfile:{topics,excerpts:[]},...extra});
 const inputs={request,library:emptyLibrary(),history:emptyInterests(),now};

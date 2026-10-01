@@ -107,7 +107,7 @@ test("save a centre, reload, edit its note, recheck, download preparation, and r
   await page.screenshot({ path: `${evidenceDir}/saved-desktop.png` });
   await expect(page.getByRole("button", { name: /^Searches / })).toHaveCount(0);
   await page
-    .getByRole("button", { name: "Check this centre alone", exact: true })
+    .getByRole("button", { name: "Check this centre", exact: true })
     .click();
   await openSearch(page);
   await expect(page.locator("#service-date")).toHaveValue("");
@@ -129,7 +129,7 @@ test("save a centre, reload, edit its note, recheck, download preparation, and r
     .click();
   await page.locator(".ready-addresses > summary").click();
   await expect(
-    page.getByText(/Confirm the arrival time with the centre/),
+    page.getByText(/Agree the arrival time with the centre\. Leave time for the drive/),
   ).toBeVisible();
   await page.locator(".ready-support > summary").click();
   await expect(
@@ -142,7 +142,7 @@ test("save a centre, reload, edit its note, recheck, download preparation, and r
     page.getByRole("heading", { name: "With the person driving", exact: true }),
   ).toBeVisible();
   await page.getByText("At the starting point", { exact: true }).click();
-  await expect(page.getByText("What ID and permission does the person picking up my child need?", { exact: true })).toBeVisible();
+  await expect(page.getByText("What does the person collecting my child need to show?", { exact: true })).toBeVisible();
   await page.getByText("At the starting point", { exact: true }).click();
   await page.getByText("With the person driving", { exact: true }).click();
   await expect(page.getByText("Who will pick up my child, and in which car?", { exact: true })).toBeVisible();
@@ -213,7 +213,7 @@ test("failed local writes preserve candidate, previous reason and saved list", a
     .getByRole("button", { name: "Save note", exact: true })
     .click();
   await expect(page.getByRole("alert")).toContainText(
-    "previous saved details are unchanged",
+    "earlier saved details are unchanged",
   );
   await page.getByRole("button", { name: "Back", exact: true }).click();
   await expect(
@@ -268,7 +268,7 @@ test("reopened favourite reports changed source facts and preserves snapshot aft
   });
   await saved(page);
   await page
-    .getByRole("button", { name: "Check this centre alone", exact: true })
+    .getByRole("button", { name: "Check this centre", exact: true })
     .click();
   await openSearch(page);
   await page.locator("#service-date").fill("2026-09-18");
@@ -286,7 +286,7 @@ test("reopened favourite reports changed source facts and preserves snapshot aft
   await page.unroute("**/api");
   await saved(page);
   await page
-    .getByRole("button", { name: "Check this centre alone", exact: true })
+    .getByRole("button", { name: "Check this centre", exact: true })
     .click();
   await openSearch(page);
   await page.locator("#service-date").fill("2026-09-20");
@@ -337,7 +337,7 @@ test("preparation remains dated until explicitly regenerated for new times and t
   await expect(page.locator(".preparation-conflicts details[open]")).not.toHaveCount(0);
   await expect(
     page.getByRole("checkbox", {
-      name: "Agree dinner and evening pickup arrangements.",
+      name: "Agree on dinner and the evening pickup.",
       exact: true,
     }),
   ).toBeVisible();
@@ -365,7 +365,9 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   const popup = page.locator(".time-picker");
   const chooseTime = async (hour, minute) => {
     await popup.getByRole("listbox", { name: "Hour", exact: true }).getByRole("option", { name: hour, exact: true }).click();
-    await popup.getByRole("listbox", { name: "Minute", exact: true }).getByRole("option", { name: minute, exact: true }).click();
+    const minutes = popup.getByRole("listbox", { name: "Minute", exact: true });
+    if (Number(minute) % 5) { await minutes.focus(); await minutes.pressSequentially(minute); }
+    else await minutes.getByRole("option", { name: minute, exact: true }).click();
   };
   await chooseTime("14", "27");
   const box = await popup.boundingBox();
@@ -383,7 +385,7 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   await expect(pickup).toContainText("21:15");
   await expect(bag).toBeChecked();
   await expect(page.locator(".preparation-conflicts")).toContainText("21:15");
-  await expect(page.getByRole("checkbox", { name: "Agree dinner and evening pickup arrangements.", exact: true })).toBeVisible();
+  await expect(page.getByRole("checkbox", { name: "Agree on dinner and the evening pickup.", exact: true })).toBeVisible();
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download checklist", exact: true }).click();
   const download = await downloadPromise;
@@ -403,7 +405,7 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   await pickup.click(); await chooseTime("18", "05");
   await page.getByRole("heading", { name: "Get ready for childcare", exact: true }).click();
   await expect(page.locator("#preparation-time-error")).toHaveCount(0);
-  await expect(page.getByRole("checkbox", { name: "Agree dinner and evening pickup arrangements.", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("checkbox", { name: "Agree on dinner and the evening pickup.", exact: true })).toHaveCount(0);
   await expect(bag).toBeChecked();
   expect(searches).toHaveLength(searchCount);
   expect(await page.locator(".preparation-sequence").evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
@@ -461,7 +463,7 @@ test("mobile navigation, modal layout, checkboxes and keyboard close remain usab
   ).toBe(true);
   await page.screenshot({ path: `${evidenceDir}/preparation-320.png` });
   await page.locator(".ready-addresses > summary").click();
-  await expect(page.getByText(/Confirm the arrival time with the centre/)).toBeVisible();
+  await expect(page.getByText(/Agree the arrival time with the centre\. Leave time for the drive/)).toBeVisible();
   await page.locator(".ready-addresses > summary").click();
   await page.locator(".equalpath").evaluate(el => el.classList.add("dark"));
   await page.locator("dialog").evaluate(el => el.scrollTop = 0);
@@ -492,7 +494,7 @@ test("print action creates the standalone sheet and compact zoom keeps controls 
   await expect(
     page
       .frameLocator('iframe[title="Printable preparation sheet"]')
-      .getByText(/does not give permission to pick up/)
+      .getByText(/doesn’t give anyone permission to collect your child/)
       .first(),
   ).toBeAttached();
   await page.setViewportSize({ width: 720, height: 500 });

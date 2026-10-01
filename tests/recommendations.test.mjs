@@ -6,7 +6,7 @@ import { createAPI } from '../server/api.mjs';
 import { applyReviewEvidence } from '../server/review-evidence.mjs';
 import { fixtureCatalog, demoPickup } from '../server/fixtures.mjs';
 const now = '2026-09-17T04:00:00.000Z';
-const request = { careType:'short_term', pickup:demoPickup, date:'2026-09-22', deadline:'16:00', end:'18:00', age:'4', transport:'', radius:5, sort:'distance', includeUnknown:true, includeConflicts:true, query:'' };
+const request = { careType:'short_term', pickup:demoPickup, date:'2026-09-22', deadline:'16:00', end:'18:00', age:'4', transport:'', radius:5, sort:'recommended', includeUnknown:true, includeConflicts:true, query:'' };
 const provider = (id, extra = {}) => ({ id, name:id, careType:'short_term', location:{lat:3.14,lng:101.68}, distanceKm:1, phone:{display:'123'}, category:'CHILDCARE', district:'A', admission:{value:true}, transport:{exists:true}, fees:[{amount:20,basis:'hour',currency:'MYR'}], fit:{counts:{conflict:0},conditions:[{id:'care',state:'supported'},{id:'admission',state:'supported'}]}, ...extra });
 const rank = (candidates, extras={}) => recommendCentres({candidates, seeds:[], request, library:emptyLibrary(), history:emptyInterests(), now:Date.parse(now), ...extras});
 test('history captures only IDs, care type and activity; same-day repeats do not inflate interest', () => {
@@ -121,7 +121,7 @@ test('normal search gently surfaces preference matches without changing explicit
     history: { ...emptyInterests(), preferences: ['predictable_fees'], preferenceSetup: 'complete' },
   });
   assert.deepEqual(byPrice.map(p => p.id), ['clear', 'unknown']);
-  assert.equal(byPrice[0].personalised, true);
+  assert.equal(byPrice[0].personalised, false);
 });
 test('listed fees, pickup and contact details do not create review preferences', () => {
   const listed = provider('listed', { fees: [{ amount: 20, basis: 'hour' }], transport: { exists: true }, reviewTopics: undefined });

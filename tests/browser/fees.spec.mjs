@@ -26,7 +26,7 @@ for (const careType of ['regular', 'short_term']) test(`${careType}: listed KPM 
   await expect(dialog.getByRole('heading',{name:'KPM code listed',exact:true})).toBeVisible();
   await expect(dialog).toContainText('W5L0048');
   if (careType === 'short_term') {
-    await expect(dialog.getByRole('heading', {name:'Ask the centre for a quote', exact:true})).toBeVisible();
+    await expect(dialog.getByRole('heading', {name:'Ask the centre for the price', exact:true})).toBeVisible();
     await expect(dialog.locator('.fee-line')).toHaveCount(0);
     await expect(dialog.locator('.centre-metrics')).not.toContainText('/ month');
     return;

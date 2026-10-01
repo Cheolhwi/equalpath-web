@@ -48,12 +48,12 @@ test("styled sorting previews without queries, skips unavailable options and sup
   await trigger.click();
   await expect(page.getByRole("option", { selected: true })).toHaveText("Nearest first");
   await expect(page.getByRole("option", { name: "By name", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("option", { name: /Later care end time/ })).toBeDisabled();
+  await expect(page.getByRole("option", { name: /Open latest/ })).toBeDisabled();
   await page.screenshot({ path: `${out}/sort-desktop.png` });
   await trigger.press("ArrowDown");
   await expect(await activeOption(page, trigger)).toHaveText("Lowest fee");
   await trigger.press("ArrowDown");
-  await expect(await activeOption(page, trigger)).toHaveText("Centres with pickup first");
+  await expect(await activeOption(page, trigger)).toHaveText("Pickup service first");
   expect(searches).toHaveLength(1);
   await trigger.press("Escape");
   await expect(trigger).toBeFocused();

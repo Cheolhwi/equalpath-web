@@ -3,12 +3,15 @@ import { ArrowRight, Bookmark, Car, Check, Heart, Plus, X } from "lucide-react";
 import { feeSummary, drivingLabel } from "../shared/result-summary.mjs";
 import { followMapCard, placeMapCards } from "../shared/map-cards.mjs";
 import { displayName } from "../shared/display.mjs";
+import { centreHighlights } from "../shared/recommendations.mjs";
+import CentreHighlights from "./CentreHighlights.jsx";
 
-function Card({ p, index, selected, saved, compared, onOpen, onClose, onSave, onCompare }) {
+function Card({ p, highlights, index, selected, saved, compared, onOpen, onClose, onSave, onCompare }) {
   return <>
     <div className="map-centre-card-main">
       <span className="map-card-number" aria-label={`Map point ${index}`}>{String(index).padStart(2, "0")}</span>
       <strong>{displayName(p.name)}</strong>
+      <CentreHighlights highlights={highlights} />
       {p.personalised && <span className="map-card-personalised" title={p.personalisedReason}><Heart size={12} aria-hidden="true" /><span>{p.personalisedReason ?? "For you"}</span></span>}
       <span className="map-card-drive"><Car size={14} aria-hidden="true" />{drivingLabel(p.driving)}</span>
       <span className={`map-card-fee${feeSummary(p).estimate ? " fee-estimate" : ""}`}>Fee: {feeSummary(p).label}</span>
@@ -22,7 +25,10 @@ function Card({ p, index, selected, saved, compared, onOpen, onClose, onSave, on
   </>;
 }
 
-export default function MapCards({ entries, pins, width, height, compact, topInset = 148, hasCompare, reduced, onOpen, onClose, savedIds = [], compareIds = [], onSave, onCompare }) {
+export default function MapCards({ entries: rawEntries, pins, width, height, compact, topInset = 148, hasCompare, reduced, onOpen, onClose, savedIds = [], compareIds = [], onSave, onCompare }) {
+  const entries = useMemo(() => rawEntries.map(entry => ({ ...entry,
+    highlights: entry.p.suggested || entry.p.personalised ? [] : centreHighlights(entry.p),
+  })), [rawEntries]);
   const retained = useRef([]);
   const [leaving, setLeaving] = useState([]);
   const key = entries.map(e => `${e.id}:${e.selected}`).join("|");
@@ -33,7 +39,9 @@ export default function MapCards({ entries, pins, width, height, compact, topIns
   }, [leaving]);
   const cardWidth = Math.min(304, width - (compact ? 92 : 40));
   const shortMap = compact && height <= 650;
-  const cardHeight = (compact ? (shortMap ? 164 : 178) : 190) + (entries.some(e => e.p?.personalised) ? 20 : 0);
+  const highlightCount = Math.max(0, ...entries.map(e => e.highlights.length));
+  const highlightHeight = highlightCount ? (highlightCount > 1 && cardWidth < 280 ? 54 : 28) : 0;
+  const cardHeight = (compact ? (shortMap ? 164 : 178) : 190) + (entries.some(e => e.p?.personalised) ? 20 : 0) + highlightHeight;
   const bottom = compact ? (hasCompare && !shortMap ? 112 : 48) : (hasCompare ? 116 : 96);
   const options = { width: compact ? width - 60 : width, height, top: topInset, bottom, cardWidth, cardHeight, pins };
   // Phones keep one row of cards even after the search toolbar folds away.

@@ -6,15 +6,16 @@ import "./select-menu.css";
 export const SORT_OPTIONS = [
   ["distance", "Nearest first"],
   ["price", "Lowest monthly fee"],
-  ["closing", "Later care end time"],
-  ["pickup", "Centres with pickup first"],
+  ["closing", "Open latest"],
+  ["pickup", "Pickup service first"],
 ].map(([value, label]) => ({ value, label }));
 export const sortOptions = careType => SORT_OPTIONS.map(option => option.value === "price" && careType === "short_term" ? {...option, label:"Lowest fee"} : option);
+export const searchSortOptions = careType => [{ value: "recommended", label: "Recommended" }, ...sortOptions(careType)];
 
 // Select-only combobox: navigation previews an option; Enter/click commits it.
 const missingInformation = {
-  distance: "No mapped locations.",
-  price: "No comparable fees listed.",
+  distance: "No map locations.",
+  price: "No fees to compare.",
   closing: "No hours for this date.",
   pickup: "No pickup service listed.",
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { displayName, placeLabel, categoryLabel } from "../shared/display.mjs";
+import { displayName, placeLabel, categoryLabel, dateLabel } from "../shared/display.mjs";
 import { Bookmark, ArrowRight, Trash2, Pencil, Save, CalendarDays, Clock3, Users, RefreshCw, Check, CircleHelp } from "lucide-react";
 import {
   favourite,
@@ -14,11 +14,11 @@ export function SaveExplanation() {
     <details className="save-explanation">
       <summary>About your saved items</summary>
       <p>
-        Your saved childcare and notes stay in this browser.
-        For you uses your saved centres and local viewing history to suggest other centres.
+        Your saved centres and notes stay in this browser. For you uses
+        them, and the centres you looked at, to suggest others.
       </p>
       <p>
-        Clearing browser data can remove these items. They won’t appear on
+        Clearing your browser data can delete them. They don’t appear on
         your other devices.
       </p>
     </details>
@@ -56,10 +56,10 @@ const checkRequestKey = (request) => JSON.stringify([
   request?.transport,
 ]);
 const checkStatus = (p) => p.fit?.counts?.conflict
-  ? { label: "Doesn’t fit all choices", tone: "conflict" }
+  ? { label: "Doesn’t match your search", tone: "conflict" }
   : p.fit?.counts?.unknown
     ? { label: "Ask the centre", tone: "unknown" }
-    : { label: "Fits your plan", tone: "supported" };
+    : { label: "Matches your search", tone: "supported" };
 
 export function SavedCheckPanel({ entries, currentRequest, checking, result, onStartSearch, onCheck, onOpen }) {
   const requestKey = checkRequestKey(currentRequest);
@@ -95,11 +95,11 @@ export function SavedCheckPanel({ entries, currentRequest, checking, result, onS
       <span className="saved-check-icon"><RefreshCw size={19} aria-hidden="true" /></span>
       <div>
         <h3 id="saved-check-title">Check all saved centres</h3>
-        <p>Enter one plan for all {entries.length} saved {entries.length === 1 ? "centre" : "centres"}.</p>
+        <p>Use one date and time for all {entries.length} saved {entries.length === 1 ? "centre" : "centres"}.</p>
       </div>
     </div>
     {!form.pickup ? <div className="saved-check-empty">
-      <p>Start a search with your address first. Then we can check your saved centres together.</p>
+      <p>Search with your starting point first. Then we can check all your saved centres at once.</p>
       <button className="secondary" type="button" onClick={onStartSearch}><SearchIcon />Set up a search <ArrowRight size={15} /></button>
     </div> : <>
       <div className="saved-check-location"><Bookmark size={16} aria-hidden="true" /><span>{form.pickup.label}</span><button type="button" className="text-link" onClick={onStartSearch}>Change</button></div>
@@ -115,10 +115,10 @@ export function SavedCheckPanel({ entries, currentRequest, checking, result, onS
       {!canCheck && <p className="saved-check-hint"><CircleHelp size={15} aria-hidden="true" />Choose an age{short ? ", date, start time and end time" : ""} to check every saved centre.</p>}
     </>}
     {result?.status === "error" && <p className="error-box" role="alert">{result.error}</p>}
-    {result?.status === "ready" && !resultMatches && <p className="saved-check-hint" role="status"><CircleHelp size={15} aria-hidden="true" />This plan changed. Check again to refresh every saved centre.</p>}
+    {result?.status === "ready" && !resultMatches && <p className="saved-check-hint" role="status"><CircleHelp size={15} aria-hidden="true" />You changed the plan. Check again to update every saved centre.</p>}
     {result?.status === "ready" && resultMatches && <div className="saved-check-results" aria-live="polite">
-      <div className="saved-check-result-heading"><strong>Checked {result.items.length} of {entries.length} saved {entries.length === 1 ? "centre" : "centres"}</strong><small>{result.checkedAt ? `Just checked · ${result.request?.date ?? "current details"}` : ""}</small></div>
-      {result.failed > 0 && <p className="notice">{result.failed} centre{result.failed === 1 ? "" : "s"} could not be checked. Your saved item is still here.</p>}
+      <div className="saved-check-result-heading"><strong>Checked {result.items.length} of {entries.length} saved {entries.length === 1 ? "centre" : "centres"}</strong><small>{result.checkedAt ? `Just checked${result.request?.date ? ` · for ${dateLabel(result.request.date)}` : ""}` : ""}</small></div>
+      {result.failed > 0 && <p className="notice">We couldn’t check {result.failed} centre{result.failed === 1 ? "" : "s"}. {result.failed === 1 ? "It is" : "They are"} still saved.</p>}
       <div className="saved-check-result-list">{result.items.map((item) => { const status = checkStatus(item); return <div className="saved-check-result" key={item.id}>
         <div><strong>{displayName(item.name)}</strong><span className={`saved-check-status ${status.tone}`}><span aria-hidden="true">{status.tone === "supported" ? "✓" : status.tone === "unknown" ? "?" : "!"}</span>{status.label}</span></div>
         <button className="text-link" type="button" onClick={() => onOpen(item, result.request)}>View details <ArrowRight size={14} /></button>
@@ -137,21 +137,19 @@ export function SavedLibrary({ library, failure, onRetry, onReopen, onEditFavour
       <button aria-pressed={tab === "suggestions"} onClick={() => setTab("suggestions")}>For you</button>
     </div>
     {tab === "suggestions" ? suggestions : <>
-      {!!entries.length && <SavedCheckPanel entries={entries} currentRequest={currentRequest} checking={savedCheck?.status === "checking"} result={savedCheck} onStartSearch={onStartSearch} onCheck={onCheckSaved} onOpen={onOpenSaved} />}
       {!entries.length && <div className="empty-state"><Bookmark size={30} /><h3>Save childcare you like</h3>
         <p>Select Save on any centre to keep it here.</p>
         <button className="primary" onClick={onDiscover}>Find childcare <ArrowRight size={16} /></button></div>}
       {entries.map(item => <article className="saved-row" key={item.id}>
         <div className="section-kicker">{[categoryLabel(item), placeLabel(item)].filter(Boolean).join(" · ")}</div><h3>{displayName(item.name)}</h3>
-        {item.reason && <p>{item.reason}</p>}<small>Saved {item.savedAt?.slice(0, 10)}</small>
-        <details className="saved-source-dates"><summary>When were these details checked?</summary>
-          <small>Details saved {item.snapshot?.capturedAt?.slice(0, 10) ?? "date unavailable"}</small><small>{factDates(item.snapshot?.facts)}</small></details>
+        {item.reason && <p>{item.reason}</p>}<small className="saved-dates">Saved {dateLabel(item.savedAt?.slice(0, 10)) ?? ""} · details {factDates(item.snapshot?.facts).replace(/^Checked/, "checked")}</small>
         <div className="saved-actions">
-          <button className="secondary" onClick={() => onReopen(item)}>Check this centre alone <ArrowRight size={15} /></button>
+          <button className="secondary" onClick={() => onReopen(item)}>Check this centre <ArrowRight size={15} /></button>
           <button aria-label={`Edit ${item.name}`} onClick={() => onEditFavourite(item)}><Pencil size={15} />Edit</button>
           <button aria-label={`Remove ${item.name}`} onClick={() => onDelete("favourites", item.id)}><Trash2 size={15} />Remove</button>
         </div>
       </article>)}
+      {entries.length > 1 && <SavedCheckPanel entries={entries} currentRequest={currentRequest} checking={savedCheck?.status === "checking"} result={savedCheck} onStartSearch={onStartSearch} onCheck={onCheckSaved} onOpen={onOpenSaved} />}
     </>}
     <SaveExplanation />
   </div>;
@@ -167,7 +165,7 @@ export function FavouriteEditor({ p, existing, onSave, onCancel }) {
         if (result) onCancel();
         else
           setError(
-            "We couldn’t save this. Your previous saved details are unchanged. Please try again.",
+            "We couldn’t save this. Your earlier saved details are unchanged. Please try again.",
           );
       }}
     >
@@ -176,7 +174,7 @@ export function FavouriteEditor({ p, existing, onSave, onCancel }) {
       <label className="field">
         Add a note{" "}
         <span className="notice">
-          Optional · no names, phone numbers or child details
+          Optional. Don’t add names, phone numbers or details about your child.
         </span>
         <textarea
           value={reason}
@@ -207,7 +205,7 @@ export function SavedChanges({ saved, current, failure, onUpdate }) {
   const changes = compareFacts(saved.snapshot, current);
   return (
     <section className="saved-changes">
-      <div className="section-kicker">CHANGES SINCE YOU SAVED</div>
+      <div className="section-kicker">Since you saved this centre</div>
       <h3>
         {failure
           ? "We couldn’t check the latest details"
@@ -218,12 +216,12 @@ export function SavedChanges({ saved, current, failure, onUpdate }) {
               : "The details we checked haven’t changed"}
       </h3>
       <p className="notice">
-        Details saved {saved.snapshot?.capturedAt ?? "unavailable"}.{" "}
+        Saved {dateLabel(saved.snapshot?.capturedAt?.slice(0, 10)) ?? "on an unknown date"}.{" "}
         {current
-          ? `Latest check ${current.capturedAt}.`
+          ? `Checked again ${dateLabel(current.capturedAt?.slice(0, 10))}.`
           : "Your saved details are still here."}{" "}
-        The check date shows when we read the source, not when the centre
-        last updated it.
+        These dates show when we read the sources, not when the centre
+        changed anything.
       </p>
       {failure && (
         <p className="error-box">
@@ -239,12 +237,12 @@ export function SavedChanges({ saved, current, failure, onUpdate }) {
           <h4>{c.label}</h4>
           <div>
             <section>
-              <small>SAVED</small>
+              <small>When you saved</small>
               <p>{factDescription(c.before)}</p>
               <small>{factDates(c.before)}</small>
             </section>
             <section>
-              <small>CURRENT</small>
+              <small>Now</small>
               <p>{factDescription(c.after)}</p>
               <small>{factDates(c.after)}</small>
             </section>

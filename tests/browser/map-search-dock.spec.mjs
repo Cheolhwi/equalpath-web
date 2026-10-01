@@ -8,6 +8,7 @@ async function setup(page) {
   const calls=[], errors=[]; page.on('pageerror',e=>errors.push(e.message));
   const api=createAPI({store:{catalog:async()=>fixtureCatalog},placeSearch:async()=>({items:[{id:'demo-pickup',label:'KL Sentral',lat:3.139,lng:101.6869}]}),drivingRoutes:async(_,ps)=>ps.map(p=>({...p,driving:{state:'available',minutes:8,traffic:false}}))});
   await page.route('**/api',async route=>{ const b=route.request().postDataJSON();calls.push(b);await route.fulfill({json:{ok:true,...await api(b)}}); });
+  await page.addInitScript(() => { localStorage.setItem('equalpath:interests:v1:live', JSON.stringify({version:1,enabled:true,visits:[],hidden:[],preferences:[],preferenceSetup:'skipped'})); localStorage.setItem('equalpath:tour:v1', JSON.stringify({version:1,status:'skipped'})); });
   await page.goto('/#discover'); return {calls,errors};
 }
 async function selectTime(page,id,h,m) {
@@ -32,7 +33,9 @@ for(const [width,height] of [[320,568],[390,844],[1440,900]]) test(`${width}x${h
   await fillMapSearch(page);
   await page.locator('[data-field="more"]').click();
   const box=await page.locator('.dock-popover').boundingBox();expect(box.x).toBeGreaterThanOrEqual(0);expect(box.y+box.height).toBeLessThanOrEqual(height);
-  await page.locator('#transport').selectOption('institution');await page.getByRole('button',{name:'Close options'}).click();
+  await page.getByRole('button',{name:'Close options'}).click();
+  await page.locator('[data-field="transport"]').click();await page.getByRole('radio',{name:'The centre picks my child up',exact:true}).click();
+  await expect(page.locator('[data-field="transport"] strong')).toHaveText('Centre pickup');
   await page.screenshot({path:`${out}/map-controls-${width}.png`});
   await page.getByRole('button',{name:'Find childcare',exact:true}).click();
   await expect(page.locator('.map-centre-card:not(.leaving)')).toHaveCount(3);
@@ -211,11 +214,12 @@ for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly p
   await page.getByRole('radio', {name:'4–6 years', exact:true}).click();
   await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
   await expect(page.locator('[data-pending]')).toHaveCount(0);
-  await page.locator('[data-field="more"]').click();
-  await page.locator('#transport').selectOption('self');
-  await page.getByRole('button', {name:'Close options', exact:true}).click();
+  await page.locator('[data-field="transport"]').click();
+  await page.getByRole('radio', {name:'I’ll bring my child', exact:true}).click();
+  await expect(page.locator('.dock-popover')).toHaveCount(0);
   await expect(page.locator('.selected-filter-summary')).toHaveCount(0);
-  await expect(page.locator('[data-field="more"]')).toHaveAttribute('data-pending', 'true');
+  await expect(page.locator('[data-field="transport"]')).toHaveAttribute('data-pending', 'true');
+  await expect(page.locator('[data-field="more"]')).not.toHaveAttribute('data-pending');
   await selectTime(page, '#care-end', '19', '15');
   await expect(page.locator('#care-end')).toHaveAttribute('data-pending', 'true');
   expect(calls.filter(c => c.action === 'search')).toHaveLength(1);

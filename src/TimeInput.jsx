@@ -13,6 +13,13 @@ function normalise(value) {
 
 // The OS time popup does not inherit the site's palette. Keep a text field and
 // provide a themed, minute-precise picker without changing the HH:mm contract.
+const HOURS = Array.from({ length: 24 }, (_, n) => n);
+// Minutes are listed in 5-minute steps so the list is short on a phone. An
+// exact minute (typed, or already saved) is added to the list, never rounded.
+const minuteOptions = (selected) => {
+  const steps = Array.from({ length: 12 }, (_, n) => n * 5);
+  return Number.isInteger(selected) && selected % 5 ? [...steps, selected].sort((a, b) => a - b) : steps;
+};
 export default function TimeInput({ id, label, pickerLabel = label, value, onChange, invalid, describedBy, variant = "field", allowClear = true, icon: Icon = Clock3, shortLabel, onOpen, pending = false, suggest }) {
   const generatedId = useId(), popupId = `${generatedId}-time`;
   const inputId = id || generatedId;
@@ -110,6 +117,13 @@ export default function TimeInput({ id, label, pickerLabel = label, value, onCha
     const max = column === 0 ? 24 : 60, current = draft[column];
     if (["ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"].includes(event.key)) {
       event.preventDefault();
+      if (column === 1 && !["Home", "End"].includes(event.key)) {
+        // Minutes move in the same 5-minute steps as the list; typed digits stay exact.
+        const step = event.key === "ArrowUp" ? -5 : event.key === "ArrowDown" ? 5 : event.key === "PageUp" ? -15 : 15;
+        const base = step > 0 ? Math.floor(current / 5) * 5 : Math.ceil(current / 5) * 5;
+        update(column, (base + step + 60) % 60);
+        return;
+      }
       const step = event.key === "ArrowUp" ? -1 : event.key === "ArrowDown" ? 1 : event.key === "PageUp" ? -5 : 5;
       update(column, event.key === "Home" ? 0 : event.key === "End" ? max - 1 : (current + step + max) % max);
     } else if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
@@ -157,7 +171,7 @@ export default function TimeInput({ id, label, pickerLabel = label, value, onCha
           <div role="listbox" aria-labelledby={`${popupId}-${column}-label`} tabIndex={0}
             aria-activedescendant={`${popupId}-${column}-${draft[column]}`} ref={(el) => { columns.current[column] = el; }}
             onKeyDown={(event) => navigate(event, column)}>
-            {Array.from({ length: column === 0 ? 24 : 60 }, (_, n) => <div key={n} id={`${popupId}-${column}-${n}`}
+            {(column === 0 ? HOURS : minuteOptions(draft[1])).map((n) => <div key={n} id={`${popupId}-${column}-${n}`}
               role="option" aria-selected={draft[column] === n} className="time-picker-option"
               onClick={() => { update(column, n); columns.current[column]?.focus({ preventScroll: true }); }}>
               <span>{pad(n)}</span>{draft[column] === n && <Check size={13} aria-hidden="true" />}
