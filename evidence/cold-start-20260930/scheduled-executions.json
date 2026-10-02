@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-09-30T03:35:53.498Z",
+  "executions": [
+    {
+      "created": "2026-09-30T03:35:07.119+00:00",
+      "status": "completed",
+      "responseStatusCode": 200,
+      "duration": 0.033528804779052734,
+      "trigger": "schedule",
+      "deployment": "6abc81eee421a4a8004c"
+    },
+    {
+      "created": "2026-09-30T03:34:07.095+00:00",
+      "status": "completed",
+      "responseStatusCode": 200,
+      "duration": 0.030174970626831055,
+      "trigger": "schedule",
+      "deployment": "6abc81eee421a4a8004c"
+    },
+    {
+      "created": "2026-09-30T03:33:08.080+00:00",
+      "status": "completed",
+      "responseStatusCode": 200,
+      "duration": 0.028215885162353516,
+      "trigger": "schedule",
+      "deployment": "6abc81eee421a4a8004c"
+    },
+    {
+      "created": "2026-09-30T03:32:07.090+00:00",
+      "status": "completed",
+      "responseStatusCode": 200,
+      "duration": 0.04045891761779785,
+      "trigger": "schedule",
+      "deployment": "6abc81eee421a4a8004c"
+    },
+    {
+      "created": "2026-09-30T03:31:08.199+00:00",
+      "status": "completed",
+      "responseStatusCode": 200,
+      "duration": 1.123702049255371,
+      "trigger": "schedule",
+      "deployment": "6abc81eee421a4a8004c"
+    }
+  ]
+}

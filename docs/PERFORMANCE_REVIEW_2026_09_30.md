@@ -2,7 +2,7 @@
 
 ## Production observations
 
-Inspected the real `https://equalpathcare.me/#discover` page and its public Appwrite Function. The public site still serves source digest `fa8b8dc638021a845502012fbdae6980f5cc666f5241f6e8e06a80c7e168e79a`; none of the fixes below has been published in this investigation.
+Inspected the real `https://equalpathcare.me/#discover` page and its public Appwrite Function. At the initial investigation, the public site served source digest `fa8b8dc638021a845502012fbdae6980f5cc666f5241f6e8e06a80c7e168e79a`; the publication and follow-up measurements are recorded below.
 
 Five sequential, ordinary public API requests (no load test) gave these results:
 
@@ -39,6 +39,26 @@ Opening the actual production landing scene from the map took approximately 6.63
 - Local responsive screen in a real browser iframe at **390 × 844 CSS pixels** checked: search, collapsed toolbar, changing end time, new fees and details. This is responsive-width verification, not a physical-phone performance benchmark. The browser viewport override did not take effect, so an explicit iframe was used.
 - Local-only delayed-routing harness held the route response for 12 seconds. Search returned in 10–24 ms locally; results remained usable and optional routing timed out independently at 10 seconds. These local numbers are not production performance promises.
 - Landing screenshot after the final parallel-load change was checked; the earlier temporary development compile error was corrected before the passing release gate.
-- No production deployment, database mutation, DNS change, or new execution logging was performed. Production improvement must be measured again after a release. Existing browser CI failures from the previous release are not represented as passing here.
+- The first local verification did not publish changes. The subsequent authorised production release is recorded below. No database mutation, DNS change or execution logging was introduced; timing response headers contain numbers only.
 
 Evidence: `evidence/performance-20260930/production-server-timings.json`, `function-list-executions.json`, `production-static.json`, `production-gallery-assets.json`, `search-after.json`, `slow-route-metrics.json`, `ten-ranked-results.json`, `mobile-metrics.json`, and the desktop/mobile screenshots.
+
+## Production release and second diagnosis
+
+Published commit `b4d6ba6a2644788354ce6d56b24324c28f611956` on 30 September. Expected and public source digest both equal `f7a3117f6851c8f84cf88418ad2fd3469622b75b7049b93490c87e6491eddfe8`. Site deployment `6abc6f1257fb63a0c096` and Function deployment `6abc6e46383e3050d5ce` are active and ready. The release verifier checked public HTTPS, entry assets and backend health.
+
+The first request after the new Function deployment still took 6.26 seconds: the Function execution reported 5.84 seconds, while the new application timing header measured 1.41 seconds inside the handler. Roughly 4.43 seconds was outside the handler (platform/runtime startup and request dispatch, including module loading); this must not be confused with route waiting or claimed to be fully eliminated. Runtime specification remains 0.5 vCPU / 512 MB; billing and infrastructure settings were not changed.
+
+Additional mitigations now reuse enriched immutable catalogues per runtime and issue one anonymous background health request during welcome/preferences. This prepares the cold runtime before search, without blocking entry, sending a location or running a keep-alive loop. Direct map entry already prepares the runtime through nearby discovery. This mitigates cold-start exposure; it does not guarantee zero cold-start latency after inactivity or scaling.
+
+Production results after preparation:
+
+- The same Bangsar search previously measured at 6,506 ms returned in **208 ms**, with 67 ms Function execution / 29.4 ms handler time, ten items and deferred routes. This is a warm request, not a cold-start benchmark.
+- A new search sent while a route request was pending returned in **511 ms**, ahead of the route request completing at 1,139 ms.
+- Two other public searches returned in 164 and 142 ms. Review text loaded separately in 98 ms.
+- On the real production page, changing 12:00 to 13:00 applied in **347 ms** around browser-control actions. Fees visibly changed (Little Playhouse KL Eco City MYR 40 to MYR 60), the count was 24 matching centres / ten on page one, all ten rendered rows had finite rerank scores and positions 1–10, and Parent reviews expanded with text. No no-match fallback appeared for this matching search.
+- Returning to the landing and loading its scene completed in 1,578 ms in this browser run. Browser asset caches may affect this number; it is not a guaranteed fresh-visit timing.
+
+The final local gate passed 233 tests and the build. Local desktop/mobile visual evidence was retained; the added background preparation was also checked through welcome, preferences and map entry. GitHub run `36658432826` passed Test, build and verify release. Its three journey shards failed at collection due to duplicate test titles in `map-search-dock.spec.mjs`; the landing shard also failed expectations including direct ready-state versus first-use preferences and reduced-motion loading. These automated browser checks remain unresolved and are not represented as passing. Manual production checks above are separate evidence.
+
+Final receipt: `evidence/performance-20260930/release-receipt.json`.

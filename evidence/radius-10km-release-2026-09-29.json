@@ -1,0 +1,124 @@
+{
+  "publishedAt": "2026-09-29T12:21:03.451Z",
+  "commit": "b08568a3f73013655a3b5fbb0cf3871d24ed07d4",
+  "expectedDigest": "2764395be0c2017ff61276b10527f50950f78cdb770ceec7596ba944e3708f4b",
+  "publicDigest": "2764395be0c2017ff61276b10527f50950f78cdb770ceec7596ba944e3708f4b",
+  "publicAssets": 5,
+  "publicBackend": "ok",
+  "site": {
+    "id": "equalpath-web",
+    "activeDeployment": "6abbabdc89bd1100caa5",
+    "status": "ready",
+    "commit": "b08568a3f73013655a3b5fbb0cf3871d24ed07d4",
+    "branch": "main"
+  },
+  "function": {
+    "id": "web-provider-query",
+    "activeDeployment": "6abbabbc6efeed2d904b",
+    "deployment": "6abbabbc6efeed2d904b",
+    "status": "ready"
+  },
+  "localChecks": {
+    "date": "2026-09-29",
+    "scope": "More filters offers 5 km and 10 km for both care types; short care retains default 5 km and ten-item pages",
+    "tests": 224,
+    "release": "passed",
+    "source": "2764395be0c2017ff61276b10527f50950f78cdb770ceec7596ba944e3708f4b",
+    "localBrowser": {
+      "url": "http://127.0.0.1:4205/?mode=live#discover",
+      "desktop": {
+        "width": 1280,
+        "height": 720
+      },
+      "mobile": {
+        "width": 390,
+        "height": 844,
+        "horizontalOverflow": false
+      },
+      "location": "KL Sentral, Jalan Thambipillay",
+      "date": "2026-09-29",
+      "age": "1-3 years",
+      "start": "10:00",
+      "end": "12:00",
+      "within5km": 12,
+      "within10km": 24,
+      "pending": "Changing distance keeps old results until Update results",
+      "mobileReversal": "10 km to 5 km restored 12 results; toolbar collapsed after success",
+      "consoleErrors": []
+    }
+  },
+  "cloudData": {
+    "checkedAt": "2026-09-29T12:17:37.625Z",
+    "ok": true,
+    "checks": [
+      {
+        "radius": 5,
+        "total": 13,
+        "pageSize": 10,
+        "pageCount": 10
+      },
+      {
+        "radius": 10,
+        "total": 23,
+        "pageSize": 10,
+        "pageCount": 10
+      }
+    ]
+  },
+  "productionUI": {
+    "status": "passed",
+    "page": "https://equalpathcare.me/#discover",
+    "location": "KL Sentral",
+    "date": "2026-09-29",
+    "age": "1-3 years",
+    "start": "10:00",
+    "end": "12:00",
+    "within5km": 12,
+    "within10km": 24,
+    "pendingRetainsPreviousResults": true,
+    "scopeLabel": "centres within 10 km",
+    "pageLabel": "Page 1 · 10 shown",
+    "mapAndListUpdated": true,
+    "consoleErrors": [],
+    "screenshot": "radius-10km-20260929/production-results.png"
+  },
+  "ci": {
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 109400963063,
+        "name": "Test, build and verify release",
+        "status": "completed"
+      },
+      {
+        "conclusion": "failure",
+        "id": 109400963477,
+        "name": "Browser journeys (journeys 2/3)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "failure",
+        "id": 109400963528,
+        "name": "Browser journeys (journeys 3/3)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "failure",
+        "id": 109400963530,
+        "name": "Browser journeys (landing 1/1)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "failure",
+        "id": 109400963533,
+        "name": "Browser journeys (journeys 1/3)",
+        "status": "completed"
+      }
+    ],
+    "status": "completed"
+  },
+  "ciLimit": "Existing browser CI failures remain unresolved; the release-verification job passed. Local desktop/mobile and manual production checks passed separately.",
+  "ownerDataChanged": false,
+  "dnsChanged": false
+}

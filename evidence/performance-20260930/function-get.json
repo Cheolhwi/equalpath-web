@@ -1,0 +1,10 @@
+{
+  "$id": "web-provider-query",
+  "name": "EqualPath Web — public discovery",
+  "runtime": "node-22",
+  "timeout": 120,
+  "logging": false,
+  "enabled": true,
+  "deploymentId": "6abbb1a6776ac9417f57",
+  "deploymentCreatedAt": "2026-09-29T12:40:06.772+00:00"
+}

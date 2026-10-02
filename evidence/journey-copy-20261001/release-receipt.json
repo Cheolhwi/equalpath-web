@@ -1,0 +1,83 @@
+{
+  "recordedAt": "2026-10-01T00:46:33.373Z",
+  "repository": "Cheolhwi/equalpath-web",
+  "branch": "main",
+  "commit": "45b50ba2ebfb0c30b1d06030e643a69ada6248d2",
+  "scope": "User-approved Claude Code page layout and journey copy changes; frontend publication only",
+  "expectedDigest": "65707d85bd779bbd51195c7e4d67f30c057650e146c6f7855335630b4062fe58",
+  "publicDigest": "65707d85bd779bbd51195c7e4d67f30c057650e146c6f7855335630b4062fe58",
+  "localRelease": {
+    "status": "passed",
+    "tests": 245,
+    "command": "npm ci && npm run release",
+    "log": ".build/journey-release-20261001/release.log"
+  },
+  "localBrowser": {
+    "status": "passed",
+    "browser": "Google Chrome",
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 1000
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "tests": 2,
+    "journey": "First-use preference selection and two searches without reload, plus desktop/mobile rendered result screenshots inspected",
+    "evidence": ".build/journey-release-20261001/browser",
+    "userVisualAcceptance": "User confirmed local page and copy checks before requesting publication"
+  },
+  "appwrite": {
+    "site": "equalpath-web",
+    "activeDeploymentId": "6abdacade62e3557616b",
+    "status": "ready",
+    "sourceCommit": "45b50ba2ebfb0c30b1d06030e643a69ada6248d2"
+  },
+  "publicVerification": {
+    "website": "https://equalpathcare.me/",
+    "source": "65707d85bd779bbd51195c7e4d67f30c057650e146c6f7855335630b4062fe58",
+    "assets": 5,
+    "publicBackend": "ok"
+  },
+  "productionBrowser": {
+    "status": "not_required",
+    "reason": "UI/copy-only publication; local visual checks completed"
+  },
+  "functionDeployment": "unchanged",
+  "ci": {
+    "runId": 36797585056,
+    "conclusion": "",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "name": "Test, build and verify release",
+        "status": "completed"
+      },
+      {
+        "conclusion": "",
+        "name": "Browser journeys (journeys 1/3)",
+        "status": "in_progress"
+      },
+      {
+        "conclusion": "",
+        "name": "Browser journeys (landing 1/1)",
+        "status": "in_progress"
+      },
+      {
+        "conclusion": "",
+        "name": "Browser journeys (journeys 2/3)",
+        "status": "in_progress"
+      },
+      {
+        "conclusion": "",
+        "name": "Browser journeys (journeys 3/3)",
+        "status": "in_progress"
+      }
+    ],
+    "status": "in_progress"
+  },
+  "excluded": "Pre-existing performance notes and historical evidence remain uncommitted"
+}

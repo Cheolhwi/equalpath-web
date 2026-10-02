@@ -1,0 +1,129 @@
+{
+  "commit": "81ee4cb99b5ef372d0ccae6bd01a2d1f8a76dcd7",
+  "expectedSource": "fcfc554a99f1040d67b60ff2d5caaa95e165eb1974c13017bad182412460b622",
+  "publicSource": "fcfc554a99f1040d67b60ff2d5caaa95e165eb1974c13017bad182412460b622",
+  "publicVerification": {
+    "https": true,
+    "entryAssets": 5,
+    "backend": "ok"
+  },
+  "localRelease": {
+    "tests": 225,
+    "passed": 225,
+    "build": "passed",
+    "dependencies": "locked npm ci completed for preceding UI release; lockfile unchanged"
+  },
+  "localBrowser": {
+    "desktop": [
+      1280,
+      720
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "listRows": 9,
+    "mapPins": 9,
+    "knownConflicts": 0,
+    "horizontalOverflow": false,
+    "unknownsRetained": true
+  },
+  "publicAPI": {
+    "checkedAt": "2026-09-29T12:43:00.500Z",
+    "passed": true,
+    "checks": [
+      {
+        "radius": 5,
+        "filteredTotal": 10,
+        "includingConflicts": 13,
+        "pageCount": 10,
+        "knownConflicts": 0,
+        "unknownsRetained": true
+      },
+      {
+        "radius": 10,
+        "filteredTotal": 18,
+        "includingConflicts": 23,
+        "pageCount": 10,
+        "knownConflicts": 0,
+        "unknownsRetained": true
+      }
+    ],
+    "lateSearch": {
+      "total": 0,
+      "explicitMatchCount": 0
+    }
+  },
+  "productionBrowser": {
+    "origin": "https://equalpathcare.me/#discover",
+    "search": "KL Sentral, 2026-09-29, age 1–3, 10:00–12:00, 5 km",
+    "allCentres": 9,
+    "listRows": 9,
+    "mapPins": 9,
+    "knownConflicts": 0,
+    "unknownsRetained": true,
+    "defaultConflictsCheckbox": false,
+    "emptySearch": {
+      "start": "22:00",
+      "end": "23:00",
+      "allCentres": 0,
+      "externalRecommendations": [
+        "Kiddocare",
+        "Babysits Malaysia"
+      ],
+      "passed": true
+    },
+    "consoleErrors": []
+  },
+  "deployment": {
+    "checkedAt": "2026-09-29T12:44:49.534Z",
+    "site": {
+      "id": "equalpath-web",
+      "activeDeployment": "6abbb1c168f4e24246ad",
+      "status": "ready",
+      "commit": "81ee4cb99b5ef372d0ccae6bd01a2d1f8a76dcd7",
+      "branch": "main"
+    },
+    "function": {
+      "id": "web-provider-query",
+      "activeDeployment": "6abbb1a6776ac9417f57",
+      "deployment": "6abbb1a6776ac9417f57",
+      "status": "ready"
+    }
+  },
+  "ci": {
+    "id": 36569698143,
+    "status": "completed",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "name": "Test, build and verify release",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser journeys (journeys 2/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 1/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (landing 1/1)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 3/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      }
+    ],
+    "limitation": "Browser CI jobs remain failing; local manual visual checks and public live journey are independent evidence."
+  },
+  "ownerDataChanged": false,
+  "notes": "Explicit More filters opt-in to view conflicting centres remains available. Default filtering is before total and pagination. Review sample button was removed in preceding published commit c89d7d4."
+}

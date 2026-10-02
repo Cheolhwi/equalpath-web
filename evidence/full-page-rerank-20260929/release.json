@@ -1,0 +1,89 @@
+{
+  "commit": "9570c3249b61cdbc81ecbd8ad8bdc6b7efbf1fa5",
+  "expectedSource": "fa8b8dc638021a845502012fbdae6980f5cc666f5241f6e8e06a80c7e168e79a",
+  "publicSource": "fa8b8dc638021a845502012fbdae6980f5cc666f5241f6e8e06a80c7e168e79a",
+  "deployment": {
+    "deploymentId": "6abbcad4665f7707275a",
+    "status": "ready",
+    "commit": "9570c3249b61cdbc81ecbd8ad8bdc6b7efbf1fa5",
+    "branch": "main",
+    "recordedAt": "2026-09-29T14:31:04.527Z"
+  },
+  "local": {
+    "release": "passed",
+    "tests": 228,
+    "failures": 0,
+    "browser": {
+      "desktop": "passed",
+      "mobile": "passed",
+      "coldStart": "10 scored and ranked after skipping preferences",
+      "personalised": "10 scored and ranked; positions 4-10 respond to preferences",
+      "screenshots": [
+        "desktop.png",
+        "mobile.png",
+        "cold-start.png"
+      ]
+    }
+  },
+  "public": {
+    "version": "matched",
+    "assets": 5,
+    "backend": "ok",
+    "journey": {
+      "url": "https://equalpathcare.me/#discover",
+      "date": "2026-09-29",
+      "location": "KL Sentral, Jalan Thambipillay",
+      "age": "1-3",
+      "start": "10:00",
+      "end": "12:00",
+      "radiusKm": 10,
+      "total": 19,
+      "pageResults": 10,
+      "finiteScores": 10,
+      "ranks": "1-10",
+      "mapOrderMatchesList": true,
+      "highlighted": 3,
+      "screenshot": "production.png"
+    }
+  },
+  "ci": {
+    "run": 36582817501,
+    "status": "completed",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "name": "Test, build and verify release",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser journeys (journeys 3/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (landing 1/1)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 2/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 1/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      }
+    ],
+    "unresolved": "Independent browser CI failures remain; local and production checks above are separate."
+  },
+  "boundaries": {
+    "scope": "Rerank all eligible results within the current nearest page, including cold start",
+    "explicitSorts": "User selected fee/closing/pickup order retained",
+    "functionDeployed": false,
+    "ownerDataChanged": false
+  },
+  "recordedAt": "2026-09-29T14:39:33.828Z"
+}

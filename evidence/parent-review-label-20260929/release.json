@@ -1,0 +1,75 @@
+{
+  "commit": "8614cf5bbb21e9fe2cb0224f2556363efefe34c9",
+  "expectedSource": "1b199696e2871dcc3a0aeedec1f3f9adfa5602453d61c268d16663dd3c81a03d",
+  "publicVerification": {
+    "website": "https://equalpathcare.me/",
+    "source": "1b199696e2871dcc3a0aeedec1f3f9adfa5602453d61c268d16663dd3c81a03d",
+    "assets": 5,
+    "publicBackend": "ok"
+  },
+  "verifierExitCode": 0,
+  "deployment": {
+    "checkedAt": "2026-09-29T14:12:55.056Z",
+    "id": "equalpath-web",
+    "activeDeployment": "6abbc6d74d046acc4ba2",
+    "status": "ready",
+    "commit": "8614cf5bbb21e9fe2cb0224f2556363efefe34c9",
+    "branch": "main"
+  },
+  "localRelease": {
+    "tests": 225,
+    "passed": 225,
+    "lockedInstall": true,
+    "build": "passed",
+    "integrity": "passed"
+  },
+  "localBrowser": {
+    "kind": "real local browser; current ReviewEvidence component and local published catalog",
+    "desktop": {
+      "width": 1280,
+      "height": 800
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844
+    },
+    "allQuoteHeadings": "Parent review",
+    "datesAndText": "preserved",
+    "readMore": "passed",
+    "topicSwitch": "passed",
+    "horizontalOverflow": false
+  },
+  "ci": {
+    "id": 36580667216,
+    "status": "in_progress",
+    "conclusion": "",
+    "jobs": [
+      {
+        "name": "Test, build and verify release",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser journeys (journeys 1/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 2/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 3/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (landing 1/1)",
+        "status": "in_progress",
+        "conclusion": ""
+      }
+    ]
+  },
+  "scope": "UI copy only; sentiment data, ranking and backend unchanged. No production browser journey."
+}

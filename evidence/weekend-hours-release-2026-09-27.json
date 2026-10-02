@@ -1,0 +1,40 @@
+{
+  "commit": "2e407f5ee8139b15d5e0b8dff0fd3c3ef42b8142",
+  "website": "https://equalpathcare.me/",
+  "expected_digest": "c1fd6f6de5cea57a05ac15f18083cc7715b61132a10abebad21393242ddf53fb",
+  "active_digest": "c1fd6f6de5cea57a05ac15f18083cc7715b61132a10abebad21393242ddf53fb",
+  "site_deployment": {
+    "id": "6ab8a013430bbf327f05",
+    "status": "ready"
+  },
+  "function_deployment": {
+    "id": "6ab89ffa236832e3276c",
+    "status": "ready"
+  },
+  "public_backend": "ok",
+  "local_release": "passed; 211 tests",
+  "production_ui": {
+    "status": "passed",
+    "date": "2026-09-27",
+    "location": "KL Sentral",
+    "age": "1-3",
+    "start": "09:00",
+    "end": "13:00",
+    "result_count": 12,
+    "provider": "Learning Fresh — Damansara Heights",
+    "care_end": "Not listed for this day",
+    "care_condition": "Doesn’t match",
+    "reason": "No care end time is listed for this weekend date, so this centre does not match your search.",
+    "fallback": "not displayed; weekend candidates remain",
+    "screenshot": "weekend-hours-production-2026-09-27.png"
+  },
+  "ci": {
+    "url": "https://github.com/Cheolhwi/equalpath-web/actions/runs/36295369548",
+    "release_job": "passed",
+    "browser_jobs": "failed",
+    "unresolved": [
+      "Duplicate filter pending test titles block journey shards",
+      "Landing loading/motion assertions failed"
+    ]
+  }
+}

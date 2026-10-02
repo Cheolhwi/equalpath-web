@@ -1,0 +1,68 @@
+{
+  "commit": "c89d7d491ff97c172261be3e06302695668e525a",
+  "source": "cb4c3cca5e3307580e27fe3368e905a7450e62235b2513c6d32ded1826ddbcfd",
+  "publicSourceVerified": true,
+  "localRelease": {
+    "tests": 224,
+    "passed": 224,
+    "build": "passed"
+  },
+  "localBrowser": {
+    "desktop": "passed",
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "horizontalOverflow": false
+    },
+    "reviewExpansion": "passed",
+    "removedButton": true
+  },
+  "deployment": {
+    "checkedAt": "2026-09-29T12:35:02.237Z",
+    "site": {
+      "id": "equalpath-web",
+      "activeDeployment": "6abbafbca0c95a0cd5fc",
+      "status": "ready",
+      "commit": "c89d7d491ff97c172261be3e06302695668e525a",
+      "branch": "main"
+    },
+    "function": {
+      "id": "web-provider-query",
+      "activeDeployment": "6abbabbc6efeed2d904b",
+      "deployment": "6abbabbc6efeed2d904b",
+      "status": "ready"
+    }
+  },
+  "ci": {
+    "status": "in_progress",
+    "conclusion": "",
+    "jobs": [
+      {
+        "name": "Test, build and verify release",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser journeys (journeys 1/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 2/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 3/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (landing 1/1)",
+        "status": "in_progress",
+        "conclusion": ""
+      }
+    ]
+  },
+  "scope": "UI only; no Function deployment or production browser journey"
+}

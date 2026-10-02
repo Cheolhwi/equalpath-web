@@ -1,0 +1,15 @@
+{
+  "site": {
+    "id": "equalpath-web",
+    "deploymentId": "6abc6f1257fb63a0c096",
+    "status": "ready",
+    "commit": "b4d6ba6a2644788354ce6d56b24324c28f611956"
+  },
+  "function": {
+    "id": "web-provider-query",
+    "deploymentId": "6abc6e46383e3050d5ce",
+    "status": "ready",
+    "runtimeSpecification": "s-0.5vcpu-512mb",
+    "logging": false
+  }
+}

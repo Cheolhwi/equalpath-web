@@ -1,0 +1,68 @@
+[
+  {
+    "phase": "before-schedule",
+    "checkedAt": "2026-09-30T03:26:54.970Z",
+    "totalMs": 267,
+    "functionMs": 74,
+    "serverTiming": "app;dur=36.2, module;dur=0, first;dur=0",
+    "returned": 10,
+    "total": 24,
+    "deployment": "6abc7d72ae39fcf376f1",
+    "executionId": "6abc817ee3f309b5354b"
+  },
+  {
+    "phase": "slim-package-before-schedule",
+    "checkedAt": "2026-09-30T03:30:21.727Z",
+    "totalMs": 4352,
+    "functionMs": 4099,
+    "serverTiming": "app;dur=718.9, module;dur=133.1, first;dur=1, prewarmed;dur=0, warm-age;dur=0",
+    "returned": 10,
+    "total": 24,
+    "deployment": "6abc81eee421a4a8004c",
+    "executionId": "6abc82499a8c3b3f8a5d"
+  },
+  {
+    "phase": "after-scheduled-tick",
+    "checkedAt": "2026-09-30T03:31:31.633Z",
+    "totalMs": 380,
+    "functionMs": 215,
+    "serverTiming": "app;dur=138.8, module;dur=0, first;dur=0, prewarmed;dur=1, warm-age;dur=23417.4",
+    "returned": 10,
+    "total": 24,
+    "deployment": "6abc81eee421a4a8004c",
+    "executionId": "6abc829367384712bb5a"
+  },
+  {
+    "phase": "after-five-minutes-without-manual-search",
+    "checkedAt": "2026-09-30T03:37:16.150Z",
+    "totalMs": 315,
+    "functionMs": 70,
+    "serverTiming": "app;dur=28.1, module;dur=0, first;dur=0, prewarmed;dur=1, warm-age;dur=9041.4",
+    "returned": 10,
+    "total": 24,
+    "deployment": "6abc81eee421a4a8004c",
+    "executionId": "6abc83ec1189a22cf6eb"
+  },
+  {
+    "phase": "after-five-minutes-without-manual-search",
+    "checkedAt": "2026-09-30T03:37:16.297Z",
+    "totalMs": 145,
+    "functionMs": 65,
+    "serverTiming": "app;dur=26.4, module;dur=0, first;dur=0, prewarmed;dur=1, warm-age;dur=9204.1",
+    "returned": 10,
+    "total": 24,
+    "deployment": "6abc81eee421a4a8004c",
+    "executionId": "6abc83ec3916a1d1181f"
+  },
+  {
+    "phase": "after-five-minutes-without-manual-search",
+    "checkedAt": "2026-09-30T03:37:16.444Z",
+    "totalMs": 147,
+    "functionMs": 71,
+    "serverTiming": "app;dur=29.7, module;dur=0, first;dur=0, prewarmed;dur=1, warm-age;dur=9348.8",
+    "returned": 10,
+    "total": 24,
+    "deployment": "6abc81eee421a4a8004c",
+    "executionId": "6abc83ec5bf0ec554e94"
+  }
+]

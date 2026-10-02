@@ -1,0 +1,297 @@
+{
+  "checkedAt": "2026-10-01T06:48:28.378Z",
+  "origin": "https://equalpathcare.me",
+  "realPublicAPI": true,
+  "mocks": false,
+  "before": [
+    {
+      "id": "provider_a63702b978e2628289738c9db6c",
+      "name": "Grace Tiny Tots Child Care Centre",
+      "suggested": true,
+      "tags": [],
+      "reason": "Matches your choices: Fun activities"
+    },
+    {
+      "id": "provider_8ffcaeb5ece6819e21f579d5c34",
+      "name": "Taska Anak Bestari Dua",
+      "suggested": true,
+      "tags": [],
+      "reason": "Matches your choices: Safe pickup"
+    },
+    {
+      "id": "provider_21507892dc4fa7d9cba4819519a",
+      "name": "Little Playhouse — KL Eco City",
+      "suggested": true,
+      "tags": [],
+      "reason": "Matches your choices: Safe pickup"
+    },
+    {
+      "id": "provider_6608d9c70e9c6ad94b4600b1e22",
+      "name": "Taska Adam Uwais",
+      "suggested": false,
+      "tags": [
+        "Good value",
+        "Flexible hours"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_193b316038c5bc2d8723f107a91",
+      "name": "Little Explorers Child Care Centre",
+      "suggested": false,
+      "tags": [
+        "Good value",
+        "Clear prices"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+      "name": "TOY8 Playground — The Gardens Mall",
+      "suggested": false,
+      "tags": [
+        "Clear prices",
+        "Flexible visits"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_d599142b1023ab80f309304845e",
+      "name": "We Rock the Spectrum — Taman Desa",
+      "suggested": false,
+      "tags": [
+        "Flexible visits",
+        "Clean spaces"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+      "name": "Lullabee — Old Klang Road",
+      "suggested": false,
+      "tags": [
+        "Good meals",
+        "Good value"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_kpm_2baeb8257e9258c2d97f4abe",
+      "name": "Tadika Junior Jaya Besteri",
+      "suggested": false,
+      "tags": [
+        "Good value",
+        "Helpful updates"
+      ],
+      "reason": null
+    }
+  ],
+  "after": [
+    {
+      "id": "provider_a63702b978e2628289738c9db6c",
+      "name": "Grace Tiny Tots Child Care Centre",
+      "suggested": true,
+      "tags": [],
+      "reason": "Matches your choices: Fun activities"
+    },
+    {
+      "id": "provider_kpm_2baeb8257e9258c2d97f4abe",
+      "name": "Tadika Junior Jaya Besteri",
+      "suggested": true,
+      "tags": [],
+      "reason": "A centre you saved"
+    },
+    {
+      "id": "provider_8ffcaeb5ece6819e21f579d5c34",
+      "name": "Taska Anak Bestari Dua",
+      "suggested": true,
+      "tags": [],
+      "reason": "Matches your choices: Safe pickup"
+    },
+    {
+      "id": "provider_21507892dc4fa7d9cba4819519a",
+      "name": "Little Playhouse — KL Eco City",
+      "suggested": false,
+      "tags": [
+        "Flexible visits",
+        "Flexible hours"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_6608d9c70e9c6ad94b4600b1e22",
+      "name": "Taska Adam Uwais",
+      "suggested": false,
+      "tags": [
+        "Good value",
+        "Flexible hours"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_193b316038c5bc2d8723f107a91",
+      "name": "Little Explorers Child Care Centre",
+      "suggested": false,
+      "tags": [
+        "Good value",
+        "Clear prices"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+      "name": "TOY8 Playground — The Gardens Mall",
+      "suggested": false,
+      "tags": [
+        "Clear prices",
+        "Flexible visits"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_d599142b1023ab80f309304845e",
+      "name": "We Rock the Spectrum — Taman Desa",
+      "suggested": false,
+      "tags": [
+        "Flexible visits",
+        "Clean spaces"
+      ],
+      "reason": null
+    },
+    {
+      "id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+      "name": "Lullabee — Old Klang Road",
+      "suggested": false,
+      "tags": [
+        "Good meals",
+        "Good value"
+      ],
+      "reason": null
+    }
+  ],
+  "savedTarget": "provider_kpm_2baeb8257e9258c2d97f4abe",
+  "calls": [
+    {
+      "request": {
+        "careType": "short_term",
+        "pickup": {
+          "id": null,
+          "label": "PJ test starting point",
+          "lat": 3.11,
+          "lng": 101.644
+        },
+        "date": "2026-10-01",
+        "deadline": "12:50",
+        "end": "17:50",
+        "age": "1-3",
+        "transport": "",
+        "radius": 5,
+        "query": "",
+        "includeUnknown": true,
+        "includeConflicts": false,
+        "sort": "recommended"
+      },
+      "status": 200,
+      "effectiveSort": "recommended",
+      "count": 9
+    },
+    {
+      "request": {
+        "careType": "short_term",
+        "pickup": {
+          "id": null,
+          "label": "PJ test starting point",
+          "lat": 3.11,
+          "lng": 101.644
+        },
+        "date": "2026-10-02",
+        "deadline": "12:50",
+        "end": "17:50",
+        "age": "1-3",
+        "transport": "",
+        "radius": 5,
+        "query": "",
+        "includeUnknown": true,
+        "includeConflicts": false,
+        "sort": "recommended"
+      },
+      "status": 200,
+      "effectiveSort": "recommended",
+      "count": 9
+    },
+    {
+      "request": {
+        "careType": "short_term",
+        "pickup": {
+          "id": null,
+          "label": "PJ test starting point",
+          "lat": 3.11,
+          "lng": 101.644
+        },
+        "date": "2026-10-01",
+        "deadline": "12:50",
+        "end": "17:50",
+        "age": "1-3",
+        "transport": "",
+        "radius": 5,
+        "query": "",
+        "includeUnknown": true,
+        "includeConflicts": false,
+        "sort": "recommended"
+      },
+      "status": 200,
+      "effectiveSort": "recommended",
+      "count": 9
+    },
+    {
+      "request": {
+        "careType": "short_term",
+        "pickup": {
+          "id": null,
+          "label": "PJ test starting point",
+          "lat": 3.11,
+          "lng": 101.644
+        },
+        "date": "2026-10-01",
+        "deadline": "12:50",
+        "end": "17:50",
+        "age": "1-3",
+        "transport": "",
+        "radius": 5,
+        "query": "",
+        "includeUnknown": true,
+        "includeConflicts": false,
+        "sort": "distance"
+      },
+      "status": 200,
+      "effectiveSort": "distance",
+      "count": 9
+    },
+    {
+      "request": {
+        "careType": "short_term",
+        "pickup": {
+          "id": null,
+          "label": "PJ test starting point",
+          "lat": 3.11,
+          "lng": 101.644
+        },
+        "date": "2026-10-01",
+        "deadline": "12:50",
+        "end": "17:50",
+        "age": "1-3",
+        "transport": "",
+        "radius": 5,
+        "query": "",
+        "includeUnknown": true,
+        "includeConflicts": false,
+        "sort": "recommended"
+      },
+      "status": 200,
+      "effectiveSort": "recommended",
+      "count": 9
+    }
+  ],
+  "errors": [],
+  "status": "passed"
+}

@@ -1,0 +1,300 @@
+{
+  "checkedAt": "2026-09-30T03:41:26.267Z",
+  "commit": "15de233530d653cf1425b0aaf2a52ff2f0b8fee7",
+  "functionCodeCommit": "943707b8c7e014c395dce74bb4936eabfa5f9174",
+  "functionSourceNote": "Final commit changes only the browser regression test; runtime package matches the published function.",
+  "expectedSource": "49604ac00b5445ff760fe71917a323d3560dc2d6e51723243f3639c133857eb9",
+  "publicSource": "49604ac00b5445ff760fe71917a323d3560dc2d6e51723243f3639c133857eb9",
+  "publicHttpsAndEntryAssets": 5,
+  "publicBackend": "ok",
+  "deployments": {
+    "checkedAt": "2026-09-30T03:40:22.019Z",
+    "function": {
+      "id": "web-provider-query",
+      "active": "6abc81eee421a4a8004c",
+      "deployment": "6abc81eee421a4a8004c",
+      "status": "ready",
+      "runtimeSpecification": "s-0.5vcpu-512mb",
+      "logging": false
+    },
+    "site": {
+      "id": "equalpath-web",
+      "active": "6abc82cd4aa7ce571e04",
+      "status": "ready",
+      "commit": "15de233530d653cf1425b0aaf2a52ff2f0b8fee7"
+    }
+  },
+  "warmup": {
+    "checkedAt": "2026-09-30T03:30:26.552Z",
+    "function": "web-provider-query",
+    "deployment": "6abc81eee421a4a8004c",
+    "previousSchedule": "",
+    "schedule": "* * * * *",
+    "runtimeSpecification": "s-0.5vcpu-512mb",
+    "logging": false,
+    "maximumExecutionsPerDay": 1440,
+    "ownerDataAccessed": false,
+    "databaseReads": 0,
+    "note": "Scheduled readiness reduces idle cold starts; platform recycling and new instances can still start cold."
+  },
+  "localChecks": {
+    "unitTests": 243,
+    "passed": 243,
+    "failed": 0,
+    "releaseGate": "passed",
+    "isolatedRuntimePackage": "both live care types, review hydration and demo health passed",
+    "browserCollection": 139,
+    "desktopViewport": "1280x720",
+    "mobileViewport": "390x844",
+    "visualChecks": [
+      "search, update, route reuse, mobile map and reviews",
+      "new visitor preference screen has hidden/inert map shell and no map canvas; Skip enters ready map"
+    ]
+  },
+  "cloudMeasurements": {
+    "rows": [
+      {
+        "phase": "before-schedule",
+        "checkedAt": "2026-09-30T03:26:54.970Z",
+        "totalMs": 267,
+        "functionMs": 74,
+        "serverTiming": "app;dur=36.2, module;dur=0, first;dur=0",
+        "returned": 10,
+        "total": 24,
+        "deployment": "6abc7d72ae39fcf376f1",
+        "executionId": "6abc817ee3f309b5354b"
+      },
+      {
+        "phase": "slim-package-before-schedule",
+        "checkedAt": "2026-09-30T03:30:21.727Z",
+        "totalMs": 4352,
+        "functionMs": 4099,
+        "serverTiming": "app;dur=718.9, module;dur=133.1, first;dur=1, prewarmed;dur=0, warm-age;dur=0",
+        "returned": 10,
+        "total": 24,
+        "deployment": "6abc81eee421a4a8004c",
+        "executionId": "6abc82499a8c3b3f8a5d"
+      },
+      {
+        "phase": "after-scheduled-tick",
+        "checkedAt": "2026-09-30T03:31:31.633Z",
+        "totalMs": 380,
+        "functionMs": 215,
+        "serverTiming": "app;dur=138.8, module;dur=0, first;dur=0, prewarmed;dur=1, warm-age;dur=23417.4",
+        "returned": 10,
+        "total": 24,
+        "deployment": "6abc81eee421a4a8004c",
+        "executionId": "6abc829367384712bb5a"
+      },
+      {
+        "phase": "after-five-minutes-without-manual-search",
+        "checkedAt": "2026-09-30T03:37:16.150Z",
+        "totalMs": 315,
+        "functionMs": 70,
+        "serverTiming": "app;dur=28.1, module;dur=0, first;dur=0, prewarmed;dur=1, warm-age;dur=9041.4",
+        "returned": 10,
+        "total": 24,
+        "deployment": "6abc81eee421a4a8004c",
+        "executionId": "6abc83ec1189a22cf6eb"
+      },
+      {
+        "phase": "after-five-minutes-without-manual-search",
+        "checkedAt": "2026-09-30T03:37:16.297Z",
+        "totalMs": 145,
+        "functionMs": 65,
+        "serverTiming": "app;dur=26.4, module;dur=0, first;dur=0, prewarmed;dur=1, warm-age;dur=9204.1",
+        "returned": 10,
+        "total": 24,
+        "deployment": "6abc81eee421a4a8004c",
+        "executionId": "6abc83ec3916a1d1181f"
+      },
+      {
+        "phase": "after-five-minutes-without-manual-search",
+        "checkedAt": "2026-09-30T03:37:16.444Z",
+        "totalMs": 147,
+        "functionMs": 71,
+        "serverTiming": "app;dur=29.7, module;dur=0, first;dur=0, prewarmed;dur=1, warm-age;dur=9348.8",
+        "returned": 10,
+        "total": 24,
+        "deployment": "6abc81eee421a4a8004c",
+        "executionId": "6abc83ec5bf0ec554e94"
+      }
+    ],
+    "interpretation": "Measurements are individual samples, not percentiles. The five-minute gap contains no manual search probes; normal public traffic and CI health checks were not disabled. prewarmed=1 independently establishes successful schedule execution inside the serving runtime.",
+    "coldStartRemaining": "A newly deployed unprimed instance took 4352 ms. Scheduled readiness reduces idle cold starts; platform recycling and new burst instances can still be cold.",
+    "cuttingResults": "Retained ten results; reducing response count would not remove platform pre-handler startup."
+  },
+  "scheduledExecutionEvidence": {
+    "checkedAt": "2026-09-30T03:35:53.498Z",
+    "executions": [
+      {
+        "created": "2026-09-30T03:35:07.119+00:00",
+        "status": "completed",
+        "responseStatusCode": 200,
+        "duration": 0.033528804779052734,
+        "trigger": "schedule",
+        "deployment": "6abc81eee421a4a8004c"
+      },
+      {
+        "created": "2026-09-30T03:34:07.095+00:00",
+        "status": "completed",
+        "responseStatusCode": 200,
+        "duration": 0.030174970626831055,
+        "trigger": "schedule",
+        "deployment": "6abc81eee421a4a8004c"
+      },
+      {
+        "created": "2026-09-30T03:33:08.080+00:00",
+        "status": "completed",
+        "responseStatusCode": 200,
+        "duration": 0.028215885162353516,
+        "trigger": "schedule",
+        "deployment": "6abc81eee421a4a8004c"
+      },
+      {
+        "created": "2026-09-30T03:32:07.090+00:00",
+        "status": "completed",
+        "responseStatusCode": 200,
+        "duration": 0.04045891761779785,
+        "trigger": "schedule",
+        "deployment": "6abc81eee421a4a8004c"
+      },
+      {
+        "created": "2026-09-30T03:31:08.199+00:00",
+        "status": "completed",
+        "responseStatusCode": 200,
+        "duration": 1.123702049255371,
+        "trigger": "schedule",
+        "deployment": "6abc81eee421a4a8004c"
+      }
+    ]
+  },
+  "productionUI": {
+    "checkedAt": "2026-09-30T03:39:59.689Z",
+    "url": "https://equalpathcare.me/#discover",
+    "viewport": "1280x720",
+    "searchClickToResultsMs": 273,
+    "updateToAppliedMs": 343,
+    "measurement": "Includes browser-control overhead; not network-only latency",
+    "total": 24,
+    "pageResults": 10,
+    "ranks": [
+      {
+        "name": "Little Playhouse — KL Eco City",
+        "position": "1",
+        "score": "0.9426447509611633"
+      },
+      {
+        "name": "Little Explorers Child Care Centre",
+        "position": "2",
+        "score": "0.8484653938168152"
+      },
+      {
+        "name": "TOY8 Playground — The Gardens Mall",
+        "position": "3",
+        "score": "0.8115024846694877"
+      },
+      {
+        "name": "Tadika Junior Jaya Besteri",
+        "position": "4",
+        "score": "0.7126289341787159"
+      },
+      {
+        "name": "Kasih Nilly Nursery",
+        "position": "5",
+        "score": "0.6904883316216027"
+      },
+      {
+        "name": "Lullabee — Old Klang Road",
+        "position": "6",
+        "score": "0.6814552471366513"
+      },
+      {
+        "name": "We Rock the Spectrum — Taman Desa",
+        "position": "7",
+        "score": "0.6719454814491868"
+      },
+      {
+        "name": "Little Playhouse — Menara Shell (KL Sentral)",
+        "position": "8",
+        "score": "0.7867873054363277"
+      },
+      {
+        "name": "GRACE TINY TOTS CHILD CARE CENTRE",
+        "position": "9",
+        "score": "0.6622017886436873"
+      },
+      {
+        "name": "Little Footprints Childcare Centre",
+        "position": "10",
+        "score": "0.5910296043930461"
+      }
+    ],
+    "drivingBeforeAndAfter": [
+      "7 min",
+      "9 min",
+      "7 min"
+    ],
+    "feesBefore": [
+      40,
+      69,
+      90
+    ],
+    "feesAfter": [
+      60,
+      69,
+      135
+    ],
+    "reviewPassages": 2,
+    "consoleErrors": []
+  },
+  "ci": {
+    "run": 36664859765,
+    "status": "in_progress",
+    "conclusion": "",
+    "jobs": [
+      {
+        "name": "Test, build and verify release",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser journeys (journeys 1/3)",
+        "status": "in_progress",
+        "conclusion": ""
+      },
+      {
+        "name": "Browser journeys (journeys 2/3)",
+        "status": "in_progress",
+        "conclusion": ""
+      },
+      {
+        "name": "Browser journeys (landing 1/1)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser journeys (journeys 3/3)",
+        "status": "in_progress",
+        "conclusion": ""
+      }
+    ],
+    "note": "Release job and landing browser suite passed. Three other browser shards still running at receipt time; not reported as passed."
+  },
+  "scope": {
+    "serverUpgraded": false,
+    "runtimeSpecification": "s-0.5vcpu-512mb",
+    "databaseReads": 0,
+    "ownerDataChanged": false,
+    "dnsChanged": false,
+    "searchResultPageSize": 10
+  },
+  "evidence": [
+    "local-search.png",
+    "local-mobile.png",
+    "local-reviews.png",
+    "local-first-entry.png",
+    "production-search.png",
+    "production-reviews.png"
+  ]
+}

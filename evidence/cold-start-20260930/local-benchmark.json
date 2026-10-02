@@ -1,0 +1,106 @@
+{
+  "checkedAt": "2026-09-30T03:02:47.580Z",
+  "kind": "fresh local Node processes, not cloud latency",
+  "rows": [
+    {
+      "version": "before",
+      "sample": 0,
+      "importMs": 37.38175,
+      "searchMs": 64.40875,
+      "totalMs": 101.792416,
+      "items": 10,
+      "total": 24,
+      "rss": 207831040
+    },
+    {
+      "version": "before",
+      "sample": 1,
+      "importMs": 36.447500000000005,
+      "searchMs": 65.396291,
+      "totalMs": 101.84545800000001,
+      "items": 10,
+      "total": 24,
+      "rss": 208060416
+    },
+    {
+      "version": "before",
+      "sample": 2,
+      "importMs": 38.596209,
+      "searchMs": 65.109458,
+      "totalMs": 103.710792,
+      "items": 10,
+      "total": 24,
+      "rss": 208027648
+    },
+    {
+      "version": "before",
+      "sample": 3,
+      "importMs": 36.709917,
+      "searchMs": 64.42975000000001,
+      "totalMs": 101.141458,
+      "items": 10,
+      "total": 24,
+      "rss": 208076800
+    },
+    {
+      "version": "before",
+      "sample": 4,
+      "importMs": 39.74404199999999,
+      "searchMs": 63.00520800000001,
+      "totalMs": 102.75108399999999,
+      "items": 10,
+      "total": 24,
+      "rss": 208093184
+    },
+    {
+      "version": "after",
+      "sample": 0,
+      "importMs": 12.391874999999999,
+      "searchMs": 23.779541000000002,
+      "totalMs": 36.172916,
+      "items": 10,
+      "total": 24,
+      "rss": 87752704
+    },
+    {
+      "version": "after",
+      "sample": 1,
+      "importMs": 12.606583,
+      "searchMs": 23.552625,
+      "totalMs": 36.161333,
+      "items": 10,
+      "total": 24,
+      "rss": 86835200
+    },
+    {
+      "version": "after",
+      "sample": 2,
+      "importMs": 12.286250000000003,
+      "searchMs": 23.006958999999995,
+      "totalMs": 35.294709,
+      "items": 10,
+      "total": 24,
+      "rss": 86982656
+    },
+    {
+      "version": "after",
+      "sample": 3,
+      "importMs": 12.198207999999997,
+      "searchMs": 23.677917,
+      "totalMs": 35.877624999999995,
+      "items": 10,
+      "total": 24,
+      "rss": 87556096
+    },
+    {
+      "version": "after",
+      "sample": 4,
+      "importMs": 11.860958,
+      "searchMs": 23.558333000000005,
+      "totalMs": 35.420874999999995,
+      "items": 10,
+      "total": 24,
+      "rss": 86900736
+    }
+  ]
+}

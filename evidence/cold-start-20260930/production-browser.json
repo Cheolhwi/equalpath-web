@@ -1,0 +1,79 @@
+{
+  "checkedAt": "2026-09-30T03:39:59.689Z",
+  "url": "https://equalpathcare.me/#discover",
+  "viewport": "1280x720",
+  "searchClickToResultsMs": 273,
+  "updateToAppliedMs": 343,
+  "measurement": "Includes browser-control overhead; not network-only latency",
+  "total": 24,
+  "pageResults": 10,
+  "ranks": [
+    {
+      "name": "Little Playhouse — KL Eco City",
+      "position": "1",
+      "score": "0.9426447509611633"
+    },
+    {
+      "name": "Little Explorers Child Care Centre",
+      "position": "2",
+      "score": "0.8484653938168152"
+    },
+    {
+      "name": "TOY8 Playground — The Gardens Mall",
+      "position": "3",
+      "score": "0.8115024846694877"
+    },
+    {
+      "name": "Tadika Junior Jaya Besteri",
+      "position": "4",
+      "score": "0.7126289341787159"
+    },
+    {
+      "name": "Kasih Nilly Nursery",
+      "position": "5",
+      "score": "0.6904883316216027"
+    },
+    {
+      "name": "Lullabee — Old Klang Road",
+      "position": "6",
+      "score": "0.6814552471366513"
+    },
+    {
+      "name": "We Rock the Spectrum — Taman Desa",
+      "position": "7",
+      "score": "0.6719454814491868"
+    },
+    {
+      "name": "Little Playhouse — Menara Shell (KL Sentral)",
+      "position": "8",
+      "score": "0.7867873054363277"
+    },
+    {
+      "name": "GRACE TINY TOTS CHILD CARE CENTRE",
+      "position": "9",
+      "score": "0.6622017886436873"
+    },
+    {
+      "name": "Little Footprints Childcare Centre",
+      "position": "10",
+      "score": "0.5910296043930461"
+    }
+  ],
+  "drivingBeforeAndAfter": [
+    "7 min",
+    "9 min",
+    "7 min"
+  ],
+  "feesBefore": [
+    40,
+    69,
+    90
+  ],
+  "feesAfter": [
+    60,
+    69,
+    135
+  ],
+  "reviewPassages": 2,
+  "consoleErrors": []
+}

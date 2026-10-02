@@ -1,0 +1,26 @@
+{
+  "status": "failed",
+  "duration": 4.561753988265991,
+  "responseStatusCode": 500,
+  "logsAvailable": false,
+  "errorsAvailable": true,
+  "responseBodyAvailable": false,
+  "fields": [
+    "$id",
+    "$createdAt",
+    "$updatedAt",
+    "$permissions",
+    "deploymentId",
+    "trigger",
+    "status",
+    "requestMethod",
+    "requestPath",
+    "requestHeaders",
+    "responseStatusCode",
+    "responseHeaders",
+    "errors",
+    "duration",
+    "functionId"
+  ],
+  "errorCategory": "other"
+}

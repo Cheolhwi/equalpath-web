@@ -1,0 +1,94 @@
+{
+  "publishedAt": "2026-09-29T12:03:42.971Z",
+  "commit": "3d67493f652e3436452021cd6804ab6f31b3e950",
+  "expectedDigest": "34cc72c0c907bcf6033f522aafc7a7d18cddfa27d4a6deac842edd43fa6a7f3b",
+  "publicDigest": "34cc72c0c907bcf6033f522aafc7a7d18cddfa27d4a6deac842edd43fa6a7f3b",
+  "site": {
+    "id": "equalpath-web",
+    "activeDeployment": "6abba6c8d97ab1e56b1e",
+    "status": "ready",
+    "commit": "3d67493f652e3436452021cd6804ab6f31b3e950",
+    "branch": "main"
+  },
+  "function": {
+    "id": "web-provider-query",
+    "activeDeployment": "6abba6cdadcf9c210e7a",
+    "deployment": "6abba6cdadcf9c210e7a",
+    "status": "ready"
+  },
+  "publicBackend": "ok",
+  "publicDataCheck": {
+    "checkedAt": "2026-09-29T11:55:57.400Z",
+    "ok": true,
+    "total": 13,
+    "pageCount": 10,
+    "profileCount": 10,
+    "seedProfiles": 1,
+    "examples": [
+      {
+        "id": "provider_b5e469ac6144ecffad381d62593",
+        "name": "Little Playhouse — Menara Shell (KL Sentral)",
+        "sampleCount": 93,
+        "topics": 12,
+        "excerpts": 34
+      },
+      {
+        "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+        "name": "TOY8 Playground — The Gardens Mall",
+        "sampleCount": 118,
+        "topics": 10,
+        "excerpts": 21
+      },
+      {
+        "id": "provider_21507892dc4fa7d9cba4819519a",
+        "name": "Little Playhouse — KL Eco City",
+        "sampleCount": 100,
+        "topics": 12,
+        "excerpts": 29
+      }
+    ]
+  },
+  "localChecks": {
+    "release": "passed",
+    "tests": 224,
+    "localVisual": "desktop and mobile passed; see implementation check"
+  },
+  "productionUI": {
+    "status": "passed",
+    "page": "https://equalpathcare.me/#discover",
+    "location": "KL Sentral",
+    "date": "2026-09-29",
+    "age": "1–3 years",
+    "start": "10:00",
+    "end": "12:00",
+    "resultCount": 12,
+    "recommendations": 3,
+    "noMatchFallback": false,
+    "provider": "Little Playhouse — Menara Shell (KL Sentral)",
+    "fee": "MYR 80 estimated total",
+    "reviews": 93,
+    "selectedTopic": "Safe pickup",
+    "topicCount": 30,
+    "recentTopicCount": 18,
+    "positive": 9,
+    "concerns": 4,
+    "contactQuestion": "How do you check who is allowed to collect my child?",
+    "untick": "Not included",
+    "copy": "Copied",
+    "consoleErrors": [],
+    "screenshots": [
+      "epic6-20260929/production-reviews.png",
+      "epic6-20260929/production-contact.png"
+    ]
+  },
+  "ci": {
+    "run": 36564584525,
+    "releaseJob": "passed",
+    "browserJourneys": "failed: duplicate pending-filter test titles block journey collection",
+    "landing": "failed: 9 assertions, including stale ready expectations where first-use preferences now appear",
+    "overall": "failure; browser failures remain unresolved"
+  },
+  "ownerDataChanged": false,
+  "dnsChanged": false,
+  "verifierProcess": "Printed successful digest/assets/backend result, then remained alive for ten minutes; idle process terminated after receipt capture. Independent CI release verifier passed."
+}

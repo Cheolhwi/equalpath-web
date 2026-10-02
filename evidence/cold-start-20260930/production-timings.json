@@ -1,0 +1,122 @@
+{
+  "checkedAt": "2026-09-30T03:10:47.132Z",
+  "request": {
+    "careType": "short_term",
+    "pickup": {
+      "label": "Bangsar Village",
+      "address": "Jalan Telawi",
+      "lat": 3.1297,
+      "lng": 101.6714,
+      "region": "Kuala Lumpur"
+    },
+    "date": "2026-09-30",
+    "deadline": "10:00",
+    "end": "12:00",
+    "age": "1-3",
+    "transport": "self",
+    "radius": 10,
+    "sort": "distance",
+    "includeUnknown": true,
+    "includeConflicts": false
+  },
+  "rows": [
+    {
+      "name": "first-search-after-deploy",
+      "totalMs": 4077,
+      "functionMs": 3931,
+      "executionId": "6abc7db0ca570a32c90d",
+      "resultCount": 10,
+      "total": 24,
+      "drivingDeferred": true,
+      "responseBytes": 408200,
+      "driving": {
+        "loading:": 10
+      },
+      "serverTiming": "app;dur=681.2, module;dur=180.8, first;dur=1"
+    },
+    {
+      "name": "identical-warm-search",
+      "totalMs": 272,
+      "functionMs": 168,
+      "executionId": "6abc7db4d546eabee8c3",
+      "resultCount": 10,
+      "total": 24,
+      "drivingDeferred": true,
+      "responseBytes": 408200,
+      "driving": {
+        "loading:": 10
+      },
+      "serverTiming": "app;dur=129.7, module;dur=0, first;dur=0"
+    },
+    {
+      "name": "new-search-while-routes-pending",
+      "totalMs": 477,
+      "functionMs": 371,
+      "executionId": "6abc7db53d3eb34592e4",
+      "resultCount": 10,
+      "total": 24,
+      "drivingDeferred": true,
+      "responseBytes": 408202,
+      "driving": {
+        "loading:": 10
+      },
+      "serverTiming": "app;dur=21.7, module;dur=0, first;dur=0"
+    },
+    {
+      "name": "background-routes",
+      "totalMs": 1139,
+      "functionMs": 1071,
+      "executionId": "6abc7db51c2d6e945ea0",
+      "resultCount": 10,
+      "responseBytes": 3026,
+      "driving": {
+        "available:": 10
+      },
+      "serverTiming": "app;dur=1050.7, module;dur=0, first;dur=0"
+    },
+    {
+      "name": "KL Sentral",
+      "totalMs": 233,
+      "functionMs": 71,
+      "executionId": "6abc7db653a8199c7004",
+      "resultCount": 10,
+      "total": 19,
+      "drivingDeferred": true,
+      "responseBytes": 406818,
+      "driving": {
+        "loading:": 10
+      },
+      "serverTiming": "app;dur=20.3, module;dur=0, first;dur=0"
+    },
+    {
+      "name": "KLCC Park",
+      "totalMs": 290,
+      "functionMs": 85,
+      "executionId": "6abc7db67e3ff943c290",
+      "resultCount": 10,
+      "total": 17,
+      "drivingDeferred": true,
+      "responseBytes": 411417,
+      "driving": {
+        "loading:": 10
+      },
+      "serverTiming": "app;dur=19.8, module;dur=0, first;dur=0"
+    },
+    {
+      "name": "review-on-demand",
+      "totalMs": 267,
+      "functionMs": 43,
+      "executionId": "6abc7db6d2365b3eba51",
+      "responseBytes": 53096,
+      "serverTiming": "app;dur=3.6, module;dur=0, first;dur=0"
+    },
+    {
+      "name": "health",
+      "totalMs": 237,
+      "functionMs": 35,
+      "executionId": "6abc7db728b6d8c1a7bb",
+      "responseBytes": 4600,
+      "serverTiming": "app;dur=0.4, module;dur=0, first;dur=0"
+    }
+  ]
+}

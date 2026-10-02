@@ -1,0 +1,34 @@
+{
+  "label": "Local test only",
+  "network": [],
+  "phases": [
+    {
+      "ms": 498,
+      "phase": "welcome",
+      "search": "ready",
+      "pins": 0
+    },
+    {
+      "ms": 1113,
+      "phase": "welcome",
+      "search": "ready",
+      "scene": "ready",
+      "pins": 0
+    }
+  ],
+  "longTasks": [
+    {
+      "startMs": 874,
+      "ms": 226
+    }
+  ],
+  "frames": [],
+  "frameWindow": {
+    "samples": 30,
+    "p50": 8,
+    "p95": 8
+  },
+  "map": {
+    "canvases": 0
+  }
+}

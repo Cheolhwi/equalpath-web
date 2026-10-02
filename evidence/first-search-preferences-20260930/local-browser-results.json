@@ -1,0 +1,178 @@
+{
+  "config": {
+    "argv": [
+      "/opt/homebrew/Cellar/node/26.0.0/bin/node",
+      "/Users/cheolhwi/Documents/fit5120/webapp/node_modules/.bin/playwright",
+      "test",
+      "tests/browser/onboarding-search.spec.mjs",
+      "--project=journeys"
+    ],
+    "configFile": "/Users/cheolhwi/Documents/fit5120/webapp/playwright.config.mjs",
+    "rootDir": "/Users/cheolhwi/Documents/fit5120/webapp/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/cheolhwi/Documents/fit5120/webapp/.build/browser-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "journeys",
+        "name": "journeys",
+        "testDir": "/Users/cheolhwi/Documents/fit5120/webapp/tests/browser",
+        "testIgnore": [
+          "/landing(?:-loading)?\\.spec\\.mjs/"
+        ],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "/Users/cheolhwi/Documents/fit5120/webapp/.build/browser-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "landing",
+        "name": "landing",
+        "testDir": "/Users/cheolhwi/Documents/fit5120/webapp/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "/landing(?:-loading)?\\.spec\\.mjs/"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": ".build/onboarding-search/browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": {
+      "command": "VITE_EQUALPATH_API_URL=/api npm run dev -- --port 4191",
+      "url": "http://127.0.0.1:4191",
+      "reuseExistingServer": true,
+      "timeout": 30000
+    }
+  },
+  "suites": [
+    {
+      "title": "onboarding-search.spec.mjs",
+      "file": "onboarding-search.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "1440px first-use choices reach both first searches without reload or viewing a centre",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "journeys",
+              "projectName": "journeys",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4778,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T06:32:11.022Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "eac092211bba00650ee8-0903a7eb73f9a7befc52",
+          "file": "onboarding-search.spec.mjs",
+          "line": 14,
+          "column": 34
+        },
+        {
+          "title": "390px first-use choices reach both first searches without reload or viewing a centre",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "journeys",
+              "projectName": "journeys",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5091,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T06:32:16.092Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "eac092211bba00650ee8-001d7e0d8239a0423775",
+          "file": "onboarding-search.spec.mjs",
+          "line": 14,
+          "column": 34
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-30T06:32:10.407Z",
+    "duration": 10879.865,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

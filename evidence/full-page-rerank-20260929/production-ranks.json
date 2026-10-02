@@ -1,0 +1,127 @@
+{
+  "url": "https://equalpathcare.me/#discover",
+  "rows": [
+    {
+      "id": "provider_21507892dc4fa7d9cba4819519a",
+      "name": "Little Playhouse — KL Eco City",
+      "rank": 1,
+      "score": 0.8949259758128219,
+      "suggested": true
+    },
+    {
+      "id": "provider_bc393868c856c47ef03fd2043b1",
+      "name": "Kasih Nilly Nursery",
+      "rank": 2,
+      "score": 0.79649913203128,
+      "suggested": true
+    },
+    {
+      "id": "provider_193b316038c5bc2d8723f107a91",
+      "name": "Little Explorers Child Care Centre",
+      "rank": 3,
+      "score": 0.7704171730487156,
+      "suggested": true
+    },
+    {
+      "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+      "name": "TOY8 Playground — The Gardens Mall",
+      "rank": 4,
+      "score": 0.7675349104760564,
+      "suggested": false
+    },
+    {
+      "id": "provider_b5e469ac6144ecffad381d62593",
+      "name": "Little Playhouse — Menara Shell (KL Sentral)",
+      "rank": 5,
+      "score": 0.8780356113320822,
+      "suggested": false
+    },
+    {
+      "id": "provider_kpm_2baeb8257e9258c2d97f4abe",
+      "name": "Tadika Junior Jaya Besteri",
+      "rank": 6,
+      "score": 0.7098124421867317,
+      "suggested": false
+    },
+    {
+      "id": "provider_b144f7cdb379504419b635c5c14",
+      "name": "MELODY CHILDCARE CENTRE",
+      "rank": 7,
+      "score": 0.7019410456859624,
+      "suggested": false
+    },
+    {
+      "id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+      "name": "Lullabee — Old Klang Road",
+      "rank": 8,
+      "score": 0.6465860085263342,
+      "suggested": false
+    },
+    {
+      "id": "provider_d599142b1023ab80f309304845e",
+      "name": "We Rock the Spectrum — Taman Desa",
+      "rank": 9,
+      "score": 0.6403629719900273,
+      "suggested": false
+    },
+    {
+      "id": "provider_038b7be988901ada265e733de80",
+      "name": "Little Playhouse — Jalan Mesra (KLCC)",
+      "rank": 10,
+      "score": 0.7408294951755545,
+      "suggested": false
+    }
+  ],
+  "map": [
+    {
+      "id": "provider_21507892dc4fa7d9cba4819519a",
+      "label": "Select Little Playhouse — KL Eco City on map",
+      "number": "01★"
+    },
+    {
+      "id": "provider_bc393868c856c47ef03fd2043b1",
+      "label": "Select Kasih Nilly Nursery on map",
+      "number": "02★"
+    },
+    {
+      "id": "provider_193b316038c5bc2d8723f107a91",
+      "label": "Select Little Explorers Child Care Centre on map",
+      "number": "03★"
+    },
+    {
+      "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+      "label": "Select TOY8 Playground — The Gardens Mall on map",
+      "number": "04"
+    },
+    {
+      "id": "provider_b5e469ac6144ecffad381d62593",
+      "label": "Select Little Playhouse — Menara Shell (KL Sentral) on map",
+      "number": "05"
+    },
+    {
+      "id": "provider_kpm_2baeb8257e9258c2d97f4abe",
+      "label": "Select Tadika Junior Jaya Besteri on map",
+      "number": "06"
+    },
+    {
+      "id": "provider_b144f7cdb379504419b635c5c14",
+      "label": "Select MELODY CHILDCARE CENTRE on map",
+      "number": "07"
+    },
+    {
+      "id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+      "label": "Select Lullabee — Old Klang Road on map",
+      "number": "08"
+    },
+    {
+      "id": "provider_d599142b1023ab80f309304845e",
+      "label": "Select We Rock the Spectrum — Taman Desa on map",
+      "number": "09"
+    },
+    {
+      "id": "provider_038b7be988901ada265e733de80",
+      "label": "Select Little Playhouse — Jalan Mesra (KLCC) on map",
+      "number": "10"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "apiWithoutNetwork": [
+    {
+      "apiMs": 63.418082999999996,
+      "serializeMs": 1.6032500000000027,
+      "bytes": 817520,
+      "results": 10,
+      "seeds": 0,
+      "reviewBytes": 544939
+    },
+    {
+      "apiMs": 3.521542000000011,
+      "serializeMs": 3.747000000000014,
+      "bytes": 817520,
+      "results": 10,
+      "seeds": 0,
+      "reviewBytes": 544939
+    },
+    {
+      "apiMs": 2.9483749999999986,
+      "serializeMs": 1.4773750000000234,
+      "bytes": 817520,
+      "results": 10,
+      "seeds": 0,
+      "reviewBytes": 544939
+    },
+    {
+      "apiMs": 2.4721669999999847,
+      "serializeMs": 1.4355829999999798,
+      "bytes": 817520,
+      "results": 10,
+      "seeds": 0,
+      "reviewBytes": 544939
+    }
+  ],
+  "rerank": {
+    "seeds": 18,
+    "minMs": 1.2637080000000083,
+    "maxMs": 3.922249999999991,
+    "meanMs": 1.693016750000004
+  },
+  "largestProviderFields": [
+    {
+      "key": "reviewProfile",
+      "bytes": 57861
+    },
+    {
+      "key": "completedShortCare",
+      "bytes": 5110
+    },
+    {
+      "key": "reviewEvidence",
+      "bytes": 4266
+    },
+    {
+      "key": "fit",
+      "bytes": 2909
+    },
+    {
+      "key": "weeklyCareEndTimes",
+      "bytes": 2321
+    },
+    {
+      "key": "businessHours",
+      "bytes": 1860
+    },
+    {
+      "key": "cost",
+      "bytes": 1811
+    },
+    {
+      "key": "fees",
+      "bytes": 1309
+    }
+  ]
+}

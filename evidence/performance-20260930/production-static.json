@@ -1,0 +1,68 @@
+{
+  "source": "fa8b8dc638021a845502012fbdae6980f5cc666f5241f6e8e06a80c7e168e79a",
+  "timings": [
+    {
+      "path": "/build-info.json",
+      "status": 200,
+      "ttfbMs": 430,
+      "totalMs": 432,
+      "bytes": 280,
+      "contentEncoding": null,
+      "cache": "MISS"
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "ttfbMs": 339,
+      "totalMs": 340,
+      "bytes": 810,
+      "contentEncoding": null,
+      "cache": "MISS"
+    },
+    {
+      "path": "/favicon-32.png",
+      "status": 200,
+      "ttfbMs": 342,
+      "totalMs": 342,
+      "bytes": 887,
+      "contentEncoding": null,
+      "cache": "MISS"
+    },
+    {
+      "path": "/favicon.svg",
+      "status": 200,
+      "ttfbMs": 329,
+      "totalMs": 331,
+      "bytes": 1277,
+      "contentEncoding": "br",
+      "cache": "MISS"
+    },
+    {
+      "path": "/apple-touch-icon.png",
+      "status": 200,
+      "ttfbMs": 334,
+      "totalMs": 340,
+      "bytes": 24659,
+      "contentEncoding": null,
+      "cache": "MISS"
+    },
+    {
+      "path": "/assets/index-C633fm97.js",
+      "status": 200,
+      "ttfbMs": 378,
+      "totalMs": 409,
+      "bytes": 1451647,
+      "contentEncoding": "br",
+      "cache": "MISS"
+    },
+    {
+      "path": "/assets/index-DeceVLNi.css",
+      "status": 200,
+      "ttfbMs": 327,
+      "totalMs": 333,
+      "bytes": 854879,
+      "contentEncoding": "br",
+      "cache": "MISS"
+    }
+  ]
+}

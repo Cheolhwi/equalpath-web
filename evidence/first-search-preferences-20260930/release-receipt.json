@@ -1,0 +1,116 @@
+{
+  "checkedAt": "2026-09-30T06:38:33.176Z",
+  "commit": "6b1cb95e894dc66c482c91e8bad625c3fbeeebac",
+  "expectedDigest": "0e93574e4cfbf58d7a09ad34e3337ca38732c211bdf69992233c6dfcbccaae75",
+  "activePublicDigest": "0e93574e4cfbf58d7a09ad34e3337ca38732c211bdf69992233c6dfcbccaae75",
+  "site": {
+    "id": "equalpath-web",
+    "deployment": "6abcad8b03749423f131",
+    "status": "ready"
+  },
+  "functionDeployment": "unchanged",
+  "local": {
+    "unitTests": 243,
+    "release": "passed",
+    "freshOnboardingFirstTwoSearches": [
+      "1440x1000 Chrome: passed",
+      "390x844 Chrome: passed"
+    ],
+    "historySavedOptOutResetRegression": "passed",
+    "visualInspection": "desktop and mobile screenshots inspected"
+  },
+  "regressionBeforeFix": {
+    "expectedPersonalised": 3,
+    "actualPersonalised": 0
+  },
+  "production": {
+    "checkedAt": "2026-09-30T06:37:38.061Z",
+    "url": "https://equalpathcare.me/#discover",
+    "realPublicBackend": true,
+    "freshBrowserContext": true,
+    "mockedRequests": false,
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "searches": [
+      {
+        "search": 1,
+        "total": 9,
+        "displayed": 9,
+        "personalised": [
+          {
+            "id": "provider_b5e469ac6144ecffad381d62593",
+            "name": "Little Playhouse — Menara Shell (KL Sentral)",
+            "reason": "Matches your choices: Kind teachers"
+          },
+          {
+            "id": "provider_21507892dc4fa7d9cba4819519a",
+            "name": "Little Playhouse — KL Eco City",
+            "reason": "Matches your choices: Kind teachers"
+          }
+        ],
+        "allRanks": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "visits": 0,
+        "visibleBadges": 2
+      },
+      {
+        "search": 2,
+        "total": 9,
+        "displayed": 9,
+        "personalised": [
+          {
+            "id": "provider_b5e469ac6144ecffad381d62593",
+            "name": "Little Playhouse — Menara Shell (KL Sentral)",
+            "reason": "Matches your choices: Kind teachers"
+          },
+          {
+            "id": "provider_21507892dc4fa7d9cba4819519a",
+            "name": "Little Playhouse — KL Eco City",
+            "reason": "Matches your choices: Kind teachers"
+          }
+        ],
+        "allRanks": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "visits": 0,
+        "visibleBadges": 2
+      }
+    ],
+    "errors": []
+  },
+  "publicVerification": {
+    "https": "passed",
+    "assets": 5,
+    "backend": "ok"
+  },
+  "ci": {
+    "run": 36678962491,
+    "release": "success",
+    "browserJourneys": "in_progress",
+    "landing": "in_progress"
+  },
+  "scope": {
+    "ownerDataChanged": false,
+    "backendDeployed": false,
+    "prewarmChanged": false
+  }
+}

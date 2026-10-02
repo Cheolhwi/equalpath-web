@@ -1,0 +1,108 @@
+{
+  "checkedAt": "2026-09-30T02:05:35.069Z",
+  "request": {
+    "careType": "short_term",
+    "pickup": {
+      "label": "Bangsar Village",
+      "address": "Jalan Telawi",
+      "lat": 3.1297,
+      "lng": 101.6714,
+      "region": "Kuala Lumpur"
+    },
+    "date": "2026-09-30",
+    "deadline": "10:00",
+    "end": "12:00",
+    "age": "1-3",
+    "transport": "self",
+    "radius": 10,
+    "sort": "distance",
+    "includeUnknown": true,
+    "includeConflicts": false
+  },
+  "rows": [
+    {
+      "name": "previously-slow-bangsar-search",
+      "totalMs": 6258,
+      "functionMs": 5840,
+      "executionId": "6abc6e676b1ae3e53078",
+      "resultCount": 10,
+      "total": 24,
+      "drivingDeferred": true,
+      "responseBytes": 408200,
+      "driving": {
+        "loading:": 10
+      },
+      "serverTiming": "app;dur=1411.9, first;dur=1"
+    },
+    {
+      "name": "new-search-while-routes-pending",
+      "totalMs": 511,
+      "functionMs": 400,
+      "executionId": "6abc6e6d8987e0009109",
+      "resultCount": 10,
+      "total": 24,
+      "drivingDeferred": true,
+      "responseBytes": 408202,
+      "driving": {
+        "loading:": 10
+      },
+      "serverTiming": "app;dur=86.5, first;dur=0"
+    },
+    {
+      "name": "background-routes",
+      "totalMs": 1139,
+      "functionMs": 1022,
+      "executionId": "6abc6e6d68b7bf0a4121",
+      "resultCount": 10,
+      "responseBytes": 3026,
+      "driving": {
+        "available:": 10
+      },
+      "serverTiming": "app;dur=998.9, first;dur=0"
+    },
+    {
+      "name": "KL Sentral",
+      "totalMs": 164,
+      "functionMs": 53,
+      "executionId": "6abc6e6e8fe517853cfc",
+      "resultCount": 10,
+      "total": 19,
+      "drivingDeferred": true,
+      "responseBytes": 406818,
+      "driving": {
+        "loading:": 10
+      },
+      "serverTiming": "app;dur=16.5, first;dur=0"
+    },
+    {
+      "name": "KLCC Park",
+      "totalMs": 142,
+      "functionMs": 57,
+      "executionId": "6abc6e6eb046a85c13e6",
+      "resultCount": 10,
+      "total": 17,
+      "drivingDeferred": true,
+      "responseBytes": 411417,
+      "driving": {
+        "loading:": 10
+      },
+      "serverTiming": "app;dur=17.2, first;dur=0"
+    },
+    {
+      "name": "review-on-demand",
+      "totalMs": 98,
+      "functionMs": 29,
+      "executionId": "6abc6e6ed313ce5be407",
+      "responseBytes": 53096,
+      "serverTiming": "app;dur=1.8, first;dur=0"
+    },
+    {
+      "name": "health",
+      "totalMs": 204,
+      "functionMs": 25,
+      "executionId": "6abc6e6f0c0e59d59738",
+      "responseBytes": 4600,
+      "serverTiming": "app;dur=1.5, first;dur=0"
+    }
+  ]
+}

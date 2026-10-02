@@ -1,0 +1,52 @@
+[
+  {
+    "id": "provider_21507892dc4fa7d9cba4819519a",
+    "rank": "1",
+    "score": "0.8957459184852696"
+  },
+  {
+    "id": "provider_bc393868c856c47ef03fd2043b1",
+    "rank": "2",
+    "score": "0.7894872058236104"
+  },
+  {
+    "id": "provider_193b316038c5bc2d8723f107a91",
+    "rank": "3",
+    "score": "0.7621751470180815"
+  },
+  {
+    "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+    "rank": "4",
+    "score": "0.7585120951011913"
+  },
+  {
+    "id": "provider_b5e469ac6144ecffad381d62593",
+    "rank": "5",
+    "score": "0.8630216120139587"
+  },
+  {
+    "id": "provider_kpm_2baeb8257e9258c2d97f4abe",
+    "rank": "6",
+    "score": "0.7034221392729022"
+  },
+  {
+    "id": "provider_b144f7cdb379504419b635c5c14",
+    "rank": "7",
+    "score": "0.695950389800681"
+  },
+  {
+    "id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+    "rank": "8",
+    "score": "0.6404888330793246"
+  },
+  {
+    "id": "provider_d599142b1023ab80f309304845e",
+    "rank": "9",
+    "score": "0.6316697560942915"
+  },
+  {
+    "id": "provider_038b7be988901ada265e733de80",
+    "rank": "10",
+    "score": "0.7337171170567812"
+  }
+]

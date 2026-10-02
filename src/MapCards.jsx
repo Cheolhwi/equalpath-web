@@ -6,13 +6,17 @@ import { displayName } from "../shared/display.mjs";
 import { centreHighlights } from "../shared/recommendations.mjs";
 import CentreHighlights from "./CentreHighlights.jsx";
 
+// Map cards are narrow: shorten the shared reason prefix so the matched
+// preference itself stays visible. The full reason remains in the tooltip.
+const mapCardReason = reason => reason ? reason.replace(/^Matches your choices:\s*/, "Matches: ") : "For you";
+
 function Card({ p, highlights, index, selected, saved, compared, onOpen, onClose, onSave, onCompare }) {
   return <>
     <div className="map-centre-card-main">
       <span className="map-card-number" aria-label={`Map point ${index}`}>{String(index).padStart(2, "0")}</span>
       <strong>{displayName(p.name)}</strong>
       <CentreHighlights highlights={highlights} />
-      {p.personalised && <span className="map-card-personalised" title={p.personalisedReason}><Heart size={12} aria-hidden="true" /><span>{p.personalisedReason ?? "For you"}</span></span>}
+      {p.personalised && <span className="map-card-personalised" title={p.personalisedReason}><Heart size={12} aria-hidden="true" /><span>{mapCardReason(p.personalisedReason)}</span></span>}
       <span className="map-card-drive"><Car size={14} aria-hidden="true" />{drivingLabel(p.driving)}</span>
       <span className={`map-card-fee${feeSummary(p).estimate ? " fee-estimate" : ""}`}>Fee: {feeSummary(p).label}</span>
     </div>

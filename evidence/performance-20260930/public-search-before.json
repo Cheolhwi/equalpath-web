@@ -1,0 +1,35 @@
+[
+  {
+    "sample": 1,
+    "http": 201,
+    "ttfbMs": 1017.2616670000001,
+    "totalMs": 1028.0442079999998,
+    "wireBodyBytes": 906180,
+    "apiBodyBytes": 819698,
+    "functionDuration": 0.5515298843383789,
+    "results": 10,
+    "driving": "available"
+  },
+  {
+    "sample": 2,
+    "http": 201,
+    "ttfbMs": 210.87524999999982,
+    "totalMs": 215.87316699999997,
+    "wireBodyBytes": 906181,
+    "apiBodyBytes": 819698,
+    "functionDuration": 0.14629793167114258,
+    "results": 10,
+    "driving": "available"
+  },
+  {
+    "sample": 3,
+    "http": 201,
+    "ttfbMs": 180.88608299999987,
+    "totalMs": 185.64141699999982,
+    "wireBodyBytes": 906183,
+    "apiBodyBytes": 819700,
+    "functionDuration": 0.12228107452392578,
+    "results": 10,
+    "driving": "available"
+  }
+]

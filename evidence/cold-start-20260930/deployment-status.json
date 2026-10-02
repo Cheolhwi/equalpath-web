@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-09-30T03:40:22.019Z",
+  "function": {
+    "id": "web-provider-query",
+    "active": "6abc81eee421a4a8004c",
+    "deployment": "6abc81eee421a4a8004c",
+    "status": "ready",
+    "runtimeSpecification": "s-0.5vcpu-512mb",
+    "logging": false
+  },
+  "site": {
+    "id": "equalpath-web",
+    "active": "6abc82cd4aa7ce571e04",
+    "status": "ready",
+    "commit": "15de233530d653cf1425b0aaf2a52ff2f0b8fee7"
+  }
+}

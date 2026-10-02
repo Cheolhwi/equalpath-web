@@ -1,0 +1,79 @@
+[
+  {
+    "path": "/assets/CareScene-BWLcXGP5.js",
+    "status": 200,
+    "ttfbMs": 411,
+    "totalMs": 438,
+    "decodedBytes": 769290,
+    "contentLength": "223797",
+    "encoding": "br",
+    "cache": "MISS",
+    "cacheControl": "public, max-age=0, must-revalidate"
+  },
+  {
+    "path": "/assets/archive-cassette.glb",
+    "status": 200,
+    "ttfbMs": 611,
+    "totalMs": 976,
+    "decodedBytes": 3565116,
+    "contentLength": null,
+    "encoding": null,
+    "cache": "MISS",
+    "cacheControl": "public, max-age=0, must-revalidate"
+  },
+  {
+    "path": "/images/care-gallery/robin-v3/read.webp",
+    "status": 200,
+    "ttfbMs": 569,
+    "totalMs": 588,
+    "decodedBytes": 124004,
+    "contentLength": "124004",
+    "encoding": null,
+    "cache": "MISS",
+    "cacheControl": "public, max-age=0, must-revalidate"
+  },
+  {
+    "path": "/images/care-gallery/robin-v3/play.webp",
+    "status": 200,
+    "ttfbMs": 398,
+    "totalMs": 412,
+    "decodedBytes": 115142,
+    "contentLength": "115142",
+    "encoding": null,
+    "cache": "MISS",
+    "cacheControl": "public, max-age=0, must-revalidate"
+  },
+  {
+    "path": "/images/care-gallery/robin-v3/create.webp",
+    "status": 200,
+    "ttfbMs": 541,
+    "totalMs": 567,
+    "decodedBytes": 121546,
+    "contentLength": "121546",
+    "encoding": null,
+    "cache": "MISS",
+    "cacheControl": "public, max-age=0, must-revalidate"
+  },
+  {
+    "path": "/images/care-gallery/robin-v3/grow-soft.webp",
+    "status": 200,
+    "ttfbMs": 422,
+    "totalMs": 447,
+    "decodedBytes": 135512,
+    "contentLength": "135512",
+    "encoding": null,
+    "cache": "MISS",
+    "cacheControl": "public, max-age=0, must-revalidate"
+  },
+  {
+    "path": "/images/care-gallery/robin-v3/build.webp",
+    "status": 200,
+    "ttfbMs": 571,
+    "totalMs": 593,
+    "decodedBytes": 113748,
+    "contentLength": "113748",
+    "encoding": null,
+    "cache": "MISS",
+    "cacheControl": "public, max-age=0, must-revalidate"
+  }
+]

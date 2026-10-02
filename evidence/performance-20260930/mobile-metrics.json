@@ -1,0 +1,49 @@
+{
+  "label": "Local test only",
+  "network": [
+    {
+      "action": "nearby",
+      "startMs": 398,
+      "durationMs": 5,
+      "bytes": 25699,
+      "status": 200
+    },
+    {
+      "action": "search",
+      "startMs": 68659,
+      "durationMs": 24,
+      "bytes": 393111,
+      "status": 200
+    },
+    {
+      "action": "routes",
+      "durationMs": 10001,
+      "error": "AbortError"
+    }
+  ],
+  "phases": [
+    {
+      "ms": 272,
+      "phase": "ready",
+      "search": "ready",
+      "pins": 0
+    },
+    {
+      "ms": 68774,
+      "phase": "ready",
+      "search": "applied",
+      "pins": 9
+    }
+  ],
+  "longTasks": [],
+  "frames": [],
+  "frameWindow": {
+    "samples": 30,
+    "p50": 8,
+    "p95": 10
+  },
+  "map": {
+    "canvases": 1,
+    "zoom": "11.531532825105774"
+  }
+}

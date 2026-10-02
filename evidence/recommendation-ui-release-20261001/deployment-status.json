@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-01T06:43:24.353Z",
+  "function": {
+    "id": "web-provider-query",
+    "active": "6abdfe3a1e0229524204",
+    "deployment": "6abdfe3a1e0229524204",
+    "status": "ready",
+    "runtimeSpecification": "s-0.5vcpu-512mb",
+    "schedule": "* * * * *",
+    "logging": false
+  },
+  "site": {
+    "id": "equalpath-web",
+    "active": "6abe0061b4ef8277da85",
+    "status": "ready",
+    "commit": "a12b0e0121eaa63c2a5e98b55a07ebf7bda0ae43"
+  }
+}

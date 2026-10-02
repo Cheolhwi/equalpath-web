@@ -1,0 +1,580 @@
+﻿2026-10-01T06:40:38.8832440Z Current runner version: '2.337.0'
+2026-10-01T06:40:38.8860430Z ##[group]Runner Image Provisioner
+2026-10-01T06:40:38.8861462Z Hosted Compute Agent
+2026-10-01T06:40:38.8862066Z Version: 20260901.588
+2026-10-01T06:40:38.8862706Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-01T06:40:38.8863440Z Build Date: 2026-09-01T19:56:44Z
+2026-10-01T06:40:38.8864458Z Worker ID: {88c56eff-f5aa-4804-ba63-93fdb9970748}
+2026-10-01T06:40:38.8865217Z Azure Region: southcentralus
+2026-10-01T06:40:38.8865822Z ##[endgroup]
+2026-10-01T06:40:38.8867407Z ##[group]Operating System
+2026-10-01T06:40:38.8868124Z Ubuntu
+2026-10-01T06:40:38.8868644Z 24.04.5
+2026-10-01T06:40:38.8869169Z LTS
+2026-10-01T06:40:38.8869676Z ##[endgroup]
+2026-10-01T06:40:38.8870205Z ##[group]Runner Image
+2026-10-01T06:40:38.8870917Z Image: ubuntu-24.04
+2026-10-01T06:40:38.8871534Z Version: 20260927.320.1
+2026-10-01T06:40:38.8873261Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-01T06:40:38.8875038Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-01T06:40:38.8876045Z ##[endgroup]
+2026-10-01T06:40:38.8877162Z ##[group]GITHUB_TOKEN Permissions
+2026-10-01T06:40:38.8879656Z Contents: read
+2026-10-01T06:40:38.8880237Z Metadata: read
+2026-10-01T06:40:38.8880898Z ##[endgroup]
+2026-10-01T06:40:38.8883075Z Secret source: Actions
+2026-10-01T06:40:38.8884160Z Cache mode: write
+2026-10-01T06:40:38.8884905Z Prepare workflow directory
+2026-10-01T06:40:38.9277679Z Prepare all required actions
+2026-10-01T06:40:38.9329341Z Getting action download info
+2026-10-01T06:40:39.2548886Z Download action repository 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-10-01T06:40:39.3672718Z Download action repository 'actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38' (SHA:249970729cb0ef3589644e2896645e5dc5ba9c38)
+2026-10-01T06:40:39.4705200Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-01T06:40:39.7145454Z Complete job name: Browser journeys (landing 1/1)
+2026-10-01T06:40:39.7847766Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-01T06:40:39.7848863Z with:
+2026-10-01T06:40:39.7849398Z   repository: Cheolhwi/equalpath-web
+2026-10-01T06:40:39.7853649Z   token: ***
+2026-10-01T06:40:39.7854509Z   ssh-strict: true
+2026-10-01T06:40:39.7855069Z   ssh-user: git
+2026-10-01T06:40:39.7855617Z   persist-credentials: true
+2026-10-01T06:40:39.7856179Z   clean: true
+2026-10-01T06:40:39.7856680Z   sparse-checkout-cone-mode: true
+2026-10-01T06:40:39.7857343Z   fetch-depth: 1
+2026-10-01T06:40:39.7857852Z   fetch-tags: false
+2026-10-01T06:40:39.7858370Z   show-progress: true
+2026-10-01T06:40:39.7858895Z   lfs: false
+2026-10-01T06:40:39.7859379Z   submodules: false
+2026-10-01T06:40:39.7859942Z   set-safe-directory: true
+2026-10-01T06:40:39.7860550Z   allow-unsafe-pr-checkout: false
+2026-10-01T06:40:39.7861343Z ##[endgroup]
+2026-10-01T06:40:39.8940797Z Syncing repository: Cheolhwi/equalpath-web
+2026-10-01T06:40:39.8944328Z ##[group]Getting Git version info
+2026-10-01T06:40:39.8945740Z Working directory is '/home/runner/work/equalpath-web/equalpath-web'
+2026-10-01T06:40:39.8947488Z [command]/usr/bin/git version
+2026-10-01T06:40:39.9005789Z git version 2.55.0
+2026-10-01T06:40:39.9027183Z ##[endgroup]
+2026-10-01T06:40:39.9042941Z Temporarily overriding HOME='/home/runner/work/_temp/46438f7d-d63d-43bf-9525-a3ecb0184bed' before making global git config changes
+2026-10-01T06:40:39.9045356Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-01T06:40:39.9047323Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/equalpath-web/equalpath-web
+2026-10-01T06:40:39.9111383Z Deleting the contents of '/home/runner/work/equalpath-web/equalpath-web'
+2026-10-01T06:40:39.9116876Z ##[group]Determining repository object format
+2026-10-01T06:40:39.9119652Z ##[endgroup]
+2026-10-01T06:40:39.9121275Z ##[group]Initializing the repository
+2026-10-01T06:40:39.9138123Z [command]/usr/bin/git init /home/runner/work/equalpath-web/equalpath-web
+2026-10-01T06:40:39.9285777Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-01T06:40:39.9287627Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-01T06:40:39.9289551Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-01T06:40:39.9290900Z hint: call:
+2026-10-01T06:40:39.9291752Z hint:
+2026-10-01T06:40:39.9292718Z hint: 	git config --global init.defaultBranch <name>
+2026-10-01T06:40:39.9293769Z hint:
+2026-10-01T06:40:39.9295135Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-01T06:40:39.9296656Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-01T06:40:39.9297866Z hint:
+2026-10-01T06:40:39.9298733Z hint: 	git branch -m <name>
+2026-10-01T06:40:39.9299697Z hint:
+2026-10-01T06:40:39.9300899Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-01T06:40:39.9302807Z Initialized empty Git repository in /home/runner/work/equalpath-web/equalpath-web/.git/
+2026-10-01T06:40:39.9305944Z [command]/usr/bin/git remote add origin https://github.com/Cheolhwi/equalpath-web
+2026-10-01T06:40:39.9369394Z ##[endgroup]
+2026-10-01T06:40:39.9370958Z ##[group]Disabling automatic garbage collection
+2026-10-01T06:40:39.9373861Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-01T06:40:39.9420865Z ##[endgroup]
+2026-10-01T06:40:39.9422553Z ##[group]Setting up auth
+2026-10-01T06:40:39.9423730Z Removing SSH command configuration
+2026-10-01T06:40:39.9430167Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-01T06:40:39.9491001Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-01T06:40:39.9922557Z Removing HTTP extra header
+2026-10-01T06:40:39.9930705Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-01T06:40:39.9968313Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-01T06:40:40.0175755Z Removing includeIf entries pointing to credentials config files
+2026-10-01T06:40:40.0181426Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-01T06:40:40.0214635Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-01T06:40:40.0417914Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-01T06:40:40.0458670Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/equalpath-web/equalpath-web/.git.path /home/runner/work/_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:40:40.0492743Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/equalpath-web/equalpath-web/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:40:40.0529022Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:40:40.0565002Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:40:40.0605750Z ##[endgroup]
+2026-10-01T06:40:40.0606704Z ##[group]Fetching the repository
+2026-10-01T06:40:40.0613536Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a12b0e0121eaa63c2a5e98b55a07ebf7bda0ae43:refs/remotes/origin/main
+2026-10-01T06:40:42.3225806Z From https://github.com/Cheolhwi/equalpath-web
+2026-10-01T06:40:42.3227860Z  * [new ref]         a12b0e0121eaa63c2a5e98b55a07ebf7bda0ae43 -> origin/main
+2026-10-01T06:40:42.3237424Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-01T06:40:42.3266168Z   origin/main
+2026-10-01T06:40:42.3275375Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-10-01T06:40:42.3298260Z a12b0e0121eaa63c2a5e98b55a07ebf7bda0ae43
+2026-10-01T06:40:42.3303239Z ##[endgroup]
+2026-10-01T06:40:42.3305845Z ##[group]Determining the checkout info
+2026-10-01T06:40:42.3308531Z ##[endgroup]
+2026-10-01T06:40:42.3310212Z [command]/usr/bin/git sparse-checkout disable
+2026-10-01T06:40:42.3363831Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-01T06:40:42.3399602Z ##[group]Checking out the ref
+2026-10-01T06:40:42.3402345Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-01T06:40:42.7648619Z Switched to a new branch 'main'
+2026-10-01T06:40:42.7662568Z branch 'main' set up to track 'origin/main'.
+2026-10-01T06:40:42.7710257Z ##[endgroup]
+2026-10-01T06:40:42.7714234Z [command]/usr/bin/git log -1 --format=%H
+2026-10-01T06:40:42.7741221Z a12b0e0121eaa63c2a5e98b55a07ebf7bda0ae43
+2026-10-01T06:40:42.8015974Z ##[group]Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+2026-10-01T06:40:42.8016588Z with:
+2026-10-01T06:40:42.8016984Z   node-version: 22
+2026-10-01T06:40:42.8017690Z   cache: npm
+2026-10-01T06:40:42.8018132Z   check-latest: false
+2026-10-01T06:40:42.8021047Z   token: ***
+2026-10-01T06:40:42.8021497Z   package-manager-cache: true
+2026-10-01T06:40:42.8021911Z ##[endgroup]
+2026-10-01T06:40:42.9400940Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-01T06:40:42.9403453Z ##[group]Environment details
+2026-10-01T06:40:43.3632404Z node: v22.23.3
+2026-10-01T06:40:43.3633139Z npm: 10.9.9
+2026-10-01T06:40:43.3633759Z yarn: 1.22.22
+2026-10-01T06:40:43.3635426Z ##[endgroup]
+2026-10-01T06:40:43.3651278Z [command]/opt/hostedtoolcache/node/22.23.3/x64/bin/npm config get cache
+2026-10-01T06:40:43.4721028Z /home/runner/.npm
+2026-10-01T06:40:43.6472359Z Cache hit for: node-cache-Linux-x64-npm-4f90eb724d21626f4be7713a0160c5ab94a4b7de62f2328ccedbfd21083bda1e
+2026-10-01T06:40:44.5957054Z Received 41077470 of 41077470 (100.0%), 50.5 MBs/sec
+2026-10-01T06:40:44.5958392Z Cache Size: ~39 MB (41077470 B)
+2026-10-01T06:40:44.5984794Z [command]/usr/bin/tar -xf /home/runner/work/_temp/50d43fe8-7289-4557-aa98-b2efef148724/cache.tzst -P -C /home/runner/work/equalpath-web/equalpath-web --use-compress-program unzstd
+2026-10-01T06:40:44.6621283Z Cache restored successfully
+2026-10-01T06:40:44.6641829Z Cache restored from key: node-cache-Linux-x64-npm-4f90eb724d21626f4be7713a0160c5ab94a4b7de62f2328ccedbfd21083bda1e
+2026-10-01T06:40:44.6800078Z ##[group]Run npm ci
+2026-10-01T06:40:44.6800632Z [36;1mnpm ci[0m
+2026-10-01T06:40:44.7024547Z shell: /usr/bin/bash -e {0}
+2026-10-01T06:40:44.7025143Z ##[endgroup]
+2026-10-01T06:40:48.2488907Z 
+2026-10-01T06:40:48.2495391Z added 108 packages, and audited 109 packages in 3s
+2026-10-01T06:40:48.2495822Z 
+2026-10-01T06:40:48.2496295Z 13 packages are looking for funding
+2026-10-01T06:40:48.2496733Z   run `npm fund` for details
+2026-10-01T06:40:48.2589018Z 
+2026-10-01T06:40:48.2589545Z 6 vulnerabilities (1 moderate, 4 high, 1 critical)
+2026-10-01T06:40:48.2590036Z 
+2026-10-01T06:40:48.2590305Z To address issues that do not require attention, run:
+2026-10-01T06:40:48.2590770Z   npm audit fix
+2026-10-01T06:40:48.2590968Z 
+2026-10-01T06:40:48.2591274Z To address all issues (including breaking changes), run:
+2026-10-01T06:40:48.2591729Z   npm audit fix --force
+2026-10-01T06:40:48.2591944Z 
+2026-10-01T06:40:48.2592195Z Run `npm audit` for details.
+2026-10-01T06:40:48.2929125Z ##[group]Run npx playwright install --with-deps chromium
+2026-10-01T06:40:48.2929932Z [36;1mnpx playwright install --with-deps chromium[0m
+2026-10-01T06:40:48.2975844Z shell: /usr/bin/bash -e {0}
+2026-10-01T06:40:48.2976422Z ##[endgroup]
+2026-10-01T06:40:49.0536655Z Installing dependencies...
+2026-10-01T06:40:49.0601418Z Switching to root user to install dependencies...
+2026-10-01T06:40:49.1379684Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-01T06:40:49.2065821Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-01T06:40:49.2085503Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-01T06:40:49.2125626Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-01T06:40:49.2127121Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-01T06:40:49.3253178Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1342 kB]
+2026-10-01T06:40:49.3399226Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [302 kB]
+2026-10-01T06:40:49.3424554Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [181 kB]
+2026-10-01T06:40:49.3447190Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1699 kB]
+2026-10-01T06:40:49.3534725Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [341 kB]
+2026-10-01T06:40:49.3594212Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [388 kB]
+2026-10-01T06:40:49.3595928Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1697 kB]
+2026-10-01T06:40:49.3686311Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [388 kB]
+2026-10-01T06:40:49.3716451Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+2026-10-01T06:40:49.3795703Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5760 B]
+2026-10-01T06:40:49.4249081Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
+2026-10-01T06:40:49.4261012Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1066 kB]
+2026-10-01T06:40:49.4317761Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [220 kB]
+2026-10-01T06:40:49.4334817Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.4 kB]
+2026-10-01T06:40:49.4347028Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1216 kB]
+2026-10-01T06:40:49.4408359Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [244 kB]
+2026-10-01T06:40:49.4426726Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.3 kB]
+2026-10-01T06:40:49.4438961Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1566 kB]
+2026-10-01T06:40:49.4511793Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [361 kB]
+2026-10-01T06:40:51.5369683Z Get:25 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-01T06:40:51.5884349Z Get:26 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [509 kB]
+2026-10-01T06:40:51.6036351Z Get:27 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [456 kB]
+2026-10-01T06:40:55.3510536Z Fetched 12.5 MB in 3s (4973 kB/s)
+2026-10-01T06:40:56.2986362Z Reading package lists...
+2026-10-01T06:40:56.3286043Z Reading package lists...
+2026-10-01T06:40:56.5380478Z Building dependency tree...
+2026-10-01T06:40:56.5385613Z Reading state information...
+2026-10-01T06:40:56.7427183Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+2026-10-01T06:40:56.7428271Z libasound2t64 set to manually installed.
+2026-10-01T06:40:56.7429575Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-01T06:40:56.7430422Z libatk-bridge2.0-0t64 set to manually installed.
+2026-10-01T06:40:56.7431385Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-01T06:40:56.7432048Z libatk1.0-0t64 set to manually installed.
+2026-10-01T06:40:56.7432823Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-01T06:40:56.7433552Z libatspi2.0-0t64 set to manually installed.
+2026-10-01T06:40:56.7435010Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-10-01T06:40:56.7435682Z libcairo2 set to manually installed.
+2026-10-01T06:40:56.7436448Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+2026-10-01T06:40:56.7437150Z libcups2t64 set to manually installed.
+2026-10-01T06:40:56.7437895Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-10-01T06:40:56.7438710Z libdbus-1-3 set to manually installed.
+2026-10-01T06:40:56.7439247Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-01T06:40:56.7439756Z libdrm2 set to manually installed.
+2026-10-01T06:40:56.7440318Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.9).
+2026-10-01T06:40:56.7440801Z libglib2.0-0t64 set to manually installed.
+2026-10-01T06:40:56.7441501Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-10-01T06:40:56.7442193Z libnspr4 set to manually installed.
+2026-10-01T06:40:56.7442886Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+2026-10-01T06:40:56.7443571Z libnss3 set to manually installed.
+2026-10-01T06:40:56.7444443Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-10-01T06:40:56.7445159Z libpango-1.0-0 set to manually installed.
+2026-10-01T06:40:56.7445633Z libx11-6 is already the newest version (2:1.8.7-1build1).
+2026-10-01T06:40:56.7446197Z libx11-6 set to manually installed.
+2026-10-01T06:40:56.7446672Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-01T06:40:56.7447109Z libxcb1 set to manually installed.
+2026-10-01T06:40:56.7447639Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-10-01T06:40:56.7448104Z libxcomposite1 set to manually installed.
+2026-10-01T06:40:56.7448652Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-10-01T06:40:56.7449148Z libxdamage1 set to manually installed.
+2026-10-01T06:40:56.7449624Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-10-01T06:40:56.7450059Z libxext6 set to manually installed.
+2026-10-01T06:40:56.7450557Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-10-01T06:40:56.7451051Z libxfixes3 set to manually installed.
+2026-10-01T06:40:56.7451524Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-10-01T06:40:56.7452040Z libxkbcommon0 set to manually installed.
+2026-10-01T06:40:56.7452514Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-10-01T06:40:56.7452983Z libxrandr2 set to manually installed.
+2026-10-01T06:40:56.7453488Z xvfb is already the newest version (2:21.1.12-1ubuntu1.8).
+2026-10-01T06:40:56.7454311Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-10-01T06:40:56.7454998Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-10-01T06:40:56.7455482Z libfontconfig1 set to manually installed.
+2026-10-01T06:40:56.7456074Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+2026-10-01T06:40:56.7456561Z libfreetype6 set to manually installed.
+2026-10-01T06:40:56.7457022Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-10-01T06:40:56.7457560Z fonts-liberation set to manually installed.
+2026-10-01T06:40:56.7458044Z The following additional packages will be installed:
+2026-10-01T06:40:56.7458651Z   libgl1-mesa-dri libglx-mesa0 libwayland-server0 mesa-libgallium
+2026-10-01T06:40:56.7459128Z   xfonts-encodings xfonts-utils
+2026-10-01T06:40:56.7459494Z Recommended packages:
+2026-10-01T06:40:56.7459868Z   fonts-ipafont-mincho fonts-tlwg-loma
+2026-10-01T06:40:56.7636191Z The following NEW packages will be installed:
+2026-10-01T06:40:56.7637623Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-10-01T06:40:56.7643594Z   fonts-wqy-zenhei libwayland-server0 xfonts-cyrillic xfonts-encodings
+2026-10-01T06:40:56.7644402Z   xfonts-scalable xfonts-utils
+2026-10-01T06:40:56.7648656Z The following packages will be upgraded:
+2026-10-01T06:40:56.7654349Z   libgbm1 libgl1-mesa-dri libglx-mesa0 mesa-libgallium
+2026-10-01T06:40:56.7816658Z 4 upgraded, 10 newly installed, 0 to remove and 19 not upgraded.
+2026-10-01T06:40:56.7817199Z Need to get 32.1 MB of archives.
+2026-10-01T06:40:56.7817844Z After this operation, 79.7 MB of additional disk space will be used.
+2026-10-01T06:40:56.7818494Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-01T06:40:56.8903313Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-01T06:41:03.3356749Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-10-01T06:41:13.6707785Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-10-01T06:41:13.9365832Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-10-01T06:41:19.5345056Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-10-01T06:41:33.5731505Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgl1-mesa-dri amd64 25.2.8-0ubuntu0.24.04.3 [37.9 kB]
+2026-10-01T06:41:33.7235688Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwayland-server0 amd64 1.22.0-2.1build1 [33.9 kB]
+2026-10-01T06:41:33.8593259Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglx-mesa0 amd64 25.2.8-0ubuntu0.24.04.3 [110 kB]
+2026-10-01T06:41:34.1199296Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgbm1 amd64 25.2.8-0ubuntu0.24.04.3 [34.3 kB]
+2026-10-01T06:41:34.2455771Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mesa-libgallium amd64 25.2.8-0ubuntu0.24.04.3 [10.8 MB]
+2026-10-01T06:41:55.4308318Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-01T06:41:56.6002345Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-01T06:41:56.8823029Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-10-01T06:41:57.7029821Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-10-01T06:41:58.5575406Z Fetched 32.1 MB in 1min 2s (522 kB/s)
+2026-10-01T06:41:58.5813653Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-10-01T06:41:58.6046961Z (Reading database ... 
+2026-10-01T06:41:58.6047541Z (Reading database ... 5%
+2026-10-01T06:41:58.6048014Z (Reading database ... 10%
+2026-10-01T06:41:58.6048402Z (Reading database ... 15%
+2026-10-01T06:41:58.6048791Z (Reading database ... 20%
+2026-10-01T06:41:58.6049156Z (Reading database ... 25%
+2026-10-01T06:41:58.6049526Z (Reading database ... 30%
+2026-10-01T06:41:58.6049914Z (Reading database ... 35%
+2026-10-01T06:41:58.6050243Z (Reading database ... 40%
+2026-10-01T06:41:58.6050577Z (Reading database ... 45%
+2026-10-01T06:41:58.6050977Z (Reading database ... 50%
+2026-10-01T06:41:58.6097091Z (Reading database ... 55%
+2026-10-01T06:41:58.7679295Z (Reading database ... 60%
+2026-10-01T06:41:58.9612953Z (Reading database ... 65%
+2026-10-01T06:41:59.1594381Z (Reading database ... 70%
+2026-10-01T06:41:59.3330119Z (Reading database ... 75%
+2026-10-01T06:41:59.5107588Z (Reading database ... 80%
+2026-10-01T06:41:59.7183372Z (Reading database ... 85%
+2026-10-01T06:41:59.9087102Z (Reading database ... 90%
+2026-10-01T06:42:00.0805269Z (Reading database ... 95%
+2026-10-01T06:42:00.0806200Z (Reading database ... 100%
+2026-10-01T06:42:00.0807572Z (Reading database ... 202296 files and directories currently installed.)
+2026-10-01T06:42:00.0851819Z Preparing to unpack .../00-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-10-01T06:42:00.1019341Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-01T06:42:00.4027970Z Selecting previously unselected package fonts-freefont-ttf.
+2026-10-01T06:42:00.4160745Z Preparing to unpack .../01-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-10-01T06:42:00.4175101Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-01T06:42:00.5118091Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-10-01T06:42:00.5252512Z Preparing to unpack .../02-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-10-01T06:42:00.5263827Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-01T06:42:00.5481243Z Selecting previously unselected package fonts-unifont.
+2026-10-01T06:42:00.5615129Z Preparing to unpack .../03-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-10-01T06:42:00.5628656Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-10-01T06:42:00.7939337Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-10-01T06:42:00.8079535Z Preparing to unpack .../04-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-10-01T06:42:00.8188329Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-01T06:42:01.4177614Z Preparing to unpack .../05-libgl1-mesa-dri_25.2.8-0ubuntu0.24.04.3_amd64.deb ...
+2026-10-01T06:42:01.4326220Z Unpacking libgl1-mesa-dri:amd64 (25.2.8-0ubuntu0.24.04.3) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-01T06:42:01.4808730Z Selecting previously unselected package libwayland-server0:amd64.
+2026-10-01T06:42:01.4941872Z Preparing to unpack .../06-libwayland-server0_1.22.0-2.1build1_amd64.deb ...
+2026-10-01T06:42:01.4964655Z Unpacking libwayland-server0:amd64 (1.22.0-2.1build1) ...
+2026-10-01T06:42:01.5297818Z Preparing to unpack .../07-libglx-mesa0_25.2.8-0ubuntu0.24.04.3_amd64.deb ...
+2026-10-01T06:42:01.5322740Z Unpacking libglx-mesa0:amd64 (25.2.8-0ubuntu0.24.04.3) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-01T06:42:01.5701766Z Preparing to unpack .../08-libgbm1_25.2.8-0ubuntu0.24.04.3_amd64.deb ...
+2026-10-01T06:42:01.5725712Z Unpacking libgbm1:amd64 (25.2.8-0ubuntu0.24.04.3) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-01T06:42:01.6098624Z Preparing to unpack .../09-mesa-libgallium_25.2.8-0ubuntu0.24.04.3_amd64.deb ...
+2026-10-01T06:42:01.6123409Z Unpacking mesa-libgallium:amd64 (25.2.8-0ubuntu0.24.04.3) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-01T06:42:02.0447883Z Selecting previously unselected package xfonts-encodings.
+2026-10-01T06:42:02.0578899Z Preparing to unpack .../10-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-10-01T06:42:02.0591401Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-01T06:42:02.0838814Z Selecting previously unselected package xfonts-utils.
+2026-10-01T06:42:02.0968683Z Preparing to unpack .../11-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-10-01T06:42:02.0981592Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-10-01T06:42:02.1320713Z Selecting previously unselected package xfonts-cyrillic.
+2026-10-01T06:42:02.1451506Z Preparing to unpack .../12-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-10-01T06:42:02.1461983Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-01T06:42:02.1729886Z Selecting previously unselected package xfonts-scalable.
+2026-10-01T06:42:02.1857954Z Preparing to unpack .../13-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-10-01T06:42:02.1868256Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-01T06:42:02.2328625Z Setting up libwayland-server0:amd64 (1.22.0-2.1build1) ...
+2026-10-01T06:42:02.2357627Z Setting up mesa-libgallium:amd64 (25.2.8-0ubuntu0.24.04.3) ...
+2026-10-01T06:42:02.2378276Z Setting up libgbm1:amd64 (25.2.8-0ubuntu0.24.04.3) ...
+2026-10-01T06:42:02.2400070Z Setting up libgl1-mesa-dri:amd64 (25.2.8-0ubuntu0.24.04.3) ...
+2026-10-01T06:42:02.2474573Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-01T06:42:02.2592673Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-01T06:42:02.2616567Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-01T06:42:02.2638367Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-01T06:42:02.2659940Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-01T06:42:02.2722693Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-10-01T06:42:02.2739983Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-10-01T06:42:02.2762452Z Setting up libglx-mesa0:amd64 (25.2.8-0ubuntu0.24.04.3) ...
+2026-10-01T06:42:02.2782576Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-10-01T06:42:02.2826931Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-01T06:42:02.3114278Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-01T06:42:02.3363079Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-01T06:42:02.3655672Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-01T06:42:02.3678207Z Not building database; man-db/auto-update is not 'true'.
+2026-10-01T06:42:02.3692643Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-01T06:42:03.0448199Z 
+2026-10-01T06:42:03.0449837Z Running kernel seems to be up-to-date.
+2026-10-01T06:42:03.0450339Z 
+2026-10-01T06:42:03.0450639Z No services need to be restarted.
+2026-10-01T06:42:03.0450934Z 
+2026-10-01T06:42:03.0451193Z No containers need to be restarted.
+2026-10-01T06:42:03.0451658Z 
+2026-10-01T06:42:03.0451945Z No user sessions are running outdated binaries.
+2026-10-01T06:42:03.0452337Z 
+2026-10-01T06:42:03.0452816Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-01T06:42:04.1549964Z Downloading Chrome for Testing 153.0.8010.12 (playwright chromium v1243) from https://cdn.playwright.dev/builds/cft/153.0.8010.12/linux64/chrome-linux64.zip
+2026-10-01T06:42:04.5791539Z |                                                                                |   0% of 186.8 MiB
+2026-10-01T06:42:04.7816352Z |■■■■■■■■                                                                        |  10% of 186.8 MiB
+2026-10-01T06:42:04.8544459Z |■■■■■■■■■■■■■■■■                                                                |  20% of 186.8 MiB
+2026-10-01T06:42:04.9153435Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 186.8 MiB
+2026-10-01T06:42:04.9794395Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 186.8 MiB
+2026-10-01T06:42:05.0371238Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 186.8 MiB
+2026-10-01T06:42:05.0947102Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 186.8 MiB
+2026-10-01T06:42:05.1426953Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 186.8 MiB
+2026-10-01T06:42:05.1883578Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 186.8 MiB
+2026-10-01T06:42:05.2393762Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 186.8 MiB
+2026-10-01T06:42:05.2895205Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 186.8 MiB
+2026-10-01T06:42:08.3539270Z Chrome for Testing 153.0.8010.12 (playwright chromium v1243) downloaded to /home/runner/.cache/ms-playwright/chromium-1243
+2026-10-01T06:42:08.3542723Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+2026-10-01T06:42:08.7660786Z |                                                                                |   0% of 2.3 MiB
+2026-10-01T06:42:08.7890389Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+2026-10-01T06:42:08.8031103Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-10-01T06:42:08.8133049Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-10-01T06:42:08.8239362Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-10-01T06:42:08.8270303Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-10-01T06:42:08.8351284Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+2026-10-01T06:42:08.8375663Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+2026-10-01T06:42:08.8430121Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+2026-10-01T06:42:08.8472720Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+2026-10-01T06:42:08.8487717Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+2026-10-01T06:42:08.9045537Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+2026-10-01T06:42:08.9048606Z Downloading Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) from https://cdn.playwright.dev/builds/cft/153.0.8010.12/linux64/chrome-headless-shell-linux64.zip
+2026-10-01T06:42:09.3280398Z |                                                                                |   0% of 114.3 MiB
+2026-10-01T06:42:09.5306664Z |■■■■■■■■                                                                        |  10% of 114.3 MiB
+2026-10-01T06:42:09.5730133Z |■■■■■■■■■■■■■■■■                                                                |  20% of 114.3 MiB
+2026-10-01T06:42:09.6195362Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.3 MiB
+2026-10-01T06:42:09.6628153Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 114.3 MiB
+2026-10-01T06:42:09.6963163Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 114.3 MiB
+2026-10-01T06:42:09.7273387Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 114.3 MiB
+2026-10-01T06:42:09.7546095Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 114.3 MiB
+2026-10-01T06:42:09.7845971Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 114.3 MiB
+2026-10-01T06:42:09.8214467Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 114.3 MiB
+2026-10-01T06:42:09.8494266Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 114.3 MiB
+2026-10-01T06:42:12.0354410Z Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1243
+2026-10-01T06:42:12.0637480Z ##[group]Run xvfb-run -a sh -c 'node scripts/check-browser-renderer.mjs && npm run test:browser -- --project=landing --shard=1/1'
+2026-10-01T06:42:12.0638972Z [36;1mxvfb-run -a sh -c 'node scripts/check-browser-renderer.mjs && npm run test:browser -- --project=landing --shard=1/1'[0m
+2026-10-01T06:42:12.0685454Z shell: /usr/bin/bash -e {0}
+2026-10-01T06:42:12.0685935Z env:
+2026-10-01T06:42:12.0686282Z   LIBGL_ALWAYS_SOFTWARE: 1
+2026-10-01T06:42:12.0686617Z   PW_HEADED: 1
+2026-10-01T06:42:12.0686900Z   PW_ANGLE: gl
+2026-10-01T06:42:12.0687251Z   QA_EVIDENCE_DIR: .build/ci-evidence
+2026-10-01T06:42:12.0687675Z ##[endgroup]
+2026-10-01T06:42:19.5594642Z {"browser":"153.0.8010.12","version":"WebGL 2.0 (OpenGL ES 3.0 Chromium)","renderer":"ANGLE (Mesa, llvmpipe (LLVM 20.1.2 256 bits), OpenGL 4.5)"}
+2026-10-01T06:42:19.8476482Z 
+2026-10-01T06:42:19.8478046Z > equalpath-web@0.0.0 test:browser
+2026-10-01T06:42:19.8478881Z > playwright test --project=landing --shard=1/1
+2026-10-01T06:42:19.8479472Z 
+2026-10-01T06:42:21.6385191Z 
+2026-10-01T06:42:21.6413465Z Running 11 tests using 1 worker, shard 1 of 1
+2026-10-01T06:42:21.6414503Z 
+2026-10-01T06:43:01.8728253Z   ✘   1 [landing] › tests/browser/landing-loading.spec.mjs:14:1 › cold artwork stays behind the animated loader until the first drawn frame; the opening then runs visibly (38.6s)
+2026-10-01T06:43:12.3664243Z   ✓   2 [landing] › tests/browser/landing-loading.spec.mjs:81:1 › failed artwork has a retry, and reduced-motion loading stays still (9.8s)
+2026-10-01T06:43:14.7890936Z   ✓   3 [landing] › tests/browser/landing-loading.spec.mjs:98:1 › waiting is optional and a direct search link never mounts the artwork loader (2.4s)
+2026-10-01T06:43:17.1876552Z   ✓   4 [landing] › tests/browser/landing-loading.spec.mjs:118:1 › a new visitor sees preferences before the map, then can skip into search (2.4s)
+2026-10-01T06:43:41.9567042Z   ✓   5 [landing] › tests/browser/landing.spec.mjs:66:1 › landing starts as a collection, automatically raises a care card, and never forces an initial button outline (24.7s)
+2026-10-01T06:44:06.9325714Z   ✓   6 [landing] › tests/browser/landing.spec.mjs:118:1 › desktop entry preserves the app, shows the chosen artwork, and returns to the raised collection (24.9s)
+2026-10-01T06:44:29.8437487Z   ✓   7 [landing] › tests/browser/landing.spec.mjs:131:1 › mobile entry keeps the selected artwork visible through every curtain stage without overflow (22.9s)
+2026-10-01T06:44:40.6061392Z   ✓   8 [landing] › tests/browser/landing.spec.mjs:139:1 › reduced-motion mobile landing opens raised, with visible controls and keyboard focus preserved (10.7s)
+2026-10-01T06:44:52.4812519Z   ✓   9 [landing] › tests/browser/landing.spec.mjs:157:1 › Escape finishes entry on mobile and returning home preserves the current request (11.9s)
+2026-10-01T06:45:14.6357687Z   ✘  10 [landing] › tests/browser/landing.spec.mjs:187:1 › a cold landing prepares artwork before entry and needs no image request during the real transition (21.7s)
+2026-10-01T06:45:18.3226962Z   ✓  11 [landing] › tests/browser/landing.spec.mjs:227:1 › unavailable artwork never shows an empty frame or blocks entry (3.0s)
+2026-10-01T06:45:18.4905034Z 
+2026-10-01T06:45:18.4910077Z 
+2026-10-01T06:45:18.4921002Z   1) [landing] › tests/browser/landing-loading.spec.mjs:14:1 › cold artwork stays behind the animated loader until the first drawn frame; the opening then runs visibly 
+2026-10-01T06:45:18.4922725Z 
+2026-10-01T06:45:18.4923071Z     Error: expect(locator).toHaveAttribute(expected) failed
+2026-10-01T06:45:18.4923532Z 
+2026-10-01T06:45:18.4923807Z     Locator:  locator('.experience')
+2026-10-01T06:45:18.4924760Z     Expected: "ready"
+2026-10-01T06:45:18.4925312Z     Received: "entering"
+2026-10-01T06:45:18.4925894Z     Timeout:  5000ms
+2026-10-01T06:45:18.4926137Z 
+2026-10-01T06:45:18.4926351Z     Call log:
+2026-10-01T06:45:18.4926987Z       - Expect "toHaveAttribute" locator('.experience') with timeout 5000ms
+2026-10-01T06:45:18.4927923Z       - waiting for locator('.experience')
+2026-10-01T06:45:18.4929957Z         6 × locator resolved to <div data-intro-reduced="false" data-intro-phase="entering" data-entry-destination="map" class="experience phase-entering">…</div>
+2026-10-01T06:45:18.4931312Z           - unexpected value "entering"
+2026-10-01T06:45:18.4931658Z 
+2026-10-01T06:45:18.4931698Z 
+2026-10-01T06:45:18.4932267Z       61 |   const loadedCanvas = await page.locator(".care-scene canvas").elementHandle();
+2026-10-01T06:45:18.4933361Z       62 |   await page.getByRole("button", { name: "FIND CHILDCARE", exact: true }).click();
+2026-10-01T06:45:18.4934627Z     > 63 |   await expect(page.locator(".experience")).toHaveAttribute("data-intro-phase", "ready");
+2026-10-01T06:45:18.4935504Z          |                                             ^
+2026-10-01T06:45:18.4936522Z       64 |   await expect(page.locator(".care-scene")).toHaveAttribute("data-autoplay", "paused");
+2026-10-01T06:45:18.4937500Z       65 |   await page.screenshot({ path: `${out}/header-desktop.png` });
+2026-10-01T06:45:18.4938425Z       66 |   await page.setViewportSize({ width: 390, height: 844 });
+2026-10-01T06:45:18.4939534Z         at /home/runner/work/equalpath-web/equalpath-web/tests/browser/landing-loading.spec.mjs:63:45
+2026-10-01T06:45:18.4940126Z 
+2026-10-01T06:45:18.4940985Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+2026-10-01T06:45:18.4942320Z     .build/browser-results/landing-loading-cold-artwo-a30e9-e-opening-then-runs-visibly-landing/test-failed-1.png
+2026-10-01T06:45:18.4943715Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+2026-10-01T06:45:18.4944922Z 
+2026-10-01T06:45:18.4945735Z     Error Context: .build/browser-results/landing-loading-cold-artwo-a30e9-e-opening-then-runs-visibly-landing/error-context.md
+2026-10-01T06:45:18.4946577Z 
+2026-10-01T06:45:18.4947298Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+2026-10-01T06:45:18.4948757Z     .build/browser-results/landing-loading-cold-artwo-a30e9-e-opening-then-runs-visibly-landing/trace.zip
+2026-10-01T06:45:18.4949580Z     Usage:
+2026-10-01T06:45:18.4949741Z 
+2026-10-01T06:45:18.4950653Z         npx playwright show-trace .build/browser-results/landing-loading-cold-artwo-a30e9-e-opening-then-runs-visibly-landing/trace.zip
+2026-10-01T06:45:18.4953807Z 
+2026-10-01T06:45:18.4954691Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+2026-10-01T06:45:18.4955220Z 
+2026-10-01T06:45:18.4956326Z   2) [landing] › tests/browser/landing.spec.mjs:187:1 › a cold landing prepares artwork before entry and needs no image request during the real transition 
+2026-10-01T06:45:18.4957255Z 
+2026-10-01T06:45:18.4957571Z     Error: expect(locator).toHaveAttribute(expected) failed
+2026-10-01T06:45:18.4958043Z 
+2026-10-01T06:45:18.4958304Z     Locator:  locator('.experience')
+2026-10-01T06:45:18.4959039Z     Expected: "ready"
+2026-10-01T06:45:18.4959573Z     Received: "entering"
+2026-10-01T06:45:18.4960088Z     Timeout:  5000ms
+2026-10-01T06:45:18.4960376Z 
+2026-10-01T06:45:18.4960538Z     Call log:
+2026-10-01T06:45:18.4961318Z       - Expect "toHaveAttribute" locator('.experience') with timeout 5000ms
+2026-10-01T06:45:18.4962094Z       - waiting for locator('.experience')
+2026-10-01T06:45:18.4963589Z         3 × locator resolved to <div data-intro-reduced="false" data-intro-phase="entering" data-entry-destination="map" class="experience phase-entering">…</div>
+2026-10-01T06:45:18.4965086Z           - unexpected value "entering"
+2026-10-01T06:45:18.4965385Z 
+2026-10-01T06:45:18.4965395Z 
+2026-10-01T06:45:18.4965612Z       215 |   entering=true;
+2026-10-01T06:45:18.4966430Z       216 |   await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
+2026-10-01T06:45:18.4967523Z     > 217 |   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
+2026-10-01T06:45:18.4968393Z           |                                             ^
+2026-10-01T06:45:18.4969911Z       218 |   const frames=await page.evaluate(()=>window.entryImageFrames);
+2026-10-01T06:45:18.4970854Z       219 |   // Assert every frame the browser actually presents, not a minimum GPU FPS.
+2026-10-01T06:45:18.4971661Z       220 |   expect(frames.length).toBeGreaterThan(0);
+2026-10-01T06:45:18.4972617Z         at /home/runner/work/equalpath-web/equalpath-web/tests/browser/landing.spec.mjs:217:45
+2026-10-01T06:45:18.4973151Z 
+2026-10-01T06:45:18.4974165Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+2026-10-01T06:45:18.4975459Z     .build/browser-results/landing-a-cold-landing-pre-4177a--during-the-real-transition-landing/test-failed-1.png
+2026-10-01T06:45:18.4976487Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+2026-10-01T06:45:18.4976874Z 
+2026-10-01T06:45:18.4977379Z     Error Context: .build/browser-results/landing-a-cold-landing-pre-4177a--during-the-real-transition-landing/error-context.md
+2026-10-01T06:45:18.4977910Z 
+2026-10-01T06:45:18.4978373Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+2026-10-01T06:45:18.4979192Z     .build/browser-results/landing-a-cold-landing-pre-4177a--during-the-real-transition-landing/trace.zip
+2026-10-01T06:45:18.4979860Z     Usage:
+2026-10-01T06:45:18.4980009Z 
+2026-10-01T06:45:18.4980567Z         npx playwright show-trace .build/browser-results/landing-a-cold-landing-pre-4177a--during-the-real-transition-landing/trace.zip
+2026-10-01T06:45:18.4981128Z 
+2026-10-01T06:45:18.4981508Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+2026-10-01T06:45:18.4981886Z 
+2026-10-01T06:45:18.4982016Z   2 failed
+2026-10-01T06:45:18.4983533Z     [landing] › tests/browser/landing-loading.spec.mjs:14:1 › cold artwork stays behind the animated loader until the first drawn frame; the opening then runs visibly 
+2026-10-01T06:45:18.4985087Z     [landing] › tests/browser/landing.spec.mjs:187:1 › a cold landing prepares artwork before entry and needs no image request during the real transition 
+2026-10-01T06:45:18.4985805Z   9 passed (3.0m)
+2026-10-01T06:45:18.5160682Z ##[error]Process completed with exit code 1.
+2026-10-01T06:45:18.5259740Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-10-01T06:45:18.5260514Z with:
+2026-10-01T06:45:18.5260953Z   name: browser-test-evidence-landing
+2026-10-01T06:45:18.5261442Z   path: .build/browser-results
+.build/ci-evidence
+
+2026-10-01T06:45:18.5261887Z   include-hidden-files: true
+2026-10-01T06:45:18.5262344Z   retention-days: 7
+2026-10-01T06:45:18.5262756Z   if-no-files-found: warn
+2026-10-01T06:45:18.5263141Z   compression-level: 6
+2026-10-01T06:45:18.5263483Z   overwrite: false
+2026-10-01T06:45:18.5264104Z ##[endgroup]
+2026-10-01T06:45:18.6937697Z (node:4036) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T06:45:18.6939289Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T06:45:18.7052277Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-01T06:45:18.7055644Z The least common ancestor is /home/runner/work/equalpath-web/equalpath-web/.build. This will be the root directory of the artifact
+2026-10-01T06:45:18.7056879Z With the provided path, there will be 23 files uploaded
+2026-10-01T06:45:18.7060532Z Artifact name is valid!
+2026-10-01T06:45:18.7061134Z Root directory input is valid!
+2026-10-01T06:45:18.9962473Z Beginning upload of artifact content to blob storage
+2026-10-01T06:45:19.3227271Z (node:4036) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-01T06:45:19.7735801Z Uploaded bytes 8388608
+2026-10-01T06:45:19.8260242Z Uploaded bytes 9105175
+2026-10-01T06:45:19.8674603Z Finished uploading artifact content to blob storage!
+2026-10-01T06:45:19.8676178Z SHA256 digest of uploaded artifact zip is 9b9adb51db18d8c84d67856e911370f2a3b65fa92c65a3178ad088a82929dd7c
+2026-10-01T06:45:19.8677311Z Finalizing artifact upload
+2026-10-01T06:45:20.1136665Z Artifact browser-test-evidence-landing.zip successfully finalized. Artifact ID 11145044949
+2026-10-01T06:45:20.1137671Z Artifact browser-test-evidence-landing has been successfully uploaded! Final size is 9105175 bytes. Artifact ID is 11145044949
+2026-10-01T06:45:20.1142586Z Artifact download URL: https://github.com/Cheolhwi/equalpath-web/actions/runs/36826038484/artifacts/11145044949
+2026-10-01T06:45:20.1337258Z Post job cleanup.
+2026-10-01T06:45:20.2253703Z [command]/usr/bin/git version
+2026-10-01T06:45:20.2305497Z git version 2.55.0
+2026-10-01T06:45:20.2351627Z Temporarily overriding HOME='/home/runner/work/_temp/b1d93381-7fe0-4970-a28d-8b39185315ef' before making global git config changes
+2026-10-01T06:45:20.2352981Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-01T06:45:20.2363554Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/equalpath-web/equalpath-web
+2026-10-01T06:45:20.2398006Z Removing SSH command configuration
+2026-10-01T06:45:20.2407399Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-01T06:45:20.2448491Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-01T06:45:20.2685558Z Removing HTTP extra header
+2026-10-01T06:45:20.2693778Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-01T06:45:20.2731725Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-01T06:45:20.2988836Z Removing includeIf entries pointing to credentials config files
+2026-10-01T06:45:20.2992084Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-01T06:45:20.3031057Z includeif.gitdir:/home/runner/work/equalpath-web/equalpath-web/.git.path
+2026-10-01T06:45:20.3033002Z includeif.gitdir:/home/runner/work/equalpath-web/equalpath-web/.git/worktrees/*.path
+2026-10-01T06:45:20.3034415Z includeif.gitdir:/github/workspace/.git.path
+2026-10-01T06:45:20.3035303Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-01T06:45:20.3043712Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/equalpath-web/equalpath-web/.git.path
+2026-10-01T06:45:20.3070076Z /home/runner/work/_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:45:20.3083442Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/equalpath-web/equalpath-web/.git.path /home/runner/work/_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:45:20.3127949Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/equalpath-web/equalpath-web/.git/worktrees/*.path
+2026-10-01T06:45:20.3152745Z /home/runner/work/_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:45:20.3165162Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/equalpath-web/equalpath-web/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:45:20.3207316Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-01T06:45:20.3231634Z /github/runner_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:45:20.3241044Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:45:20.3281198Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-01T06:45:20.3304308Z /github/runner_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:45:20.3314327Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config
+2026-10-01T06:45:20.3357262Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-01T06:45:20.3606215Z Removing credentials config '/home/runner/work/_temp/git-credentials-81c62ad3-c67c-4b62-b4f9-9b931a9d7123.config'
+2026-10-01T06:45:20.3806823Z Cleaning up orphan processes
+2026-10-01T06:45:20.4113122Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

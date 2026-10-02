@@ -1,0 +1,44 @@
+{
+  "request": {
+    "careType": "short_term",
+    "pickup": {
+      "label": "KL Sentral",
+      "address": "Jalan Thambipillay",
+      "lat": 3.1331,
+      "lng": 101.6861,
+      "region": "Kuala Lumpur"
+    },
+    "date": "2026-09-30",
+    "deadline": "10:00",
+    "end": "12:00",
+    "age": "1-3",
+    "transport": "self",
+    "radius": 10,
+    "sort": "distance",
+    "includeUnknown": true,
+    "includeConflicts": false
+  },
+  "samples": [
+    {
+      "features": [
+        "area-fees-v1"
+      ],
+      "bytes": 817435,
+      "apiMs": 76.28179099999998,
+      "results": 10,
+      "rerankMeanMs": 0.6257751499999984
+    },
+    {
+      "features": [
+        "area-fees-v1",
+        "search-summary-v1",
+        "defer-driving-v1"
+      ],
+      "bytes": 406808,
+      "apiMs": 3.787708000000009,
+      "results": 10,
+      "rerankMeanMs": 0.5099562500000004
+    }
+  ],
+  "byteReduction": 0.5023359655507778
+}

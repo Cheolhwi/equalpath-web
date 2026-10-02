@@ -1,0 +1,72 @@
+[
+  {
+    "name": "health",
+    "http": 201,
+    "responseStatusCode": 200,
+    "ttfbMs": 202,
+    "totalMs": 205,
+    "functionMs": 33,
+    "responseBytes": 6007,
+    "encoding": "br"
+  },
+  {
+    "name": "known-address-search",
+    "http": 201,
+    "responseStatusCode": 200,
+    "ttfbMs": 194,
+    "totalMs": 203,
+    "functionMs": 70,
+    "responseBytes": 906129,
+    "encoding": "br",
+    "resultCount": 10,
+    "total": 19,
+    "driving": {
+      "available:": 10
+    }
+  },
+  {
+    "name": "same-place-new-end",
+    "http": 201,
+    "responseStatusCode": 200,
+    "ttfbMs": 153,
+    "totalMs": 160,
+    "functionMs": 94,
+    "responseBytes": 906131,
+    "encoding": "br",
+    "resultCount": 10,
+    "total": 19,
+    "driving": {
+      "available:": 10
+    }
+  },
+  {
+    "name": "new-public-place-1",
+    "http": 201,
+    "responseStatusCode": 200,
+    "ttfbMs": 845,
+    "totalMs": 849,
+    "functionMs": 725,
+    "responseBytes": 924206,
+    "encoding": "br",
+    "resultCount": 10,
+    "total": 17,
+    "driving": {
+      "available:": 10
+    }
+  },
+  {
+    "name": "new-public-place-2",
+    "http": 201,
+    "responseStatusCode": 200,
+    "ttfbMs": 6491,
+    "totalMs": 6506,
+    "functionMs": 6409,
+    "responseBytes": 907531,
+    "encoding": "br",
+    "resultCount": 10,
+    "total": 24,
+    "driving": {
+      "unavailable:service_unavailable": 10
+    }
+  }
+]

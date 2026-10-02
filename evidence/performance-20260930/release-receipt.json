@@ -1,0 +1,97 @@
+{
+  "checkedAt": "2026-09-30T02:19:52.753249+00:00",
+  "commit": "b4d6ba6a2644788354ce6d56b24324c28f611956",
+  "expectedSource": "f7a3117f6851c8f84cf88418ad2fd3469622b75b7049b93490c87e6491eddfe8",
+  "publicSource": "f7a3117f6851c8f84cf88418ad2fd3469622b75b7049b93490c87e6491eddfe8",
+  "deployment": {
+    "site": {
+      "id": "equalpath-web",
+      "deploymentId": "6abc6f1257fb63a0c096",
+      "status": "ready",
+      "commit": "b4d6ba6a2644788354ce6d56b24324c28f611956"
+    },
+    "function": {
+      "id": "web-provider-query",
+      "deploymentId": "6abc6e46383e3050d5ce",
+      "status": "ready",
+      "runtimeSpecification": "s-0.5vcpu-512mb",
+      "logging": false
+    }
+  },
+  "publicVerification": "HTTPS, source, five entry assets and backend health passed",
+  "localTests": {
+    "passed": 233,
+    "failed": 0,
+    "build": "passed"
+  },
+  "localVisual": {
+    "desktop": "1280x720; welcome/preferences/map/search/reviews",
+    "mobile": "390x844 iframe; search/collapse/change time/details",
+    "backgroundPreparation": "welcome to preferences to map checked locally"
+  },
+  "productionUI": {
+    "url": "https://equalpathcare.me/#discover",
+    "place": "Bangsar Village",
+    "changedEnd": "12:00 to 13:00",
+    "updateAppliedMs": 347,
+    "includesBrowserControlOverhead": true,
+    "matchCount": 24,
+    "pageItems": 10,
+    "rankedRows": 10,
+    "finiteRerankScores": true,
+    "feeChange": "MYR 40 to MYR 60 on Little Playhouse KL Eco City",
+    "reviews": "expanded and passages returned",
+    "noMatchFallback": false,
+    "landingReadyMs": 1578,
+    "landingCache": "browser caches may affect result"
+  },
+  "warmBackend": {
+    "checkedAt": "2026-09-30T02:17:54.889Z",
+    "totalMs": 208,
+    "functionMs": 67,
+    "serverTiming": "app;dur=29.4, first;dur=0",
+    "items": 10,
+    "total": 24,
+    "drivingDeferred": true
+  },
+  "ci": {
+    "run": 36658432826,
+    "status": "completed",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "name": "Test, build and verify release",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser journeys (journeys 2/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (landing 1/1)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 3/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 1/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      }
+    ]
+  },
+  "limitations": [
+    "First request after cold runtime deployment still measured 6.26 seconds; one background preparation request mitigates but does not eliminate cold starts.",
+    "Historical 500 has only general_unknown; cause unresolved.",
+    "Automated browser CI failures remain unresolved."
+  ],
+  "ownerDataMutated": false,
+  "dnsChanged": false,
+  "loggingEnabled": false
+}

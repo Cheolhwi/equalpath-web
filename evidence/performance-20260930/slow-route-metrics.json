@@ -1,0 +1,97 @@
+{
+  "label": "Local test only",
+  "network": [
+    {
+      "action": "nearby",
+      "startMs": 72985,
+      "durationMs": 72,
+      "bytes": 25854,
+      "status": 200
+    },
+    {
+      "action": "places",
+      "startMs": 123148,
+      "durationMs": 1225,
+      "bytes": 2233,
+      "status": 200
+    },
+    {
+      "action": "search",
+      "startMs": 147211,
+      "durationMs": 10,
+      "bytes": 414629,
+      "status": 200
+    },
+    {
+      "action": "routes",
+      "durationMs": 10001,
+      "error": "AbortError"
+    },
+    {
+      "action": "reviews",
+      "startMs": 171436,
+      "durationMs": 4,
+      "bytes": 57024,
+      "status": 200
+    }
+  ],
+  "phases": [
+    {
+      "ms": 498,
+      "phase": "welcome",
+      "search": "ready",
+      "pins": 0
+    },
+    {
+      "ms": 1113,
+      "phase": "welcome",
+      "search": "ready",
+      "scene": "ready",
+      "pins": 0
+    },
+    {
+      "ms": 59490,
+      "phase": "entering",
+      "search": "ready",
+      "scene": "ready",
+      "pins": 0
+    },
+    {
+      "ms": 60741,
+      "phase": "preferences",
+      "search": "ready",
+      "scene": "ready",
+      "pins": 0
+    },
+    {
+      "ms": 73244,
+      "phase": "ready",
+      "search": "ready",
+      "scene": "ready",
+      "pins": 10
+    },
+    {
+      "ms": 147254,
+      "phase": "ready",
+      "search": "applied",
+      "scene": "ready",
+      "pins": 10
+    }
+  ],
+  "longTasks": [
+    {
+      "startMs": 874,
+      "ms": 226
+    }
+  ],
+  "frames": [],
+  "frameWindow": {
+    "samples": 30,
+    "p50": 8,
+    "p95": 10
+  },
+  "map": {
+    "canvases": 1,
+    "zoom": "11.31807002534268"
+  }
+}

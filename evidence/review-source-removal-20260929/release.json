@@ -1,0 +1,74 @@
+{
+  "commit": "cb081a61b88e5e58aa48032a1f7333bad9420301",
+  "expectedSource": "df64b7c29774068d9a58fb5ae0b52b3b6b3e0e1f7623d21323c729553f9181b9",
+  "publicVerification": {
+    "website": "https://equalpathcare.me/",
+    "source": "df64b7c29774068d9a58fb5ae0b52b3b6b3e0e1f7623d21323c729553f9181b9",
+    "assets": 5,
+    "publicBackend": "ok"
+  },
+  "deployment": {
+    "checkedAt": "2026-09-29T13:06:00.645Z",
+    "id": "equalpath-web",
+    "activeDeployment": "6abbb6ecee6e3e15a8c9",
+    "status": "ready",
+    "commit": "cb081a61b88e5e58aa48032a1f7333bad9420301",
+    "branch": "main"
+  },
+  "localRelease": {
+    "tests": 225,
+    "passed": 225,
+    "lockedInstall": true,
+    "build": "passed",
+    "integrity": "passed"
+  },
+  "localBrowser": {
+    "kind": "real local browser; production ReviewEvidence component and local published catalog",
+    "desktop": {
+      "width": 1280,
+      "height": 800
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844
+    },
+    "sourceEntrances": 0,
+    "readMore": "passed",
+    "topicSwitch": "passed",
+    "mobileHorizontalOverflow": false
+  },
+  "ci": {
+    "id": 36572253806,
+    "status": "in_progress",
+    "conclusion": "",
+    "jobs": [
+      {
+        "name": "Test, build and verify release",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser journeys (landing 1/1)",
+        "status": "in_progress",
+        "conclusion": ""
+      },
+      {
+        "name": "Browser journeys (journeys 3/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 1/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Browser journeys (journeys 2/3)",
+        "status": "completed",
+        "conclusion": "failure"
+      }
+    ]
+  },
+  "scope": "UI-only; no cloud browser journey or Function deployment; owner data unchanged",
+  "verifierProcess": "Printed successful public digest/assets/backend verification, then remained idle; stopped with SIGINT (exit 130) after independent Appwrite deployment and CI release checks passed."
+}

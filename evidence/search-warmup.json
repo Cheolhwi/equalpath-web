@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-09-30T03:30:26.552Z",
+  "function": "web-provider-query",
+  "deployment": "6abc81eee421a4a8004c",
+  "previousSchedule": "",
+  "schedule": "* * * * *",
+  "runtimeSpecification": "s-0.5vcpu-512mb",
+  "logging": false,
+  "maximumExecutionsPerDay": 1440,
+  "ownerDataAccessed": false,
+  "databaseReads": 0,
+  "note": "Scheduled readiness reduces idle cold starts; platform recycling and new instances can still start cold."
+}
