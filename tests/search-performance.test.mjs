@@ -72,6 +72,24 @@ test('route enrichment accepts only bounded public selections within the search 
   await assert.rejects(api({...routes,version:'stale'}),e=>e.code==='FACTS_CHANGED');
 });
 
+test('two children: one matrix request covers the start and every pair of listed centres', async () => {
+  const calls=[];
+  const matrix=async (origin,rows)=>{calls.push([origin,rows.map(p=>p.id)]);
+    return [null,...rows].flatMap(from=>rows.filter(to=>to!==from).map(to=>({from,to,driving:{state:'available',minutes:from?3:7}})));};
+  const api=createAPI({drivingRoutes:Object.assign((origin,rows)=>noRoutes(origin,rows),{matrix}),reverseGeocode:null});
+  const search=await api({...body,features});
+  const ids=search.items.slice(0,4).map(p=>p.id);
+  const response=await api({action:'matrix',request,ids,version:search.version});
+  assert.equal(calls.length,1);
+  assert.equal(response.legs.length,4+4*3,'start to each centre, and each centre to the other three');
+  assert.deepEqual(response.legs.filter(l=>l.from==='start').map(l=>[l.to,l.driving.minutes]),ids.map(id=>[id,7]));
+  assert.ok(response.legs.every(l=>Object.keys(l).sort().join(',')==='driving,from,to'));
+  for(const bad of [[],[ids[0],ids[0]],Array.from({length:21},(_,i)=>'id'+i)])
+    await assert.rejects(api({action:'matrix',request,ids:bad,version:search.version}),e=>e.code==='INVALID_SELECTION');
+  await assert.rejects(api({action:'matrix',request,ids:['missing'],version:search.version}),e=>e.code==='PLACE_UNAVAILABLE');
+  await assert.rejects(api({action:'matrix',request,ids,version:'stale'}),e=>e.code==='FACTS_CHANGED');
+});
+
 test('late or unavailable route data never changes result membership, ranking or assessed facts', () => {
   const items=[{id:'b',personalisedRank:1,rerankScore:20,fit:{counts:{conflict:0}},driving:{state:'loading'}},{id:'a',personalisedRank:2,rerankScore:10,driving:{state:'loading'}}];
   const response={items:[{id:'a',driving:{state:'available',minutes:9}},{id:'other',driving:{state:'available',minutes:2}}]};

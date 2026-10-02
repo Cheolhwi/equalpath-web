@@ -89,6 +89,18 @@ centre-to-centre times failed and two-centre plans showed no timeline. Now:
 Live check on 2 Oct (Monash University Malaysia, 5 Oct 09:00–12:00, 1–3 and 4–6): options and
 two-centre plans loaded with drive times from the production API.
 
+### One request for all road times (`matrix`, 2 Oct evening)
+
+Measured from the user's Mac: one OSRM table request for the starting point plus ten centres,
+every direction, took 0.7 s; the per-origin lookups above took about 10 s (40 s when busy).
+The search Function now has a `matrix` action: public IDs only (at most two result pages,
+all within the search radius of the starting point), one table request with the start and
+every centre as sources and every centre as destinations, the same queue, 30 s pause,
+budget and per-pair cache as `routes`. `useFamily` asks for it first and falls back to the
+per-origin lookups when the published Function answers `UNKNOWN_ACTION`, so the site keeps
+working until the Function is republished. A family search is then: two searches + one
+matrix request, the same routing cost as a one-child search; opening a plan needs nothing more.
+
 ## Short-term only (2 Oct 2026)
 
 - The app always searches "A few hours" (`careType: "short_term"`, today's date, 5 km by

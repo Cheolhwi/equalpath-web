@@ -48,7 +48,7 @@ export function createAPI({ store = createSearchStore(), placeSearch = createPla
     if (!["live", "demo"].includes(mode))
       throw new ServiceError("INVALID_MODE", 400);
     if (
-      !["health", "places", "reverse", "nearby", "search", "details", "compare", "recommendations", "routes", "reviews"].includes(
+      !["health", "places", "reverse", "nearby", "search", "details", "compare", "recommendations", "routes", "matrix", "reviews"].includes(
         body.action,
       )
     )
@@ -157,7 +157,7 @@ export function createAPI({ store = createSearchStore(), placeSearch = createPla
     if (Object.keys(errors).length)
       throw new ServiceError("INVALID_REQUEST", 422, errors);
     const request = canonicalRequest(body.request);
-    if (mode === "live" && body.action !== "routes" && !(body.action === "search" && body.features?.includes?.('defer-driving-v1')) && needsPickupAddress(request.pickup) && reverseGeocode) {
+    if (mode === "live" && !["routes", "matrix"].includes(body.action) && !(body.action === "search" && body.features?.includes?.('defer-driving-v1')) && needsPickupAddress(request.pickup) && reverseGeocode) {
       try { const r=await reverseGeocode(request.pickup); if (r.pickup) request.pickup=r.pickup; } catch { /* An address outage must not block care search. */ }
     }
     const withDriving = rows => mode === "demo" ? rows.map(p => ({ ...p, driving: { state: "unavailable", reason: "demo" } })) : drivingRoutes(request.pickup, rows);
@@ -177,6 +177,21 @@ export function createAPI({ store = createSearchStore(), placeSearch = createPla
         throw new ServiceError("PLACE_UNAVAILABLE", 404);
       // Refresh only the requested public IDs; never accept destination coordinates.
       return { version: catalog.version, items: (await withDriving(rows)).map(p => ({ id: p.id, driving: p.driving })) };
+    }
+    if (body.action === "matrix") {
+      // Two children: road times from the starting point to each listed centre and
+      // between those centres, in one routing request. Public IDs only, at most
+      // two result pages, all within the search radius of the starting point.
+      const ids = body.ids;
+      if (!Array.isArray(ids) || !ids.length || ids.length > 2 * pageSize || new Set(ids).size !== ids.length || ids.some(id => typeof id !== 'string'))
+        throw new ServiceError("INVALID_SELECTION", 400);
+      const rows = ids.map(id => items.find(p => p.id === id));
+      if (rows.some(p => !p || !withinRadius(request.pickup, p.location, request.radius)))
+        throw new ServiceError("PLACE_UNAVAILABLE", 404);
+      const pairs = mode === "demo" || !drivingRoutes.matrix
+        ? rows.flatMap((to, j) => [null, ...rows].filter(from => from !== to).map(from => ({ from, to, driving: { state: "unavailable", reason: mode === "demo" ? "demo" : "service_unavailable" } })))
+        : await drivingRoutes.matrix(request.pickup, rows);
+      return { version: catalog.version, legs: pairs.map(x => ({ from: x.from ? x.from.id : "start", to: x.to.id, driving: x.driving })) };
     }
     const compact = body.features?.includes?.('search-summary-v1') === true;
     const present = async rows => compact ? rows.map(searchSummary) : mode === 'live' ? completeRows(rows) : rows;

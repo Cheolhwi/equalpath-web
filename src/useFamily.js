@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { requestAPI } from "./api.js";
 import { minutes } from "../shared/request.mjs";
-import { KIDS, childRequest, buildOptions, legKey, legMinutes, leavePlan, emptyPlan, startIds, nextLegCall, legsNeeded } from "../shared/two-child.mjs";
+import { KIDS, childRequest, buildOptions, legKey, legMinutes, leavePlan, emptyPlan, startIds, nextLegCall, legsNeeded, hasConflict } from "../shared/two-child.mjs";
 import { personaliseSearchItems } from "../shared/recommendations.mjs";
 
 // Epic 8 inside the main search: two ordinary short-care searches (one per
@@ -51,13 +51,13 @@ function legsFor(plan, collectPlace, results, cache, dead) {
 // request every few seconds and pauses for 30 seconds after refusing one, so
 // requests go one at a time with a gap after each reply, and a refusal waits
 // out the pause once before asking again. Never estimated from distance.
-const GAP_MS = 1500, BUSY_MS = 31000, MAX_LOOKUPS = 6;
-const NO_ROUTE = new Set(["no_route", "location_too_far_from_road", "missing_location"]);
+const GAP_MS = 1500, BUSY_MS = 31000, MAX_LOOKUPS = 6, MATRIX_IDS = 20;
+const NO_ROUTE = new Set(["no_route", "location_too_far_from_road", "missing_location", "demo"]);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function useFamily(mode) {
   const [f, setF] = useState(null);
-  const cache = useRef(new Map()), dead = useRef(new Set()), seq = useRef(0), nextAt = useRef(0);
+  const cache = useRef(new Map()), dead = useRef(new Set()), seq = useRef(0), nextAt = useRef(0), matrixOK = useRef(true);
   const placeOf = (results, id) => {
     const p = [...results.a, ...results.b].find((x) => x.id === id);
     return p?.location ? { id: null, label: p.name, lat: p.location.lat, lng: p.location.lng } : null;
@@ -96,9 +96,49 @@ export default function useFamily(mode) {
     }
     return !todo.length;
   }
+  // Newer search service: every road time the options and plans need (start →
+  // each listed centre, and both directions between centres) in ONE request.
+  // Returns false when the service does not offer it yet, so the caller falls
+  // back to the one-origin lookups below.
+  async function matrix(results, plan, run) {
+    const listed = [...new Map([...results.a, ...results.b].filter((p) => p.location && !hasConflict(p)).map((p) => [p.id, p])).values()].slice(0, MATRIX_IDS);
+    if (!listed.length) return true;
+    const where = new Map(listed.map((p) => [p.id, p.location]));
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const wait = nextAt.current - Date.now();
+      if (wait > 0) {
+        if (wait > 3000) setF((x) => x && { ...x, waitUntil: nextAt.current });
+        await sleep(wait);
+      }
+      if (run !== seq.current) return true;
+      let busy = false;
+      try {
+        const res = await requestAPI({ action: "matrix", mode, version: results.version, ids: listed.map((p) => p.id), request: childRequest(plan, "a") }, { timeoutMs: 20000 });
+        for (const leg of res.legs ?? []) {
+          const origin = leg.from === "start" ? plan.start : where.get(leg.from);
+          if (!origin) continue;
+          const key = `${coord(origin)}>${leg.to}`;
+          if (leg.driving?.state === "available") cache.current.set(key, leg.driving.minutes);
+          else if (NO_ROUTE.has(leg.driving?.reason)) dead.current.add(key);
+          else busy = true;
+        }
+      } catch (e) {
+        if (e?.code === "UNKNOWN_ACTION") { matrixOK.current = false; return false; }
+        if (["PLACE_UNAVAILABLE", "INVALID_SELECTION", "FACTS_CHANGED"].includes(e?.code)) return false;
+        busy = true;
+      }
+      nextAt.current = Date.now() + (busy ? BUSY_MS : GAP_MS);
+      if (run !== seq.current) return true;
+      setF((x) => x && { ...x, waitUntil: null, tick: (x.tick ?? 0) + 1 });
+      if (!busy) return true;
+    }
+    // Still busy after one wait: show what is known; an opened plan asks again.
+    return true;
+  }
   // Start legs for the likely centres, then only the centre-to-centre times
   // that can change the three options shown first.
   async function lookups(results, plan, run, want = 3) {
+    if (matrixOK.current && (await matrix(results, plan, run))) return;
     const base = childRequest(plan, "a");
     if (!(await ask(results.version, base, plan.start, startIds(results), run))) return;
     for (let i = 0; i < MAX_LOOKUPS; i++) {
