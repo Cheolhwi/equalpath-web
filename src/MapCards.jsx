@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Bookmark, Car, Check, Heart, Plus, X } from "lucide-react";
+import { ArrowRight, Bookmark, Car, Check, Heart, Plus, UsersRound, X } from "lucide-react";
 import { feeSummary, drivingLabel } from "../shared/result-summary.mjs";
 import { followMapCard, placeMapCards } from "../shared/map-cards.mjs";
 import { displayName } from "../shared/display.mjs";
@@ -15,6 +15,7 @@ function Card({ p, highlights, index, selected, saved, compared, onOpen, onClose
     <div className="map-centre-card-main">
       <span className="map-card-number" aria-label={`Map point ${index}`}>{String(index).padStart(2, "0")}</span>
       <strong>{displayName(p.name)}</strong>
+      {p.familyFor && <span className="map-card-for"><UsersRound size={12} aria-hidden="true" /><span>{p.familyFor}</span></span>}
       <CentreHighlights highlights={highlights} />
       {p.personalised && <span className="map-card-personalised" title={p.personalisedReason}><Heart size={12} aria-hidden="true" /><span>{mapCardReason(p.personalisedReason)}</span></span>}
       <span className="map-card-drive"><Car size={14} aria-hidden="true" />{drivingLabel(p.driving)}</span>
@@ -22,14 +23,14 @@ function Card({ p, highlights, index, selected, saved, compared, onOpen, onClose
     </div>
     <div className="map-card-actions" aria-label={`Actions for ${p.name}`}>
       <button className={saved ? "is-saved" : ""} aria-label={`${saved ? "Edit saved centre" : "Save"}: ${p.name}`} onClick={() => onSave(p)}><Bookmark size={15} fill={saved ? "currentColor" : "none"} aria-hidden="true" />{saved ? "Saved" : "Save"}</button>
-      <button aria-label={`Compare ${p.name}`} aria-pressed={compared} onClick={() => onCompare(p.id)}>{compared ? <Check size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}{compared ? "Added" : "Compare"}</button>
+      {onCompare && <button aria-label={`Compare ${p.name}`} aria-pressed={compared} onClick={() => onCompare(p.id)}>{compared ? <Check size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}{compared ? "Added" : "Compare"}</button>}
       <button className="map-card-details" aria-label={`View details for ${p.name}`} onClick={() => onOpen(p)}>Details<ArrowRight size={15} aria-hidden="true" /></button>
     </div>
     <button className="map-centre-card-close" aria-label={selected ? "Close centre preview" : `Close preview for ${p.name}`} onClick={() => onClose(p.id)}><X size={17} /></button>
   </>;
 }
 
-export default function MapCards({ entries: rawEntries, pins, width, height, compact, topInset = 148, hasCompare, reduced, onOpen, onClose, savedIds = [], compareIds = [], onSave, onCompare }) {
+export default function MapCards({ entries: rawEntries, pins, width, height, compact, topInset = 148, leftInset = 0, hasCompare, reduced, onOpen, onClose, savedIds = [], compareIds = [], onSave, onCompare }) {
   const entries = useMemo(() => rawEntries.map(entry => ({ ...entry,
     highlights: entry.p.suggested || entry.p.personalised ? [] : centreHighlights(entry.p),
   })), [rawEntries]);
@@ -45,9 +46,9 @@ export default function MapCards({ entries: rawEntries, pins, width, height, com
   const shortMap = compact && height <= 650;
   const highlightCount = Math.max(0, ...entries.map(e => e.highlights.length));
   const highlightHeight = highlightCount ? (highlightCount > 1 && cardWidth < 280 ? 54 : 28) : 0;
-  const cardHeight = (compact ? (shortMap ? 164 : 178) : 190) + (entries.some(e => e.p?.personalised) ? 20 : 0) + highlightHeight;
+  const cardHeight = (compact ? (shortMap ? 164 : 178) : 190) + (entries.some(e => e.p?.personalised) ? 20 : 0) + (entries.some(e => e.p?.familyFor) ? 20 : 0) + highlightHeight;
   const bottom = compact ? (hasCompare && !shortMap ? 112 : 48) : (hasCompare ? 116 : 96);
-  const options = { width: compact ? width - 60 : width, height, top: topInset, bottom, cardWidth, cardHeight, pins };
+  const options = { width: compact ? width - 60 : width, height, top: topInset, bottom, cardWidth, cardHeight, pins, left: Math.max(12, leftInset) };
   // Phones keep one row of cards even after the search toolbar folds away.
   // Filling the newly freed map with three stacked cards would hide the pins.
   // Native scrolling keeps every recommendation and its full-size actions reachable.

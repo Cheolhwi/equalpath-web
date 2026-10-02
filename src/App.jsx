@@ -32,7 +32,6 @@ import Dialog from "./Dialog.jsx";
 import DialogPresence from "./DialogPresence.jsx";
 import SelectMenu, { searchSortOptions } from "./SelectMenu.jsx";
 import TimeInput from "./TimeInput.jsx";
-import CareTypeChoice from "./CareTypeChoice.jsx";
 import {
   ProviderCard,
   Details,
@@ -41,11 +40,14 @@ import {
   OrderingNote,
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
-import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM, searchRadius, isShortCare, careTypeLabel } from "../shared/request.mjs";
+import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM, searchRadius, isShortCare, careTypeLabel, canonicalRequest } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
 import Enquiry from "./Enquiry.jsx";
+import FamilyPanel, { FamilyPlanCard, familyMapItems, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
+import useFamily, { familyKey, secondChildErrors } from "./useFamily.js";
+import { childRequest, childName } from "../shared/two-child.mjs";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import GettingStarted from "./GettingStarted.jsx";
 import ShortCareAlternatives, { ShortCareMapAlternatives, hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
@@ -73,18 +75,22 @@ import { addReviewQuestion, withReviewQuestions } from "../shared/contact-messag
 const EMPTY = [];
 const focusMapSearch = () => [...document.querySelectorAll(".mobile-search-summary, .map-search-launch")].find(el => el.getClientRects().length)?.focus({ preventScroll: true });
 const initial = () => ({
-  careType: new URLSearchParams(location.search).get("care") === "regular" ? "regular" : "short_term",
+  // Only "A few hours" is offered (2 Oct 2026: regular care removed from the UI).
+  careType: "short_term",
   pickup: null,
-  date: new URLSearchParams(location.search).get("care") === "regular" ? "" : todayKL(),
+  date: todayKL(),
   deadline: "",
   end: "",
   age: "",
   transport: "",
-  radius: searchRadius(undefined, new URLSearchParams(location.search).get("care") === "regular" ? "regular" : "short_term"),
+  radius: searchRadius(undefined, "short_term"),
   query: "",
   includeUnknown: true,
   includeConflicts: false,
   sort: "recommended",
+  // Epic 8: a second child for "A few hours". Child 1 keeps the fields above.
+  kids: 1,
+  second: { age: "", same: true, deadline: "", end: "" },
 });
 const scenario = (r) =>
   r
@@ -168,6 +174,9 @@ export default function App({
     [savedCheck, setSavedCheck] = useState(null),
     [preparation, setPreparation] = useState(null);
   const [tourOpen, setTourOpen] = useState(false);
+  // Epic 8 family plan in the Checklist: in memory only, cleared with the mode.
+  const [familyPlan, setFamilyPlan] = useState(null);
+  const family = useFamily(mode);
   // First visit: offer the tour once, without starting it on its own.
   const [tourInvite, setTourInvite] = useState(() => { try { return !tourSeen(window.localStorage); } catch { return false; } });
   const interests = useInterests(mode, tourOpen);
@@ -326,6 +335,12 @@ export default function App({
     setBusy(false);
     setReopening(saved);
     const careType = Array.isArray(health?.shortCareIds) ? health.shortCareIds.includes(saved.id) ? "short_term" : "regular" : saved.careType ?? "short_term";
+    if (careType === "regular") {
+      // Regular childcare is no longer offered; keep the visitor in "A few hours".
+      setReopening(null);
+      notify(`${saved.name ?? "This centre"} only offers regular childcare, which EqualPath no longer covers.`);
+      return;
+    }
     setDraft((x) => ({ ...x, careType, date: "" }));
     setResults(null); setNearby(null); setSelected(null); setCompareIds([]); setComparison(null); setCompareSort("distance"); setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({});
     setErrors(isShortCare({ careType }) ? { date: "Choose a new date to check this centre." } : {});
@@ -430,9 +445,14 @@ export default function App({
       setResults(null); setNearby(null); setBrowseSelection(null); setSelected(null);
       setCompareIds([]); setComparison(null); setCompareSort("distance");
       setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({}); setDialog(null);
-      setErrors({}); setFailure(null); setFormOpen(true);
+      setErrors({}); setFailure(null); setFormOpen(true); family.clear();
       setDraft(x => ({ ...x, careType: value, radius: searchRadius(undefined, value), date: value === "short_term" ? todayKL() : "", deadline: "", end: "", sort: "recommended" }));
       return;
+    }
+    if (field === "kids") {
+      requestSeq.current++; searchController.current?.abort(); family.clear();
+      setBusy(false); setResults(null); setSelected(null); setFailure(null);
+      setErrors((x) => ({ ...x, secondAge: null, second: null }));
     }
     if (field === "pickup") {
       if (value) {
@@ -451,6 +471,17 @@ export default function App({
       ? personaliseSearchItems({ items: rawItems, seeds: results.seeds ?? [], request: results.request, library, history: interests.history })
       : rawItems, [results, rawItems, library, interests.history]);
   const items = useSearchRoutes(results, rankedItems, mode);
+  const familyMode = isShortCare(draft) && draft.kids === 2;
+  const familyRequest = familyMode ? family.state?.request : null;
+  const familyDock = familyRequest ? { request: familyRequest, total: family.state.status === "ready" ? family.built?.total ?? 0 : 1 } : null;
+  const familyDirty = !!familyRequest && familyKey(draft) !== familyKey(familyRequest);
+  const mapItems = familyMode && family.state ? familyMapItems(family) : items;
+  const narrow = typeof window !== "undefined" && window.matchMedia?.("(max-width: 760px)").matches;
+  // Two children: the same no-match websites as one child when either child has
+  // no centre, and the same floating cards for the top suggestions.
+  const familyReady = familyMode && family.state?.status === "ready" && !familyDirty;
+  const familyNoMatch = familyReady && !!family.built?.missing.length;
+  const familyCards = familyReady && family.state.view !== "plan" && !familyNoMatch;
   useEffect(() => {
     if (!results?.drivingDeferred) return;
     const refresh = current => {
@@ -467,6 +498,8 @@ export default function App({
 
     setReopening(null);
     setPreparation(null);
+    family.clear();
+    setFamilyPlan(null);
     setMode(next);
     setDraft(initial());
     setResults(null);
@@ -489,9 +522,52 @@ export default function App({
     u.hash = "";
     history.replaceState(null, "", u.pathname + u.search);
   };
+  const seedIdsFor = (careType) => [...new Set([...interestSeeds(library, interests.history, careType).map(s => s.id), ...(interests.history.enabled ? interests.history.hidden.filter(s => s.careType === careType).map(s => s.id) : [])])].slice(0,100);
+  // Epic 8: two ordinary searches (one per child) and drive times, shown as
+  // options on the same map. Child 1 uses the normal checks; Child 2 its own.
+  const searchFamily = async (request, opts = {}) => {
+    const issues = { ...requestErrors(request, { requireAge: true }), ...secondChildErrors(request) };
+    delete issues.transport;
+    setErrors(issues);
+    if (Object.keys(issues).length) {
+      setTimeout(() => setSearchFocus({ field: ["pickup", "date", "age", "deadline", "end"].find((key) => issues[key]) ?? "age", at: Date.now() }), 0);
+      return;
+    }
+    requestSeq.current++;
+    searchController.current?.abort();
+    setBusy(false); setResults(null); setSelected(null); setFailure(null); setChoosing(false); setMobilePane("map");
+    try {
+      const found = await family.run(request, { ...opts, personal: { library, history: interests.history, seedIds: seedIdsFor("short_term") } });
+      if (!found) return;
+      rememberMap(mapView.current, request.pickup);
+      setSearchCollapsed(familyKey(draftRef.current) === familyKey(request));
+      setSearchFocus(null);
+    } catch { /* The family panel shows the failure and a retry. */ }
+  };
+  const applyFamilyFix = (changes) => {
+    const second = { age: "", same: true, deadline: "", end: "", ...(draft.second ?? {}) };
+    // Freeze Child 2's times first, so a change to Child 1 does not move both.
+    let next = { ...draft, second: second.same ? { ...second, same: false, deadline: draft.deadline, end: draft.end } : second };
+    for (const c of changes) {
+      const field = c.field === "start" ? "deadline" : "end";
+      next = c.child === "a" ? { ...next, [field]: c.value } : { ...next, second: { ...next.second, [field]: c.value } };
+    }
+    if (next.second.deadline === next.deadline && next.second.end === next.end) next = { ...next, second: { ...next.second, same: true } };
+    setDraft(next);
+    notify(`Changed ${changes.map((c) => `${childName(c.child)}’s ${c.field === "start" ? "drop-off" : "pickup"} to ${c.value}`).join(" and ")}. Checking again…`);
+    searchFamily(next, { keep: true });
+  };
+  const openFamilyCentre = (p) => {
+    const state = family.state, k = p?.familyRole ?? "a";
+    if (!state?.results || !p) return;
+    const centre = state.results[k].find((x) => x.id === p.id) ?? p;
+    setProfile({ p: { ...centre, driving: p.driving }, request: canonicalRequest(childRequest(state.plan, k)) });
+    setSelected(p.id); setDialogError(null); setDialog("details");
+  };
   const search = async (e, page = 0, override = null) => {
     e?.preventDefault?.();
     setSearchCollapsed(false);
+    if (isShortCare(override ?? draft) && (override ?? draft).kids === 2) return searchFamily(override ?? draft);
     const request = override ?? draft,
       issues = requestErrors(request, { requireAge: true });
     setErrors(issues);
@@ -515,7 +591,7 @@ export default function App({
     setFailure(null);
     setChoosing(false);
     try {
-      const seedIds = [...new Set([...interestSeeds(library, interests.history, request.careType).map(s => s.id), ...(interests.history.enabled ? interests.history.hidden.filter(s => s.careType === request.careType).map(s => s.id) : [])])].slice(0,100);
+      const seedIds = seedIdsFor(request.careType);
       const r = await requestAPI({ action: "search", mode, request, page, seedIds }, { signal: controller.signal });
       if (seq !== requestSeq.current) return;
       let savedResult = null;
@@ -905,7 +981,6 @@ export default function App({
           noValidate
           className={formOpen ? "request-form" : "request-form collapsed"}
         >
-          <CareTypeChoice value={draft.careType} onChange={value => setField("careType", value)} />
 
           <PlaceInput
             hideLabel
@@ -1231,7 +1306,8 @@ export default function App({
       </aside>
       <div className="map-wrap">
         {!choosing && mobilePane === "map" && <div className="map-tools-overlay">
-          <MapSearchDock draft={draft} setField={setField} errors={errors} onSearch={search} busy={busy} results={results} dirty={dirty}
+          <MapSearchDock draft={draft} setField={setField} errors={errors} onSearch={search}
+            busy={familyMode ? family.busy : busy} results={familyMode ? familyDock : results} dirty={familyMode ? familyDirty : dirty}
             mode={tourOpen ? "demo" : mode} active={introPhase === "ready" && !dialog && !tourOpen} queryReset={pickupQueryReset}
             onQueryChange={value => setPickupQueryReset({value})}
             onPanel={() => { setFormOpen(true); setMobilePane("list"); }}
@@ -1239,39 +1315,47 @@ export default function App({
             focusRequest={searchFocus} onHeight={setDockHeight}
             collapsed={searchCollapsed} onCollapsedChange={setSearchCollapsed}
             notice={reopening ? `Choose a new date for ${reopening.name}.` : results?.total === 0 ? "No centres found. Try another address or change the filters." : browseSelection && !results ? `Add your search details for ${browseSelection.name}.` : mode === "demo" ? "Demo · fictional centres" : ""}
-            failure={failure} onRetry={() => search(null)} addressStatus={pickupAddress} onRetryAddress={() => setAddressRetry(n => n + 1)} />
+            failure={familyMode ? (family.state?.status === "error" ? family.state.error : null) : failure} onRetry={() => search(null)} addressStatus={pickupAddress} onRetryAddress={() => setAddressRetry(n => n + 1)} />
           <div className="map-quick-actions">
-            <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>
+            {!familyMode && <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>}
             <MapSavedShortcuts library={library}
               onCentres={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }} />
           </div>
-          {isShortCare(results?.request) && !busy && !dirty &&
+          {(familyNoMatch || (!familyMode && isShortCare(results?.request) && !busy && !dirty &&
             (Number.isFinite(results?.explicitMatchCount)
               ? results.explicitMatchCount === 0
-              : results && !hasExplicitShortCareMatch(items)) && (
+              : results && !hasExplicitShortCareMatch(items)))) && (
             <ShortCareMapAlternatives />
           )}
           {nearbyError && !failure && <p className="map-search-status" role="status">Centres could not load<button onClick={() => setNearbyReload(v => v + 1)}>Retry</button></p>}
         </div>}
 
+        {familyMode && family.state && !choosing && mobilePane === "map" && (
+          <FamilyPanel family={family} mode={mode} top={dockHeight + 12}
+            onFix={applyFamilyFix}
+            onWider={() => { const next = { ...draft, radius: 10 }; setDraft(next); searchFamily(next); }}
+            onRetrySearch={() => searchFamily(draft)}
+            onChecklist={(plan) => { setFamilyPlan(plan); notify("Saved to your Checklist."); }}
+            onToast={notify} />
+        )}
         {(mapStarted || mapActive) && <Suspense fallback={null}><MapCanvas
           key={mode}
-          items={items}
+          items={mapItems}
           viewTarget={mapTarget}
-          autoFit={!!results}
+          autoFit={familyMode ? !!family.state?.results : !!results}
           onViewChange={(view) => {
             if (tourOpen) return;
             rememberMap(view);
           }}
           onCancel={() => { setChoosing(false); setMobilePane("map"); }}
           pickup={
-            choosing ? draft.pickup : (activeRequest?.pickup ?? draft.pickup)
+            choosing ? draft.pickup : familyMode ? (family.state?.plan.start ?? draft.pickup) : (activeRequest?.pickup ?? draft.pickup)
           }
           selected={selected}
-          showSuggestions={!!results && !dirty && !busy}
-          onOpen={openDetails}
+          showSuggestions={familyMode ? familyCards : !!results && !dirty && !busy}
+          onOpen={familyMode ? openFamilyCentre : openDetails}
           onSave={(p) => editFavourite(p, null)}
-          onCompare={(id) => {
+          onCompare={familyMode ? undefined : (id) => {
             if (activeRequest) toggleCompare(id);
             else {
               const centre = items.find(p => p.id === id);
@@ -1283,9 +1367,10 @@ export default function App({
           onClosePreview={() => setSelected(null)}
           hasCompare={compareIds.length > 0}
           topInset={dockHeight + 6}
-          cardsVisible={mobilePane === "map" && !dirty && !busy}
+          leftInset={familyMode && family.state && !narrow ? FAMILY_PANEL_RIGHT : 0}
+          cardsVisible={familyMode ? mobilePane === "map" && !narrow && !family.busy : mobilePane === "map" && !dirty && !busy}
           onShowList={() => { setFormOpen(!results); setMobilePane("list"); }}
-          onSelect={select}
+          onSelect={familyMode && narrow ? (id) => openFamilyCentre(mapItems.find((p) => p.id === id)) : select}
           onPick={(p) => {
             setField("pickup", p);
             setChoosing(false);
@@ -1367,6 +1452,9 @@ export default function App({
           wide={["details", "saved", "enquiry"].includes(dialog) || (dialog === "compare" && compareIds.length >= 2) || (dialog === "preparation" && !!preparation)}
           onClose={close}
         >
+          {dialog === "preparation" && familyPlan && (
+            <FamilyPlanCard plan={familyPlan} onOpen={family.state ? () => setDialog(null) : null} onRemove={() => setFamilyPlan(null)} />
+          )}
           {dialog === "saved" && (
             <SavedLibrary
               tab={savedTab}

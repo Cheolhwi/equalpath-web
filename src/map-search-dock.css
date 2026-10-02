@@ -1,5 +1,7 @@
 /* Search belongs to the map; the full sidebar is an optional alternate view. */
-.map-tools-overlay { position: absolute; top: 16px; left: 16px; z-index: 6; width: min(830px, calc(100% - 92px)); pointer-events: none; }
+/* The dock is only as wide as its chips: five with two children, six with "Getting there". */
+.map-tools-overlay { position: absolute; top: 16px; left: 16px; z-index: 6; width: min(600px, calc(100% - 92px)); pointer-events: none; }
+.map-tools-overlay:has(.dock-options > [data-field="transport"]) { width: min(720px, calc(100% - 92px)); }
 .map-search-dock, .map-tools-overlay > .map-quick-actions, .map-tools-overlay > .map-search-status { pointer-events: auto; }
 .map-search-dock { position: relative; border: 1px solid var(--rule); border-radius: 18px; background: var(--paper); padding: 10px; box-shadow: var(--map-shadow); }
 .dock-form { display: block; margin: 0; }
@@ -31,7 +33,7 @@
 .compact-place .place-results { position: absolute; z-index: 13; left: 0; right: 0; top: 55px; min-width: min(300px, calc(100vw - 36px)); background: var(--paper); border-radius: 12px; box-shadow: var(--map-shadow); max-height: min(400px, 55dvh); overflow-y: auto; }
 .compact-place .field-error, .compact-place .location-feedback { font-size: 13px; margin: 6px 0 0; }
 .dock-find { min-height: 44px; border-radius: 12px; padding: 10px 18px; display: flex; gap: 12px; align-items: center; justify-content: center; font-size: 14px; }
-.dock-options { display: grid; grid-template-columns: 1fr 1fr .9fr 1.4fr 1.4fr .8fr; gap: 4px; border-top: 1px solid var(--rule); padding-top: 9px; margin-top: 9px; }
+.dock-options { display: grid; grid-template-columns: repeat(5, auto); gap: 4px; border-top: 1px solid var(--rule); padding-top: 9px; margin-top: 9px; }
 .dock-options:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3,minmax(0,1fr)); }
 .dock-options .search-chip { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 58px; padding: 6px 10px; border: 1px solid transparent; border-radius: 11px; text-align: left; background: transparent; }
 .search-chip > svg { flex-shrink: 0; color: var(--accent); }
@@ -139,13 +141,15 @@
 .map-first .dock-popover-more .field > :is(input, select) { min-height: 44px; }
 @keyframes dock-popover-in { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
 @media (max-width: 960px) {
-  .map-tools-overlay { width: min(620px,calc(100% - 86px)); }
+  .map-tools-overlay { width: min(520px,calc(100% - 86px)); }
+  .map-tools-overlay:has(.dock-options > [data-field="transport"]) { width: min(640px,calc(100% - 86px)); }
   .dock-options .search-chip { padding: 6px; gap: 5px; }
   .search-chip > svg { width: 18px; }
   .search-chip strong { font-size: 13px; }
 }
 @media (max-width: 760px) {
   .map-tools-overlay { top: 10px; left: 10px; width: calc(100% - 20px); }
+  .map-tools-overlay:has(.dock-options > [data-field="transport"]) { width: calc(100% - 20px); }
   .map-search-dock { padding: 7px; border-radius: 15px; }
   .dock-address-row { gap: 4px; }
   .dock-address-row .dock-panel-toggle { min-width: 34px; width: 34px; padding: 7px; }

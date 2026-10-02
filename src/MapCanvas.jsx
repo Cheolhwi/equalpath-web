@@ -20,6 +20,8 @@ export default function MapCanvas({
   cardsVisible = true,
   hasCompare = false,
   topInset = 148,
+  // A panel over the left of the map (two children): keep pins and cards clear of it.
+  leftInset = 0,
   onShowList,
   onPick,
   choosing,
@@ -71,6 +73,7 @@ export default function MapCanvas({
     onViewChange,
     viewTarget,
     topInset,
+    leftInset,
     cameraReduced: reduced || introReduced,
   };
   // Drive-time enrichment only changes card text, not pins or the user's view.
@@ -155,7 +158,7 @@ export default function MapCanvas({
         top: Math.min(latest.current.topInset + 50, height * 0.55),
         // On phones a centre card covers the bottom of the map after a search.
         bottom: Math.min(compact ? (latest.current.autoFit ? 230 : 110) : 100, height * (compact ? 0.32 : 0.2)),
-        left: compact ? 48 : 150,
+        left: compact ? 48 : Math.max(150, latest.current.leftInset + 60),
         right: compact ? 48 : 150,
       },
       maxZoom: 14.4,
@@ -428,7 +431,7 @@ export default function MapCanvas({
           }}>Use this location</button></div>
         </div>
       </> : null}
-      <MapCards entries={entries} pins={m ? items.filter(p => p.location).map(p => { const point = m.project([p.location.lng, p.location.lat]); const [dx, dy] = displayOffsets.current.get(p.id) ?? pinOffsets.get(p.id) ?? [0, 0]; return { x: point.x + dx, y: point.y + dy }; }) : []} width={width} height={height} compact={width < 600} topInset={topInset} hasCompare={hasCompare} reduced={reduced || introReduced} onOpen={onOpen} onSave={onSave} onCompare={onCompare} savedIds={savedIds} compareIds={compareIds} onClose={id => selected ? onClosePreview() : setDismissedCards(ids => [...ids, id])} />
+      <MapCards entries={entries} pins={m ? items.filter(p => p.location).map(p => { const point = m.project([p.location.lng, p.location.lat]); const [dx, dy] = displayOffsets.current.get(p.id) ?? pinOffsets.get(p.id) ?? [0, 0]; return { x: point.x + dx, y: point.y + dy }; }) : []} width={width} height={height} compact={width < 600} topInset={topInset} leftInset={leftInset} hasCompare={hasCompare} reduced={reduced || introReduced} onOpen={onOpen} onSave={onSave} onCompare={onCompare} savedIds={savedIds} compareIds={compareIds} onClose={id => selected ? onClosePreview() : setDismissedCards(ids => [...ids, id])} />
       <div className="map-tools">
         <button onClick={fit} aria-label="Show all results on the map">
           <LocateFixed size={19} />

@@ -51,8 +51,11 @@
 @media (max-width: 760px) {
   /* An open search popover sits above the map controls, not under them. */
   .map-first .map-wrap:has(.dock-popover) .map-tools { display: none; }
-  /* Give the care type a little more room so chip values never touch. */
-  .dock-options { grid-template-columns: 1.25fr .95fr 1fr .9fr; column-gap: 6px; }
+  /* Row 1: date, age (or children), more. Row 2: start and end, plus "Getting there"
+     for one child. Six tracks so both rows are filled edge to edge. */
+  .dock-options { grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: 6px; }
+  .dock-options > .search-chip { grid-column: span 2; }
+  .dock-options > .time-input { grid-column: span 3; order: 2; }
   .dock-options > .search-chip strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
@@ -130,7 +133,7 @@
 .ready-item-source { padding: 0 12px 12px; font-size: 12px; }
 
 /* Search dock: "Getting there" is its own chip for a few hours of care. */
-.dock-options:has(> [data-field="transport"]) { grid-template-columns: 1.05fr .85fr .9fr 1fr 1fr 1.25fr .8fr; }
+.dock-options:has(> [data-field="transport"]) { grid-template-columns: repeat(6, auto); }
 .dock-options [data-field="transport"] small { white-space: nowrap; }
 .map-first .dock-popover.dock-popover-transport { width: 260px; padding: 6px; border-radius: 16px; }
 /* Date: the two common choices are one tap; the date is also written out. */
@@ -145,13 +148,10 @@
 .date-field .date-in-words { display: block; margin-top: 8px; font-size: 13px; color: var(--muted); }
 
 @media (max-width: 760px) {
-  /* Row 1: care, date, age, more. Row 2: start, end, getting there. */
-  .dock-options:has(> [data-field="transport"]) { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-  .dock-options:has(> [data-field="transport"]) > [data-field="care"] { grid-column: span 4; }
-  .dock-options:has(> [data-field="transport"]) > :is([data-field="date"], [data-field="age"]) { grid-column: span 3; }
-  .dock-options:has(> [data-field="transport"]) > [data-field="more"] { grid-column: span 2; }
-  .dock-options:has(> [data-field="transport"]) > .time-input { grid-column: span 4; order: 2; }
-  .dock-options:has(> [data-field="transport"]) > [data-field="transport"] { grid-column: span 4; order: 2; border-top: 1px solid var(--rule); border-radius: 0; }
+  /* Row 1: date, age, more. Row 2: start, end, getting there. */
+  .dock-options:has(> [data-field="transport"]) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .dock-options:has(> [data-field="transport"]) > .time-input { grid-column: span 2; order: 2; }
+  .dock-options:has(> [data-field="transport"]) > [data-field="transport"] { grid-column: span 2; order: 2; border-top: 1px solid var(--rule); border-radius: 0; }
 }
 
 /* First visit: a small offer of the tour (it never starts on its own). */

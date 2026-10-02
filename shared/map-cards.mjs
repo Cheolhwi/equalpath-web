@@ -3,8 +3,8 @@ const overlap = (a, b, gap = 10) => Math.max(0, Math.min(a.x + a.width + gap, b.
 
 // Keep the chosen side/offset while the camera moves. Clamp at viewport edges
 // instead of choosing a different candidate on every animation frame.
-export function followMapCard(previous, point, { width, height, top, bottom, cardWidth, cardHeight }) {
-  const x = clamp(point.x + previous.x - previous.point.x, 12, Math.max(12, width - cardWidth - 12));
+export function followMapCard(previous, point, { width, height, top, bottom, cardWidth, cardHeight, left = 12 }) {
+  const x = clamp(point.x + previous.x - previous.point.x, left, Math.max(left, width - cardWidth - 12));
   const y = clamp(point.y + previous.y - previous.point.y, top, Math.max(top, height - bottom - cardHeight));
   return { x, y, width: cardWidth, height: cardHeight, point,
     anchor: { x: clamp(point.x, x, x + cardWidth), y: clamp(point.y, y, y + cardHeight) } };
@@ -12,8 +12,8 @@ export function followMapCard(previous, point, { width, height, top, bottom, car
 
 // Cards remain tied to geographic points. Try nearby positions before using
 // free space elsewhere in the viewport; leader lines keep dense points clear.
-export function placeMapCards(points, { width, height, top = 126, bottom = 50, cardWidth = 252, cardHeight = 128, pins = points }) {
-  const left = 12, right = Math.max(left, width - cardWidth - 12);
+export function placeMapCards(points, { width, height, top = 126, bottom = 50, cardWidth = 252, cardHeight = 128, pins = points, left = 12 }) {
+  const right = Math.max(left, width - cardWidth - 12);
   const maxY = Math.max(top, height - bottom - cardHeight);
   const orders = points.length === 3 ? [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]] : points.length === 2 ? [[0,1],[1,0]] : [points.map((_, i) => i)];
   let result = [], resultScore = Infinity;

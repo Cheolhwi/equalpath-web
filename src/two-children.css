@@ -1,0 +1,132 @@
+/* Epic 8 · two children inside the map. Same glass material, number badges and
+   sage primary action as the map cards and search bar; larger type and targets. */
+.family-panel {
+  position: absolute; z-index: 6; left: 16px; top: var(--family-top, 300px);
+  width: min(420px, calc(100% - 92px)); max-height: calc(100% - var(--family-top, 300px) - 16px);
+  overflow: auto; overscroll-behavior: contain; padding: 16px; border-radius: 20px;
+  --muted: var(--glass-muted, var(--muted)); color: var(--glass-text, var(--ink));
+  background: var(--glass-thick, var(--paper)); border: 1px solid var(--glass-edge, var(--rule));
+  -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter);
+  box-shadow: inset 0 1px 0 var(--glass-highlight, transparent), 0 0 0 1px var(--glass-rim, transparent), var(--glass-shadow, var(--map-shadow));
+  font-size: 15px; animation: family-in 260ms cubic-bezier(.2,.7,.2,1) both;
+}
+@keyframes family-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.map-first[data-reduced="true"] .family-panel { animation: none; }
+.family-panel h3 { margin: 0; font-size: 20px; line-height: 1.25; letter-spacing: -.01em; }
+.family-head { display: grid; gap: 4px; margin-bottom: 12px; }
+.family-head p { margin: 0; color: var(--muted); font-size: 14px; }
+.family-status { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 15px; }
+.family-spin { animation: family-spin 900ms linear infinite; }
+@keyframes family-spin { to { transform: rotate(360deg); } }
+.map-first[data-reduced="true"] .family-spin { animation: none; }
+.family-error .text-link, .family-note .text-link { min-height: 36px; padding: 0; font-size: inherit; }
+.family-note { margin: 10px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.family-options { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.family-option {
+  position: relative; display: grid; gap: 12px; padding: 14px; border-radius: 16px;
+  background: var(--paper); border: 1px solid var(--rule);
+}
+.family-option-centre { display: flex; align-items: flex-start; gap: 10px; margin: 0; min-width: 0; }
+.family-option-centre > span { display: grid; gap: 1px; min-width: 0; }
+.family-option .family-pin { flex: 0 0 auto; position: static; margin-top: 1px; }
+.family-option-number {
+  position: absolute; left: 14px; top: 14px; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 13px; font-weight: 700;
+  background: var(--nav-selected, var(--ink)); color: var(--nav-selected-text, var(--paper));
+}
+.family-option-main { display: grid; gap: 6px; min-width: 0; }
+.family-option-main > strong, .family-option-pair strong { font-size: 16px; line-height: 1.3; font-weight: 650; overflow-wrap: anywhere; }
+.family-option-pair { display: grid; gap: 6px; }
+.family-option-pair p { margin: 0; }
+.family-option-pair small { color: var(--muted); font-size: 12px; font-weight: 600; }
+.family-meta, .family-leave, .family-fit { display: flex; align-items: center; gap: 7px; margin: 0; font-size: 14px; }
+.family-meta { color: var(--muted); }
+.family-reason { display: flex; align-items: center; gap: 5px; margin: 0; color: var(--accent); font-size: 13px; font-weight: 650; min-width: 0; }
+.family-reason span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.family-leave strong { font-size: 17px; }
+.family-leave.warn { color: var(--amber); font-weight: 600; }
+.family-leave.muted, .family-fit { color: var(--muted); font-size: 13px; }
+.family-fit.ok { color: var(--green); }
+.family-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+  min-height: 48px; padding: 10px 16px; border-radius: 12px; font-size: 15px; font-weight: 600; line-height: 1.3; text-align: center;
+  background: var(--nav-selected, var(--ink)); color: var(--nav-selected-text, var(--paper)); border: 1px solid transparent;
+}
+.family-primary:hover { background: color-mix(in srgb, var(--nav-selected, var(--ink)) 90%, var(--ink)); }
+.family-primary > svg { flex: 0 0 auto; transition: transform 180ms ease; }
+@media (hover: hover) { .family-primary:hover > svg:last-child { transform: translateX(3px); } }
+.family-secondary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+  min-height: 46px; padding: 9px 14px; border-radius: 12px; font-size: 14px; font-weight: 550;
+  background: var(--paper); border: 1px solid var(--rule);
+}
+.family-secondary:hover { border-color: var(--accent); }
+.family-more { width: 100%; min-height: 44px; margin-top: 10px; border-radius: 12px; border: 1px dashed var(--rule); font-size: 14px; }
+.family-more:hover { border-color: var(--accent); }
+.family-empty { display: grid; gap: 10px; }
+.family-empty p { margin: 0; line-height: 1.5; }
+.family-back { display: inline-flex; align-items: center; gap: 4px; justify-self: start; min-height: 40px; padding: 0 10px 0 4px; margin: -6px 0 2px -4px; border-radius: 10px; font-size: 14px; }
+.family-back:hover { background: var(--glass-hover, var(--soft)); }
+.family-fix { display: grid; gap: 10px; margin-bottom: 12px; padding: 12px; border-radius: 14px; background: var(--amber-bg); border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); }
+.family-fix > p { display: flex; gap: 8px; margin: 0; color: var(--amber); font-weight: 600; line-height: 1.4; }
+.family-fix > p svg { flex: 0 0 auto; margin-top: 1px; }
+.family-timeline { list-style: none; margin: 4px 0 12px; padding: 0; }
+.family-timeline li { position: relative; display: grid; grid-template-columns: 30px 58px minmax(0, 1fr); gap: 10px; padding-bottom: 16px; }
+.family-timeline li::before { content: ""; position: absolute; left: 14px; top: 30px; bottom: 0; width: 2px; background: var(--rule); }
+.family-timeline li:last-child { padding-bottom: 0; }
+.family-timeline li:last-child::before { display: none; }
+.family-dot {
+  width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 700;
+  background: var(--nav-selected, var(--ink)); color: var(--nav-selected-text, var(--paper));
+}
+.family-timeline li.leave .family-dot { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 2px var(--nav-selected, var(--ink)); }
+.family-timeline time { font-size: 18px; font-weight: 700; line-height: 30px; font-variant-numeric: tabular-nums; }
+.family-step { display: grid; gap: 3px; min-width: 0; padding-top: 4px; }
+.family-step strong { font-size: 15px; line-height: 1.35; font-weight: 600; overflow-wrap: anywhere; }
+.family-step small { color: var(--muted); font-size: 13px; line-height: 1.4; }
+.family-step .family-ask { color: var(--amber); }
+.family-call {
+  display: inline-flex; align-items: center; gap: 7px; justify-self: start; min-height: 40px; margin-top: 4px; padding: 6px 12px;
+  border-radius: 10px; border: 1px solid var(--rule); background: var(--paper); font-size: 14px; font-weight: 550; text-decoration: none;
+}
+.family-call:hover { border-color: var(--accent); }
+.family-pickup-from { margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--soft); font-size: 14px; }
+.family-pickup-from p { margin: 0; line-height: 1.5; }
+.family-pickup-from .text-link { min-height: 32px; padding: 0; font-size: 14px; }
+.family-actions { display: grid; gap: 8px; }
+.family-download { display: inline-flex; align-items: center; gap: 6px; justify-self: center; min-height: 40px; font-size: 13px; }
+/* Children choice in the search bar popover */
+/* The age menu also asks how many children; give it room for the extra rows. */
+.map-first .dock-popover.dock-popover-age:has(.kids-choice) { width: min(340px, calc(100vw - 24px)); padding: 12px; overflow: auto; }
+.kids-choice { display: grid; gap: 10px; }
+.kids-choice h3 { margin: 6px 0 -2px; font-size: 13px; font-weight: 650; color: var(--muted); }
+.map-first .dock-popover .kids-choice .kids-count > div { grid-template-columns: 1fr 1fr; }
+.kids-choice .primary { min-height: 46px; border-radius: 12px; font-size: 15px; background: var(--nav-selected, var(--ink)); color: var(--nav-selected-text, var(--paper)); border-color: transparent; }
+.kids-choice .care-type-choice { margin: 0; }
+.kids-choice .field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.kids-choice .field { margin: 0; }
+.kids-choice .field-error { margin: 0; }
+.age-pair { display: grid; gap: 10px; }
+.age-pair h3 { margin: 0 0 -4px; font-size: 13px; font-weight: 650; }
+/* Family plan inside the Checklist */
+.family-plan-card { border: 1px solid var(--accent); background: var(--green-bg); padding: 16px; margin-bottom: 20px; display: grid; gap: 10px; border-radius: 14px; }
+.family-plan-card h3 { margin: 0; font-size: 17px; }
+.family-plan-card pre { white-space: pre-wrap; font: inherit; font-size: 13px; line-height: 1.55; background: var(--paper); padding: 12px; margin: 0; max-height: 320px; overflow: auto; border-radius: 10px; }
+.family-plan-card .family-actions { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: center; }
+@media (max-width: 760px) {
+  /* A bottom sheet on phones: the map stays visible above it. */
+  .family-panel {
+    /* Above the map's zoom/locate buttons, below the header and dialogs. */
+    z-index: 8; top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; max-height: min(62vh, calc(100% - var(--family-top, 300px) - 16px));
+    padding: 14px 14px 16px; border-radius: 22px;
+  }
+  .family-panel::before { content: ""; display: block; width: 40px; height: 4px; margin: -4px auto 10px; border-radius: 99px; background: var(--rule); }
+  .family-panel h3 { font-size: 19px; }
+}
+
+/* Map cards for two children: which child a suggested centre is for. */
+.map-card-for { display: inline-flex; align-items: center; gap: 4px; margin-top: -1px; color: var(--muted); font-size: 11px; font-weight: 650; }
+.family-note.family-warn { display: flex; align-items: flex-start; gap: 7px; color: var(--glass-text, var(--ink)); }
+.family-note.family-warn > svg { flex-shrink: 0; margin-top: 3px; color: var(--amber); }
+.family-step .family-late { display: inline-flex; align-items: center; gap: 4px; color: var(--amber); font-weight: 650; }
+.family-timeline li:has(.family-late) .family-dot { background: var(--amber-bg); color: var(--amber); }

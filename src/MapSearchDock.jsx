@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Baby, CalendarDays, Car, Clock3, SlidersHorizontal, X, MapPin, Users, ArrowRight, Pencil, ChevronUp, PanelLeft, Check } from "lucide-react";
+import { Baby, CalendarDays, Car, SlidersHorizontal, X, MapPin, Users, UsersRound, ArrowRight, Pencil, ChevronUp, PanelLeft, Check } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
-import CareTypeChoice from "./CareTypeChoice.jsx";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import TimeInput from "./TimeInput.jsx";
 import SearchActions from "./SearchActions.jsx";
@@ -17,6 +16,19 @@ const longDate = date => new Intl.DateTimeFormat("en-GB", { weekday: "long", day
 const addDays = (date, days) => new Date(Date.parse(`${date}T12:00:00Z`) + days * 864e5).toISOString().slice(0, 10);
 const TRANSPORT = [["self", "I’ll bring my child", "I’ll bring"], ["institution", "The centre picks my child up", "Centre pickup"], ["", "Not sure yet", "Not sure"]];
 const transportShort = value => TRANSPORT.find(([key]) => key === (value ?? ""))?.[2] ?? "Not sure";
+const ageShort = value => value ? value.replace("-", "–") : "?";
+// Epic 8: who needs care. Child 1 keeps the existing age and time fields.
+function AgeButtons({ id, name, who, value, onChange, error }) {
+  return <fieldset id={id} tabIndex={id ? -1 : undefined} className="age-choice compact-age" aria-label={`${who}’s age`} aria-invalid={!!error || undefined}>
+    <legend className="sr-only">{who}’s age</legend>
+    <div>{[["1-3", "1–3 years"], ["4-6", "4–6 years"]].map(([age, label]) =>
+      <label key={age} className={value === age ? "selected" : ""}>
+        <input type="radio" name={name} value={age} aria-label={`${who}: ${label}`} checked={value === age} onChange={() => onChange(age)} />
+        <span>{label}</span>
+      </label>)}</div>
+    {error && <small className="field-error">{error}</small>}
+  </fieldset>;
+}
 export default function MapSearchDock({ draft, setField, errors, onSearch, busy, results, dirty, mode, active, queryReset, onQueryChange, onMap, onPanel, submitRef, focusRequest, onHeight, collapsed, onCollapsedChange, notice, failure, onRetry, addressStatus, onRetryAddress }) {
   const root = useRef(null), lastTrigger = useRef(null), options = useRef(null), pendingFocus = useRef(null);
   const summary = useRef(null);
@@ -25,10 +37,12 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
   const [part, setPart] = useState(null);
   const [menuPosition, setMenuPosition] = useState({});
   const short = isShortCare(draft);
+  const two = short && draft.kids === 2, second = { age: "", same: true, deadline: "", end: "", ...(draft.second ?? {}) };
+  const setSecond = (patch) => setField("second", { ...second, ...patch });
   const changed = key => !!results && JSON.stringify(draft[key]) !== JSON.stringify(results.request[key]);
   // Short care chooses transport on its own chip; regular care keeps it in More.
   const moreFields = [...(short ? [] : ["transport"]), "query", "radius", "includeUnknown", "includeConflicts"];
-  const pending = name => name === "more" ? moreFields.some(changed) : changed(name === "care" ? "careType" : name);
+  const pending = name => name === "more" ? moreFields.some(changed) : name === "age" ? changed("age") || changed("kids") || changed("second") : changed(name === "care" ? "careType" : name);
   const selectedFilters = [
     !short && draft.transport && (draft.transport === "institution" ? "Centre picks up" : "You bring your child"),
     draft.query?.trim() && `Name / area: ${draft.query.trim()}`,
@@ -44,7 +58,7 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
     const field = focusRequest.field;
     lastTrigger.current = root.current?.querySelector(`[data-field="${field}"]`);
     pendingFocus.current = field === "pickup" ? "pickup-search" : field === "date" ? "service-date" : field === "end" ? "care-end" : field;
-    setPart(["age", "date", "care", "more", "transport"].includes(field) ? field : null);
+    setPart(["age", "date", "care", "more", "transport"].includes(field) ? field : field === "kids" ? "age" : null);
   }, [focusRequest]);
   // The requested field may be inside a menu that has not mounted yet. Focus
   // after that commit instead of racing the render with an animation frame.
@@ -92,6 +106,8 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
     const outside = e => {
       const popover = options.current;
       const trigger = root.current?.querySelector(`[data-field="${part}"]`);
+      // A time picker opened from inside this menu is portalled outside it.
+      if (e.target.closest?.(".time-picker")) return;
       if (!popover?.contains(e.target) && !trigger?.contains(e.target)) {
         setPart(null);
         lastTrigger.current?.focus({ preventScroll: true });
@@ -107,7 +123,7 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
   return <div className={`map-search-dock${compact ? " search-collapsed" : ""}`} ref={root}>
     {canCollapse && <button type="button" ref={summary} className="mobile-search-summary" aria-expanded={!compact} aria-controls="request-form" aria-label="Change search" aria-describedby="mobile-search-applied" onClick={() => { pendingFocus.current = "pickup-search"; onCollapsedChange(false); }}>
       <MapPin size={20} aria-hidden="true" />
-      <span className="mobile-search-context"><small id="mobile-search-applied" className="mobile-search-applied" role="status"><span className="mobile-search-check" aria-hidden="true"><Check size={12} /></span><span className="sr-only">Results up to date</span></small><strong>{results.request.pickup.label}</strong><small>{short ? `${shortDate(results.request.date)} · ${results.request.deadline}–${results.request.end}` : "Regular care"}</small></span>
+      <span className="mobile-search-context"><small id="mobile-search-applied" className="mobile-search-applied" role="status"><span className="mobile-search-check" aria-hidden="true"><Check size={12} /></span><span className="sr-only">Results up to date</span></small><strong>{results.request.pickup.label}</strong><small>{short ? `${shortDate(results.request.date)} · ${results.request.deadline}–${results.request.end}${results.request.kids === 2 ? " · 2 children" : ""}` : "Regular care"}</small></span>
       <span className="mobile-search-edit"><Pencil size={16} aria-hidden="true" />Change search</span>
     </button>}
     {canCollapse && <button type="button" className="mobile-search-hide" onClick={() => { setPart(null); onCollapsedChange(true); }}><ChevronUp size={17} aria-hidden="true" />Hide search</button>}
@@ -119,21 +135,20 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
       </div>
       <div className="dock-filter-panel">
       <div className="dock-options" data-tour="care-times">
-        {chip("care", Clock3, "Care", short ? "A few hours" : "Regular")}
         {short && chip("date", CalendarDays, "Date", shortDate(draft.date), errors.date)}
-        {chip("age", Baby, "Age", draft.age ? `${draft.age.replace("-", "–")} years` : "Select", errors.age)}
+        {two ? chip("age", UsersRound, "Children", `2 · ${ageShort(draft.age)}, ${ageShort(second.age)}`, errors.age || errors.secondAge || errors.second)
+          : chip("age", Baby, "Age", draft.age ? `${draft.age.replace("-", "–")} years` : "Select", errors.age)}
         {short && <>
           <TimeInput variant="chip" icon={MapPin} shortLabel="Start" suggest={draft.date && draft.date !== todayKL() ? "09:00" : undefined} pending={changed("deadline")} id="deadline" label="When does care start?" pickerLabel="Start" value={draft.deadline} onChange={v => setField("deadline", v)} invalid={!!errors.deadline} describedBy={errors.deadline ? "deadline-error" : changed("deadline") ? "search-apply-status" : undefined} onOpen={() => setPart(null)} />
           <TimeInput variant="chip" icon={Users} shortLabel="End" suggest={laterBy(draft.deadline, 3) ?? (draft.date && draft.date !== todayKL() ? "12:00" : undefined)} pending={changed("end")} id="care-end" label="When does care end?" pickerLabel="End" value={draft.end} onChange={v => setField("end", v)} invalid={!!errors.end} describedBy={errors.end ? "care-end-error" : changed("end") ? "search-apply-status" : undefined} onOpen={() => setPart(null)} />
         </>}
-        {short && chip("transport", Car, "Getting there", transportShort(draft.transport))}
+        {short && !two && chip("transport", Car, "Getting there", transportShort(draft.transport))}
         {chip("more", SlidersHorizontal, "More", selectedFilters.length ? `Filters (${selectedFilters.length})` : "Filters")}
       </div>
       <SearchActions compact busy={busy} results={results} dirty={dirty} failure={failure} submitRef={submitRef} />
       </div>
       {part && <section ref={options} className={`dock-popover dock-popover-${part}`} id="search-options" aria-label={`${part} options`} style={menuPosition}>
         {!['care', 'age', 'transport'].includes(part) && <button type="button" className="dock-popover-close" aria-label="Close options" onClick={closeOptions}><X size={19} /></button>}
-        {part === "care" && <CareTypeChoice value={draft.careType} onChange={v => { setField("careType", v); closeOptions(); }} />}
         {part === "date" && <div className="field date-field"><label htmlFor="service-date"><CalendarDays size={21} />Date</label>
           <div className="date-quick" role="group" aria-label="Quick dates">{[["Today", todayKL()], ["Tomorrow", addDays(todayKL(), 1)]].map(([name, value]) =>
             <button type="button" key={name} aria-pressed={draft.date === value} onClick={() => { setField("date", value); closeOptions(); }}><strong>{name}</strong><small>{shortDate(value)}</small></button>)}</div>
@@ -144,7 +159,31 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
           {TRANSPORT.map(([key, label]) => <label key={key || "unsure"} className={(draft.transport ?? "") === key ? "selected" : ""}>
             <input type="radio" name="dock-transport" value={key} aria-label={label} checked={(draft.transport ?? "") === key} onChange={() => { setField("transport", key); closeOptions(); }} /><span>{label}</span></label>)}
         </div></fieldset>}
-        {part === "age" && <AgeRangeChoice value={draft.age} onChange={v => { setField("age", v); closeOptions(); }} error={errors.age} />}
+        {part === "age" && !short && <AgeRangeChoice value={draft.age} onChange={v => { setField("age", v); closeOptions(); }} error={errors.age} />}
+        {part === "age" && short && <div className="kids-choice">
+          <fieldset className="care-type-choice kids-count"><legend className="sr-only">How many children?</legend><div>
+            {[[1, "1 child"], [2, "2 children"]].map(([n, label]) => <label key={n} className={(two ? 2 : 1) === n ? "selected" : ""}>
+              <input type="radio" name="dock-kids" value={n} aria-label={label} checked={(two ? 2 : 1) === n} onChange={() => setField("kids", n)} /><span>{label}</span></label>)}
+          </div></fieldset>
+          {!two ? <><h3>Age</h3><AgeButtons id="age" name="dock-age-1" who="Your child" value={draft.age} onChange={v => { setField("age", v); closeOptions(); }} error={errors.age} /></> : <>
+            <h3>Child 1’s age</h3>
+            <AgeButtons id="age" name="dock-age-1" who="Child 1" value={draft.age} onChange={v => setField("age", v)} error={errors.age} />
+            <h3>Child 2’s age</h3>
+            <AgeButtons name="dock-age-2" who="Child 2" value={second.age} onChange={v => setSecond({ age: v })} error={errors.secondAge} />
+            <h3>Child 2’s times</h3>
+            <fieldset className="care-type-choice"><legend className="sr-only">Child 2’s times</legend><div>
+              {[[true, `Same as Child 1${draft.deadline && draft.end ? ` (${draft.deadline}–${draft.end})` : ""}`], [false, "Different times"]].map(([same, label]) =>
+                <label key={String(same)} className={second.same === same ? "selected" : ""}>
+                  <input type="radio" name="dock-second-times" checked={second.same === same} aria-label={label} onChange={() => setSecond({ same })} /><span>{label}</span></label>)}
+            </div></fieldset>
+            {!second.same && <div className="field-pair">
+              <div className="field"><label htmlFor="second-start">Start</label><TimeInput id="second-start" label="Child 2 start" pickerLabel="Start" value={second.deadline} suggest={draft.deadline || "09:00"} invalid={!!errors.second} onChange={v => setSecond({ deadline: v })} /></div>
+              <div className="field"><label htmlFor="second-end">End</label><TimeInput id="second-end" label="Child 2 end" pickerLabel="End" value={second.end} suggest={draft.end || laterBy(second.deadline, 3) || "12:00"} invalid={!!errors.second} onChange={v => setSecond({ end: v })} /></div>
+            </div>}
+            {errors.second && <small className="field-error">{errors.second}</small>}
+            <button type="button" className="primary" onClick={closeOptions}>Done</button>
+          </>}
+        </div>}
         {part === "more" && <><h2>More filters</h2>
           {!short && <div className="field"><label htmlFor="transport">Getting to the centre</label><select id="transport" value={draft.transport} onChange={e => setField("transport", e.target.value)}><option value="">Not sure yet</option><option value="institution">The centre picks my child up</option><option value="self">I’ll bring my child</option></select></div>}
           <div className="field"><label htmlFor="provider-query">Centre name or area</label><input id="provider-query" value={draft.query} onChange={e => setField("query", e.target.value)} placeholder="e.g. Little Playhouse or Bangsar" /></div>
