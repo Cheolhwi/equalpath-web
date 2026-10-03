@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Baby, CalendarDays, Car, SlidersHorizontal, X, MapPin, Users, UsersRound, ArrowRight, Pencil, ChevronUp, PanelLeft, Check } from "lucide-react";
+import { CalendarDays, Car, SlidersHorizontal, X, MapPin, Users, UsersRound, ArrowRight, Pencil, ChevronUp, PanelLeft, Check } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import TimeInput from "./TimeInput.jsx";
@@ -137,7 +137,7 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
       <div className="dock-options" data-tour="care-times">
         {short && chip("date", CalendarDays, "Date", shortDate(draft.date), errors.date)}
         {two ? chip("age", UsersRound, "Children", `2 · ${ageShort(draft.age)}, ${ageShort(second.age)}`, errors.age || errors.secondAge || errors.second)
-          : chip("age", Baby, "Age", draft.age ? `${draft.age.replace("-", "–")} years` : "Select", errors.age)}
+          : chip("age", UsersRound, "Age", draft.age ? `${draft.age.replace("-", "–")} years` : "Select", errors.age)}
         {short && <>
           <TimeInput variant="chip" icon={MapPin} shortLabel="Start" suggest={draft.date && draft.date !== todayKL() ? "09:00" : undefined} pending={changed("deadline")} id="deadline" label="When does care start?" pickerLabel="Start" value={draft.deadline} onChange={v => setField("deadline", v)} invalid={!!errors.deadline} describedBy={errors.deadline ? "deadline-error" : changed("deadline") ? "search-apply-status" : undefined} onOpen={() => setPart(null)} />
           <TimeInput variant="chip" icon={Users} shortLabel="End" suggest={laterBy(draft.deadline, 3) ?? (draft.date && draft.date !== todayKL() ? "12:00" : undefined)} pending={changed("end")} id="care-end" label="When does care end?" pickerLabel="End" value={draft.end} onChange={v => setField("end", v)} invalid={!!errors.end} describedBy={errors.end ? "care-end-error" : changed("end") ? "search-apply-status" : undefined} onOpen={() => setPart(null)} />
