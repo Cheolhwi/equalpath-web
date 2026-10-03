@@ -481,7 +481,8 @@ export default function App({
   // no centre, and the same floating cards for the top suggestions.
   const familyReady = familyMode && family.state?.status === "ready" && !familyDirty;
   const familyNoMatch = familyReady && !!family.built?.missing.length;
-  const familyCards = familyReady && family.state.view !== "plan" && !familyNoMatch;
+  const familyCards = familyReady && !familyNoMatch;
+  const familyOpen = familyMode && !!family.state && !family.state.collapsed;
   useEffect(() => {
     if (!results?.drivingDeferred) return;
     const refresh = current => {
@@ -1367,8 +1368,8 @@ export default function App({
           onClosePreview={() => setSelected(null)}
           hasCompare={compareIds.length > 0}
           topInset={dockHeight + 6}
-          leftInset={familyMode && family.state && !narrow ? FAMILY_PANEL_RIGHT : 0}
-          cardsVisible={familyMode ? mobilePane === "map" && !narrow && !family.busy : mobilePane === "map" && !dirty && !busy}
+          leftInset={familyOpen && !narrow ? FAMILY_PANEL_RIGHT : 0}
+          cardsVisible={familyMode ? mobilePane === "map" && (!narrow || !familyOpen) && !family.busy : mobilePane === "map" && !dirty && !busy}
           onShowList={() => { setFormOpen(!results); setMobilePane("list"); }}
           onSelect={familyMode && narrow ? (id) => openFamilyCentre(mapItems.find((p) => p.id === id)) : select}
           onPick={(p) => {

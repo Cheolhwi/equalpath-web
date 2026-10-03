@@ -151,16 +151,21 @@ export default function MapCanvas({
     }
     const bounds = new maplibregl.LngLatBounds();
     coords.forEach((c) => bounds.extend(c));
-    const compact = m.getContainer().clientWidth < 550;
+    const width = m.getContainer().clientWidth, compact = width < 550;
     const height = m.getContainer().clientHeight;
+    const padding = {
+      top: Math.min(latest.current.topInset + 50, height * 0.55),
+      // On phones a centre card covers the bottom of the map after a search.
+      bottom: Math.min(compact ? (latest.current.autoFit ? 230 : 110) : 100, height * (compact ? 0.32 : 0.2)),
+      left: compact ? 48 : Math.max(150, latest.current.leftInset + 60),
+      right: compact ? 48 : 150,
+    };
+    // Keep at least 120 px for the pins, or the map refuses to move at all
+    // (a small window with the two-children panel open).
+    const shrink = (a, b, size) => { const k = Math.min(1, Math.max(0, size - 120) / (padding[a] + padding[b] || 1)); padding[a] *= k; padding[b] *= k; };
+    shrink("left", "right", width); shrink("top", "bottom", height);
     m.fitBounds(bounds, {
-      padding: {
-        top: Math.min(latest.current.topInset + 50, height * 0.55),
-        // On phones a centre card covers the bottom of the map after a search.
-        bottom: Math.min(compact ? (latest.current.autoFit ? 230 : 110) : 100, height * (compact ? 0.32 : 0.2)),
-        left: compact ? 48 : Math.max(150, latest.current.leftInset + 60),
-        right: compact ? 48 : 150,
-      },
+      padding,
       maxZoom: 14.4,
       duration: immediate || latest.current.cameraReduced ? 0 : 650,
       pitch: 0,
@@ -338,6 +343,14 @@ export default function MapCanvas({
     const id = setTimeout(() => fit(), 120);
     return () => clearTimeout(id);
   }, [topInset]);
+  // Opening or hiding the two-children panel changes the free map area: refit.
+  const firstInset = useRef(true);
+  useEffect(() => {
+    if (firstInset.current) { firstInset.current = false; return; }
+    if (!autoFit || choosing || !map.current) return;
+    const id = setTimeout(() => fit(), 60);
+    return () => clearTimeout(id);
+  }, [leftInset]);
   useEffect(() => {
     lastView.current = viewTarget;
     if (!map.current || introPhase !== "ready") return;

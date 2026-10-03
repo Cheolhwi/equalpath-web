@@ -130,3 +130,32 @@
 .family-note.family-warn > svg { flex-shrink: 0; margin-top: 3px; color: var(--amber); }
 .family-step .family-late { display: inline-flex; align-items: center; gap: 4px; color: var(--amber); font-weight: 650; }
 .family-timeline li:has(.family-late) .family-dot { background: var(--amber-bg); color: var(--amber); }
+
+/* Hide / show the panel (the parent chooses; a new search opens it again). */
+.family-topbar { position: sticky; top: -16px; z-index: 2; display: flex; justify-content: flex-end; height: 0; }
+.family-collapse {
+  display: grid; place-items: center; width: 36px; height: 36px; margin: -6px -6px 0 0; border-radius: 10px;
+  color: var(--glass-muted, var(--muted)); background: transparent;
+}
+.family-collapse:hover { background: var(--glass-hover, var(--soft)); color: var(--glass-text, var(--ink)); }
+.family-panel .family-head { padding-right: 34px; }
+.family-panel > .family-status { padding-right: 34px; }
+.family-tab {
+  position: absolute; z-index: 6; left: 16px; top: var(--family-top, 300px);
+  display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 16px 0 12px; border-radius: 999px;
+  color: var(--glass-text, var(--ink)); font-size: 15px; font-weight: 600;
+  background: var(--glass-thick, var(--paper)); border: 1px solid var(--glass-edge, var(--rule));
+  -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter);
+  box-shadow: 0 0 0 1px var(--glass-rim, transparent), var(--glass-shadow, var(--map-shadow));
+  animation: family-in 200ms ease both;
+}
+.family-tab:hover { border-color: var(--accent); }
+.family-tab > svg { color: var(--accent); }
+.family-narrow { display: none; }
+@media (max-width: 760px) {
+  .family-wide { display: none; }
+  .family-narrow { display: block; }
+  .family-topbar { top: -14px; }
+  .family-tab { left: 10px; z-index: 8; }
+}
+.map-first[data-reduced="true"] .family-tab { animation: none; }

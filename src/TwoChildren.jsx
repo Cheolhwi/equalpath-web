@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowRight, Car, Check, ChevronLeft, Clock3, ClipboardList, Copy, Download, Heart, LoaderCircle, MessageCircle, Phone, TriangleAlert } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, ClipboardList, Copy, Download, Heart, LoaderCircle, MessageCircle, PanelLeftClose, PanelLeftOpen, Phone, TriangleAlert } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
 import { displayName } from "../shared/display.mjs";
 import { timeLabel } from "../shared/request.mjs";
@@ -47,9 +47,14 @@ export function familyMapItems(family) {
     for (const k of KIDS) add(o[k], k);
   } else for (const o of shownOptions(family)) { add(o.a, "a"); add(o.b, "b"); }
   const items = [...role.values()];
+  // In a plan the chosen centres get cards too, with whose care it is and when.
+  const times = (k) => (k === "ab"
+    ? (s.plan.children.a.start === s.plan.children.b.start && s.plan.children.a.end === s.plan.children.b.end
+      ? `Both children · ${s.plan.children.a.start}–${s.plan.children.a.end}` : "Both children")
+    : `${childName(k)} · ${s.plan.children[k].start}–${s.plan.children[k].end}`);
   return items.map(({ p, k }, i) => {
     const minutes = legMinutes(family.legs, "start", p.id);
-    return { ...p, familyRole: k, familyFor: forLabel(k), suggested: !plan && i < SUGGESTED_CARDS,
+    return { ...p, familyRole: k, familyFor: plan ? times(k) : forLabel(k), suggested: plan || i < SUGGESTED_CARDS,
       personalised: !plan && i < SUGGESTED_CARDS && !!p.personalisedReason,
       driving: minutes === null ? { state: "unavailable", reason: "not_loaded" } : { state: "available", minutes, traffic: false } };
   });
@@ -57,8 +62,23 @@ export function familyMapItems(family) {
 
 export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, onRetrySearch, onChecklist, onToast }) {
   const s = family.state;
+  // Opening a plan (or going back to the options) starts at the top of the panel.
+  const panel = useRef(null);
+  useEffect(() => { panel.current?.scrollTo?.({ top: 0 }); }, [s?.view, s?.selected, s?.collapsed]);
   if (!s) return null;
-  return <section className={`family-panel${s.view === "plan" ? " is-plan" : ""}`} style={{ "--family-top": `${top}px` }} aria-label="Plan for two children" aria-busy={family.busy || undefined}>
+  // The parent can tuck the panel away to see the whole map, and bring it back
+  // from a small tab in the same place.
+  if (s.collapsed) {
+    const label = family.busy ? "Finding care…" : s.view === "plan" && family.option ? "Show your plan"
+      : s.status === "ready" && family.built?.options.length ? "Show the options" : "Show details";
+    return <button className="family-tab" style={{ "--family-top": `${top}px` }} onClick={() => family.collapse(false)} aria-label={`${label} for two children`}>
+      {family.busy ? <LoaderCircle size={17} className="family-spin" aria-hidden="true" /> : <><PanelLeftOpen size={18} className="family-wide" aria-hidden="true" /><ChevronUp size={18} className="family-narrow" aria-hidden="true" /></>}
+      {label}
+    </button>;
+  }
+  return <section ref={panel} className={`family-panel${s.view === "plan" ? " is-plan" : ""}`} style={{ "--family-top": `${top}px` }} aria-label="Plan for two children" aria-busy={family.busy || undefined}>
+    <div className="family-topbar"><button className="family-collapse" onClick={() => family.collapse(true)} aria-label="Hide the panel and show the whole map" title="Hide panel">
+      <PanelLeftClose size={18} className="family-wide" aria-hidden="true" /><ChevronDown size={20} className="family-narrow" aria-hidden="true" /></button></div>
     {family.busy && <p className="family-status" role="status"><LoaderCircle size={18} className="family-spin" aria-hidden="true" />
       {s.status === "searching" ? "Finding care for both children…" : s.waitUntil ? BUSY_TEXT : "Checking drive times…"}</p>}
     {s.status === "error" && <div className="family-status family-error" role="alert">We couldn’t load centres. <button className="text-link" onClick={onRetrySearch}>Try again</button></div>}

@@ -179,7 +179,7 @@ export default function useFamily(mode) {
     const collectPlace = keep ? f?.collectPlace ?? null : null;
     const plan = familyPlanFrom(draft, collectPlace);
     setF((x) => ({ ...(keep ? x : {}), request: draft, plan, collectPlace, status: "searching", error: null, waitUntil: null, ensuring: null,
-      ...(keep ? {} : { selected: null, view: "options", showAll: false }) }));
+      ...(keep ? {} : { selected: null, view: "options", showAll: false, collapsed: false }) }));
     try {
       const [ra, rb] = await Promise.all(KIDS.map((k) => requestAPI({ action: "search", mode, request: childRequest(plan, k), page: 0, seedIds: personal?.seedIds ?? [] })));
       if (r !== seq.current) return null;
@@ -237,5 +237,6 @@ export default function useFamily(mode) {
     },
     back: () => setF((x) => ({ ...x, view: "options" })),
     showAll: () => setF((x) => ({ ...x, showAll: true })),
+    collapse: (collapsed) => setF((x) => x && { ...x, collapsed }),
   };
 }

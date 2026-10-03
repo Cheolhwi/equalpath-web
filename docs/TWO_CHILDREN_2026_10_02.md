@@ -101,6 +101,18 @@ per-origin lookups when the published Function answers `UNKNOWN_ACTION`, so the 
 working until the Function is republished. A family search is then: two searches + one
 matrix request, the same routing cost as a one-child search; opening a plan needs nothing more.
 
+### Hide the panel; the plan on the map (3 Oct)
+
+- The panel has a hide button (top right; a down arrow on phones). Hidden, it becomes one
+  pill under the search bar ("Show the options" / "Show your plan"); a new search opens it
+  again. The map refits to the space it frees (`leftInset` 0), and on phones the centre
+  cards appear in the bottom rail while the panel is hidden.
+- Opening a plan fits the map to that plan's centres and the starting point and shows a card
+  for each centre with whose care and the times ("Child 1 · 14:00–18:00", "Both children ·
+  …"); pins 01/02 follow the stop order. The panel scrolls back to the top.
+- Map fitting keeps at least 120 px for the pins (padding shrinks on small windows instead of
+  the map refusing to move), and the desktop card rail starts right of the open panel.
+
 ## Short-term only (2 Oct 2026)
 
 - The app always searches "A few hours" (`careType: "short_term"`, today's date, 5 km by
