@@ -112,6 +112,11 @@ matrix request, the same routing cost as a one-child search; opening a plan need
   …"); pins 01/02 follow the stop order. The panel scrolls back to the top.
 - Map fitting keeps at least 120 px for the pins (padding shrinks on small windows instead of
   the map refusing to move), and the desktop card rail starts right of the open panel.
+- Smooth changes: the panel slides out to the left (sinks on phones) before the map moves,
+  and slides back in from its tab. While the map moves by itself (fitting results or a plan,
+  the panel opening or closing) the floating cards are hidden and appear once at their final
+  place; re-placing them on every frame made them jump, switch to the rail and fade out at old
+  spots. A pin the parent selects still keeps its card while the map centres on it.
 
 ## Short-term only (2 Oct 2026)
 

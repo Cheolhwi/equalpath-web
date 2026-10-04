@@ -65,6 +65,14 @@ export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, o
   // Opening a plan (or going back to the options) starts at the top of the panel.
   const panel = useRef(null);
   useEffect(() => { panel.current?.scrollTo?.({ top: 0 }); }, [s?.view, s?.selected, s?.collapsed]);
+  // Hiding slides the panel out first; the map then moves into the freed space.
+  const [closing, setClosing] = useState(false);
+  const hide = () => {
+    const still = panel.current?.closest(".map-first")?.dataset.reduced === "true" || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (still) { family.collapse(true); return; }
+    setClosing(true);
+    setTimeout(() => { family.collapse(true); setClosing(false); }, 180);
+  };
   if (!s) return null;
   // The parent can tuck the panel away to see the whole map, and bring it back
   // from a small tab in the same place.
@@ -76,8 +84,8 @@ export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, o
       {label}
     </button>;
   }
-  return <section ref={panel} className={`family-panel${s.view === "plan" ? " is-plan" : ""}`} style={{ "--family-top": `${top}px` }} aria-label="Plan for two children" aria-busy={family.busy || undefined}>
-    <div className="family-topbar"><button className="family-collapse" onClick={() => family.collapse(true)} aria-label="Hide the panel and show the whole map" title="Hide panel">
+  return <section ref={panel} className={`family-panel${s.view === "plan" ? " is-plan" : ""}${closing ? " is-closing" : ""}`} style={{ "--family-top": `${top}px` }} aria-label="Plan for two children" aria-busy={family.busy || undefined}>
+    <div className="family-topbar"><button className="family-collapse" onClick={hide} disabled={closing} aria-label="Hide the panel and show the whole map" title="Hide panel">
       <PanelLeftClose size={18} className="family-wide" aria-hidden="true" /><ChevronDown size={20} className="family-narrow" aria-hidden="true" /></button></div>
     {family.busy && <p className="family-status" role="status"><LoaderCircle size={18} className="family-spin" aria-hidden="true" />
       {s.status === "searching" ? "Finding care for both children…" : s.waitUntil ? BUSY_TEXT : "Checking drive times…"}</p>}

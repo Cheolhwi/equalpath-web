@@ -30,7 +30,7 @@ function Card({ p, highlights, index, selected, saved, compared, onOpen, onClose
   </>;
 }
 
-export default function MapCards({ entries: rawEntries, pins, width, height, compact, topInset = 148, leftInset = 0, hasCompare, reduced, onOpen, onClose, savedIds = [], compareIds = [], onSave, onCompare }) {
+export default function MapCards({ entries: rawEntries, pins, width, height, compact, topInset = 148, leftInset = 0, quiet = false, hasCompare, reduced, onOpen, onClose, savedIds = [], compareIds = [], onSave, onCompare }) {
   const entries = useMemo(() => rawEntries.map(entry => ({ ...entry,
     highlights: entry.p.suggested || entry.p.personalised ? [] : centreHighlights(entry.p),
   })), [rawEntries]);
@@ -70,8 +70,9 @@ export default function MapCards({ entries: rawEntries, pins, width, height, com
   // Exiting cards retain their actual last rectangles, not a fresh layout of
   // the shrinking group. They fade where the user last saw them.
   useLayoutEffect(() => {
-    setLeaving(reduced || rail ? [] : retained.current.filter(old => !entries.some(e => e.id === old.point.id)));
-  }, [key, reduced, rail]);
+    // No fade-out at old positions while the map is moving by itself.
+    setLeaving(reduced || rail || quiet ? [] : retained.current.filter(old => !entries.some(e => e.id === old.point.id)));
+  }, [key, reduced, rail, quiet]);
   useLayoutEffect(() => { retained.current = positioned; });
   return <div className="map-card-layer" aria-label="Centres on the map">
     {/* Anchor the scrolling rail to the viewport bottom. The toolbar's measured

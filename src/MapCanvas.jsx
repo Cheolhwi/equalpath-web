@@ -56,6 +56,15 @@ export default function MapCanvas({
       cameraReduced: reduced || introReduced,
     }),
     [dismissedCards, setDismissedCards] = useState([]),
+    // While the map moves by itself (fitting results, a plan, a panel that opens
+    // or closes) the floating cards are hidden and come back once, in place.
+    // Re-placing them on every frame made them jump, switch to the rail and back,
+    // and fade out at stale positions.
+    [autoMove, setAutoMove] = useState(false),
+    autoMoveTimer = useRef(null),
+    // The left inset the cards were last placed for; a new one hides them in
+    // the same frame, before the refit starts.
+    [placedInset, setPlacedInset] = useState(leftInset),
     [retry, setRetry] = useState(0),
     [status, setStatus] = useState("loading"),
     [camera, setCamera] = useState({ pitch: 0, bearing: 0, zoom: viewTarget.zoom, ...viewTarget.center });
@@ -212,9 +221,16 @@ export default function MapCanvas({
           lng: m.getCenter().lng,
         });
     });
-    m.on("movestart", (e) => { if (e.originalEvent) { userMove.current = true; lastFitAt.current = 0; } });
+    m.on("movestart", (e) => {
+      if (e.originalEvent) { userMove.current = true; lastFitAt.current = 0; return; }
+      if (!alive || e.keepCards) return;
+      setAutoMove(true);
+      clearTimeout(autoMoveTimer.current);
+      autoMoveTimer.current = setTimeout(() => alive && setAutoMove(false), 2500);
+    });
     m.on("zoomend", () => latest.current.declutter?.());
     m.on("moveend", () => {
+      if (alive) { clearTimeout(autoMoveTimer.current); setAutoMove(false); setPlacedInset(latest.current.leftInset); }
       if (latest.current.introPhase !== "ready" || latest.current.choosing) { userMove.current = false; return; }
       const center = m.getCenter();
       lastView.current = { center: { lat: center.lat, lng: center.lng }, zoom: m.getZoom() };
@@ -347,10 +363,15 @@ export default function MapCanvas({
   const firstInset = useRef(true);
   useEffect(() => {
     if (firstInset.current) { firstInset.current = false; return; }
-    if (!autoFit || choosing || !map.current) return;
+    if (!autoFit || choosing || !map.current) { setPlacedInset(leftInset); return; }
+    // Hide the cards straight away: the free area has already changed.
+    setAutoMove(true);
+    clearTimeout(autoMoveTimer.current);
+    autoMoveTimer.current = setTimeout(() => { setAutoMove(false); setPlacedInset(leftInset); }, 1200);
     const id = setTimeout(() => fit(), 60);
     return () => clearTimeout(id);
   }, [leftInset]);
+  useEffect(() => () => clearTimeout(autoMoveTimer.current), []);
   useEffect(() => {
     lastView.current = viewTarget;
     if (!map.current || introPhase !== "ready") return;
@@ -400,13 +421,15 @@ export default function MapCanvas({
   useEffect(() => {
     const p = items.find(p => p.id === selected);
     if (!p?.location || !map.current || choosing) return;
-    map.current.easeTo({ center: [p.location.lng, p.location.lat], padding: { top: 130, bottom: 40, left: 0, right: 0 }, duration: reduced ? 0 : 420 });
+    // The chosen centre's card follows its pin during this short move.
+    map.current.easeTo({ center: [p.location.lng, p.location.lat], padding: { top: 130, bottom: 40, left: 0, right: 0 }, duration: reduced ? 0 : 420 }, { keepCards: true });
   }, [selected]);
   const m = map.current;
   const width = host.current?.clientWidth ?? 0, height = host.current?.clientHeight ?? 0;
   const picked = items.find(p => p.id === selected);
   const cardItems = picked ? [picked] : showSuggestions ? items.filter(p => p.suggested).slice(0, 3).filter(p => !dismissedCards.includes(p.id)) : [];
-  const entries = m && width && cardsVisible && !choosing ? cardItems.filter(p => p.location).map(p => {
+  const settling = autoMove || placedInset !== leftInset;
+  const entries = m && width && cardsVisible && !choosing && !settling ? cardItems.filter(p => p.location).map(p => {
     const point = m.project([p.location.lng, p.location.lat]);
     const [dx, dy] = displayOffsets.current.get(p.id) ?? pinOffsets.get(p.id) ?? [0, 0];
     return { x: point.x + dx, y: point.y + dy, id: p.id, p, selected: p.id === selected, index: items.findIndex(item => item.id === p.id) + 1 };
@@ -444,7 +467,7 @@ export default function MapCanvas({
           }}>Use this location</button></div>
         </div>
       </> : null}
-      <MapCards entries={entries} pins={m ? items.filter(p => p.location).map(p => { const point = m.project([p.location.lng, p.location.lat]); const [dx, dy] = displayOffsets.current.get(p.id) ?? pinOffsets.get(p.id) ?? [0, 0]; return { x: point.x + dx, y: point.y + dy }; }) : []} width={width} height={height} compact={width < 600} topInset={topInset} leftInset={leftInset} hasCompare={hasCompare} reduced={reduced || introReduced} onOpen={onOpen} onSave={onSave} onCompare={onCompare} savedIds={savedIds} compareIds={compareIds} onClose={id => selected ? onClosePreview() : setDismissedCards(ids => [...ids, id])} />
+      <MapCards entries={entries} pins={m ? items.filter(p => p.location).map(p => { const point = m.project([p.location.lng, p.location.lat]); const [dx, dy] = displayOffsets.current.get(p.id) ?? pinOffsets.get(p.id) ?? [0, 0]; return { x: point.x + dx, y: point.y + dy }; }) : []} width={width} height={height} compact={width < 600} topInset={topInset} leftInset={leftInset} quiet={settling} hasCompare={hasCompare} reduced={reduced || introReduced} onOpen={onOpen} onSave={onSave} onCompare={onCompare} savedIds={savedIds} compareIds={compareIds} onClose={id => selected ? onClosePreview() : setDismissedCards(ids => [...ids, id])} />
       <div className="map-tools">
         <button onClick={fit} aria-label="Show all results on the map">
           <LocateFixed size={19} />

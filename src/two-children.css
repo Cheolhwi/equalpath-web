@@ -10,7 +10,10 @@
   box-shadow: inset 0 1px 0 var(--glass-highlight, transparent), 0 0 0 1px var(--glass-rim, transparent), var(--glass-shadow, var(--map-shadow));
   font-size: 15px; animation: family-in 260ms cubic-bezier(.2,.7,.2,1) both;
 }
-@keyframes family-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+/* The panel slides in from (and out to) the left edge, where its tab sits. */
+@keyframes family-in { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+@keyframes family-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(-24px); } }
+.family-panel.is-closing { animation: family-out 180ms ease-in both; pointer-events: none; }
 .map-first[data-reduced="true"] .family-panel { animation: none; }
 .family-panel h3 { margin: 0; font-size: 20px; line-height: 1.25; letter-spacing: -.01em; }
 .family-head { display: grid; gap: 4px; margin-bottom: 12px; }
@@ -140,6 +143,7 @@
 .family-collapse:hover { background: var(--glass-hover, var(--soft)); color: var(--glass-text, var(--ink)); }
 .family-panel .family-head { padding-right: 34px; }
 .family-panel > .family-status { padding-right: 34px; }
+@keyframes family-tab-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
 .family-tab {
   position: absolute; z-index: 6; left: 16px; top: var(--family-top, 300px);
   display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 16px 0 12px; border-radius: 999px;
@@ -147,12 +151,17 @@
   background: var(--glass-thick, var(--paper)); border: 1px solid var(--glass-edge, var(--rule));
   -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter);
   box-shadow: 0 0 0 1px var(--glass-rim, transparent), var(--glass-shadow, var(--map-shadow));
-  animation: family-in 200ms ease both;
+  animation: family-tab-in 200ms ease both;
 }
 .family-tab:hover { border-color: var(--accent); }
 .family-tab > svg { color: var(--accent); }
 .family-narrow { display: none; }
 @media (max-width: 760px) {
+  /* Phones: the sheet rises from (and sinks to) the bottom edge. */
+  @keyframes family-in-sheet { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
+  @keyframes family-out-sheet { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(32px); } }
+  .family-panel { animation-name: family-in-sheet; }
+  .family-panel.is-closing { animation-name: family-out-sheet; }
   .family-wide { display: none; }
   .family-narrow { display: block; }
   .family-topbar { top: -14px; }
