@@ -222,7 +222,15 @@ export default function MapCanvas({
         });
     });
     m.on("movestart", (e) => {
-      if (e.originalEvent) { userMove.current = true; lastFitAt.current = 0; return; }
+      if (e.originalEvent) {
+        userMove.current = true;
+        lastFitAt.current = 0;
+        // Keep cards out of the per-frame layout while dragging, including
+        // inertial movement after release. Only moveend restores them.
+        clearTimeout(autoMoveTimer.current);
+        setAutoMove(true);
+        return;
+      }
       if (!alive || e.keepCards) return;
       setAutoMove(true);
       clearTimeout(autoMoveTimer.current);
