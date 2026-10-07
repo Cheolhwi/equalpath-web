@@ -154,7 +154,10 @@ export default function TimeInput({ id, label, pickerLabel = label, value, onCha
       onClick={() => open ? dismiss.current() : show()}><Icon size={21} aria-hidden="true" /><span><small>{shortLabel}{pending && <Pencil size={11} aria-hidden="true" />}</small><strong>{value || "Set time"}</strong></span></button> : variant === "button" ? <button ref={trigger} type="button" className="time-value-button"
       aria-label={`Change ${label.toLowerCase()} time: ${value || "not set"}`} aria-describedby={describedBy}
       aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? popupId : undefined}
-      onClick={() => open ? dismiss.current() : show()}><strong>{value || "Set time"}</strong><Pencil size={15} aria-hidden="true" /></button> : <>
+      onClick={() => open ? dismiss.current() : show()}><strong>{value || "Set time"}</strong><Pencil size={15} aria-hidden="true" /></button> : variant === "box" ? <button id={inputId} ref={trigger} type="button"
+      className={`time-box${value ? "" : " empty"}`} aria-label={`${label}: ${value || "not set"}`} aria-invalid={invalid || undefined} aria-describedby={describedBy}
+      aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? popupId : undefined}
+      onClick={() => open ? dismiss.current() : show()}><span>{value || "--:--"}</span><Clock3 size={17} aria-hidden="true" /></button> : <>
     <input id={inputId} type="text" inputMode="numeric" autoComplete="off" maxLength={5}
       placeholder="--:--" aria-label={`${shortLabel ? `${shortLabel}: ` : ""}${label}`} aria-invalid={invalid || undefined} aria-describedby={describedBy}
       value={value} onChange={(event) => onChange(event.target.value)}

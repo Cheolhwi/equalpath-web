@@ -26,8 +26,9 @@ export async function revealPreferences(page) {
     await preferences.locator(":scope > summary").click();
 }
 
-export async function chooseAge(page, age = "4-6") {
-  const group = age === "1-3" || (Number(age) > 0 && Number(age) < 4) ? "1–3 years" : "4–6 years";
+export async function chooseAge(page, age = "4") {
+  const year = age === "1-3" ? "2" : age === "4-6" ? "4" : String(age);
+  const group = year === "0" ? "Under 1 year" : `${year} ${year === "1" ? "year" : "years"}`;
   if (!await page.getByRole('radio', { name:group, exact:true }).isVisible()) await openSearch(page);
   await page.getByRole("radio", { name: group, exact: true }).check();
 }

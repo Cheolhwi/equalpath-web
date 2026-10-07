@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { requestAPI } from "./api.js";
-import { minutes } from "../shared/request.mjs";
+import { minutes, isChildAge } from "../shared/request.mjs";
 import { KIDS, childRequest, buildOptions, legKey, legMinutes, leavePlan, emptyPlan, startIds, nextLegCall, legsNeeded, hasConflict } from "../shared/two-child.mjs";
 import { personaliseSearchItems } from "../shared/recommendations.mjs";
 
@@ -21,7 +21,7 @@ export function familyPlanFrom(d, collectPlace = null) {
 // Child 1 uses the existing search-form checks; these cover Child 2.
 export function secondChildErrors(d) {
   const s = secondChild(d), e = {};
-  if (!["1-3", "4-6"].includes(s.age)) e.secondAge = "Choose Child 2’s age.";
+  if (!isChildAge(s.age)) e.secondAge = "Choose Child 2’s age.";
   if (!s.same) {
     const a = minutes(s.deadline), b = minutes(s.end);
     if (a === null || b === null) e.second = "Choose Child 2’s start and end times.";

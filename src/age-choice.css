@@ -1,0 +1,18 @@
+/* How old is the child, in whole years (6 October 2026): one row of short
+   segments, the first one wider for "Under 1". */
+.age-choice.age-years > div { display: grid; grid-template-columns: minmax(72px, 2fr) repeat(6, minmax(0, 1fr)); gap: 4px; }
+.age-choice.age-years label { position: relative; justify-content: center; min-height: 44px; padding: 0 2px; border: 1px solid var(--rule); border-radius: 10px; background: var(--paper); font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer; }
+.age-choice.age-years input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.age-choice.age-years label.selected { border: 1px solid var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--soft); font-weight: 650; }
+.age-choice.age-years label:hover { background: var(--soft); }
+.age-choice.age-years legend small { font-weight: 400; color: var(--muted); }
+
+.map-first .dock-popover .age-choice.age-years > div { grid-template-columns: minmax(72px, 2fr) repeat(6, minmax(0, 1fr)); gap: 4px; }
+.map-first .dock-popover .age-choice.age-years label { min-height: 44px; padding: 0 2px; justify-content: center; border-color: var(--rule); border-radius: 10px; }
+.map-first .dock-popover .age-choice.age-years label.selected { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.map-first .dock-popover .age-choice.age-years label.selected::after { content: none; }
+.map-first .dock-popover.dock-popover-age:has(.age-years) { width: min(340px, calc(100vw - 24px)); padding: 12px; }
+
+/* Two children: the child's name sits above their row. */
+.kids-ages { display: grid; gap: 10px; }
+.map-first .dock-popover .kids-ages .age-choice legend { position: static; width: auto; height: auto; margin: 0 0 5px; padding: 0; overflow: visible; clip-path: none; white-space: normal; font-size: 13px; font-weight: 600; color: var(--ink); }

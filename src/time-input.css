@@ -17,3 +17,11 @@
 .time-picker footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; border-top: 1px solid var(--rule); padding-top: 9px; margin-top: 10px; }
 .time-picker footer button { padding: 6px 12px; font-size: 14px; min-height: 44px; }
 .time-picker footer .time-picker-done { display: flex; align-items: center; gap: 10px; margin-left: auto; background: var(--ink); color: var(--paper); }
+
+/* A box that looks like a field but opens the picker when tapped anywhere
+   (Child 2's own times in the map dock, 7 Oct 2026). */
+.time-box { width: 100%; height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 12px; border: 1px solid var(--rule); border-radius: 10px; background: var(--paper); color: var(--ink); font-size: 16px; font-variant-numeric: tabular-nums; cursor: pointer; }
+.time-box.empty span { color: var(--muted); }
+.time-box:hover { background: var(--soft); }
+.time-box[aria-expanded="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.time-box[aria-invalid="true"] { border-color: var(--red); }

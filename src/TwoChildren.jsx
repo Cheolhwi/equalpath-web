@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, ClipboardList, Copy, Download, Heart, LoaderCircle, MessageCircle, PanelLeftClose, PanelLeftOpen, Phone, TriangleAlert } from "lucide-react";
+import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, ClipboardList, Copy, Download, Heart, LoaderCircle, MessageCircle, PanelLeftClose, PanelLeftOpen, Phone, Plus, TriangleAlert, Wallet } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
 import { displayName } from "../shared/display.mjs";
 import { timeLabel } from "../shared/request.mjs";
@@ -7,7 +7,16 @@ import { visitDate } from "../shared/enquiry-view.mjs";
 import {
   KIDS, childName, childWithAge, openChecks, legMinutes, planSteps, sameCentreMessage, childMessage, familyPlanText,
 } from "../shared/two-child.mjs";
+import { familyComparisonFee, childFeeShort } from "../shared/family-comparison.mjs";
 import "./two-children.css";
+
+// Estimated fee for an option: both children's totals for their own times,
+// or what is known per child when one total is missing.
+export function optionFee(o) {
+  const total = familyComparisonFee({ a: o.a, b: o.b });
+  if (total !== "Ask the centre") return `${total} for both`;
+  return KIDS.some((k) => o[k]?.cost?.available) ? KIDS.map((k) => `${childName(k)} ${childFeeShort(o[k])}`).join(" · ") : "Ask the centre";
+}
 
 // Epic 8 inside the main map: suggested options for two children, then a
 // plain "leave by" plan. Uses the map-card glass material and pin numbers.
@@ -60,7 +69,7 @@ export function familyMapItems(family) {
   });
 }
 
-export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, onRetrySearch, onChecklist, onToast }) {
+export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, onRetrySearch, onChecklist, onToast, compareIds = [], onCompare }) {
   const s = family.state;
   // Opening a plan (or going back to the options) starts at the top of the panel.
   const panel = useRef(null);
@@ -92,11 +101,11 @@ export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, o
     {s.status === "error" && <div className="family-status family-error" role="alert">We couldn’t load centres. <button className="text-link" onClick={onRetrySearch}>Try again</button></div>}
     {s.status === "ready" && (s.view === "plan" && family.option
       ? <Plan family={family} mode={mode} onFix={onFix} onChecklist={onChecklist} onToast={onToast} />
-      : <Options family={family} onWider={onWider} />)}
+      : <Options family={family} onWider={onWider} compareIds={compareIds} onCompare={onCompare} />)}
   </section>;
 }
 
-function Options({ family, onWider }) {
+function Options({ family, onWider, compareIds, onCompare }) {
   const { built, state: s } = family, plan = s.plan, options = shownOptions(family);
   const pins = new Map(familyMapItems(family).map((p, i) => [p.id, i + 1]));
   const who = built.missing.length > 1 ? "either child" : childName(built.missing[0]);
@@ -112,7 +121,7 @@ function Options({ family, onWider }) {
     </header>
     {options.some((o) => o.dropOff === null) && <p className="family-note">Some drive times didn’t load. <button className="text-link" onClick={family.retry}>Try again</button></p>}
     <ol className="family-options">
-      {options.map((o, i) => <li key={o.id}><Option o={o} index={i + 1} pins={pins} lp={family.plans.get(o.id)} onSee={() => family.select(o.id)} /></li>)}
+      {options.map((o, i) => <li key={o.id}><Option o={o} index={i + 1} pins={pins} lp={family.plans.get(o.id)} onSee={() => family.select(o.id)} compareIds={compareIds} onCompare={onCompare} /></li>)}
     </ol>
     {!s.showAll && built.options.length > SHOWN && <button className="family-more" onClick={family.showAll}>Show {built.options.length - SHOWN} more options</button>}
     <p className="family-note">A match isn’t a booking. Call each centre to confirm a place.</p>
@@ -120,7 +129,7 @@ function Options({ family, onWider }) {
 }
 
 const Pin = ({ n }) => n ? <span className="map-card-number family-pin" aria-label={`Map point ${n}`}>{String(n).padStart(2, "0")}</span> : null;
-function Option({ o, index, pins, lp, onSee }) {
+function Option({ o, index, pins, lp, onSee, compareIds = [], onCompare }) {
   const same = o.kind === "same", d = lp?.dropoff;
   const ask = [...new Set(KIDS.flatMap((k) => openChecks(o[k]).map((c) => c.label.toLowerCase())))];
   return <article className="family-option" aria-label={`Option ${index}`}>
@@ -132,9 +141,15 @@ function Option({ o, index, pins, lp, onSee }) {
       {d?.state === "works" ? <p className="family-leave"><Clock3 size={15} aria-hidden="true" />Leave by <strong>{timeLabel(d.best.leaveBy)}</strong></p>
         : d && d.state !== "unknown" ? <p className="family-leave warn"><TriangleAlert size={15} aria-hidden="true" />Times need a small change</p>
           : <p className="family-leave muted">See the plan to check when to leave</p>}
+      <p className="family-meta"><Wallet size={15} aria-hidden="true" />Fee: {optionFee(o)}</p>
       <p className={`family-fit${o.status === "supported" ? " ok" : ""}`}>{o.status === "supported" ? <><Check size={14} aria-hidden="true" />Listed details fit both</> : `Ask the centre about: ${ask.join(", ")}`}</p>
     </div>
-    <button className="family-primary" onClick={onSee} aria-label={`See plan ${index}`}>See plan<ArrowRight size={17} aria-hidden="true" /></button>
+    <div className="family-option-actions">
+      {onCompare && (() => { const ids = [...new Set([o.a.id, o.b.id])], added = ids.every((id) => compareIds.includes(id));
+        return <button className="family-secondary family-option-compare" aria-pressed={added} onClick={() => onCompare(ids)} aria-label={`${added ? "Remove" : "Add"} option ${index} ${added ? "from" : "to"} compare`}>
+          {added ? <Check size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}{added ? "Added" : "Compare"}</button>; })()}
+      <button className="family-primary" onClick={onSee} aria-label={`See plan ${index}`}>See plan<ArrowRight size={17} aria-hidden="true" /></button>
+    </div>
   </article>;
 }
 
@@ -168,6 +183,7 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
       <button className="family-back" onClick={family.back}><ChevronLeft size={18} aria-hidden="true" />All options</button>
       <h3>Your plan</h3>
       <p>{visitDate(plan.date)} · {o.kind === "same" ? `both at ${name(o.a)}` : `${name(o.a)} and ${name(o.b)}`}</p>
+      <p className="family-meta"><Wallet size={15} aria-hidden="true" />Fee: {optionFee(o)}</p>
     </header>
     {checking && <p className="family-status" role="status"><LoaderCircle size={18} className="family-spin" aria-hidden="true" />
       {s.waitUntil ? BUSY_TEXT : o.kind === "same" ? "Checking the drive time…" : "Checking the drive between the two centres…"}</p>}

@@ -2,7 +2,7 @@
 // Pure planning helpers shared by the Two children window and its tests.
 // Children are only "Child A" and "Child B" with an age range: no names,
 // birth dates or profiles. Nothing here stores or sends anything.
-import { minutes, timeLabel } from "./request.mjs";
+import { minutes, timeLabel, isChildAge } from "./request.mjs";
 import { childAge, visitDate } from "./enquiry-view.mjs";
 import { contactQuestions } from "./contact-message.mjs";
 import { hasContact } from "./conditions.mjs";
@@ -41,7 +41,7 @@ export function planErrors(plan) {
     if (s === null) e[`${k}.start`] = `${childName(k)}: choose a start time.`;
     if (t === null) e[`${k}.end`] = `${childName(k)}: choose an end time.`;
     else if (s !== null && t <= s) e[`${k}.end`] = `${childName(k)}: choose an end time after the start time, on the same day.`;
-    if (!["", "1-3", "4-6"].includes(c.age)) e[`${k}.age`] = `${childName(k)}: choose an age range.`;
+    if (c.age !== "" && !isChildAge(c.age)) e[`${k}.age`] = `${childName(k)}: choose an age.`;
   }
   return e;
 }

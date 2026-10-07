@@ -4,7 +4,7 @@ import PlaceInput from "./PlaceInput.jsx";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import TimeInput from "./TimeInput.jsx";
 import SearchActions from "./SearchActions.jsx";
-import { isShortCare, searchRadius, MAX_SEARCH_RADIUS_KM, minutes, timeLabel, todayKL } from "../shared/request.mjs";
+import { isShortCare, searchRadius, MAX_SEARCH_RADIUS_KM, minutes, timeLabel, todayKL, ageShort } from "../shared/request.mjs";
 
 // A sensible first position for an empty time picker: a normal morning start
 // on a future date, and a few hours after the chosen start for collection.
@@ -16,19 +16,10 @@ const longDate = date => new Intl.DateTimeFormat("en-GB", { weekday: "long", day
 const addDays = (date, days) => new Date(Date.parse(`${date}T12:00:00Z`) + days * 864e5).toISOString().slice(0, 10);
 const TRANSPORT = [["self", "I’ll bring my child", "I’ll bring"], ["institution", "The centre picks my child up", "Centre pickup"], ["", "Not sure yet", "Not sure"]];
 const transportShort = value => TRANSPORT.find(([key]) => key === (value ?? ""))?.[2] ?? "Not sure";
-const ageShort = value => value ? value.replace("-", "–") : "?";
-// Epic 8: who needs care. Child 1 keeps the existing age and time fields.
-function AgeButtons({ id, name, who, value, onChange, error }) {
-  return <fieldset id={id} tabIndex={id ? -1 : undefined} className="age-choice compact-age" aria-label={`${who}’s age`} aria-invalid={!!error || undefined}>
-    <legend className="sr-only">{who}’s age</legend>
-    <div>{[["1-3", "1–3 years"], ["4-6", "4–6 years"]].map(([age, label]) =>
-      <label key={age} className={value === age ? "selected" : ""}>
-        <input type="radio" name={name} value={age} aria-label={`${who}: ${label}`} checked={value === age} onChange={() => onChange(age)} />
-        <span>{label}</span>
-      </label>)}</div>
-    {error && <small className="field-error">{error}</small>}
-  </fieldset>;
-}
+// The age chip: "1 · 4 yrs", "1 · under 1", "2 · 2 & 5 yrs", "2 · ? & ? yrs".
+const yrs = age => !age ? "age ?" : age === "0" ? "under 1" : `${ageShort(age)} ${age === "1" ? "yr" : "yrs"}`;
+const agesChip = (a, b) => b === undefined ? `1 · ${yrs(a)}`
+  : `2 · ${[a, b].map(x => x === "0" ? "under 1" : x ? ageShort(x) : "?").join(" & ")} yrs`;
 export default function MapSearchDock({ draft, setField, errors, onSearch, busy, results, dirty, mode, active, queryReset, onQueryChange, onMap, submitRef, focusRequest, onHeight, collapsed, onCollapsedChange, notice, failure, onRetry, addressStatus, onRetryAddress }) {
   const root = useRef(null), lastTrigger = useRef(null), options = useRef(null), pendingFocus = useRef(null);
   const summary = useRef(null);
@@ -135,8 +126,8 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
       <div className="dock-filter-panel">
       <div className="dock-options" data-tour="care-times">
         {short && chip("date", CalendarDays, "Date", shortDate(draft.date), errors.date)}
-        {two ? chip("age", UsersRound, "Children", `2 · ${ageShort(draft.age)}, ${ageShort(second.age)}`, errors.age || errors.secondAge || errors.second)
-          : chip("age", UsersRound, "Children", `1 · ${ageShort(draft.age)}`, errors.age)}
+        {two ? chip("age", UsersRound, "Children", agesChip(draft.age, second.age), errors.age || errors.secondAge || errors.second)
+          : chip("age", UsersRound, "Children", agesChip(draft.age), errors.age)}
         {short && <>
           <TimeInput variant="chip" icon={MapPin} shortLabel="Start" suggest={draft.date && draft.date !== todayKL() ? "09:00" : undefined} pending={changed("deadline")} id="deadline" label="When does care start?" pickerLabel="Start" value={draft.deadline} onChange={v => setField("deadline", v)} invalid={!!errors.deadline} describedBy={errors.deadline ? "deadline-error" : changed("deadline") ? "search-apply-status" : undefined} onOpen={() => setPart(null)} />
           <TimeInput variant="chip" icon={Users} shortLabel="End" suggest={laterBy(draft.deadline, 3) ?? (draft.date && draft.date !== todayKL() ? "12:00" : undefined)} pending={changed("end")} id="care-end" label="When does care end?" pickerLabel="End" value={draft.end} onChange={v => setField("end", v)} invalid={!!errors.end} describedBy={errors.end ? "care-end-error" : changed("end") ? "search-apply-status" : undefined} onOpen={() => setPart(null)} />
@@ -158,17 +149,18 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
           {TRANSPORT.map(([key, label]) => <label key={key || "unsure"} className={(draft.transport ?? "") === key ? "selected" : ""}>
             <input type="radio" name="dock-transport" value={key} aria-label={label} checked={(draft.transport ?? "") === key} onChange={() => { setField("transport", key); closeOptions(); }} /><span>{label}</span></label>)}
         </div></fieldset>}
-        {part === "age" && !short && <AgeRangeChoice value={draft.age} onChange={v => { setField("age", v); closeOptions(); }} error={errors.age} />}
+        {part === "age" && !short && <div className="kids-choice"><h3>How old is your child?</h3><AgeRangeChoice value={draft.age} onChange={v => { setField("age", v); closeOptions(); }} error={errors.age} /></div>}
         {part === "age" && short && <div className="kids-choice">
           <fieldset className="care-type-choice kids-count"><legend className="sr-only">How many children?</legend><div>
             {[[1, "1 child"], [2, "2 children"]].map(([n, label]) => <label key={n} className={(two ? 2 : 1) === n ? "selected" : ""}>
               <input type="radio" name="dock-kids" value={n} aria-label={label} checked={(two ? 2 : 1) === n} onChange={() => setField("kids", n)} /><span>{label}</span></label>)}
           </div></fieldset>
-          {!two ? <><h3>Age</h3><AgeButtons id="age" name="dock-age-1" who="Your child" value={draft.age} onChange={v => { setField("age", v); closeOptions(); }} error={errors.age} /></> : <>
-            <h3>Child 1’s age</h3>
-            <AgeButtons id="age" name="dock-age-1" who="Child 1" value={draft.age} onChange={v => setField("age", v)} error={errors.age} />
-            <h3>Child 2’s age</h3>
-            <AgeButtons name="dock-age-2" who="Child 2" value={second.age} onChange={v => setSecond({ age: v })} error={errors.secondAge} />
+          {!two ? <><h3>How old is your child?</h3><AgeRangeChoice who="Your child" value={draft.age} onChange={v => { setField("age", v); closeOptions(); }} error={errors.age} /></> : <>
+            <h3>How old are they?</h3>
+            <div className="kids-ages">
+              <AgeRangeChoice who="Child 1" value={draft.age} onChange={v => setField("age", v)} error={errors.age} />
+              <AgeRangeChoice id="" who="Child 2" value={second.age} onChange={v => setSecond({ age: v })} error={errors.secondAge} />
+            </div>
             <h3>Child 2’s times</h3>
             <fieldset className="care-type-choice"><legend className="sr-only">Child 2’s times</legend><div>
               {[[true, `Same as Child 1${draft.deadline && draft.end ? ` (${draft.deadline}–${draft.end})` : ""}`], [false, "Different times"]].map(([same, label]) =>
@@ -176,8 +168,8 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
                   <input type="radio" name="dock-second-times" checked={second.same === same} aria-label={label} onChange={() => setSecond({ same })} /><span>{label}</span></label>)}
             </div></fieldset>
             {!second.same && <div className="field-pair">
-              <div className="field"><label htmlFor="second-start">Start</label><TimeInput id="second-start" label="Child 2 start" pickerLabel="Start" value={second.deadline} suggest={draft.deadline || "09:00"} invalid={!!errors.second} onChange={v => setSecond({ deadline: v })} /></div>
-              <div className="field"><label htmlFor="second-end">End</label><TimeInput id="second-end" label="Child 2 end" pickerLabel="End" value={second.end} suggest={draft.end || laterBy(second.deadline, 3) || "12:00"} invalid={!!errors.second} onChange={v => setSecond({ end: v })} /></div>
+              <div className="field"><label htmlFor="second-start">Start</label><TimeInput variant="box" id="second-start" label="Child 2 start" pickerLabel="Start" value={second.deadline} suggest={draft.deadline || "09:00"} invalid={!!errors.second} onChange={v => setSecond({ deadline: v })} /></div>
+              <div className="field"><label htmlFor="second-end">End</label><TimeInput variant="box" id="second-end" label="Child 2 end" pickerLabel="End" value={second.end} suggest={draft.end || laterBy(second.deadline, 3) || "12:00"} invalid={!!errors.second} onChange={v => setSecond({ end: v })} /></div>
             </div>}
             {errors.second && <small className="field-error">{errors.second}</small>}
             <button type="button" className="primary" onClick={closeOptions}>Done</button>

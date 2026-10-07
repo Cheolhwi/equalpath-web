@@ -7,7 +7,8 @@ import {
   factDescription,
   factDates,
 } from "../shared/saved.mjs";
-import { isShortCare, requestErrors } from "../shared/request.mjs";
+import { isShortCare, requestErrors, CHILD_AGES } from "../shared/request.mjs";
+import { ageWords } from "./AgeRangeChoice.jsx";
 
 export function SaveExplanation() {
   return (
@@ -105,7 +106,7 @@ export function SavedCheckPanel({ entries, currentRequest, checking, result, onS
       <div className="saved-check-location"><Bookmark size={16} aria-hidden="true" /><span>{form.pickup.label}</span><button type="button" className="text-link" onClick={onStartSearch}>Change</button></div>
       <form className="saved-check-form" onSubmit={(event) => { event.preventDefault(); if (canCheck) onCheck(formRequest); }}>
         {short && <label className="saved-check-field"><span><CalendarDays size={16} aria-hidden="true" />Date</span><input aria-label="Date for all saved centres" type="date" value={form.date} onChange={(event) => update("date", event.target.value)} /></label>}
-        <label className="saved-check-field"><span><Users size={16} aria-hidden="true" />Child’s age</span><select aria-label="Child’s age for all saved centres" value={form.age} onChange={(event) => update("age", event.target.value)}><option value="">Choose age</option><option value="1-3">1–3 years</option><option value="4-6">4–6 years</option></select></label>
+        <label className="saved-check-field"><span><Users size={16} aria-hidden="true" />Child’s age</span><select aria-label="Child’s age for all saved centres" value={form.age} onChange={(event) => update("age", event.target.value)}><option value="">Choose age</option>{["1-3", "4-6"].includes(form.age) && <option value={form.age}>{ageWords(form.age)}</option>}{CHILD_AGES.map(([age]) => <option key={age} value={age}>{ageWords(age)}</option>)}</select></label>
         {short && <>
           <label className="saved-check-field"><span><Clock3 size={16} aria-hidden="true" />Start time</span><input aria-label="Start time for all saved centres" type="time" value={form.deadline} onChange={(event) => update("deadline", event.target.value)} /></label>
           <label className="saved-check-field"><span><Clock3 size={16} aria-hidden="true" />End time</span><input aria-label="End time for all saved centres" type="time" value={form.end} onChange={(event) => update("end", event.target.value)} /></label>

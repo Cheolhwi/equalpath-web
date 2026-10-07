@@ -387,7 +387,7 @@ export default function App({
         },
         deadline: "16:00",
         end: "18:00",
-        age: "4-6",
+        age: "4",
         transport: "institution",
       });
     return () => {
@@ -679,6 +679,13 @@ export default function App({
     setSelected(id);
     if (fromMap) setMobilePane("map");
   };
+  // Two children: an option's centres (one or two) are added or removed together.
+  const toggleCompareMany = (ids) => {
+    if (ids.every((id) => compareIds.includes(id))) { setCompareIds((x) => x.filter((v) => !ids.includes(v))); return; }
+    const missing = ids.filter((id) => !compareIds.includes(id));
+    if (compareIds.length + missing.length > 3) { notify("Compare up to three centres. Remove one to add another."); return; }
+    setCompareIds((x) => [...x, ...missing]);
+  };
   const toggleCompare = (id) => {
     if (compareIds.includes(id))
       setCompareIds((x) => x.filter((v) => v !== id));
@@ -831,7 +838,7 @@ export default function App({
     setMobilePane("map");
     setSearchFocus(null); setSearchCollapsed(step >= 3);
     if (step === 0) return;
-    const example = { ...initial(), careType: "short_term", pickup: { id: "demo-pickup", label: "KL Sentral · tutorial", lat: 3.1341, lng: 101.6865 }, date: todayKL(), deadline: "13:00", end: "18:00", age: "4-6", transport: "self" };
+    const example = { ...initial(), careType: "short_term", pickup: { id: "demo-pickup", label: "KL Sentral · tutorial", lat: 3.1341, lng: 101.6865 }, date: todayKL(), deadline: "13:00", end: "18:00", age: "4", transport: "self" };
     setDraft({ ...example, ...(step === 1 ? { deadline: "", end: "", age: "", transport: "" } : {}) });
     setMapTarget({ center: { lat: 3.139, lng: 101.6869 }, zoom: 13 });
     if (step < 3) { setResults(null); setSelected(null); setCompareIds([]); return; }
@@ -1410,6 +1417,7 @@ export default function App({
             onWider={() => { const next = { ...draft, radius: 10 }; setDraft(next); searchFamily(next); }}
             onRetrySearch={() => searchFamily(draft)}
             onChecklist={(plan) => { setFamilyPlan(plan); notify("Saved to your Checklist."); }}
+            compareIds={compareIds} onCompare={toggleCompareMany}
             onToast={notify} />
         )}
         {oneShown && (
@@ -1732,6 +1740,8 @@ export default function App({
                         children={comparison.children}
                         onRemove={removeCompare}
                         onPrepare={(p, key) => prepare(p, comparison.children[key].request, childName(key))}
+                        plan={family.state?.plan}
+                        onToast={notify}
                       /> : <Comparison
                         items={comparison.items.filter((p) =>
                           compareIds.includes(p.id),

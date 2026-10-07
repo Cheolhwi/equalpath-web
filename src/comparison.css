@@ -109,10 +109,37 @@
 }
 
 .family-compare-intro { margin: 16px 0; color: var(--muted); font-size: 14px; }
-.equalpath.map-first .family-compare table thead th { padding-bottom: 16px; }
 .family-compare th small { display: block; font-size: 12px; font-weight: 400; margin-top: 6px; }
 .family-child-checks > div { padding-top: 10px; border-top: 1px solid var(--rule); }
 .family-child-checks b { font-size: 12px; color: var(--muted); }
 .family-child-checks .compare-fact { margin-top: 4px; }
 .family-fee-note { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
 .family-child-contact { display: flex; gap: 6px; align-items: center; justify-content: center; min-height: 44px; width: 100%; }
+
+/* Two children, by topic (7 Oct 2026): total with each child's share, drive,
+   one line per child, care end, and one Contact per centre. */
+.family-fee-split { display: block; margin-top: 6px; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.family-fit-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.family-fit-lines li { display: grid; grid-template-columns: 16px auto minmax(0, 1fr); align-items: start; gap: 2px 6px; font-size: 13.5px; line-height: 1.35; }
+.family-fit-lines li > svg { margin-top: 1px; }
+.family-fit-lines li b { font-weight: 650; white-space: nowrap; }
+.family-fit-lines li.supported > svg { color: var(--green, var(--accent)); }
+.family-fit-lines li.unknown > svg, .family-fit-lines li.unknown span { color: var(--amber); }
+.family-fit-lines li.conflict > svg, .family-fit-lines li.conflict span { color: var(--red, #9a3b2c); }
+.family-care-notes { display: grid; gap: 3px; margin-top: 6px; }
+.family-care-notes small { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.family-care-notes .family-ok { color: var(--green, var(--accent)); }
+.family-care-notes .family-ask { color: var(--amber); }
+.family-care-notes .family-off { color: var(--red, #9a3b2c); }
+.family-compare-contact { margin-top: 16px; padding: 16px; border: 1px solid var(--accent); border-radius: 16px; background: var(--paper); display: grid; gap: 10px; }
+.family-compare-contact-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.family-compare-contact h3 { margin: 0; font-size: 18px; }
+.family-compare-contact > p { margin: 0; color: var(--muted); font-size: 14px; }
+.family-compare-message { margin: 0; white-space: pre-wrap; font: inherit; font-size: 13.5px; line-height: 1.55; background: var(--soft); padding: 12px; border-radius: 12px; max-height: 260px; overflow: auto; }
+.family-compare-contact > .primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border-radius: 12px; }
+.family-compare-contact-more { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.family-compare-contact-more .text-link { min-height: 36px; padding: 0; font-size: 14px; }
+/* Option cards in the two-children panel: Compare beside See plan. */
+.family-option-actions { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; }
+.family-option-compare { width: auto; padding-inline: 14px; }
+.family-option-compare[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
