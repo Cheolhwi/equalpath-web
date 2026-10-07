@@ -47,7 +47,7 @@ test("guided sample uses map controls, cards, checks, comparison and contact, th
   expect(calls.filter(b=>b.action==="search")).toEqual([expect.objectContaining({mode:"demo",request:expect.objectContaining({end:"18:00"})})]);
   await next(page);await expect(page.locator(".map-card-actions").first()).toBeVisible();
   await expect(tour(page)).toContainText("Save keeps a centre for later");
-  await next(page);await expect(page.locator(".tour-behind .condition-list")).toBeVisible();
+  await next(page);await expect(page.locator(".tour-behind .centre-search-line")).toBeVisible();
   await page.screenshot({path:`${evidence}/tour-checks.png`});
   await next(page);await expect(page.locator(".tour-behind .comparison-scroll")).toContainText("Garden Learning House");
   // Known mismatches are hidden by default, so the example compares two matching demo centres.

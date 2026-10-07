@@ -48,7 +48,7 @@ export default function MapCards({ entries: rawEntries, pins, width, height, com
   const highlightHeight = highlightCount ? (highlightCount > 1 && cardWidth < 280 ? 54 : 28) : 0;
   const cardHeight = (compact ? (shortMap ? 164 : 178) : 190) + (entries.some(e => e.p?.personalised) ? 20 : 0) + (entries.some(e => e.p?.familyFor) ? 20 : 0) + highlightHeight;
   const bottom = compact ? (hasCompare && !shortMap ? 112 : 48) : (hasCompare ? 116 : 96);
-  const options = { width: compact ? width - 60 : width, height, top: topInset, bottom, cardWidth, cardHeight, pins, left: Math.max(12, leftInset) };
+  const options = { width, height, top: topInset, bottom, cardWidth, cardHeight, pins, left: Math.max(12, leftInset) };
   // Phones keep one row of cards even after the search toolbar folds away.
   // Filling the newly freed map with three stacked cards would hide the pins.
   // Native scrolling keeps every recommendation and its full-size actions reachable.

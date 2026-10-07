@@ -9,7 +9,7 @@ const steps = [
   { title: "Date, age and times", target: ".dock-filter-panel", icon: Clock3, body: "Choose the date and your child’s age, set the start and end times, then select Find childcare." },
   { title: "Your results are on the map", target: ".mobile-search-summary, .map-centre-card:not(.leaving)", icon: Search, body: "Select a numbered pin to see a centre. The list uses the same numbers. On a phone, use Change search to edit your search." },
   { title: "Save or compare a centre", target: ".map-centre-card:not(.leaving) .map-card-actions", icon: Bookmark, body: "Save keeps a centre for later. Compare lines up to 3 centres side by side. Details shows everything we know." },
-  { title: "Check the centre’s details", target: ".condition-list", icon: CheckCircle2, body: "See fees, ages and care hours, and which details match your search. Anything we couldn’t confirm is listed to ask the centre." },
+  { title: "Read about the centre", target: ".centre-search-line", icon: CheckCircle2, body: "Details shows the centre’s fees, ages, opening hours and parent reviews. Select Add to compare to put it on your shortlist." },
   { title: "Compare your choices", target: ".comparison-scroll", icon: Scale, body: "Add 2 or 3 centres, then open Compare to read their fees and services side by side." },
   { title: "Contact the centre", target: ".enquiry-contact", icon: MessageCircle, body: "Call or message to ask if they have a place for your child. A short message is ready: untick any question you don’t need, then copy it and send it yourself." },
 ];

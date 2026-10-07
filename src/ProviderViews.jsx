@@ -407,61 +407,46 @@ function CareSchedule({ p }) {
     </dl></details>
   </section>;
 }
-export function Details({ p, request, onPrepare, onAskReview, onCompare, compared, onSave, saved, onPreparation }) {
-  const counts = p.fit.counts, fees = feeSummary(p), badge = registrationBadge(p, todayKL());
+export function Details({ p, request, onAskReview, onCompare, compared }) {
+  const counts = p.fit.counts, badge = registrationBadge(p, todayKL());
+  const fees = feeSummary(p);
   const shortCare = isShortCare(request);
   const date = shortCare ? new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(request.date + "T12:00:00+08:00")) : "Regular care";
-  const checks = [...p.fit.conditions].sort((a, b) => ({conflict:0,unknown:1,supported:2,reference:3}[a.state] - {conflict:0,unknown:1,supported:2,reference:3}[b.state]));
   const care = p.fit.conditions.find(c => c.id === "care");
-  // Pickup-service questions are optional until the parent asks the centre to pick up.
+  // Same counting as the result cards: optional pickup checks and the arrival
+  // time are not things the parent still needs to ask.
   const optionalPickup = c => c.state === "unknown" && request.transport !== "institution" && PICKUP_CHECKS.includes(c.id);
-  // Arrival time is always asked, so it is not counted (the result card does the same).
-  const askChecks = checks.filter(c => c.state === "unknown" && !optionalPickup(c) && c.id !== "transfer");
-  const pickupChecks = checks.filter(optionalPickup);
-  const matched = checks.filter(c => c.state === "supported" || c.state === "reference");
-  const renderCheck = c => <details key={c.id} className={`fit-check ${c.state}`} data-condition-id={c.id} open={c.state === "conflict" || askChecks.includes(c)}>
-    <summary><div><strong>{checkLabels[c.id] ?? c.label}</strong>{c.state === "conflict" && <span>{checkValue(c,p,request)}</span>}</div><Status state={c.state}>{c.statusLabel}</Status><ChevronDown size={15} className="disclosure-chevron" /></summary>
-    <div className="fit-check-explanation"><p>{checkReason(c, p, request)}</p><SourceDisclosure source={c.source} extra={c.id === "age" && p.age?.alternative ? <SourceLink source={p.age.alternative.source} /> : null} /></div>
-  </details>;
-  return <div className="centre-details">
+  const asks = p.fit.conditions.filter(c => c.state === "unknown" && !optionalPickup(c) && c.id !== "transfer").length;
+  const status = counts.conflict
+    ? { tone: "conflict", icon: <AlertTriangle size={16} aria-hidden="true" />, text: `${counts.conflict} ${counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match your search` }
+    : asks ? { tone: "unknown", icon: <HelpCircle size={16} aria-hidden="true" />, text: asks === 1 ? "1 thing to ask the centre" : `${asks} things to ask the centre` }
+      : { tone: "supported", icon: <CheckCircle2 size={16} aria-hidden="true" />, text: "The listed details match your search" };
+  return <div className="centre-details centre-profile">
     <div className="centre-identity"><span>{[categoryLabel(p), placeLine(p)].filter(Boolean).join(" · ")}</span><p><MapPin size={14} />{displayAddress(p.address) ?? "Exact address not listed"}</p></div>
     {p.mode === "demo" && <p className="demo-notice">Demo centre — fictional details.</p>}
-    <details className="centre-request" aria-label="Your visit">
-      <summary>Your visit · {shortCare ? `${date} · ${request.deadline}–${request.end}` : date}<ChevronDown size={16} aria-hidden="true" /></summary>
-      <p><MapPin size={13} /><span>From {request.pickup.label}</span></p>
-      {shortCare && <CareJourney request={request} centreName={displayName(p.name)} />}
-    </details>
+    <div className="centre-search-line" aria-label="Your search">
+      <div className="centre-search-text">
+        {p.familyFor
+          ? <p><strong>Two children</strong><span>{p.familyFor} · {date}</span></p>
+          : <p><strong>Your search</strong><span>{shortCare ? `${date} · ${request.deadline}–${request.end}` : date}{request.pickup?.label ? ` · from ${request.pickup.label}` : ""}</span></p>}
+        {!p.familyFor && <p className={`centre-search-status ${status.tone}`}>{status.icon}{status.text}{asks > 0 || counts.conflict ? <small>Compare shows the details and the questions to ask.</small> : null}</p>}
+      </div>
+      {onCompare && <button className={`centre-compare ${compared ? "secondary" : "primary"}`} aria-pressed={compared} onClick={onCompare}>
+        {compared ? <Check size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}{compared ? "Added to compare" : "Add to compare"}</button>}
+    </div>
     <dl className={`centre-metrics ${shortCare ? "" : "regular-metrics"}`} aria-label="Key information">
       {shortCare && <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care ends at</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>}
       <div><dt><Users size={15} />Age</dt><dd>{detailAgeLabel(p)}</dd><small>{p.age?.basis === "type_reference" ? "Age guide for this centre type" : "Listed ages"}</small></div>
-      <div><dt><Car size={15} />Drive</dt><dd>{p.driving?.state === "available" ? `About ${p.driving.minutes} min` : p.driving?.state === "loading" ? "Checking…" : "Ask the centre"}</dd><small>{p.driving?.state === "available" ? `${p.driving.distanceKm} km by road · without traffic` : p.driving?.state === "loading" ? "This takes a moment" : "Drive time not available"}</small></div>
+      <div><dt><Car size={15} />Drive</dt><dd>{p.driving?.state === "available" ? `About ${p.driving.minutes} min` : p.driving?.state === "loading" ? "Checking…" : "Ask the centre"}</dd><small>{p.driving?.state === "available" ? `${p.driving.distanceKm ? `${p.driving.distanceKm} km by road · ` : ""}without traffic` : p.driving?.state === "loading" ? "This takes a moment" : "Drive time not available"}</small></div>
       <div className="metric-fee"><dt><Wallet size={15} />Fee</dt><dd>{fees.label}</dd><small>{p.cost?.available ? `For ${request.deadline}–${request.end}` : p.careType === "short_term" ? fees.note : p.fees?.every(f=>f.verification==='area_estimate') && p.fees.length ? "Estimated from nearby centres" : "Ask what the fee includes"}</small></div>
     </dl>
-    <div className="centre-layout">
-      <section className="centre-fit centre-section" aria-label="Your care needs">
-        <div className="centre-section-heading"><h3>Before you choose</h3></div>
-        {(counts.conflict > 0 || !askChecks.length) && <div className={`fit-verdict ${counts.conflict ? "conflict" : "supported"}`}>
-          {counts.conflict ? <AlertTriangle size={19} /> : <CheckCircle2 size={19} />}
-          <div><strong>{counts.conflict ? `${counts.conflict} ${counts.conflict === 1 ? "detail doesn’t" : "details don’t"} match your search` : "The listed details match your search"}</strong>{counts.conflict > 0 && <p>Read why below before you book.</p>}</div>
-        </div>}
-        <div className="fit-checks condition-list">{checks.filter(c => c.state === "conflict").map(renderCheck)}
-          {askChecks.length > 0 && <details className="unknown-checks" open><summary><HelpCircle size={17} aria-hidden="true" />{askChecks.length === 1 ? "1 thing to ask the centre" : `${askChecks.length} things to ask the centre`}<ChevronDown size={15} aria-hidden="true" /></summary>{askChecks.map(renderCheck)}</details>}
-          <p className="fit-always"><HelpCircle size={16} aria-hidden="true" />{shortCare ? "Always ask: is there a place on your date, and what time should your child arrive?" : "Always ask: is there a place for your child?"}</p>
-          {matched.length > 0 && <details className="matched-checks"><summary><CheckCircle2 size={17} aria-hidden="true" />{matchedLabel(matched.length)}<ChevronDown size={15} aria-hidden="true" /></summary>{matched.map(renderCheck)}</details>}
-          {pickupChecks.length > 0 && <details className="matched-checks pickup-checks"><summary><Car size={17} aria-hidden="true" />If you want the centre to pick up your child<ChevronDown size={15} aria-hidden="true" /></summary>{pickupChecks.map(renderCheck)}</details>}
-        </div>
-      </section>
-      <aside className="centre-next" aria-label="Contact and next steps">
-        <div className="centre-next-card"><h3>Next step</h3><p>Ask if your child can come.</p>
-          <button className="primary" onClick={onPrepare}>Contact the centre <ArrowRight size={16} /></button>
-          <div className="centre-shortlist"><button className="secondary" aria-pressed={compared} onClick={onCompare}>{compared ? <Check size={15} /> : <Plus size={15} />}Compare</button><button className="secondary" aria-pressed={saved} onClick={onSave}><Bookmark size={15} />{saved ? "Saved centre" : "Save centre"}</button></div>
-          <details className="centre-contact"><summary>Phone & website<ChevronDown size={16} aria-hidden="true" /></summary><PublishedContacts p={p} compact />{p.sourcePage && <a className="centre-listing" href={p.sourcePage} target="_blank" rel="noreferrer">More about this centre <ArrowUpRight size={13} /></a>}</details>
-          <div className="centre-preparation"><h4>After the centre says yes</h4><button onClick={onPreparation}><ClipboardList size={15} />Get ready for childcare<ArrowRight size={14} /></button></div>
-        </div>
-      </aside>
-      <ReviewEvidence p={p} onAsk={onAskReview} />
-      <details className="centre-fees extra-details"><summary><Wallet size={18} aria-hidden="true" />Fees & extras<ChevronDown size={16} aria-hidden="true" /></summary><Costs p={p} /></details>
-      <details className="centre-hours extra-details"><summary><Clock3 size={18} aria-hidden="true" />Weekly opening hours<ChevronDown size={16} aria-hidden="true" /></summary><CareSchedule p={p} /></details>
+    <div className="centre-layout profile-layout">
+      <ReviewEvidence p={p} onAsk={onAskReview} defaultOpen askLabel="Add to my questions" />
+      <div className="centre-profile-side">
+        <details className="centre-fees extra-details" open><summary><Wallet size={18} aria-hidden="true" />Fees & extras<ChevronDown size={16} aria-hidden="true" /></summary><Costs p={p} /></details>
+        <details className="centre-hours extra-details" open><summary><Clock3 size={18} aria-hidden="true" />Opening hours<ChevronDown size={16} aria-hidden="true" /></summary><CareSchedule p={p} /></details>
+        <details className="centre-contact extra-details"><summary><Phone size={18} aria-hidden="true" />Phone & website<ChevronDown size={16} aria-hidden="true" /></summary><PublishedContacts p={p} compact />{p.sourcePage && <a className="centre-listing" href={p.sourcePage} target="_blank" rel="noreferrer">More about this centre <ArrowUpRight size={13} /></a>}</details>
+      </div>
       <details className="centre-evidence" open={badge?.state === "attention"}><summary><div><strong>Registration & sources</strong><span>{badge ? `${badge.authority} · ${badge.number}${badge.state === "attention" ? " · needs checking" : ""}` : "Where these details come from"}</span></div><ChevronDown size={17} className="disclosure-chevron" /></summary>
         <Registration p={p} />
         <div className="centre-source-group"><h4>Address & travel</h4><p>{displayAddress(p.address) ?? "Exact address not listed"}</p><SourceLink source={p.addressSource} />{p.driving?.source && <SourceLink source={p.driving.source} />}{!p.location && <p className="notice">We don’t have a map address for this centre yet.</p>}</div>

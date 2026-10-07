@@ -16,4 +16,6 @@ import "./comparison.css";
 import "./enquiry-flow.css";
 import "./recommendations.css";
 import "./journey-polish.css";
+import "./mobile-chrome.css";
+import "./centre-profile.css";
 createRoot(document.getElementById("root")).render(<Experience />);

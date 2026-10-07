@@ -107,3 +107,12 @@
   .equalpath .compare-tray-count { font-size: 13px; gap: 4px; }
   .equalpath .compare-tray .compare-tray-open { padding-inline: 14px; }
 }
+
+.family-compare-intro { margin: 16px 0; color: var(--muted); font-size: 14px; }
+.equalpath.map-first .family-compare table thead th { padding-bottom: 16px; }
+.family-compare th small { display: block; font-size: 12px; font-weight: 400; margin-top: 6px; }
+.family-child-checks > div { padding-top: 10px; border-top: 1px solid var(--rule); }
+.family-child-checks b { font-size: 12px; color: var(--muted); }
+.family-child-checks .compare-fact { margin-top: 4px; }
+.family-fee-note { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+.family-child-contact { display: flex; gap: 6px; align-items: center; justify-content: center; min-height: 44px; width: 100%; }

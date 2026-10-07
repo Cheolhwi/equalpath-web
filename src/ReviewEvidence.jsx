@@ -21,10 +21,10 @@ export function ReviewQuote({ review, topic }) {
     <blockquote>{quote}</blockquote>
   </article>;
 }
-export default function ReviewEvidence({ p, onAsk }) {
+export default function ReviewEvidence({ p, onAsk, defaultOpen = false, askLabel = "Ask the centre about this" }) {
   const [topic,setTopic]=useState('caring_teachers');
   const [expanded,setExpanded]=useState(false);
-  const [opened,setOpened]=useState(false);
+  const [opened,setOpened]=useState(defaultOpen);
   const [loaded,setLoaded]=useState(null);
   const [failed,setFailed]=useState(false);
   const [retry,setRetry]=useState(0);
@@ -40,7 +40,7 @@ export default function ReviewEvidence({ p, onAsk }) {
       .catch(()=>{if(current)setFailed(true);});
     return ()=>{current=false;controller.abort();};
   },[opened,profile?.deferred,p.id,p.mode,p.careType,p.version,retry]);
-  if(!profile)return <details className="centre-reviews extra-details"><summary><MessageCircle size={18}/>Parent reviews<ChevronDown size={16}/></summary><p>No reviews are available for this centre yet.</p></details>;
+  if(!profile)return <details className="centre-reviews extra-details" open={defaultOpen}><summary><MessageCircle size={18}/>Parent reviews<ChevronDown size={16}/></summary><p>No reviews are available for this centre yet.</p></details>;
   const heading=<summary><MessageCircle size={18} aria-hidden="true"/><span>Parent reviews<small>{profile.sampleCount.toLocaleString()} {profile.sampleCount === 1 ? "review" : "reviews"}</small></span><ChevronDown size={16} aria-hidden="true"/></summary>;
   const toggle=e=>setOpened(e.currentTarget.open);
   if(profile.deferred)return <details className="centre-reviews extra-details" open={opened} onToggle={toggle}>
@@ -66,7 +66,7 @@ export default function ReviewEvidence({ p, onAsk }) {
       {ordered.slice(0,expanded?ordered.length:2).map(review=><ReviewQuote key={review.id} review={review} topic={topic}/>)}
       {!ordered.length&&evidence.reviewCount>0&&<p>No quotes about this topic yet.</p>}
       {ordered.length>2&&<button type="button" className="text-link" onClick={()=>setExpanded(!expanded)}>{expanded?'Show fewer reviews':'Read more reviews'}<ChevronDown size={16}/></button>}
-      {concern&&onAsk&&<div className="review-ask"><p>{concern.recentNegative} recent {concern.recentNegative === 1 ? 'review mentions' : 'reviews mention'} a problem with this.</p><button className="secondary" type="button" onClick={()=>onAsk(topic,profile)}>Ask the centre about this<ArrowRight size={16}/></button></div>}
+      {concern&&onAsk&&<div className="review-ask"><p>{concern.recentNegative} recent {concern.recentNegative === 1 ? 'review mentions' : 'reviews mention'} a problem with this.</p><button className="secondary" type="button" onClick={()=>onAsk(topic,profile)}>{askLabel}<ArrowRight size={16}/></button></div>}
     </div>
   </details>;
 }

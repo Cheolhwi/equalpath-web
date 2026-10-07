@@ -26,6 +26,8 @@ import Recommendations from "./Recommendations.jsx";
 import useInterests from "./useInterests.js";
 import useSearchRoutes, { clearSearchRouteCache } from "./useSearchRoutes.js";
 import Comparison from "./Comparison.jsx";
+import FamilyComparison from "./FamilyComparison.jsx";
+import { loadFamilyComparison } from "../shared/family-comparison.mjs";
 import MapSearchDock from "./MapSearchDock.jsx";
 import SearchActions from "./SearchActions.jsx";
 import Dialog from "./Dialog.jsx";
@@ -46,6 +48,7 @@ import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory
 import Preparation from "./Preparation.jsx";
 import Enquiry from "./Enquiry.jsx";
 import FamilyPanel, { FamilyPlanCard, familyMapItems, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
+import OneChildPanel, { initialOnePanel } from "./OneChildPanel.jsx";
 import useFamily, { familyKey, secondChildErrors } from "./useFamily.js";
 import { childRequest, childName } from "../shared/two-child.mjs";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
@@ -176,6 +179,7 @@ export default function App({
   const [tourOpen, setTourOpen] = useState(false);
   // Epic 8 family plan in the Checklist: in memory only, cleared with the mode.
   const [familyPlan, setFamilyPlan] = useState(null);
+  const [onePanel, setOnePanel] = useState(initialOnePanel);
   const family = useFamily(mode);
   // First visit: offer the tour once, without starting it on its own.
   const [tourInvite, setTourInvite] = useState(() => { try { return !tourSeen(window.localStorage); } catch { return false; } });
@@ -198,6 +202,12 @@ export default function App({
   }, [dialog, profile?.p?.id, profile?.p?.careType, dialogBusy, tourOpen, interests.record]);
   const [searchFocus, setSearchFocus] = useState(null), [dockHeight, setDockHeight] = useState(150);
   const [searchCollapsed, setSearchCollapsed] = useState(false);
+  // Phones: the navigation pill folds away once the map is in use and comes
+  // back from the top handle. CSS applies it only at narrow widths.
+  const [navHidden, setNavHidden] = useState(false);
+  const navReveal = useRef(null);
+  // Hide once a search has folded into its mobile summary.
+  useEffect(() => { if (searchCollapsed) setNavHidden(true); }, [searchCollapsed]);
   const [pickupQueryReset, setPickupQueryReset] = useState(null);
   const [pickupAddress, setPickupAddress] = useState(null), [addressRetry, setAddressRetry] = useState(0);
   const tourSnapshot = useRef(null), tourData = useRef(null), tourSequence = useRef(0);
@@ -451,6 +461,8 @@ export default function App({
     }
     if (field === "kids") {
       requestSeq.current++; searchController.current?.abort(); family.clear();
+      dialogSeq.current++; setDialogBusy(false); setDialog(null);
+      setCompareIds([]); setComparison(null);
       setBusy(false); setResults(null); setSelected(null); setFailure(null);
       setErrors((x) => ({ ...x, secondAge: null, second: null }));
     }
@@ -483,6 +495,21 @@ export default function App({
   const familyNoMatch = familyReady && !!family.built?.missing.length;
   const familyCards = familyReady && !familyNoMatch;
   const familyOpen = familyMode && !!family.state && !family.state.collapsed;
+  // One child: the same left panel as two children, over the current page of
+  // results (suggested centres, then a plan). A new search starts it again.
+  useEffect(() => { setOnePanel(initialOnePanel); }, [results]);
+  const oneShown = !familyMode && !!results && !busy && !tourOpen && !choosing && mobilePane === "map" && isShortCare(activeRequest) && items.length > 0;
+  const oneOpen = oneShown && !onePanel.collapsed;
+  // Arrives armed only after the pointer has left the search bar since the
+  // last search, so a pointer resting on Find childcare doesn't hide new results.
+  const tuckArmed = useRef(false);
+  useEffect(() => { tuckArmed.current = false; }, [results, family.state?.results]);
+  const tuckPanels = (e) => {
+    if (!e.target.closest?.(".map-search-dock")) return;
+    if (e.type === "pointerover" && !tuckArmed.current) return;
+    setOnePanel((s) => (s.collapsed ? s : { ...s, collapsed: true }));
+    if (family.state && !family.state.collapsed && !family.busy) family.collapse(true);
+  };
   useEffect(() => {
     if (!results?.drivingDeferred) return;
     const refresh = current => {
@@ -559,10 +586,12 @@ export default function App({
     searchFamily(next, { keep: true });
   };
   const openFamilyCentre = (p) => {
-    const state = family.state, k = p?.familyRole ?? "a";
+    // A shared centre ("ab") has no list of its own: read it from Child 1's.
+    const state = family.state, k = p?.familyRole === "b" ? "b" : "a";
     if (!state?.results || !p) return;
-    const centre = state.results[k].find((x) => x.id === p.id) ?? p;
-    setProfile({ p: { ...centre, driving: p.driving }, request: canonicalRequest(childRequest(state.plan, k)) });
+    const centre = state.results[k]?.find((x) => x.id === p.id)
+      ?? [...(state.results.a ?? []), ...(state.results.b ?? [])].find((x) => x.id === p.id) ?? p;
+    setProfile({ p: { ...centre, driving: p.driving, familyFor: p.familyFor }, request: canonicalRequest(childRequest(state.plan, k)) });
     setSelected(p.id); setDialogError(null); setDialog("details");
   };
   const search = async (e, page = 0, override = null) => {
@@ -675,10 +704,25 @@ export default function App({
   const loadComparison = async (ids = compareIds, sort = compareSort) => {
     setDialog("compare");
     setDialogError(null);
-    if (ids.length < 2 || !activeRequest) return;
     const seq = ++dialogSeq.current;
+    setDialogBusy(false);
+    const context = familyMode ? family.state : null;
+    setComparison(null);
+    if (ids.length < 2) return;
+    if (familyMode ? !familyReady : !activeRequest) {
+      setDialogError({ code: "COMPARISON_NEEDS_SEARCH" });
+      return;
+    }
     setDialogBusy(true);
     try {
+      if (context) {
+        const r = await loadFamilyComparison({ api: requestAPI, mode, ids, plan: context.plan, version: context.results.version });
+        if (seq === dialogSeq.current) {
+          setComparison({ ...r, family: true, familyKey: familyKey(context.request) });
+          interests.record(r.items, 'compare');
+        }
+        return;
+      }
       const r = await requestAPI({
         action: "compare",
         mode,
@@ -694,14 +738,15 @@ export default function App({
     }
   };
   const removeCompare = (id) => {
+    dialogSeq.current++; setDialogBusy(false);
     const next = compareIds.filter((x) => x !== id);
     setCompareIds(next);
     if (next.length >= 2) loadComparison(next);
     else setComparison(null);
   };
-  const prepare = (p, request = activeRequest) => {
+  const prepare = (p, request = activeRequest, forChild = null) => {
     if (!p || !request) return;
-    setEnquiry({ p: withReviewQuestions(p, questionSelection, 'contact-v2:' + p.id + scenario(request)), request });
+    setEnquiry({ p: withReviewQuestions(p, questionSelection, 'contact-v2:' + p.id + scenario(request)), request, forChild });
     setDialogError(null);
     setDialog("enquiry");
   };
@@ -819,16 +864,30 @@ export default function App({
     if (tourOpen && introPhase !== "ready") finishTour("skipped");
   }, [introPhase]);
   const requestChanged =
-    comparison && scenario(comparison.request) !== scenario(activeRequest);
+    comparison && (comparison.family
+      ? !familyMode || familyDirty || comparison.familyKey !== familyKey(familyRequest)
+      : familyMode || scenario(comparison.request) !== scenario(activeRequest));
   const retryDialog = () => loadComparison();
   const searchState = busy ? "loading" : failure ? "failed" : dirty ? "pending" : results ? "applied" : "ready";
   // Centres already on the shortlist can go straight to a checklist.
+  const navCollapsed = navHidden && mobilePane === "map" && !tourOpen;
+  const openNav = keyboard => {
+    setNavHidden(false);
+    if (keyboard) requestAnimationFrame(() => document.querySelector(".app-header nav button")?.focus({ preventScroll: true }));
+  };
+  useEffect(() => {
+    // The search overlay moves with the bar; its size observer does not see a
+    // position change, so ask the map layout to measure again.
+    if (!window.matchMedia?.("(max-width: 760px)").matches) return;
+    const timer = setTimeout(() => window.dispatchEvent(new Event("resize")), reduced ? 0 : 300);
+    return () => clearTimeout(timer);
+  }, [navCollapsed, reduced]);
   const checklistChoices = results && !dirty
     ? items.filter((p) => compareIds.includes(p.id) || library.favourites.some((f) => f.id === p.id)).slice(0, 4)
     : [];
   return (
     <main
-      className={`equalpath map-first ${theme} mobile-${mobilePane}`}
+      className={`equalpath map-first ${theme} mobile-${mobilePane}${navCollapsed ? " nav-collapsed" : ""}`}
       tabIndex={-1}
       data-reduced={reduced}
       data-mode={tourOpen ? "demo" : mode}
@@ -839,7 +898,15 @@ export default function App({
       <a className="skip-link" href="#request-form" onClick={() => { setMobilePane("map"); setSearchFocus({field:"pickup",at:Date.now()}); }}>
         Skip to search
       </a>
-      <header className="app-header">
+      <button type="button" className="nav-reveal" ref={navReveal} aria-label="Show menu" aria-controls="app-header" aria-expanded={!navCollapsed}
+        onClick={e => openNav(e.detail === 0)}
+        onPointerDown={e => { navReveal.current.dataset.startY = e.clientY; }}
+        onPointerMove={e => { const y = Number(navReveal.current.dataset.startY); if (y && e.clientY - y > 8) { delete navReveal.current.dataset.startY; openNav(false); } }}
+        onPointerUp={() => { delete navReveal.current.dataset.startY; }}>
+        <span aria-hidden="true" />
+      </button>
+      <header className="app-header" id="app-header"
+        onFocus={e => { if (e.target.matches?.(":focus-visible")) setNavHidden(false); }}>
         <button
           className="wordmark"
           aria-label="EqualPath home"
@@ -854,7 +921,7 @@ export default function App({
           </strong>
           <small>CHILDCARE IN KL & SELANGOR</small>
         </button>
-        <nav aria-label="Main navigation">
+        <nav aria-label="Main navigation" onClickCapture={() => setNavHidden(true)}>
           <button
             className={!dialog ? "active" : ""}
             onClick={() => {
@@ -1305,8 +1372,14 @@ export default function App({
         </footer>
         </>}
       </aside>
-      <div className="map-wrap">
-        {!choosing && mobilePane === "map" && <div className="map-tools-overlay">
+      <div className="map-wrap" onPointerDownCapture={e => { if (e.target.closest?.(".maplibregl-canvas-container, .map-card-layer")) setNavHidden(true); }}>
+        {!choosing && mobilePane === "map" && <div className="map-tools-overlay"
+          // Moving onto the search bar (or touching it) to change a condition
+          // tucks the options panel away, for one or two children. Its tab
+          // brings it back, and a new search opens it again. Click covers
+          // keyboard use.
+          onPointerOverCapture={tuckPanels} onClickCapture={tuckPanels}
+          onPointerOutCapture={e => { if (e.target.closest?.(".map-search-dock") && !e.relatedTarget?.closest?.(".map-search-dock")) tuckArmed.current = true; }}>
           <MapSearchDock draft={draft} setField={setField} errors={errors} onSearch={search}
             busy={familyMode ? family.busy : busy} results={familyMode ? familyDock : results} dirty={familyMode ? familyDirty : dirty}
             mode={tourOpen ? "demo" : mode} active={introPhase === "ready" && !dialog && !tourOpen} queryReset={pickupQueryReset}
@@ -1339,6 +1412,13 @@ export default function App({
             onChecklist={(plan) => { setFamilyPlan(plan); notify("Saved to your Checklist."); }}
             onToast={notify} />
         )}
+        {oneShown && (
+          <OneChildPanel items={items} request={activeRequest} state={onePanel} onChange={setOnePanel} top={dockHeight + 12}
+            onSelectCentre={(id) => setSelected(id)}
+            onContact={(p) => prepare(p, activeRequest)}
+            onChecklist={(p) => startPreparation(p, activeRequest)}
+            onDetails={(p) => openDetails(p)} />
+        )}
         {(mapStarted || mapActive) && <Suspense fallback={null}><MapCanvas
           key={mode}
           items={mapItems}
@@ -1356,8 +1436,8 @@ export default function App({
           showSuggestions={familyMode ? familyCards : !!results && !dirty && !busy}
           onOpen={familyMode ? openFamilyCentre : openDetails}
           onSave={(p) => editFavourite(p, null)}
-          onCompare={familyMode ? undefined : (id) => {
-            if (activeRequest) toggleCompare(id);
+          onCompare={(id) => {
+            if (familyMode || activeRequest) toggleCompare(id);
             else {
               const centre = items.find(p => p.id === id);
               if (centre) openDetails(centre);
@@ -1368,8 +1448,8 @@ export default function App({
           onClosePreview={() => setSelected(null)}
           hasCompare={compareIds.length > 0}
           topInset={dockHeight + 6}
-          leftInset={familyOpen && !narrow ? FAMILY_PANEL_RIGHT : 0}
-          cardsVisible={familyMode ? mobilePane === "map" && (!narrow || !familyOpen) && !family.busy : mobilePane === "map" && !dirty && !busy}
+          leftInset={(familyOpen || oneOpen) && !narrow ? FAMILY_PANEL_RIGHT : 0}
+          cardsVisible={familyMode ? mobilePane === "map" && (!narrow || !familyOpen) && !family.busy : mobilePane === "map" && !dirty && !busy && (!narrow || !oneOpen)}
           onShowList={() => { setFormOpen(!results); setMobilePane("list"); }}
           onSelect={familyMode && narrow ? (id) => openFamilyCentre(mapItems.find((p) => p.id === id)) : select}
           onPick={(p) => {
@@ -1409,6 +1489,7 @@ export default function App({
           <button
             aria-label="Clear comparison"
             onClick={() => {
+              dialogSeq.current++; setDialogBusy(false);
               setCompareIds([]);
               setComparison(null);
             }}
@@ -1581,17 +1662,17 @@ export default function App({
               <Details
                 p={profile.p}
                 request={profile.request}
-                saved={library.favourites.some((x) => x.id === profile.p.id)}
-                onSave={() => editFavourite(profile.p, "details")}
-                onPreparation={() =>
-                  startPreparation(profile.p, profile.request)
-                }
-                onPrepare={() => prepare(profile.p, profile.request)}
                 onAskReview={(topic, reviewProfile) => {
+                  // Details only shows the centre. A review concern becomes a
+                  // question for when the parent contacts it from Compare.
                   const { p, selection } = addReviewQuestion({ ...profile.p, reviewProfile: reviewProfile ?? profile.p.reviewProfile }, profile.request, topic, questionSelection, 'contact-v2:' + profile.p.id + scenario(profile.request));
                   setProfile(current => ({ ...current, p }));
                   setQuestionSelection(selection);
-                  prepare(p, profile.request);
+                  const add = !compareIds.includes(p.id) && compareIds.length < 3;
+                  if (add) setCompareIds(ids => [...ids, p.id]);
+                  notify(compareIds.includes(p.id) || add
+                    ? "Added to your questions. Contact the centre from Compare."
+                    : "Added to your questions. Compare is full, so remove a centre to contact this one from there.");
                 }}
                 onCompare={() => toggleCompare(profile.p.id)}
                 compared={compareIds.includes(profile.p.id)}
@@ -1611,6 +1692,10 @@ export default function App({
                 <button className="primary" onClick={close}>
                   Find childcare <ArrowRight size={16} />
                 </button>
+                {(() => {
+                  const only = compareIds.length === 1 && !familyMode && activeRequest && (items.find((x) => x.id === compareIds[0]) ?? (profile?.p?.id === compareIds[0] ? profile.p : null));
+                  return only ? <button className="secondary" onClick={() => prepare(only, activeRequest)}>Contact {displayName(only.name)} <ArrowRight size={16} /></button> : null;
+                })()}
               </div>
             ) : (
               <>
@@ -1642,7 +1727,12 @@ export default function App({
                           : undefined
                       }
                     >
-                      <Comparison
+                      {comparison.family ? <FamilyComparison
+                        items={comparison.items.filter(p => compareIds.includes(p.id))}
+                        children={comparison.children}
+                        onRemove={removeCompare}
+                        onPrepare={(p, key) => prepare(p, comparison.children[key].request, childName(key))}
+                      /> : <Comparison
                         items={comparison.items.filter((p) =>
                           compareIds.includes(p.id),
                         )}
@@ -1655,7 +1745,7 @@ export default function App({
                           setCompareSort(v);
                           loadComparison(compareIds, v);
                         }}
-                      />
+                      />}
                     </div>
                   </>
                 )}
@@ -1663,7 +1753,7 @@ export default function App({
             ))}
           {dialog === "enquiry" &&
             enquiry &&
-            scenario(enquiry.request) !== scenario(activeRequest) && (
+            (familyMode ? familyDirty || !family.state?.plan || !["a", "b"].some(key => scenario(enquiry.request) === scenario(canonicalRequest(childRequest(family.state.plan, key)))) : scenario(enquiry.request) !== scenario(activeRequest)) && (
               <p className="notice">
                 These questions use your earlier search. For new questions,
                 open a centre from your new results.
@@ -1671,6 +1761,7 @@ export default function App({
             )}
           {dialog === "enquiry" && enquiry && (
             <>
+              {enquiry.forChild && <p className="notice">Questions for {enquiry.forChild}</p>}
               <Enquiry
                 key={enquiry.p.id + scenario(enquiry.request)}
                 p={enquiry.p}

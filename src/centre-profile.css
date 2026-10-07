@@ -1,0 +1,42 @@
+/* Centre details as a profile (2026-10-06): what the centre is like, with one
+   action, Add to compare. Checks and contacting live in Compare. */
+.centre-search-line {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap;
+  margin: 0 0 16px; padding: 12px 14px 12px 16px; border: 1px solid var(--rule); border-radius: 14px; background: var(--soft);
+}
+.centre-search-text { display: grid; gap: 4px; min-width: 0; flex: 1 1 260px; }
+.centre-search-text > p { margin: 0; display: flex; align-items: baseline; gap: 4px 8px; flex-wrap: wrap; font-size: 14px; }
+.centre-search-text > p > strong { font-size: 13px; }
+.centre-search-text > p > span { color: var(--muted); }
+.centre-search-status { align-items: center !important; font-weight: 650; color: var(--ink); }
+.centre-search-status > svg { flex-shrink: 0; align-self: center; }
+.centre-search-status.supported > svg { color: var(--accent); }
+.centre-search-status.unknown > svg { color: #8a6a1f; }
+.centre-search-status.conflict { color: #9a3b2c; }
+.centre-search-status > small { flex-basis: 100%; padding-left: 24px; font-weight: 400; color: var(--muted); font-size: 12.5px; }
+.centre-compare { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding-inline: 18px; white-space: nowrap; border-radius: 999px; }
+
+.equalpath .centre-layout.profile-layout {
+  display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(250px, 1fr);
+  grid-template-areas: 'reviews side' 'evidence evidence'; align-items: start; gap: 16px 20px;
+}
+.equalpath .profile-layout > .centre-reviews { grid-area: reviews; }
+.equalpath .profile-layout > .centre-profile-side { grid-area: side; display: grid; gap: 12px; min-width: 0; }
+.equalpath .profile-layout > .centre-evidence { grid-area: evidence; }
+.equalpath .centre-profile-side > *, .equalpath .centre-profile-side .centre-hours, .equalpath .centre-profile-side .centre-fees {
+  grid-area: auto; width: auto; min-width: 0; margin: 0;
+}
+.equalpath .centre-profile-side .centre-fees > .detail-section { padding-top: 4px; }
+.equalpath .centre-profile-side .centre-fees h3 { font-size: 15px; }
+.equalpath .centre-profile-side > .extra-details {
+  border: 1px solid var(--rule); border-radius: 16px; padding: 0 16px 4px; background: var(--paper);
+}
+.equalpath .centre-profile-side > .extra-details > summary { min-height: 48px; font-weight: 700; font-size: 16px; }
+.equalpath .centre-profile-side .centre-section-heading h3,
+.equalpath .centre-profile-side .detail-section > h3:first-child { font-size: 14px; }
+
+@media (max-width: 760px) {
+  .centre-search-line { padding: 12px; }
+  .centre-compare { flex: 1 1 100%; }
+  .equalpath .centre-layout.profile-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'reviews' 'side' 'evidence'; gap: 12px; }
+}

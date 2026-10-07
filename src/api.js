@@ -70,7 +70,9 @@ async function fetchAPI(body, { signal, timeoutMs = 75000 } = {}) {
   }
 }
 export const errorMessage = (e) =>
-  e?.code === "FACTS_CHANGED"
+  e?.code === "COMPARISON_NEEDS_SEARCH"
+    ? "Update your search before comparing centres."
+    : e?.code === "FACTS_CHANGED"
     ? "Centre details have changed. Search again to see the latest information."
     : e?.code === "OUTSIDE_SERVICE_AREA"
       ? "Choose an address in Kuala Lumpur or Selangor. We do not cover Putrajaya or other states."

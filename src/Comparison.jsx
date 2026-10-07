@@ -9,7 +9,7 @@ import { isShortCare, todayKL } from '../shared/request.mjs';
 import { displayAddress, displayName } from '../shared/display.mjs';
 import { plainEvidence, plainReason } from '../shared/plain-copy.mjs';
 
-function Fact({ p, id, request }) {
+export function Fact({ p, id, request }) {
   const { value, note, state, condition } = comparisonFact(p, id, request);
   const Icon = state === 'conflict' ? AlertTriangle : state === 'supported' && !(id === 'age' && p.age?.basis === 'type_reference') ? CheckCircle2 : HelpCircle;
   return <details className={`compare-fact ${state}`}>

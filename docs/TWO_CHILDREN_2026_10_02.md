@@ -156,3 +156,9 @@ times, so runs cannot be checked there.
   and Checklist. That sandbox could not reach OSRM, so road times came from a local stand-in.
   Separately, the public API returned real start→centre and centre→centre drive times from
   the user's Mac; back-to-back route requests were refused, hence the spacing.
+
+## Centre comparison (6 October 2026)
+
+The map cards now offer Compare for up to three centres in two-child mode. The comparison checks every selected centre for both children through the existing compare API, including centres that did not appear in one child's search. Age, short-care admission and care-hour states remain separate per child; unknown evidence stays unknown. Each fee uses that child's own times. A same-centre total is shown only when both computed amounts are known and use the same currency; no sibling discount is assumed.
+
+This compares centres, not two-stop itineraries. The table keeps the selected order and offers separate, labelled contact messages for Child 1 and Child 2. Phones show two centre columns with a selector for the third. Changed search inputs require a new search; switching back to one child clears the comparison. Both API replies must match the search catalogue version and include every selected ID. A partial or failed reply never becomes a one-child result in the family table.

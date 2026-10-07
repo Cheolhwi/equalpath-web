@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { CalendarDays, Car, SlidersHorizontal, X, MapPin, Users, UsersRound, ArrowRight, Pencil, ChevronUp, PanelLeft, Check } from "lucide-react";
+import { CalendarDays, Car, SlidersHorizontal, X, MapPin, Users, UsersRound, ArrowRight, Pencil, ChevronUp, Check } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import TimeInput from "./TimeInput.jsx";
@@ -29,7 +29,7 @@ function AgeButtons({ id, name, who, value, onChange, error }) {
     {error && <small className="field-error">{error}</small>}
   </fieldset>;
 }
-export default function MapSearchDock({ draft, setField, errors, onSearch, busy, results, dirty, mode, active, queryReset, onQueryChange, onMap, onPanel, submitRef, focusRequest, onHeight, collapsed, onCollapsedChange, notice, failure, onRetry, addressStatus, onRetryAddress }) {
+export default function MapSearchDock({ draft, setField, errors, onSearch, busy, results, dirty, mode, active, queryReset, onQueryChange, onMap, submitRef, focusRequest, onHeight, collapsed, onCollapsedChange, notice, failure, onRetry, addressStatus, onRetryAddress }) {
   const root = useRef(null), lastTrigger = useRef(null), options = useRef(null), pendingFocus = useRef(null);
   const summary = useRef(null);
   const canCollapse = !!results?.total && !busy && !dirty && !failure && !Object.values(errors).some(Boolean);
@@ -130,14 +130,13 @@ export default function MapSearchDock({ draft, setField, errors, onSearch, busy,
     <form id="request-form" className="request-form dock-form" onSubmit={onSearch} noValidate aria-label="Find childcare">
       <div className="dock-address-row">
         <PlaceInput compact hideLabel mode={mode} value={draft.pickup} queryReset={queryReset} onQueryChange={onQueryChange} active={active} error={errors.pickup} onChange={p => setField("pickup", p)} onMap={onMap} label={short ? "Where will your child leave from?" : "Where do you need care?"} placeholder={short ? "Starting point, e.g. KL Sentral" : "Home, work or school, e.g. KL Sentral"}
-          leading={<button type="button" className="map-search-launch dock-panel-toggle" onClick={onPanel} aria-label="Open search panel" title="Open search panel"><PanelLeft size={20} /></button>}
           />
       </div>
       <div className="dock-filter-panel">
       <div className="dock-options" data-tour="care-times">
         {short && chip("date", CalendarDays, "Date", shortDate(draft.date), errors.date)}
         {two ? chip("age", UsersRound, "Children", `2 · ${ageShort(draft.age)}, ${ageShort(second.age)}`, errors.age || errors.secondAge || errors.second)
-          : chip("age", UsersRound, "Age", draft.age ? `${draft.age.replace("-", "–")} years` : "Select", errors.age)}
+          : chip("age", UsersRound, "Children", `1 · ${ageShort(draft.age)}`, errors.age)}
         {short && <>
           <TimeInput variant="chip" icon={MapPin} shortLabel="Start" suggest={draft.date && draft.date !== todayKL() ? "09:00" : undefined} pending={changed("deadline")} id="deadline" label="When does care start?" pickerLabel="Start" value={draft.deadline} onChange={v => setField("deadline", v)} invalid={!!errors.deadline} describedBy={errors.deadline ? "deadline-error" : changed("deadline") ? "search-apply-status" : undefined} onOpen={() => setPart(null)} />
           <TimeInput variant="chip" icon={Users} shortLabel="End" suggest={laterBy(draft.deadline, 3) ?? (draft.date && draft.date !== todayKL() ? "12:00" : undefined)} pending={changed("end")} id="care-end" label="When does care end?" pickerLabel="End" value={draft.end} onChange={v => setField("end", v)} invalid={!!errors.end} describedBy={errors.end ? "care-end-error" : changed("end") ? "search-apply-status" : undefined} onOpen={() => setPart(null)} />

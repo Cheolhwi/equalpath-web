@@ -1,4 +1,22 @@
-# Centre details: decision-first layout
+# Centre details
+
+## Profile only (6 October 2026) — current
+
+The user wants the main journey to feel like the two-children flow: decide and act in Compare (and the plan), and use Details only to read about a centre and add it to Compare.
+
+Reading order:
+
+1. Branch identity and address (registration badge beside the title).
+2. "Your search" line: date, times and starting point, with one status (mismatches, things to ask, or "The listed details match your search") and "Compare shows the details and the questions to ask." Two-children mode shows "Two children · Fits both children / Child N …" instead. One action: **Add to compare** / **Added to compare**.
+3. The four key facts: care ends, age, drive and fee.
+4. Parent reviews (open), with Fees & extras and Opening hours (open) beside them on desktop and below them on phones.
+5. Phone & website, then Registration & sources (folded).
+
+Removed from Details: the condition list ("Before you choose"), Contact the centre, Save, Phone in the action card and "Get ready for childcare". Contact and the condition questions are in Compare; a shortlist with one centre now offers "Contact <centre>" directly. Save remains on map and list cards. A review concern's button now reads "Add to my questions": it adds the question for that centre, adds the centre to Compare when there is room and says so.
+
+Verified 6 Oct at 1440×900 and 390×844 (local preview, fictional and bundled catalogue): new layout, Add to compare, one-centre Contact, review loading, and Details for a two-children "Fits both children" card (previously a TypeError). The existing browser specs could not be used: they already fail at setup because the side search panel they open no longer exists.
+
+## Decision-first layout (13 September 2026) — superseded
 
 13 September 2026. The user requested a clearer information hierarchy based on what a parent needs to decide next.
 
