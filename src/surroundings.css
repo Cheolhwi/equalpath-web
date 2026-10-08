@@ -1,0 +1,9 @@
+.centre-surroundings { margin: 0 0 24px; border: 1px solid var(--rule); border-radius: 18px; background: var(--paper); overflow: hidden; }
+.surroundings-toggle { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 54px; padding: 14px 18px; background: var(--soft); color: var(--ink); border: 0; border-radius: 0; text-align: left; font: inherit; font-weight: 600; cursor: pointer; }
+.surroundings-toggle svg:last-child { margin-left: auto; transition: transform .18s; }
+.surroundings-toggle[aria-expanded=true] svg:last-child { transform: rotate(180deg); }
+.surroundings-toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: -4px; }
+.centre-surroundings figure { margin: 0; }
+.centre-surroundings img { display: block; width: 100%; max-height: 420px; object-fit: contain; height: auto; background: var(--soft); }
+.centre-surroundings figcaption, .centre-surroundings figure p { padding: 12px 18px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+@media(prefers-reduced-motion:reduce) { .surroundings-toggle svg { transition: none; } }

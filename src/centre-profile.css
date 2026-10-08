@@ -40,3 +40,14 @@
   .centre-compare { flex: 1 1 100%; }
   .equalpath .centre-layout.profile-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'reviews' 'side' 'evidence'; gap: 12px; }
 }
+
+/* The registration badge sits right after the centre's name (8 Oct 2026),
+   following the last word when the name wraps. Its record opens under the
+   title, from the left, so it never runs off the dialog. */
+.equalpath .dialog-title-row { position: relative; }
+.equalpath .dialog-title-row .dialog-title-accessory { display: inline-block; vertical-align: middle; margin-left: 8px; line-height: 0; }
+.equalpath .dialog-title-row .registration-badge-wrap { position: static; display: inline-block; margin: 0; }
+.equalpath .dialog-title-row .registration-badge { width: 32px; height: 32px; }
+.equalpath .dialog-title-row .registration-popover { left: 0; right: auto; top: calc(100% + 8px); font-weight: 400; letter-spacing: normal; line-height: 1.5; }
+.registration-popover { display: block; }
+.registration-popover > .registration-popover-text { display: block; margin: 9px 0; color: inherit; }

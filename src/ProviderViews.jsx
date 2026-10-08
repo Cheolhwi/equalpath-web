@@ -1,3 +1,4 @@
+import Surroundings from "./Surroundings.jsx";
 import { useId, useState } from "react";
 import CareJourney from "./CareJourney.jsx";
 import ReviewEvidence from "./ReviewEvidence.jsx";
@@ -135,19 +136,19 @@ export function RegistrationBadge({p}) {
   const [open,setOpen]=useState(false), id=useId(), badge=registrationBadge(p,todayKL());
   if (!badge) return null;
   const Icon=badge.state==='attention'?AlertTriangle:BadgeCheck;
-  return <div className="registration-badge-wrap" onKeyDown={e=>{
+  return <span className="registration-badge-wrap" onKeyDown={e=>{
     if(e.key==='Escape' && open){e.stopPropagation();setOpen(false);e.currentTarget.querySelector('button').focus();}
   }}>
     <button className={`registration-badge ${badge.state}`} title={`${badge.label} · ${badge.number}`}
       aria-label={`${badge.label} for ${p.name}`} aria-expanded={open} aria-controls={id} onClick={()=>setOpen(!open)}>
       <Icon size={19} aria-hidden="true" />
     </button>
-    {open && <div className="registration-popover" id={id} role="region" aria-label="Registration record">
+    {open && <span className="registration-popover" id={id} role="region" aria-label="Registration record">
       <strong>{badge.label}</strong><span>{badge.authority} · {badge.number}</span>
-      <p>{badge.description}</p>
+      <span className="registration-popover-text">{badge.description}</span>
       <a href={badge.source.url} target="_blank" rel="noreferrer">View source <ArrowUpRight size={12} /></a>
-    </div>}
-  </div>;
+    </span>}
+  </span>;
 }
 const matchedLabel = n => `${n} ${n === 1 ? "thing matches" : "things match"} your search`;
 // Arrival time always needs confirming, so it does not make a card stand out.
@@ -440,6 +441,7 @@ export function Details({ p, request, onAskReview, onCompare, compared }) {
       <div><dt><Car size={15} />Drive</dt><dd>{p.driving?.state === "available" ? `About ${p.driving.minutes} min` : p.driving?.state === "loading" ? "Checking…" : "Ask the centre"}</dd><small>{p.driving?.state === "available" ? `${p.driving.distanceKm ? `${p.driving.distanceKm} km by road · ` : ""}without traffic` : p.driving?.state === "loading" ? "This takes a moment" : "Drive time not available"}</small></div>
       <div className="metric-fee"><dt><Wallet size={15} />Fee</dt><dd>{fees.label}</dd><small>{p.cost?.available ? `For ${request.deadline}–${request.end}` : p.careType === "short_term" ? fees.note : p.fees?.every(f=>f.verification==='area_estimate') && p.fees.length ? "Estimated from nearby centres" : "Ask what the fee includes"}</small></div>
     </dl>
+    <Surroundings key={p.id} p={p} />
     <div className="centre-layout profile-layout">
       <ReviewEvidence p={p} onAsk={onAskReview} defaultOpen askLabel="Add to my questions" />
       <div className="centre-profile-side">

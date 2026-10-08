@@ -1,0 +1,738 @@
+{
+  "provider_4f0f58b2f50eedf3b38e0c4f5cd": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_aea2c4b336787e261b1b8ab5637fdd2c/view?project=6a916a6c0030a70a9d75",
+    "version": "aea2c4b336787e261b1b8ab5637fdd2cbeda0c6c2efe96a21964f5439524b054",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_854cbeba7a7af3f450f7da5287b": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_10ec5337083cf5789d816c892d4d58a7/view?project=6a916a6c0030a70a9d75",
+    "version": "10ec5337083cf5789d816c892d4d58a7b38c5d273921a2cc80e198755f728e1e",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_dfc7aac4a18e2d8a8a6e7b74e41": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2caf82148ffd55b18ad1a84a331df526/view?project=6a916a6c0030a70a9d75",
+    "version": "2caf82148ffd55b18ad1a84a331df526cf8a55a8507a76cfd77c4f289b61f456",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Name says Alam Budiman; catalog address is USJ 9. Map address is Jalan Pulau Lumut U10/P."
+  },
+  "provider_4435203425900ca6d5eb73bbcfc": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2ebf8c98d04a0a135936bd08c50bfb6c/view?project=6a916a6c0030a70a9d75",
+    "version": "2ebf8c98d04a0a135936bd08c50bfb6cd975ce1328d79a2e390d65758e499d0f",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_d8c07aa87dca79f40cb3a4c5f88": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_307b3929e9205d3c67ea0cb7d60e256a/view?project=6a916a6c0030a70a9d75",
+    "version": "307b3929e9205d3c67ea0cb7d60e256a87f4105c68e9a2530a20b808feb973b1",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_751c1454afb57d47c554a51bed1": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a31325aa2d1cad80c508f8ef6ee945f5/view?project=6a916a6c0030a70a9d75",
+    "version": "a31325aa2d1cad80c508f8ef6ee945f526045b51cb0946023b802c2b038697fc",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_db51d43c94a398be4a54a899": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f55d787297ef87f0feb7fab33aebcaf7/view?project=6a916a6c0030a70a9d75",
+    "version": "f55d787297ef87f0feb7fab33aebcaf7c1e3d771ed9bd3dcafd210f00943175c",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_c56814bdf48ae5c686d5b2f1": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5e9153d4e32319cc759a7efd656e0972/view?project=6a916a6c0030a70a9d75",
+    "version": "5e9153d4e32319cc759a7efd656e09726a0b56bf01c1edf654d900c27dcef3ce",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_21d3add9c2f1541e64bfd3c0db2": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_512e3bebf90e2dad49ee210f601e0209/view?project=6a916a6c0030a70a9d75",
+    "version": "512e3bebf90e2dad49ee210f601e020904351b56ed4002022144a664bd54e11a",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_5c94476fd2ff9cb72e757c8be21": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_0f82a80c9591bcd5a5f1b863240ddfec/view?project=6a916a6c0030a70a9d75",
+    "version": "0f82a80c9591bcd5a5f1b863240ddfec699b75dc841db21f6dae34361599dc95",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Search resolves to Malacca instead of Kajang."
+  },
+  "provider_cd892d6fec7884999990b15268f": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3a104c7b276ceaaadad3ff9162a00e65/view?project=6a916a6c0030a70a9d75",
+    "version": "3a104c7b276ceaaadad3ff9162a00e6554b4233b6b7a998720f8491be4f0e027",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_2f1597c7ee1e4fa15ac47d784e9": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_719cd24a4157ecbeccd6d331f57cf85c/view?project=6a916a6c0030a70a9d75",
+    "version": "719cd24a4157ecbeccd6d331f57cf85c8fbe77b3affc782f1168b3248eb190ef",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_28394a2cc47dd757e4fda6716df": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_68e101e049bb4e7aa086226e31ef6bec/view?project=6a916a6c0030a70a9d75",
+    "version": "68e101e049bb4e7aa086226e31ef6bec46e0238d186118cc2224ceef7a6e9618",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_3cde969fd99209c91f1e5ed9899": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d76b6eb108a584a0f70e15d64f600474/view?project=6a916a6c0030a70a9d75",
+    "version": "d76b6eb108a584a0f70e15d64f600474e069c50dedb6577f43c909ca60730b76",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_c50b83c9a0441e88ebde0e48c34": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e19165220862a7ce05a5b5940502e394/view?project=6a916a6c0030a70a9d75",
+    "version": "e19165220862a7ce05a5b5940502e394e15c0a9e5dc8aa20a8bae8684520ba4b",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_8decab43ab4f3e21d046f9bd1d2": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_208026a515ae6b0f81109706d24d14ff/view?project=6a916a6c0030a70a9d75",
+    "version": "208026a515ae6b0f81109706d24d14ff62589ed08d982c6e8a7e34f68089eb36",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_e568c0c0a13afedf16b7b6ea": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_02cd61e7fd355c668db17b011e9430fa/view?project=6a916a6c0030a70a9d75",
+    "version": "02cd61e7fd355c668db17b011e9430fa7c6aea4b42e54d6cdb1829eb8aee9a14",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_33b9f65789da6f2690b9b5f6c56": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f56ea2a09a206bfd265316902a41c418/view?project=6a916a6c0030a70a9d75",
+    "version": "f56ea2a09a206bfd265316902a41c41864b87bca0beb0918ecfd24c843dda142",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_7dc3a788f13d94ad86341a4d": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2922b7d4cae148584f6575944ee478c6/view?project=6a916a6c0030a70a9d75",
+    "version": "2922b7d4cae148584f6575944ee478c6592e6a78af877198bb8e5b905b1042ee",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Map address Jalan Penggawa 3/2 differs from catalog Jalan Panglima."
+  },
+  "provider_a691842089fe2437d88ce9972bb": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1911c2aafe040a9367278f822bb3c6fb/view?project=6a916a6c0030a70a9d75",
+    "version": "1911c2aafe040a9367278f822bb3c6fb43bbec5a82ed98ae08740ceb89811385",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_5f64af17175fa5f63ffccf12619": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4ee3a3c7e8282c9909ea80228fe7fd8b/view?project=6a916a6c0030a70a9d75",
+    "version": "4ee3a3c7e8282c9909ea80228fe7fd8bf24d4b03fcdf72c557e7f5cb16bc1085",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_78cd0bae5cb2573010c59e6b843": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_76344e114a53c016f5745b6a6f331036/view?project=6a916a6c0030a70a9d75",
+    "version": "76344e114a53c016f5745b6a6f331036b98ab55ca97edd2266b6e6fa505e35c7",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_58ab78d3c7b844bdf28183c3d87": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_36d526c6d9ec9822fa9e495beba2821a/view?project=6a916a6c0030a70a9d75",
+    "version": "36d526c6d9ec9822fa9e495beba2821ab33572c6439aa58700e961e17ddbdbfb",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_0c19aa2edd798d0ff6e45f497a7": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b1e3e222f13cbc44848f687b8a9accde/view?project=6a916a6c0030a70a9d75",
+    "version": "b1e3e222f13cbc44848f687b8a9accde8b486b68241df6a6ad56173b9db77e74",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_15466d06ac276e3cdbffc2a041a": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9ab1baa54a0d39cb55323f56f4e50aa3/view?project=6a916a6c0030a70a9d75",
+    "version": "9ab1baa54a0d39cb55323f56f4e50aa39463cec7f1ab3b8b01337c2fa3cc95b8",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Panorama title 25 Jalan Mapel 7/1 matches catalogue street and unit vicinity."
+  },
+  "provider_dea488608830dad1689a5ea4ba9": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c42314f2ecd5b2688c0266835f2fa3b3/view?project=6a916a6c0030a70a9d75",
+    "version": "c42314f2ecd5b2688c0266835f2fa3b33694fe8c0ea864133f8b8278ba83ab02",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_636b2a9c3d83d2b574befea79b3": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f4f2ec7c05482de17e22fceda208f4ae/view?project=6a916a6c0030a70a9d75",
+    "version": "f4f2ec7c05482de17e22fceda208f4ae476478a7f561ffb847097d119344e4db",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_3cdcb360805a96209116c9d79ff": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_8925077a3ea22862d7294f22617553a4/view?project=6a916a6c0030a70a9d75",
+    "version": "8925077a3ea22862d7294f22617553a461a2e25ca043eb8febaccb7bc7325f72",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_e371a32c2b53792c04204023483": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_10dda60ecc72a14d85a4e58bfa22c693/view?project=6a916a6c0030a70a9d75",
+    "version": "10dda60ecc72a14d85a4e58bfa22c693185b0c3b166d726198abe0c7bf12b748",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_c2b689c2369c5c0faea1131f959": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d079e1373804f20be65c245c58da2f4f/view?project=6a916a6c0030a70a9d75",
+    "version": "d079e1373804f20be65c245c58da2f4f2243c6017bd1f2f49bb755da4e5652a1",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_fcf44173179ebfa921a56884451": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c431b7fd2e85a4f29cc8332f14048b0e/view?project=6a916a6c0030a70a9d75",
+    "version": "c431b7fd2e85a4f29cc8332f14048b0e532f3b9cae577fcd2648eb15d33ffb64",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_f2ccc44e691cd598685f58978f3": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2ce7b0e1c83d1ff2c052e496528eb5cb/view?project=6a916a6c0030a70a9d75",
+    "version": "2ce7b0e1c83d1ff2c052e496528eb5cb5229591076329970686c0f220cae7b20",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_1008f8f75fac05329853063af74": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ad354743738acda56ff8eeaa3621d329/view?project=6a916a6c0030a70a9d75",
+    "version": "ad354743738acda56ff8eeaa3621d329395719c288a7f181215e31f8910048aa",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_a63702b978e2628289738c9db6c": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2bc6aff0b9867954aad78b3622a7ac17/view?project=6a916a6c0030a70a9d75",
+    "version": "2bc6aff0b9867954aad78b3622a7ac171f922af8ea502e799c0190ac0a26a244",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_566a7ddf7a32d108137ee38f19a": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_012a68fde3b255254fad99688acd15f0/view?project=6a916a6c0030a70a9d75",
+    "version": "012a68fde3b255254fad99688acd15f0e81fe284e2af899a32c012f3db11cef8",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_b98cf5c4416105eb3c18b26160b": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_be04a2934465dce522353d2a80ad6a5c/view?project=6a916a6c0030a70a9d75",
+    "version": "be04a2934465dce522353d2a80ad6a5c3be9503cf20b3af2de4870143f6fc94e",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_76fdeb6c22557cfc43a289d43a0": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1543ab00d90653a2e91ea052984f802d/view?project=6a916a6c0030a70a9d75",
+    "version": "1543ab00d90653a2e91ea052984f802d87991d2a28375934c2f3430df38affdb",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_65f929229eb841c37f92d3860a9": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_41903c035b2eeeff1e6de5a0ac8715a0/view?project=6a916a6c0030a70a9d75",
+    "version": "41903c035b2eeeff1e6de5a0ac8715a0aa94464f7c6944e84c9cb758a330c2f5",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_a4f81440a19cb9ccf4b2528b1a5": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_660f9bf0412eb5783fcf79c03df6b32f/view?project=6a916a6c0030a70a9d75",
+    "version": "660f9bf0412eb5783fcf79c03df6b32fc33a41b7bbd3329c58dc8bb18f3edd93",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_bc393868c856c47ef03fd2043b1": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_bbe0e61037d3da49866a239a968cefe3/view?project=6a916a6c0030a70a9d75",
+    "version": "bbe0e61037d3da49866a239a968cefe3d4e18030678e6977c1807420a8773ad7",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_63030c80b7dfee98bae1dc21311": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f79d6cf484e94a82d5cc084161327bef/view?project=6a916a6c0030a70a9d75",
+    "version": "f79d6cf484e94a82d5cc084161327bef70d427ba6fc95c42553b44cfc65e7393",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Only broad plus-code address; street/unit match unconfirmed."
+  },
+  "provider_9bf9c5cf005742c633ea5954a42": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5139ab166cc15f1a9415cbc4ad1a15d6/view?project=6a916a6c0030a70a9d75",
+    "version": "5139ab166cc15f1a9415cbc4ad1a15d6eee3b22720138a42b5578e76f8eb47b1",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_9c0bd03e329d0c94e9abf11085a": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4c63ba8ae9f7a7b4e07c2fcdccc0b908/view?project=6a916a6c0030a70a9d75",
+    "version": "4c63ba8ae9f7a7b4e07c2fcdccc0b908358b42e186c916b2dedc8e4c7ddc2a24",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_aca4036ed9e9162d02bafe49beb": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5eea2b9611e83ae7e74ff174fb3441ef/view?project=6a916a6c0030a70a9d75",
+    "version": "5eea2b9611e83ae7e74ff174fb3441ef669bd9add229f860edff1f643f5a90d6",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_d35bfa333a7c00ff49f26afb074": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_147182fd217cc0db6ef347815bcf7f82/view?project=6a916a6c0030a70a9d75",
+    "version": "147182fd217cc0db6ef347815bcf7f821be9aa1be3aac50c7d88b16f6d2a3b11",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Map house 31 differs from catalog house 1."
+  },
+  "provider_043d95893fd6f7de6ec82f8cca2": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4177a410c53ff0dbd24efc732d5fec67/view?project=6a916a6c0030a70a9d75",
+    "version": "4177a410c53ff0dbd24efc732d5fec670e15ae156bb943bc87278ebf5d79c8bb",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_ffcfa148da3c8a88092d82b2": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b759546f08d15eba682c23ccf469fa66/view?project=6a916a6c0030a70a9d75",
+    "version": "b759546f08d15eba682c23ccf469fa66a270d03f96c4f10d5ca255203982cf6d",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_469c0bfc516d88c0e3a2854f": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_11b1cf0f882fec5018678ecedee30370/view?project=6a916a6c0030a70a9d75",
+    "version": "11b1cf0f882fec5018678ecedee30370c2e50edfd842810943837ddb52101829",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_7617dd8dc6f837b9d9f170a9465": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ed6b96f56b6db87fc311ad62289a30ec/view?project=6a916a6c0030a70a9d75",
+    "version": "ed6b96f56b6db87fc311ad62289a30ec5e0e3a2c0ec301e45c994ca761b11673",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_eff6a0d2f4e848f2dd3b30e7a27": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6834387ea91f159d18a7fa9e91b89094/view?project=6a916a6c0030a70a9d75",
+    "version": "6834387ea91f159d18a7fa9e91b890945ddf367cd634bb9b8295d722c4007fa0",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_88408de0b4f21319175ac455673": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fd07cd08f52284de26d38effe5d54967/view?project=6a916a6c0030a70a9d75",
+    "version": "fd07cd08f52284de26d38effe5d54967bc4070dd57e7167336e5d7c02e7c8476",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_4576ca09bd13bb7c7798a359247": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d2287d09bb86f27069809365f52ad96e/view?project=6a916a6c0030a70a9d75",
+    "version": "d2287d09bb86f27069809365f52ad96eddd27d2516142e5bda9a916550988318",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Image dominated by a wall; inadequate surrounding context."
+  },
+  "provider_81e9c718b74e4991bd5fb4a16b1": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_997dbd863b10118b2d6f60b6f468deb0/view?project=6a916a6c0030a70a9d75",
+    "version": "997dbd863b10118b2d6f60b6f468deb0fe28f0ee11bbba3c7b42da94cc88442a",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Map Jalan Nirwana 41 differs from catalog Jalan Permata 19."
+  },
+  "provider_193b316038c5bc2d8723f107a91": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_db5192cb3804c75a668d859c951c75ff/view?project=6a916a6c0030a70a9d75",
+    "version": "db5192cb3804c75a668d859c951c75ffc8ef82ffa697dbd93c9231b414a4d76c",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Map Ativo Suites differs from catalog Jalan Setiabakti."
+  },
+  "provider_1c9df519e489a6da1a3659dfb02": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_13a7a6546ece74795a738c9dee207e30/view?project=6a916a6c0030a70a9d75",
+    "version": "13a7a6546ece74795a738c9dee207e306c22062341bc4422a2d92180f2c61dd3",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_6c3f5c31801a12fc760dda27dc4": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9ec8d256ed188f2f33cba8331511c921/view?project=6a916a6c0030a70a9d75",
+    "version": "9ec8d256ed188f2f33cba8331511c921dc4e7c58f171d6922c08b82d835f0550",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_aefc7e709e8a18e9559e85a8518": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d5015227aea5f24853fbcc73e0898dfb/view?project=6a916a6c0030a70a9d75",
+    "version": "d5015227aea5f24853fbcc73e0898dfb311eca2c5ed3f6e7004ca1596895c2ba",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Coordinate panorama is Jalan Desa 2/1 rather than catalog Jalan Desa 2/2."
+  },
+  "provider_6952264f50219138dbe8dd6a25d": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f7219d16e43f1684f583ad27e8d0233a/view?project=6a916a6c0030a70a9d75",
+    "version": "f7219d16e43f1684f583ad27e8d0233a9d07fb789f240ecf3b2b4db61fc15d7c",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Coordinate panorama is KESAS motorway, unsuitable for local access context."
+  },
+  "provider_038b7be988901ada265e733de80": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_bef0685ef0fc35966e27d5a8d82d4885/view?project=6a916a6c0030a70a9d75",
+    "version": "bef0685ef0fc35966e27d5a8d82d4885434f919161260f9b7802d5fbcf5f7f89",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_21507892dc4fa7d9cba4819519a": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_74c8c90dd7cdd4b7c290a942dcaa184a/view?project=6a916a6c0030a70a9d75",
+    "version": "74c8c90dd7cdd4b7c290a942dcaa184ad2e4fd185ae20597bd9fab49a596fc10",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_b5e469ac6144ecffad381d62593": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_eb88bd17d0c590d063ff54b2f9cc38e8/view?project=6a916a6c0030a70a9d75",
+    "version": "eb88bd17d0c590d063ff54b2f9cc38e82b11a8a84df261157f216f77a4e7e5e8",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_518fe32f1b03b0dd19e754c0b61": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_06647f4ea858f62a56a3eea73fad7d7a/view?project=6a916a6c0030a70a9d75",
+    "version": "06647f4ea858f62a56a3eea73fad7d7a389920289ac68e5196110fc17a24996f",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_57987832b49511aad3a52391f1b": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1ace2b5a3a9693a25251700f66125ee0/view?project=6a916a6c0030a70a9d75",
+    "version": "1ace2b5a3a9693a25251700f66125ee0afbe3910dd48197c4bc9cb91bb6e6ec8",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_1bdfa3d76b9a23c6c4306edb6f4": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_36351c4a0c5acec3f114d94b5c107f13/view?project=6a916a6c0030a70a9d75",
+    "version": "36351c4a0c5acec3f114d94b5c107f1342ed4864581c79ab20f620bcee882540",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_0463d276c19b108258221b7c61f": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_67e843c7c588f5b475d1a4f421b33465/view?project=6a916a6c0030a70a9d75",
+    "version": "67e843c7c588f5b475d1a4f421b33465e195327ee45e5a2b0a7313ae245b627d",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Coordinate panorama location requires verification; no matching centre listing."
+  },
+  "provider_e9c96afada4f977ef2cbb5b6df3": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_03d108f08d0061cd2d064ac2f0228b31/view?project=6a916a6c0030a70a9d75",
+    "version": "03d108f08d0061cd2d064ac2f0228b31ebf34b42bcb706ba67d98e316d239b7b",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_12805031be6164e7e5385a5ddb8": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_41db677f55c4a7446f6deb332c95dd94/view?project=6a916a6c0030a70a9d75",
+    "version": "41db677f55c4a7446f6deb332c95dd94bfdb1a623ef326acd7476e01561018c5",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_7cb3ea5e6283995e42d3e494f87": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2bfb81ea57c6b291fb28c46ce275e9ba/view?project=6a916a6c0030a70a9d75",
+    "version": "2bfb81ea57c6b291fb28c46ce275e9ba5da4233c5a9223c72c457af4823e7d06",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_2c2803915adcb4cbf28e4517953": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_96acf5a5eb1063e66e102cc45f9b152c/view?project=6a916a6c0030a70a9d75",
+    "version": "96acf5a5eb1063e66e102cc45f9b152ceddda830b89fee43d44d495b4ab744a5",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_d397801cb0cdd18b2c05c195743": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_eb70abf8af19df4c2914fa9385e5a0b8/view?project=6a916a6c0030a70a9d75",
+    "version": "eb70abf8af19df4c2914fa9385e5a0b85f2b6b60152cad6df6e677e017ce5fad",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_90b4bd73497a245b83b815d4": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_13e247efc71ccba470bf735f3cde396b/view?project=6a916a6c0030a70a9d75",
+    "version": "13e247efc71ccba470bf735f3cde396bc6e61a116c31b04d9155c72da6febf09",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_ac92822a92ad1c8b7d5e582d": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b58cf09a2e514d4e14ccf44c88170f65/view?project=6a916a6c0030a70a9d75",
+    "version": "b58cf09a2e514d4e14ccf44c88170f6539ff14cd68e78ccc9d7c0fe1240dcdb0",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_2baeb8257e9258c2d97f4abe": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_71188baa860c73aed2c6a29c496872b3/view?project=6a916a6c0030a70a9d75",
+    "version": "71188baa860c73aed2c6a29c496872b38f5ac3fe4288f69ec8198c6e80312de2",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_c1958a54dba5840001cf6e7e": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_557c40c439e39e9c19634b00113f9854/view?project=6a916a6c0030a70a9d75",
+    "version": "557c40c439e39e9c19634b00113f985488ef17507fa116a15c64df22cd831653",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Map Jalan Pria 2 differs from catalog Jalan Perkasa 3."
+  },
+  "provider_kpm_1a5375e66fe0a69a3b03c8ca": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e5c4073e13959e874aaaaebe01370a2b/view?project=6a916a6c0030a70a9d75",
+    "version": "e5c4073e13959e874aaaaebe01370a2bbac33cd965d2c81ae4a7536180a3b76c",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_449fed18f98381991639ddb8": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_11c8743792651d03f38d9d2d15cb5ab6/view?project=6a916a6c0030a70a9d75",
+    "version": "11c8743792651d03f38d9d2d15cb5ab6389684fbfc0630ffaf9c626d4bc782d9",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_e0ec76412f9945bc4209e066": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_07e293c9694627a115fe3371b60860b7/view?project=6a916a6c0030a70a9d75",
+    "version": "07e293c9694627a115fe3371b60860b762833b1b47faca47d167496110fed12a",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_kpm_f531e40170000844a9386d08": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1f4f60875b026ecdb3d5e39362122345/view?project=6a916a6c0030a70a9d75",
+    "version": "1f4f60875b026ecdb3d5e39362122345da19d61f73ad1cdee7f2405d314681d5",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_6608d9c70e9c6ad94b4600b1e22": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_700a10635313870142d8c913179f8089/view?project=6a916a6c0030a70a9d75",
+    "version": "700a10635313870142d8c913179f80897b09ffae1a91bdfc01462ec09bf6cd0f",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_bb3553049807255b4dfae54392e": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fcb6857b9391eb0ffc371ceab7683e4d/view?project=6a916a6c0030a70a9d75",
+    "version": "fcb6857b9391eb0ffc371ceab7683e4d5debbcfcb2aedaac0a866037edc77af6",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_ccfd96e74d4774f2e3e6bd81eb2": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_29aedcdfebbaabfd66089ef63e0fcdd7/view?project=6a916a6c0030a70a9d75",
+    "version": "29aedcdfebbaabfd66089ef63e0fcdd7b5bef72c03206a07cf8a21e878a87432",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_8ffcaeb5ece6819e21f579d5c34": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f2f2bc18d2f76809befee3150648f02f/view?project=6a916a6c0030a70a9d75",
+    "version": "f2f2bc18d2f76809befee3150648f02f45fcb6276e011f938cce1c77e2bd07c2",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_da5d3a13d1f8e90ac99bf6b55db": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c8a234b08a07421ac407245bada7f135/view?project=6a916a6c0030a70a9d75",
+    "version": "c8a234b08a07421ac407245bada7f135aa1650da12d90a451c057dbf1bfeb391",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_faf113b11a3a39d973d7704e42c": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_97a88d4ce8ff1af7ac171210572e11ac/view?project=6a916a6c0030a70a9d75",
+    "version": "97a88d4ce8ff1af7ac171210572e11ac250c3eef11c320f791daee5c98c63bac",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Street matches Jalan PPAJ 5 but Sentrovue A access remains unverified."
+  },
+  "provider_5024c5195d83091571c93fd9e30": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e5ab7577ddf73f9075f92c7a07e09676/view?project=6a916a6c0030a70a9d75",
+    "version": "e5ab7577ddf73f9075f92c7a07e09676e09cfbce207ffb018916fdad20d5f0b3",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_709a1c3af749886ea08b7c5e4db": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ab51efd4c185fac8586d37a545f5c4fa/view?project=6a916a6c0030a70a9d75",
+    "version": "ab51efd4c185fac8586d37a545f5c4fabdbb9cbba15b9108c57f2dfaeeeee93a",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_559f9a6222dfd0f4965232c05d5": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d6c42cd39f92ea1e6e57de2e85b7c564/view?project=6a916a6c0030a70a9d75",
+    "version": "d6c42cd39f92ea1e6e57de2e85b7c564dc0b0e65e251c43b6614073115b93686",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_048d12e84516f211fc58acceef1": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_710a87a3be05601500e736fa1a165236/view?project=6a916a6c0030a70a9d75",
+    "version": "710a87a3be05601500e736fa1a165236127f7096bc6b055531af2ca0a41d98ac",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_a1987f88bcdf70382a2d28684b0": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4f969759b1862c44c35f53a840be5a47/view?project=6a916a6c0030a70a9d75",
+    "version": "4f969759b1862c44c35f53a840be5a471f752f51d96ea21d15c4754117156cf3",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_78c604f1aa2ba48e9edf4a9aa14": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c01b03cbac111c9cb8d812899cf52365/view?project=6a916a6c0030a70a9d75",
+    "version": "c01b03cbac111c9cb8d812899cf523652b70c55224243483751350969dfed8e2",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "held_for_location_or_image_review",
+    "reviewNote": "Downloaded panorama is inside the mall, excluded from outdoor surroundings."
+  },
+  "provider_05ae2bd1eaed1fbc438f3c4fc57": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_266be71cac79a567e329dd117807e9b7/view?project=6a916a6c0030a70a9d75",
+    "version": "266be71cac79a567e329dd117807e9b7836b966e509f3a353866764b0254e008",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  },
+  "provider_d599142b1023ab80f309304845e": {
+    "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4c66554e4c8429818e9ed9efe7c0c1f6/view?project=6a916a6c0030a70a9d75",
+    "version": "4c66554e4c8429818e9ed9efe7c0c1f668fa9f29f84dc15860f23234e6fbceb2",
+    "source": "Google Street View",
+    "captureDate": null,
+    "reviewStatus": "outdoor_candidate_address_reviewed",
+    "reviewNote": "Outdoor image inspected; catalogue and listing share street/building context. Not survey-grade geolocation or current access confirmation."
+  }
+}

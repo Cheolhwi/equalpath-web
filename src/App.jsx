@@ -1,3 +1,4 @@
+import { clearSurroundingsCache } from "./surroundings-cache.js";
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -62,7 +63,6 @@ import { hasStoredMotionPreference, readMotionPreference, writeMotionPreference 
 import {
   SavedLibrary,
   SavedCentreReminder,
-  MapSavedShortcuts,
   FavouriteEditor,
   SavedChanges,
 } from "./SavedViews.jsx";
@@ -226,8 +226,9 @@ export default function App({
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(""), 4200);
   };
-  const clearLocalCache = () => {
+  const clearLocalCache = async () => {
     try {
+      await clearSurroundingsCache();
       clearSearchRouteCache();
       Object.keys(window.localStorage)
         .filter(key => key.startsWith("equalpath:"))
@@ -500,6 +501,12 @@ export default function App({
   useEffect(() => { setOnePanel(initialOnePanel); }, [results]);
   const oneShown = !familyMode && !!results && !busy && !tourOpen && !choosing && mobilePane === "map" && isShortCare(activeRequest) && items.length > 0;
   const oneOpen = oneShown && !onePanel.collapsed;
+  // "All N centres" (8 Oct 2026): one button, no Saved shortcut (Saved is in
+  // the top navigation). Under the search bar on its own; with the one-child
+  // panel it sits beside the panel's "Show …" tab, or beside the open panel.
+  const listButton = familyMode ? null : <div className="map-quick-actions">
+    <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>
+  </div>;
   // Arrives armed only after the pointer has left the search bar since the
   // last search, so a pointer resting on Find childcare doesn't hide new results.
   const tuckArmed = useRef(false);
@@ -1397,11 +1404,7 @@ export default function App({
             collapsed={searchCollapsed} onCollapsedChange={setSearchCollapsed}
             notice={reopening ? `Choose a new date for ${reopening.name}.` : results?.total === 0 ? "No centres found. Try another address or change the filters." : browseSelection && !results ? `Add your search details for ${browseSelection.name}.` : mode === "demo" ? "Demo · fictional centres" : ""}
             failure={familyMode ? (family.state?.status === "error" ? family.state.error : null) : failure} onRetry={() => search(null)} addressStatus={pickupAddress} onRetryAddress={() => setAddressRetry(n => n + 1)} />
-          <div className="map-quick-actions">
-            {!familyMode && <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>}
-            <MapSavedShortcuts library={library}
-              onCentres={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }} />
-          </div>
+          {!oneShown && listButton}
           {(familyNoMatch || (!familyMode && isShortCare(results?.request) && !busy && !dirty &&
             (Number.isFinite(results?.explicitMatchCount)
               ? results.explicitMatchCount === 0
@@ -1425,7 +1428,7 @@ export default function App({
             onSelectCentre={(id) => setSelected(id)}
             onContact={(p) => prepare(p, activeRequest)}
             onChecklist={(p) => startPreparation(p, activeRequest)}
-            onDetails={(p) => openDetails(p)} />
+            onDetails={(p) => openDetails(p)} extra={listButton} />
         )}
         {(mapStarted || mapActive) && <Suspense fallback={null}><MapCanvas
           key={mode}

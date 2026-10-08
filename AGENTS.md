@@ -112,3 +112,7 @@
 - Child age is chosen in whole years (7 Oct 2026): one row of segments "Under 1 · 1 · 2 · 3 · 4 · 5 · 6" (values "0"–"6", `CHILD_AGES` in `shared/request.mjs`, component `src/AgeRangeChoice.jsx`), one row per child for two children, chip "1 · 4 yrs" / "2 · 4 & 2 yrs". The 1–3 / 4–6 groups were dropped because they cross the limits centres publish (18 months, 2 years, under 4, under 6), so `checkAge` could only answer "Ask" (64% of short-care results vs about 13% with single years). Do not use "Under 3/4/5…" labels: as cumulative bands they make every centre with a minimum age an "Ask". "1-3" and "4-6" stay valid for saved searches and old links.
 
 - Child 2's own Start/End in the map dock use `TimeInput variant="box"` (7 Oct 2026): the whole box (and its label) opens the same hour/minute picker as the chips; no free typing.
+
+- In the centre Details dialog the registration badge follows the centre's name inside the title (8 Oct 2026), not at the far right of the header; its record opens under the title from the left. `Dialog` renders `titleAccessory` inside the `h2` (the dialog is still labelled by the name only).
+
+- The map has one list button, "All N centres" ("Nearby centres" before a search), and no Saved shortcut — Saved is in the top navigation (8 Oct 2026). With the one-child panel it sits in the same row as the panel's "Show …" tab when the panel is tucked away, and beside the top of the open panel otherwise, so the panel starts right under the search bar. Without the panel it sits under the search bar. Two-children mode has no list button.

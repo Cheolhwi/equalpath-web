@@ -25,7 +25,7 @@ function Call({ p }) {
   return null;
 }
 
-export default function OneChildPanel({ items, request, state, onChange, top = 300, onSelectCentre, onContact, onChecklist, onDetails }) {
+export default function OneChildPanel({ items, request, state, onChange, top = 300, onSelectCentre, onContact, onChecklist, onDetails, extra = null }) {
   const panel = useRef(null);
   useEffect(() => { panel.current?.scrollTo?.({ top: 0 }); }, [state.view, state.selected, state.collapsed]);
   const [closing, setClosing] = useState(false);
@@ -39,11 +39,14 @@ export default function OneChildPanel({ items, request, state, onChange, top = 3
   const chosen = state.view === "plan" ? items.find((p) => p.id === state.selected) : null;
   if (state.collapsed) {
     const label = chosen ? "Show your plan" : "Show the options";
-    return <button className="family-tab" style={{ "--family-top": `${top}px` }} onClick={() => set({ collapsed: false })} aria-label={label}>
-      <PanelLeftOpen size={18} className="family-wide" aria-hidden="true" /><ChevronUp size={18} className="family-narrow" aria-hidden="true" />{label}
-    </button>;
+    // The tab and "All N centres" share one row under the search bar.
+    return <div className="family-tab-row" style={{ "--family-top": `${top}px` }}>
+      <button className="family-tab" onClick={() => set({ collapsed: false })} aria-label={label}>
+        <PanelLeftOpen size={18} className="family-wide" aria-hidden="true" /><ChevronUp size={18} className="family-narrow" aria-hidden="true" />{label}
+      </button>{extra}
+    </div>;
   }
-  return <section ref={panel} className={`family-panel one-child-panel${chosen ? " is-plan" : ""}${closing ? " is-closing" : ""}`} style={{ "--family-top": `${top}px` }} aria-label={chosen ? "Your plan" : "Suggested centres"}>
+  return <>{extra && <div className="family-side-extra" style={{ "--family-top": `${top}px` }}>{extra}</div>}<section ref={panel} className={`family-panel one-child-panel${chosen ? " is-plan" : ""}${closing ? " is-closing" : ""}`} style={{ "--family-top": `${top}px` }} aria-label={chosen ? "Your plan" : "Suggested centres"}>
     <div className="family-topbar"><button className="family-collapse" onClick={hide} disabled={closing} aria-label="Hide the panel and show the whole map" title="Hide panel">
       <PanelLeftClose size={18} className="family-wide" aria-hidden="true" /><ChevronDown size={20} className="family-narrow" aria-hidden="true" /></button></div>
     {chosen
@@ -51,7 +54,7 @@ export default function OneChildPanel({ items, request, state, onChange, top = 3
           onContact={onContact} onChecklist={onChecklist} onDetails={onDetails} />
       : <Options items={items} request={request} showAll={state.showAll} onShowAll={() => set({ showAll: true })}
           onSee={(p) => { set({ view: "plan", selected: p.id }); onSelectCentre?.(p.id); }} />}
-  </section>;
+  </section></>;
 }
 
 function Options({ items, request, showAll, onShowAll, onSee }) {
