@@ -1,0 +1,834 @@
+{
+  "method": "Observed Google Maps Street View Image capture label; matched report link panorama ID to downloaded image panorama ID",
+  "providers": 92,
+  "views": 276,
+  "records": [
+    {
+      "provider_id": "provider_4f0f58b2f50eedf3b38e0c4f5cd",
+      "panorama_id": "z1kxbnqGlgRlPCWUHKheHA",
+      "captureDate": "2024-02",
+      "observedText": "Image capture: Feb 2024",
+      "sourceUrl": "https://www.google.com/maps/@3.0513491,101.5394395,10a,90y,90t/data=!3m7!1e1!3m5!1sz1kxbnqGlgRlPCWUHKheHA!2e0!6shttps:%2F%2Fstreetviewpixels-pa.clients6.google.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3Dz1kxbnqGlgRlPCWUHKheHA%26yaw%3D0!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI2MTAwNS4wIKXMDSoASAFQAw%3D%3D",
+      "checkedAt": "2026-10-08T15:18:05.506Z"
+    },
+    {
+      "provider_id": "provider_854cbeba7a7af3f450f7da5287b",
+      "panorama_id": "PiFIYbnxkBeoNnLg7LrkgA",
+      "captureDate": "2024-10",
+      "observedText": "Image capture: Oct 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=PiFIYbnxkBeoNnLg7LrkgA",
+      "checkedAt": "2026-10-08T15:18:50.174Z"
+    },
+    {
+      "provider_id": "provider_dfc7aac4a18e2d8a8a6e7b74e41",
+      "panorama_id": "bh6ckikro59DRoxCk1TbdQ",
+      "captureDate": "2021-01",
+      "observedText": "Image capture: Jan 2021",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=bh6ckikro59DRoxCk1TbdQ",
+      "checkedAt": "2026-10-08T15:18:51.372Z"
+    },
+    {
+      "provider_id": "provider_4435203425900ca6d5eb73bbcfc",
+      "panorama_id": "gCLPtA5KBx1mWzwdL6QObg",
+      "captureDate": "2024-02",
+      "observedText": "Image capture: Feb 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=gCLPtA5KBx1mWzwdL6QObg",
+      "checkedAt": "2026-10-08T15:18:52.422Z"
+    },
+    {
+      "provider_id": "provider_d8c07aa87dca79f40cb3a4c5f88",
+      "panorama_id": "SSv616JOxW3PmeI_fNq-uw",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=SSv616JOxW3PmeI_fNq-uw",
+      "checkedAt": "2026-10-08T15:18:53.699Z"
+    },
+    {
+      "provider_id": "provider_751c1454afb57d47c554a51bed1",
+      "panorama_id": "6Hko5SHtzxH-t-WQPlPoRg",
+      "captureDate": "2024-09",
+      "observedText": "Image capture: Sep 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=6Hko5SHtzxH-t-WQPlPoRg",
+      "checkedAt": "2026-10-08T15:18:54.801Z"
+    },
+    {
+      "provider_id": "provider_kpm_db51d43c94a398be4a54a899",
+      "panorama_id": "bgBMu87R6J28evBfB1oySw",
+      "captureDate": "2024-09",
+      "observedText": "Image capture: Sep 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=bgBMu87R6J28evBfB1oySw",
+      "checkedAt": "2026-10-08T15:22:59.786Z"
+    },
+    {
+      "provider_id": "provider_kpm_c56814bdf48ae5c686d5b2f1",
+      "panorama_id": "evestR5zjCNr1SOO2RQ1Ug",
+      "captureDate": "2024-09",
+      "observedText": "Image capture: Sep 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=evestR5zjCNr1SOO2RQ1Ug",
+      "checkedAt": "2026-10-08T15:18:59.271Z"
+    },
+    {
+      "provider_id": "provider_21d3add9c2f1541e64bfd3c0db2",
+      "panorama_id": "l4EUn52Uv-zP6-7gOJfMfA",
+      "captureDate": "2026-02",
+      "observedText": "Image capture: Feb 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=l4EUn52Uv-zP6-7gOJfMfA",
+      "checkedAt": "2026-10-08T15:23:00.945Z"
+    },
+    {
+      "provider_id": "provider_5c94476fd2ff9cb72e757c8be21",
+      "panorama_id": "GAg-HqGiiC9l2COMwav8Gg",
+      "captureDate": "2025-01",
+      "observedText": "Image capture: Jan 2025",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=GAg-HqGiiC9l2COMwav8Gg",
+      "checkedAt": "2026-10-08T15:19:30.950Z"
+    },
+    {
+      "provider_id": "provider_cd892d6fec7884999990b15268f",
+      "panorama_id": "dr7IVYRMFhOY10vpk7l1PA",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=dr7IVYRMFhOY10vpk7l1PA",
+      "checkedAt": "2026-10-08T15:23:02.084Z"
+    },
+    {
+      "provider_id": "provider_2f1597c7ee1e4fa15ac47d784e9",
+      "panorama_id": "flObUX6R-XH4Xez21Lu0_Q",
+      "captureDate": "2026-02",
+      "observedText": "Image capture: Feb 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=flObUX6R-XH4Xez21Lu0_Q",
+      "checkedAt": "2026-10-08T15:19:35.371Z"
+    },
+    {
+      "provider_id": "provider_28394a2cc47dd757e4fda6716df",
+      "panorama_id": "KKJm_Rul6wEhJaeoPUm8pw",
+      "captureDate": "2024-04",
+      "observedText": "Image capture: Apr 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=KKJm_Rul6wEhJaeoPUm8pw",
+      "checkedAt": "2026-10-08T15:23:03.362Z"
+    },
+    {
+      "provider_id": "provider_3cde969fd99209c91f1e5ed9899",
+      "panorama_id": "G2ci8rS8TU-cwTVkdIbGpA",
+      "captureDate": "2026-03",
+      "observedText": "Image capture: Mar 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=G2ci8rS8TU-cwTVkdIbGpA",
+      "checkedAt": "2026-10-08T15:19:39.875Z"
+    },
+    {
+      "provider_id": "provider_c50b83c9a0441e88ebde0e48c34",
+      "panorama_id": "aV4jTy8d6ufDw9zMxy8Wew",
+      "captureDate": "2024-07",
+      "observedText": "Image capture: Jul 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=aV4jTy8d6ufDw9zMxy8Wew",
+      "checkedAt": "2026-10-08T15:19:41.042Z"
+    },
+    {
+      "provider_id": "provider_8decab43ab4f3e21d046f9bd1d2",
+      "panorama_id": "Q4JeUw_V7-AeoxHM8IL4Ag",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=Q4JeUw_V7-AeoxHM8IL4Ag",
+      "checkedAt": "2026-10-08T15:19:42.331Z"
+    },
+    {
+      "provider_id": "provider_kpm_e568c0c0a13afedf16b7b6ea",
+      "panorama_id": "ZEXgGvBGluDdoPO_hrdCOw",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=ZEXgGvBGluDdoPO_hrdCOw",
+      "checkedAt": "2026-10-08T15:19:43.523Z"
+    },
+    {
+      "provider_id": "provider_33b9f65789da6f2690b9b5f6c56",
+      "panorama_id": "zwff9TA3JVL4Sh-7bJf3iA",
+      "captureDate": "2026-01",
+      "observedText": "Image capture: Jan 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=zwff9TA3JVL4Sh-7bJf3iA",
+      "checkedAt": "2026-10-08T15:19:44.827Z"
+    },
+    {
+      "provider_id": "provider_kpm_7dc3a788f13d94ad86341a4d",
+      "panorama_id": "eXONyqi1np1XOYJzcxH5Yw",
+      "captureDate": "2024-04",
+      "observedText": "Image capture: Apr 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=eXONyqi1np1XOYJzcxH5Yw",
+      "checkedAt": "2026-10-08T15:19:46.148Z"
+    },
+    {
+      "provider_id": "provider_a691842089fe2437d88ce9972bb",
+      "panorama_id": "hHm_JSCPXUKQGErtrUOa3Q",
+      "captureDate": "2024-10",
+      "observedText": "Image capture: Oct 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=hHm_JSCPXUKQGErtrUOa3Q",
+      "checkedAt": "2026-10-08T15:19:47.348Z"
+    },
+    {
+      "provider_id": "provider_5f64af17175fa5f63ffccf12619",
+      "panorama_id": "iIHZ6M3Ge0hFjWKtu46cCg",
+      "captureDate": "2026-03",
+      "observedText": "Image capture: Mar 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=iIHZ6M3Ge0hFjWKtu46cCg",
+      "checkedAt": "2026-10-08T15:19:49.463Z"
+    },
+    {
+      "provider_id": "provider_78cd0bae5cb2573010c59e6b843",
+      "panorama_id": "LPHStAVXB2qjSwq8hCHHzQ",
+      "captureDate": "2021-02",
+      "observedText": "Image capture: Feb 2021",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=LPHStAVXB2qjSwq8hCHHzQ",
+      "checkedAt": "2026-10-08T15:20:06.482Z"
+    },
+    {
+      "provider_id": "provider_58ab78d3c7b844bdf28183c3d87",
+      "panorama_id": "nxzB2U2r5lO7-TWiSMdu4A",
+      "captureDate": "2024-04",
+      "observedText": "Image capture: Apr 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=nxzB2U2r5lO7-TWiSMdu4A",
+      "checkedAt": "2026-10-08T15:20:07.657Z"
+    },
+    {
+      "provider_id": "provider_0c19aa2edd798d0ff6e45f497a7",
+      "panorama_id": "wSWO7lgS8iva2c9YR0C6_g",
+      "captureDate": "2014-02",
+      "observedText": "Image capture: Feb 2014",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=wSWO7lgS8iva2c9YR0C6_g",
+      "checkedAt": "2026-10-08T15:20:08.813Z"
+    },
+    {
+      "provider_id": "provider_15466d06ac276e3cdbffc2a041a",
+      "panorama_id": "d2d4WgjMvCVtBtQeDpXEqA",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=d2d4WgjMvCVtBtQeDpXEqA",
+      "checkedAt": "2026-10-08T15:20:09.951Z"
+    },
+    {
+      "provider_id": "provider_dea488608830dad1689a5ea4ba9",
+      "panorama_id": "lrpqzi59lvV8Pq3ODkOaMQ",
+      "captureDate": "2026-02",
+      "observedText": "Image capture: Feb 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=lrpqzi59lvV8Pq3ODkOaMQ",
+      "checkedAt": "2026-10-08T15:20:11.123Z"
+    },
+    {
+      "provider_id": "provider_636b2a9c3d83d2b574befea79b3",
+      "panorama_id": "8Elxl6_0fxps18dX89i5UA",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=8Elxl6_0fxps18dX89i5UA",
+      "checkedAt": "2026-10-08T15:20:12.206Z"
+    },
+    {
+      "provider_id": "provider_3cdcb360805a96209116c9d79ff",
+      "panorama_id": "y0ojyY9wAoCZtN70FWuRbQ",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=y0ojyY9wAoCZtN70FWuRbQ",
+      "checkedAt": "2026-10-08T15:20:13.410Z"
+    },
+    {
+      "provider_id": "provider_e371a32c2b53792c04204023483",
+      "panorama_id": "tgb-lz8oJ81i_OgV1D_2cg",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=tgb-lz8oJ81i_OgV1D_2cg",
+      "checkedAt": "2026-10-08T15:20:14.577Z"
+    },
+    {
+      "provider_id": "provider_c2b689c2369c5c0faea1131f959",
+      "panorama_id": "L_aFje0mShnG0x2MXFojKA",
+      "captureDate": "2021-01",
+      "observedText": "Image capture: Jan 2021",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=L_aFje0mShnG0x2MXFojKA",
+      "checkedAt": "2026-10-08T15:20:15.771Z"
+    },
+    {
+      "provider_id": "provider_fcf44173179ebfa921a56884451",
+      "panorama_id": "e7ErQ8QXPODWtQP5KBSKPA",
+      "captureDate": "2026-01",
+      "observedText": "Image capture: Jan 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=e7ErQ8QXPODWtQP5KBSKPA",
+      "checkedAt": "2026-10-08T15:20:16.946Z"
+    },
+    {
+      "provider_id": "provider_f2ccc44e691cd598685f58978f3",
+      "panorama_id": "9jUJhsHwSh_R2imoUhVLXw",
+      "captureDate": "2024-04",
+      "observedText": "Image capture: Apr 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=9jUJhsHwSh_R2imoUhVLXw",
+      "checkedAt": "2026-10-08T15:20:17.998Z"
+    },
+    {
+      "provider_id": "provider_1008f8f75fac05329853063af74",
+      "panorama_id": "JcUgN8QpB6a4PYye1c_GVQ",
+      "captureDate": "2024-09",
+      "observedText": "Image capture: Sep 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=JcUgN8QpB6a4PYye1c_GVQ",
+      "checkedAt": "2026-10-08T15:20:19.175Z"
+    },
+    {
+      "provider_id": "provider_a63702b978e2628289738c9db6c",
+      "panorama_id": "Cc0i9bUEhw2mVwEciLTO2Q",
+      "captureDate": "2026-02",
+      "observedText": "Image capture: Feb 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=Cc0i9bUEhw2mVwEciLTO2Q",
+      "checkedAt": "2026-10-08T15:20:40.441Z"
+    },
+    {
+      "provider_id": "provider_566a7ddf7a32d108137ee38f19a",
+      "panorama_id": "746DB4-5ulha5ZAmBaQzRg",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=746DB4-5ulha5ZAmBaQzRg",
+      "checkedAt": "2026-10-08T15:20:41.599Z"
+    },
+    {
+      "provider_id": "provider_b98cf5c4416105eb3c18b26160b",
+      "panorama_id": "dd_vasSgbo827502JSD-DQ",
+      "captureDate": "2026-01",
+      "observedText": "Image capture: Jan 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=dd_vasSgbo827502JSD-DQ",
+      "checkedAt": "2026-10-08T15:20:42.754Z"
+    },
+    {
+      "provider_id": "provider_76fdeb6c22557cfc43a289d43a0",
+      "panorama_id": "HVQ9hbB1krgKfdaKbOnScA",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=HVQ9hbB1krgKfdaKbOnScA",
+      "checkedAt": "2026-10-08T15:20:44.026Z"
+    },
+    {
+      "provider_id": "provider_65f929229eb841c37f92d3860a9",
+      "panorama_id": "cpmDwz5fjoOT-W6L7Cnu_A",
+      "captureDate": "2021-02",
+      "observedText": "Image capture: Feb 2021",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=cpmDwz5fjoOT-W6L7Cnu_A",
+      "checkedAt": "2026-10-08T15:20:45.171Z"
+    },
+    {
+      "provider_id": "provider_a4f81440a19cb9ccf4b2528b1a5",
+      "panorama_id": "WtIWCdrWGrsFZbhads95QQ",
+      "captureDate": "2024-07",
+      "observedText": "Image capture: Jul 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=WtIWCdrWGrsFZbhads95QQ",
+      "checkedAt": "2026-10-08T15:20:46.309Z"
+    },
+    {
+      "provider_id": "provider_bc393868c856c47ef03fd2043b1",
+      "panorama_id": "5SLssLkrE97WYeJnSNrYJQ",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=5SLssLkrE97WYeJnSNrYJQ",
+      "checkedAt": "2026-10-08T15:20:47.433Z"
+    },
+    {
+      "provider_id": "provider_63030c80b7dfee98bae1dc21311",
+      "panorama_id": "agX9uB10qLZzWHMkkJmUdQ",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=agX9uB10qLZzWHMkkJmUdQ",
+      "checkedAt": "2026-10-08T15:20:48.586Z"
+    },
+    {
+      "provider_id": "provider_9bf9c5cf005742c633ea5954a42",
+      "panorama_id": "2ngofN99iPZdhoW8nLPmyQ",
+      "captureDate": "2024-04",
+      "observedText": "Image capture: Apr 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=2ngofN99iPZdhoW8nLPmyQ",
+      "checkedAt": "2026-10-08T15:20:50.104Z"
+    },
+    {
+      "provider_id": "provider_9c0bd03e329d0c94e9abf11085a",
+      "panorama_id": "BjIFyhZ1ilD7pv-fQzV5_w",
+      "captureDate": "2024-02",
+      "observedText": "Image capture: Feb 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=BjIFyhZ1ilD7pv-fQzV5_w",
+      "checkedAt": "2026-10-08T15:20:51.256Z"
+    },
+    {
+      "provider_id": "provider_aca4036ed9e9162d02bafe49beb",
+      "panorama_id": "xktE3DmCop3OtIUlAbFSHQ",
+      "captureDate": "2024-02",
+      "observedText": "Image capture: Feb 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=xktE3DmCop3OtIUlAbFSHQ",
+      "checkedAt": "2026-10-08T15:20:52.514Z"
+    },
+    {
+      "provider_id": "provider_d35bfa333a7c00ff49f26afb074",
+      "panorama_id": "udFL2o3LpqN8LO0ArCazWw",
+      "captureDate": "2026-01",
+      "observedText": "Image capture: Jan 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=udFL2o3LpqN8LO0ArCazWw",
+      "checkedAt": "2026-10-08T15:20:53.593Z"
+    },
+    {
+      "provider_id": "provider_043d95893fd6f7de6ec82f8cca2",
+      "panorama_id": "VAinjo5J6eRcpdCBlFBuow",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=VAinjo5J6eRcpdCBlFBuow",
+      "checkedAt": "2026-10-08T15:20:54.746Z"
+    },
+    {
+      "provider_id": "provider_kpm_ffcfa148da3c8a88092d82b2",
+      "panorama_id": "GIyt_ys3ZkXeg3nQcXPPNA",
+      "captureDate": "2026-03",
+      "observedText": "Image capture: Mar 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=GIyt_ys3ZkXeg3nQcXPPNA",
+      "checkedAt": "2026-10-08T15:20:55.816Z"
+    },
+    {
+      "provider_id": "provider_kpm_469c0bfc516d88c0e3a2854f",
+      "panorama_id": "pQPlcLl9G8tH6NKb2RyB3w",
+      "captureDate": "2020-08",
+      "observedText": "Image capture: Aug 2020",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=pQPlcLl9G8tH6NKb2RyB3w",
+      "checkedAt": "2026-10-08T15:20:56.951Z"
+    },
+    {
+      "provider_id": "provider_7617dd8dc6f837b9d9f170a9465",
+      "panorama_id": "A-3BXSVBt3iQ81tf3Fpz1w",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=A-3BXSVBt3iQ81tf3Fpz1w",
+      "checkedAt": "2026-10-08T15:21:12.459Z"
+    },
+    {
+      "provider_id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+      "panorama_id": "Qz8n1mk13GPcDSsTcXaH6A",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=Qz8n1mk13GPcDSsTcXaH6A",
+      "checkedAt": "2026-10-08T15:21:13.588Z"
+    },
+    {
+      "provider_id": "provider_88408de0b4f21319175ac455673",
+      "panorama_id": "cgGEzTKXmrlj2OxXluaevw",
+      "captureDate": "2024-06",
+      "observedText": "Image capture: Jun 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=cgGEzTKXmrlj2OxXluaevw",
+      "checkedAt": "2026-10-08T15:21:14.761Z"
+    },
+    {
+      "provider_id": "provider_4576ca09bd13bb7c7798a359247",
+      "panorama_id": "99ZavMjsT_2WVx-Q6avCDw",
+      "captureDate": "2021-03",
+      "observedText": "Image capture: Mar 2021",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=99ZavMjsT_2WVx-Q6avCDw",
+      "checkedAt": "2026-10-08T15:21:15.862Z"
+    },
+    {
+      "provider_id": "provider_81e9c718b74e4991bd5fb4a16b1",
+      "panorama_id": "CmcBlsMp1xy-OmnGwlRPag",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=CmcBlsMp1xy-OmnGwlRPag",
+      "checkedAt": "2026-10-08T15:21:17.029Z"
+    },
+    {
+      "provider_id": "provider_193b316038c5bc2d8723f107a91",
+      "panorama_id": "PvrRa-SPDVfimn-MQGW7uQ",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=PvrRa-SPDVfimn-MQGW7uQ",
+      "checkedAt": "2026-10-08T15:21:18.197Z"
+    },
+    {
+      "provider_id": "provider_1c9df519e489a6da1a3659dfb02",
+      "panorama_id": "MMGn_zl4Hf6fJBfsTZrDGw",
+      "captureDate": "2013-12",
+      "observedText": "Image capture: Dec 2013",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=MMGn_zl4Hf6fJBfsTZrDGw",
+      "checkedAt": "2026-10-08T15:21:19.331Z"
+    },
+    {
+      "provider_id": "provider_6c3f5c31801a12fc760dda27dc4",
+      "panorama_id": "5e0rcI0hu7S4tUGqtEaAdg",
+      "captureDate": "2024-06",
+      "observedText": "Image capture: Jun 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=5e0rcI0hu7S4tUGqtEaAdg",
+      "checkedAt": "2026-10-08T15:21:20.521Z"
+    },
+    {
+      "provider_id": "provider_aefc7e709e8a18e9559e85a8518",
+      "panorama_id": "lc4u26ZebanAMye5cht9pA",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=lc4u26ZebanAMye5cht9pA",
+      "checkedAt": "2026-10-08T15:21:21.649Z"
+    },
+    {
+      "provider_id": "provider_6952264f50219138dbe8dd6a25d",
+      "panorama_id": "ii16xlUVsn5hiMzOTipJ9g",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=ii16xlUVsn5hiMzOTipJ9g",
+      "checkedAt": "2026-10-08T15:21:22.827Z"
+    },
+    {
+      "provider_id": "provider_038b7be988901ada265e733de80",
+      "panorama_id": "xTawGHZ-Ise7d8sGt3UgNw",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=xTawGHZ-Ise7d8sGt3UgNw",
+      "checkedAt": "2026-10-08T15:21:23.866Z"
+    },
+    {
+      "provider_id": "provider_21507892dc4fa7d9cba4819519a",
+      "panorama_id": "Pta2-czM1ytgLBPgpTGlGA",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=Pta2-czM1ytgLBPgpTGlGA",
+      "checkedAt": "2026-10-08T15:21:24.998Z"
+    },
+    {
+      "provider_id": "provider_b5e469ac6144ecffad381d62593",
+      "panorama_id": "TlEsEf5PFYGkpb8YFNAg2A",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=TlEsEf5PFYGkpb8YFNAg2A",
+      "checkedAt": "2026-10-08T15:21:26.147Z"
+    },
+    {
+      "provider_id": "provider_518fe32f1b03b0dd19e754c0b61",
+      "panorama_id": "fSF7JNzUovDhBjIedZLlUg",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=fSF7JNzUovDhBjIedZLlUg",
+      "checkedAt": "2026-10-08T15:21:27.305Z"
+    },
+    {
+      "provider_id": "provider_57987832b49511aad3a52391f1b",
+      "panorama_id": "aVwQ8AjxboJ8xcE33QwTjg",
+      "captureDate": "2024-09",
+      "observedText": "Image capture: Sep 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=aVwQ8AjxboJ8xcE33QwTjg",
+      "checkedAt": "2026-10-08T15:21:28.471Z"
+    },
+    {
+      "provider_id": "provider_1bdfa3d76b9a23c6c4306edb6f4",
+      "panorama_id": "LbqmfpGzdaO0Y-ksakZizQ",
+      "captureDate": "2025-09",
+      "observedText": "Image capture: Sep 2025",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=LbqmfpGzdaO0Y-ksakZizQ",
+      "checkedAt": "2026-10-08T15:21:46.096Z"
+    },
+    {
+      "provider_id": "provider_0463d276c19b108258221b7c61f",
+      "panorama_id": "RF60HhZ5wfHe0icqUnTo_w",
+      "captureDate": "2018-09",
+      "observedText": "Image capture: Sep 2018",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=RF60HhZ5wfHe0icqUnTo_w",
+      "checkedAt": "2026-10-08T15:21:47.375Z"
+    },
+    {
+      "provider_id": "provider_e9c96afada4f977ef2cbb5b6df3",
+      "panorama_id": "UgJLLYZeHe5oP34aCH6M1A",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=UgJLLYZeHe5oP34aCH6M1A",
+      "checkedAt": "2026-10-08T15:21:48.515Z"
+    },
+    {
+      "provider_id": "provider_12805031be6164e7e5385a5ddb8",
+      "panorama_id": "NQkDdOuxPh4_8VCI7JLhyQ",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=NQkDdOuxPh4_8VCI7JLhyQ",
+      "checkedAt": "2026-10-08T15:21:49.697Z"
+    },
+    {
+      "provider_id": "provider_7cb3ea5e6283995e42d3e494f87",
+      "panorama_id": "3nJJjFJOQ-V7ux22Y919Hw",
+      "captureDate": "2026-03",
+      "observedText": "Image capture: Mar 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=3nJJjFJOQ-V7ux22Y919Hw",
+      "checkedAt": "2026-10-08T15:21:50.766Z"
+    },
+    {
+      "provider_id": "provider_2c2803915adcb4cbf28e4517953",
+      "panorama_id": "_1EL7afHzcK4OaCfHlDnxA",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=_1EL7afHzcK4OaCfHlDnxA",
+      "checkedAt": "2026-10-08T15:21:51.910Z"
+    },
+    {
+      "provider_id": "provider_d397801cb0cdd18b2c05c195743",
+      "panorama_id": "00OW60qcCftzQWPmy76NEw",
+      "captureDate": "2021-02",
+      "observedText": "Image capture: Feb 2021",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=00OW60qcCftzQWPmy76NEw",
+      "checkedAt": "2026-10-08T15:21:53.174Z"
+    },
+    {
+      "provider_id": "provider_kpm_90b4bd73497a245b83b815d4",
+      "panorama_id": "PNOWHrAiYvZEBogc7FbNyQ",
+      "captureDate": "2024-09",
+      "observedText": "Image capture: Sep 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=PNOWHrAiYvZEBogc7FbNyQ",
+      "checkedAt": "2026-10-08T15:21:54.252Z"
+    },
+    {
+      "provider_id": "provider_kpm_ac92822a92ad1c8b7d5e582d",
+      "panorama_id": "X4qTMK_B4f-4o0m56rZ4Mw",
+      "captureDate": "2020-08",
+      "observedText": "Image capture: Aug 2020",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=X4qTMK_B4f-4o0m56rZ4Mw",
+      "checkedAt": "2026-10-08T15:21:55.515Z"
+    },
+    {
+      "provider_id": "provider_kpm_2baeb8257e9258c2d97f4abe",
+      "panorama_id": "-vNwdNRKl2_VgL-6tR8vlg",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=-vNwdNRKl2_VgL-6tR8vlg",
+      "checkedAt": "2026-10-08T15:21:56.615Z"
+    },
+    {
+      "provider_id": "provider_kpm_c1958a54dba5840001cf6e7e",
+      "panorama_id": "KBRIwtVI30z6GY5SkGMrzw",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=KBRIwtVI30z6GY5SkGMrzw",
+      "checkedAt": "2026-10-08T15:21:57.765Z"
+    },
+    {
+      "provider_id": "provider_kpm_1a5375e66fe0a69a3b03c8ca",
+      "panorama_id": "3lutM6IV-yqBGdBAqbxdVQ",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=3lutM6IV-yqBGdBAqbxdVQ",
+      "checkedAt": "2026-10-08T15:21:58.967Z"
+    },
+    {
+      "provider_id": "provider_kpm_449fed18f98381991639ddb8",
+      "panorama_id": "95mZXWaVHh7oNCbvWLN8pw",
+      "captureDate": "2024-07",
+      "observedText": "Image capture: Jul 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=95mZXWaVHh7oNCbvWLN8pw",
+      "checkedAt": "2026-10-08T15:22:00.118Z"
+    },
+    {
+      "provider_id": "provider_kpm_e0ec76412f9945bc4209e066",
+      "panorama_id": "UOSNm5V02dvfRgiCelhHhA",
+      "captureDate": "2013-12",
+      "observedText": "Image capture: Dec 2013",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=UOSNm5V02dvfRgiCelhHhA",
+      "checkedAt": "2026-10-08T15:22:01.330Z"
+    },
+    {
+      "provider_id": "provider_kpm_f531e40170000844a9386d08",
+      "panorama_id": "KV8vs04R0dl8_5tTbynEvg",
+      "captureDate": "2020-09",
+      "observedText": "Image capture: Sep 2020",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=KV8vs04R0dl8_5tTbynEvg",
+      "checkedAt": "2026-10-08T15:22:02.610Z"
+    },
+    {
+      "provider_id": "provider_6608d9c70e9c6ad94b4600b1e22",
+      "panorama_id": "zaQoJXiBkUxGNlfJiGK2gg",
+      "captureDate": "2020-08",
+      "observedText": "Image capture: Aug 2020",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=zaQoJXiBkUxGNlfJiGK2gg",
+      "checkedAt": "2026-10-08T15:22:20.711Z"
+    },
+    {
+      "provider_id": "provider_bb3553049807255b4dfae54392e",
+      "panorama_id": "_nMXDPq-hDr-V4_Bbw88Jw",
+      "captureDate": "2024-04",
+      "observedText": "Image capture: Apr 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=_nMXDPq-hDr-V4_Bbw88Jw",
+      "checkedAt": "2026-10-08T15:22:21.991Z"
+    },
+    {
+      "provider_id": "provider_ccfd96e74d4774f2e3e6bd81eb2",
+      "panorama_id": "We8Fslj8iRSZzIi6pb-fzQ",
+      "captureDate": "2024-07",
+      "observedText": "Image capture: Jul 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=We8Fslj8iRSZzIi6pb-fzQ",
+      "checkedAt": "2026-10-08T15:22:23.117Z"
+    },
+    {
+      "provider_id": "provider_8ffcaeb5ece6819e21f579d5c34",
+      "panorama_id": "z4SjV_F6g6oqJV0I2Ye0cQ",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=z4SjV_F6g6oqJV0I2Ye0cQ",
+      "checkedAt": "2026-10-08T15:22:24.485Z"
+    },
+    {
+      "provider_id": "provider_da5d3a13d1f8e90ac99bf6b55db",
+      "panorama_id": "Kxc2COWqqBn2tocJRQ0chg",
+      "captureDate": "2024-05",
+      "observedText": "Image capture: May 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=Kxc2COWqqBn2tocJRQ0chg",
+      "checkedAt": "2026-10-08T15:22:25.655Z"
+    },
+    {
+      "provider_id": "provider_faf113b11a3a39d973d7704e42c",
+      "panorama_id": "jrFKNJacBrER3S-_HdASJw",
+      "captureDate": "2024-04",
+      "observedText": "Image capture: Apr 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=jrFKNJacBrER3S-_HdASJw",
+      "checkedAt": "2026-10-08T15:22:26.713Z"
+    },
+    {
+      "provider_id": "provider_5024c5195d83091571c93fd9e30",
+      "panorama_id": "dE0_MItf3-z7MxdHk_05Ig",
+      "captureDate": "2026-01",
+      "observedText": "Image capture: Jan 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=dE0_MItf3-z7MxdHk_05Ig",
+      "checkedAt": "2026-10-08T15:22:37.030Z"
+    },
+    {
+      "provider_id": "provider_709a1c3af749886ea08b7c5e4db",
+      "panorama_id": "vHfkAOSyz32AkZVs8iI1sA",
+      "captureDate": "2024-04",
+      "observedText": "Image capture: Apr 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=vHfkAOSyz32AkZVs8iI1sA",
+      "checkedAt": "2026-10-08T15:22:38.356Z"
+    },
+    {
+      "provider_id": "provider_559f9a6222dfd0f4965232c05d5",
+      "panorama_id": "hhSOBXUt6_jaTzBAPICipw",
+      "captureDate": "2024-07",
+      "observedText": "Image capture: Jul 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=hhSOBXUt6_jaTzBAPICipw",
+      "checkedAt": "2026-10-08T15:22:39.525Z"
+    },
+    {
+      "provider_id": "provider_048d12e84516f211fc58acceef1",
+      "panorama_id": "YrQgRNFeFCTrh5s2Dp4XqA",
+      "captureDate": "2024-07",
+      "observedText": "Image capture: Jul 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=YrQgRNFeFCTrh5s2Dp4XqA",
+      "checkedAt": "2026-10-08T15:22:40.638Z"
+    },
+    {
+      "provider_id": "provider_a1987f88bcdf70382a2d28684b0",
+      "panorama_id": "5GbjcIcKdjOBQs4Ng3QAqA",
+      "captureDate": "2024-08",
+      "observedText": "Image capture: Aug 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=5GbjcIcKdjOBQs4Ng3QAqA",
+      "checkedAt": "2026-10-08T15:22:41.821Z"
+    },
+    {
+      "provider_id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+      "panorama_id": "E0PX9ar9YE0EYetE3XC_JA",
+      "captureDate": "2025-09",
+      "observedText": "Image capture: Sep 2025",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=E0PX9ar9YE0EYetE3XC_JA",
+      "checkedAt": "2026-10-08T15:22:42.861Z"
+    },
+    {
+      "provider_id": "provider_05ae2bd1eaed1fbc438f3c4fc57",
+      "panorama_id": "AMqaMK0Twof6lriFYov-7w",
+      "captureDate": "2026-03",
+      "observedText": "Image capture: Mar 2026",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=AMqaMK0Twof6lriFYov-7w",
+      "checkedAt": "2026-10-08T15:22:44.042Z"
+    },
+    {
+      "provider_id": "provider_d599142b1023ab80f309304845e",
+      "panorama_id": "Hc94jUNK9kQYi8bHrsjUHw",
+      "captureDate": "2024-03",
+      "observedText": "Image capture: Mar 2024",
+      "panoMatched": true,
+      "sourceUrl": "https://www.google.com/maps/@?api=1&map_action=pano&pano=Hc94jUNK9kQYi8bHrsjUHw",
+      "checkedAt": "2026-10-08T15:22:45.214Z"
+    }
+  ]
+}

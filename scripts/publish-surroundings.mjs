@@ -26,10 +26,10 @@ for(const row of rows){
  if(!cli(['storage','get-file','--bucket-id',bucket,'--file-id',fileId],true))cli(['storage','create-file','--bucket-id',bucket,'--file-id',fileId,'--file',path]);
  const url=`${endpoint}/storage/buckets/${bucket}/files/${fileId}/view?project=${project}`;
  const response=await fetch(url);if(!response.ok)throw Error('Public image unavailable');const downloaded=Buffer.from(await response.arrayBuffer());if(createHash('sha256').update(downloaded).digest('hex')!==version)throw Error('Public image hash mismatch');
- images.push({url,version,direction:image.direction||'Original view',fileId});imageCount++;
+ images.push({url,version,direction:image.direction||'Original view',fileId,captureDate:image.captureDate||row.captureDate||null});imageCount++;
  }
  const {url,version,fileId}=images[0];
- const metadata={url,version,images,source:'Google Street View',captureDate:null,reviewStatus:row.review_status,reviewNote:row.reason};
+ const metadata={url,version,images,source:'Google Street View',captureDate:row.captureDate||null,captureDateSource:row.captureDateSource||null,panoramaId:row.panoramaId||null,reviewStatus:row.review_status,reviewNote:row.reason};
  const rowId='p_'+createHash('sha256').update(row.provider_id).digest('hex').slice(0,32);
  const data={provider_id:row.provider_id,bucket_id:bucket,file_id:fileId,version,payload:JSON.stringify(metadata)};
  cli(['tablesdb','upsert-row',...ta,'--row-id',rowId,'--data',JSON.stringify(data)]);

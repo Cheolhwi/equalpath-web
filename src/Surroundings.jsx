@@ -8,6 +8,9 @@ import './surroundings.css';
 // centre's address, so the page keeps its order (who, where, the key facts,
 // reviews). Selecting it shows the photo large over the page.
 const CAPTION = 'Google Street View';
+const captureText = date => /^\d{4}-(0[1-9]|1[0-2])$/.test(date ?? '')
+  ? `Captured ${new Intl.DateTimeFormat('en-GB', {month:'long', year:'numeric', timeZone:'UTC'}).format(new Date(`${date}-15T00:00:00Z`))}`
+  : 'Capture date not recorded';
 
 export default function Surroundings({ p }) {
   const photo = p.mode === 'demo' ? null : photos[p.id];
@@ -59,7 +62,7 @@ export default function Surroundings({ p }) {
           <span aria-live="polite">{index + 1} / {images.length} · {images[index]?.direction}</span>
           <button type="button" aria-label="Next view" onClick={() => move(1)}>Next<ChevronRight size={20} /></button>
         </div>}
-        <figcaption>{CAPTION}{images.length > 1 && ' · Different directions from the same spot'}</figcaption>
+        <figcaption>{CAPTION} · {captureText(images[index]?.captureDate || photo.captureDate)}{images.length > 1 && ' · Different directions from the same spot'}</figcaption>
       </figure>
       <button ref={close} type="button" className="surroundings-close" onClick={shut}><X size={18} aria-hidden="true" />Close photo</button>
     </div>}
