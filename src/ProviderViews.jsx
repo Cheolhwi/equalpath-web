@@ -423,6 +423,8 @@ export function Details({ p, request, onAskReview, onCompare, compared }) {
     : asks ? { tone: "unknown", icon: <HelpCircle size={16} aria-hidden="true" />, text: asks === 1 ? "1 thing to ask the centre" : `${asks} things to ask the centre` }
       : { tone: "supported", icon: <CheckCircle2 size={16} aria-hidden="true" />, text: "The listed details match your search" };
   return <div className="centre-details centre-profile">
+    <div className="centre-hero">
+    <div className="centre-hero-main">
     <div className="centre-identity"><span>{[categoryLabel(p), placeLine(p)].filter(Boolean).join(" · ")}</span><p><MapPin size={14} />{displayAddress(p.address) ?? "Exact address not listed"}</p></div>
     {p.mode === "demo" && <p className="demo-notice">Demo centre — fictional details.</p>}
     <div className="centre-search-line" aria-label="Your search">
@@ -435,13 +437,15 @@ export function Details({ p, request, onAskReview, onCompare, compared }) {
       {onCompare && <button className={`centre-compare ${compared ? "secondary" : "primary"}`} aria-pressed={compared} onClick={onCompare}>
         {compared ? <Check size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}{compared ? "Added to compare" : "Add to compare"}</button>}
     </div>
+    </div>
+    <Surroundings key={p.id} p={p} />
+    </div>
     <dl className={`centre-metrics ${shortCare ? "" : "regular-metrics"}`} aria-label="Key information">
       {shortCare && <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care ends at</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>}
       <div><dt><Users size={15} />Age</dt><dd>{detailAgeLabel(p)}</dd><small>{p.age?.basis === "type_reference" ? "Age guide for this centre type" : "Listed ages"}</small></div>
       <div><dt><Car size={15} />Drive</dt><dd>{p.driving?.state === "available" ? `About ${p.driving.minutes} min` : p.driving?.state === "loading" ? "Checking…" : "Ask the centre"}</dd><small>{p.driving?.state === "available" ? `${p.driving.distanceKm ? `${p.driving.distanceKm} km by road · ` : ""}without traffic` : p.driving?.state === "loading" ? "This takes a moment" : "Drive time not available"}</small></div>
       <div className="metric-fee"><dt><Wallet size={15} />Fee</dt><dd>{fees.label}</dd><small>{p.cost?.available ? `For ${request.deadline}–${request.end}` : p.careType === "short_term" ? fees.note : p.fees?.every(f=>f.verification==='area_estimate') && p.fees.length ? "Estimated from nearby centres" : "Ask what the fee includes"}</small></div>
     </dl>
-    <Surroundings key={p.id} p={p} />
     <div className="centre-layout profile-layout">
       <ReviewEvidence p={p} onAsk={onAskReview} defaultOpen askLabel="Add to my questions" />
       <div className="centre-profile-side">

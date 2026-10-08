@@ -1,9 +1,35 @@
-.centre-surroundings { margin: 0 0 24px; border: 1px solid var(--rule); border-radius: 18px; background: var(--paper); overflow: hidden; }
-.surroundings-toggle { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 54px; padding: 14px 18px; background: var(--soft); color: var(--ink); border: 0; border-radius: 0; text-align: left; font: inherit; font-weight: 600; cursor: pointer; }
-.surroundings-toggle svg:last-child { margin-left: auto; transition: transform .18s; }
-.surroundings-toggle[aria-expanded=true] svg:last-child { transform: rotate(180deg); }
-.surroundings-toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: -4px; }
-.centre-surroundings figure { margin: 0; }
-.centre-surroundings img { display: block; width: 100%; max-height: 420px; object-fit: contain; height: auto; background: var(--soft); }
-.centre-surroundings figcaption, .centre-surroundings figure p { padding: 12px 18px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
-@media(prefers-reduced-motion:reduce) { .surroundings-toggle svg { transition: none; } }
+/* A small street photo beside the centre's address (8 Oct 2026). */
+.centre-surroundings { margin: 0; width: 100%; min-width: 0; }
+.surroundings-thumb {
+  position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; padding: 0; overflow: hidden;
+  border: 1px solid var(--rule); border-radius: 14px; background: var(--soft); cursor: zoom-in;
+}
+.surroundings-thumb:disabled { cursor: default; }
+/* Street photos are toned towards the site's warm sage palette: less
+   saturated, slightly warm, softer contrast. The large view is toned less. */
+.centre-surroundings { --photo-tone: saturate(.68) sepia(.18) hue-rotate(8deg) contrast(.94) brightness(1.04); }
+.surroundings-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; filter: var(--photo-tone); transition: transform .25s ease; }
+.surroundings-thumb:hover img { transform: scale(1.03); }
+.surroundings-thumb:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.surroundings-loading { position: absolute; inset: 0; background: linear-gradient(100deg, var(--soft) 30%, var(--paper) 50%, var(--soft) 70%) 0 0 / 300% 100%; animation: surroundings-shimmer 1.4s linear infinite; }
+@keyframes surroundings-shimmer { to { background-position: -150% 0; } }
+.surroundings-label {
+  position: absolute; left: 8px; bottom: 8px; display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 9px; border-radius: 999px; font-size: 12px; font-weight: 650; color: var(--ink);
+  background: color-mix(in srgb, var(--paper) 88%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.centre-surroundings > figcaption { margin-top: 6px; font-size: 12px; color: var(--muted); }
+
+.surroundings-lightbox {
+  position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 64px 24px 24px;
+  background: #151a14e6; cursor: zoom-out; animation: surroundings-in .18s ease both;
+}
+.surroundings-lightbox figure { margin: 0; max-width: min(1100px, 100%); cursor: default; }
+.surroundings-lightbox img { display: block; width: 100%; height: auto; max-height: calc(100dvh - 140px); object-fit: contain; border-radius: 12px; filter: saturate(.78) sepia(.12) hue-rotate(4deg) contrast(.97) brightness(1.02); }
+.surroundings-lightbox figcaption { margin-top: 10px; color: #e9ece6; font-size: 13px; text-align: center; }
+.surroundings-close {
+  position: absolute; top: 16px; right: 16px; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px;
+  border-radius: 999px; background: var(--paper); color: var(--ink); font-weight: 600;
+}
+@keyframes surroundings-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .surroundings-thumb img, .surroundings-lightbox, .surroundings-loading { transition: none; animation: none; } }

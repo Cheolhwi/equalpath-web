@@ -322,3 +322,7 @@
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
   .map-first .search-collapsed .mobile-search-summary { background: var(--paper); backdrop-filter: none; -webkit-backdrop-filter: none; border-color: var(--rule); }
 }
+
+/* Close sits level with the dialog's title block, not up with the kicker
+   (8 Oct 2026). */
+.equalpath.map-first dialog .dialog-top > button { align-self: center; }
