@@ -30,6 +30,16 @@ export default function Surroundings({ p }) {
     return () => { active = false; if (objectUrl) URL.revokeObjectURL(objectUrl); };
   }, [url]);
   useEffect(() => { if (large) close.current?.focus({ preventScroll: true }); }, [large]);
+  useEffect(() => {
+    if (!large) return;
+    const dialog = thumb.current?.closest('dialog');
+    const cancel = event => {
+      event.preventDefault(); event.stopPropagation();
+      setLarge(false); thumb.current?.focus({ preventScroll: true });
+    };
+    dialog?.addEventListener('cancel', cancel);
+    return () => dialog?.removeEventListener('cancel', cancel);
+  }, [large]);
   if (!photo) return null;
   const move = delta => setIndex(i => (i + delta + images.length) % images.length);
   const shut = () => { setLarge(false); thumb.current?.focus({ preventScroll: true }); };
