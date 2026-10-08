@@ -2,6 +2,26 @@
   "provider_4f0f58b2f50eedf3b38e0c4f5cd": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_aea2c4b336787e261b1b8ab5637fdd2c/view?project=6a916a6c0030a70a9d75",
     "version": "aea2c4b336787e261b1b8ab5637fdd2cbeda0c6c2efe96a21964f5439524b054",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_aea2c4b336787e261b1b8ab5637fdd2c/view?project=6a916a6c0030a70a9d75",
+        "version": "aea2c4b336787e261b1b8ab5637fdd2cbeda0c6c2efe96a21964f5439524b054",
+        "direction": "Original view",
+        "fileId": "s_aea2c4b336787e261b1b8ab5637fdd2c"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_342b9d0422f6db33e1c6515cc0bdcdc9/view?project=6a916a6c0030a70a9d75",
+        "version": "342b9d0422f6db33e1c6515cc0bdcdc9bedcb5d486ef2eeb3e491f25bd65a594",
+        "direction": "Look left",
+        "fileId": "s_342b9d0422f6db33e1c6515cc0bdcdc9"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_84b424faba125ad4200c56e644e9296f/view?project=6a916a6c0030a70a9d75",
+        "version": "84b424faba125ad4200c56e644e9296fcd5d8e32a0a70c35779ea7a63c1f8392",
+        "direction": "Look right",
+        "fileId": "s_84b424faba125ad4200c56e644e9296f"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -10,6 +30,26 @@
   "provider_854cbeba7a7af3f450f7da5287b": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_10ec5337083cf5789d816c892d4d58a7/view?project=6a916a6c0030a70a9d75",
     "version": "10ec5337083cf5789d816c892d4d58a7b38c5d273921a2cc80e198755f728e1e",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_10ec5337083cf5789d816c892d4d58a7/view?project=6a916a6c0030a70a9d75",
+        "version": "10ec5337083cf5789d816c892d4d58a7b38c5d273921a2cc80e198755f728e1e",
+        "direction": "Original view",
+        "fileId": "s_10ec5337083cf5789d816c892d4d58a7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1563d9cef358149052d9f506cfb2691e/view?project=6a916a6c0030a70a9d75",
+        "version": "1563d9cef358149052d9f506cfb2691ede5dc0a54aab3736bf2dbc90ea295126",
+        "direction": "Look left",
+        "fileId": "s_1563d9cef358149052d9f506cfb2691e"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_001255e5fd09c45a77582cf4fe2230b9/view?project=6a916a6c0030a70a9d75",
+        "version": "001255e5fd09c45a77582cf4fe2230b9650d57c757143dc1fc1bc019183c9b46",
+        "direction": "Look right",
+        "fileId": "s_001255e5fd09c45a77582cf4fe2230b9"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -18,6 +58,26 @@
   "provider_dfc7aac4a18e2d8a8a6e7b74e41": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2caf82148ffd55b18ad1a84a331df526/view?project=6a916a6c0030a70a9d75",
     "version": "2caf82148ffd55b18ad1a84a331df526cf8a55a8507a76cfd77c4f289b61f456",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2caf82148ffd55b18ad1a84a331df526/view?project=6a916a6c0030a70a9d75",
+        "version": "2caf82148ffd55b18ad1a84a331df526cf8a55a8507a76cfd77c4f289b61f456",
+        "direction": "Original view",
+        "fileId": "s_2caf82148ffd55b18ad1a84a331df526"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1478ef00f853b6e2a1d87ced20f64384/view?project=6a916a6c0030a70a9d75",
+        "version": "1478ef00f853b6e2a1d87ced20f6438469b3b4a07480f6ccc4d41403a831364b",
+        "direction": "Look left",
+        "fileId": "s_1478ef00f853b6e2a1d87ced20f64384"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_44b11ea9f74510d2f662f73c941ba084/view?project=6a916a6c0030a70a9d75",
+        "version": "44b11ea9f74510d2f662f73c941ba0845f6220441b8518b9518c14aca55c99a3",
+        "direction": "Look right",
+        "fileId": "s_44b11ea9f74510d2f662f73c941ba084"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -26,6 +86,26 @@
   "provider_4435203425900ca6d5eb73bbcfc": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2ebf8c98d04a0a135936bd08c50bfb6c/view?project=6a916a6c0030a70a9d75",
     "version": "2ebf8c98d04a0a135936bd08c50bfb6cd975ce1328d79a2e390d65758e499d0f",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2ebf8c98d04a0a135936bd08c50bfb6c/view?project=6a916a6c0030a70a9d75",
+        "version": "2ebf8c98d04a0a135936bd08c50bfb6cd975ce1328d79a2e390d65758e499d0f",
+        "direction": "Original view",
+        "fileId": "s_2ebf8c98d04a0a135936bd08c50bfb6c"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9b657b324342b63d3ed063d62c74929a/view?project=6a916a6c0030a70a9d75",
+        "version": "9b657b324342b63d3ed063d62c74929ad09509fe7d6a10e7e70d46ddf7f9aa78",
+        "direction": "Look left",
+        "fileId": "s_9b657b324342b63d3ed063d62c74929a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_09cbcd75807a644d183e6d7586d86669/view?project=6a916a6c0030a70a9d75",
+        "version": "09cbcd75807a644d183e6d7586d86669bbe8b749da0e143fd26bee75aeebd6c6",
+        "direction": "Look right",
+        "fileId": "s_09cbcd75807a644d183e6d7586d86669"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -34,6 +114,26 @@
   "provider_d8c07aa87dca79f40cb3a4c5f88": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_307b3929e9205d3c67ea0cb7d60e256a/view?project=6a916a6c0030a70a9d75",
     "version": "307b3929e9205d3c67ea0cb7d60e256a87f4105c68e9a2530a20b808feb973b1",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_307b3929e9205d3c67ea0cb7d60e256a/view?project=6a916a6c0030a70a9d75",
+        "version": "307b3929e9205d3c67ea0cb7d60e256a87f4105c68e9a2530a20b808feb973b1",
+        "direction": "Original view",
+        "fileId": "s_307b3929e9205d3c67ea0cb7d60e256a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_bad60df7baf1a77a48a3a15728db28ce/view?project=6a916a6c0030a70a9d75",
+        "version": "bad60df7baf1a77a48a3a15728db28ce02158fa21ecf4c05f31fbaed10c1ed6c",
+        "direction": "Look left",
+        "fileId": "s_bad60df7baf1a77a48a3a15728db28ce"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3d1aa0458d34bd8b82119ac2015f576e/view?project=6a916a6c0030a70a9d75",
+        "version": "3d1aa0458d34bd8b82119ac2015f576ea99a33343d1061f191c197069d002286",
+        "direction": "Look right",
+        "fileId": "s_3d1aa0458d34bd8b82119ac2015f576e"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -42,6 +142,26 @@
   "provider_751c1454afb57d47c554a51bed1": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a31325aa2d1cad80c508f8ef6ee945f5/view?project=6a916a6c0030a70a9d75",
     "version": "a31325aa2d1cad80c508f8ef6ee945f526045b51cb0946023b802c2b038697fc",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a31325aa2d1cad80c508f8ef6ee945f5/view?project=6a916a6c0030a70a9d75",
+        "version": "a31325aa2d1cad80c508f8ef6ee945f526045b51cb0946023b802c2b038697fc",
+        "direction": "Original view",
+        "fileId": "s_a31325aa2d1cad80c508f8ef6ee945f5"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_cea2d42de8ae63b7f57848d2430b117c/view?project=6a916a6c0030a70a9d75",
+        "version": "cea2d42de8ae63b7f57848d2430b117cd9d2fb6b7bacdf6800d57d1e7fd7aa7a",
+        "direction": "Look left",
+        "fileId": "s_cea2d42de8ae63b7f57848d2430b117c"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a9e82805a9c5fbd15d59db3ffd2a9d37/view?project=6a916a6c0030a70a9d75",
+        "version": "a9e82805a9c5fbd15d59db3ffd2a9d37016a51ef4d8d174b91a5b35314029a86",
+        "direction": "Look right",
+        "fileId": "s_a9e82805a9c5fbd15d59db3ffd2a9d37"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -50,6 +170,26 @@
   "provider_kpm_db51d43c94a398be4a54a899": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f55d787297ef87f0feb7fab33aebcaf7/view?project=6a916a6c0030a70a9d75",
     "version": "f55d787297ef87f0feb7fab33aebcaf7c1e3d771ed9bd3dcafd210f00943175c",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f55d787297ef87f0feb7fab33aebcaf7/view?project=6a916a6c0030a70a9d75",
+        "version": "f55d787297ef87f0feb7fab33aebcaf7c1e3d771ed9bd3dcafd210f00943175c",
+        "direction": "Original view",
+        "fileId": "s_f55d787297ef87f0feb7fab33aebcaf7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4bdc46460fefdab6f0eb4532d82315df/view?project=6a916a6c0030a70a9d75",
+        "version": "4bdc46460fefdab6f0eb4532d82315dfe5798c6dae66a918306aeba8b5442730",
+        "direction": "Look left",
+        "fileId": "s_4bdc46460fefdab6f0eb4532d82315df"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a96295ab4e373b8cdae3d606fa828b3f/view?project=6a916a6c0030a70a9d75",
+        "version": "a96295ab4e373b8cdae3d606fa828b3f9f817c7aba42da700dd2cbc656ea6cfc",
+        "direction": "Look right",
+        "fileId": "s_a96295ab4e373b8cdae3d606fa828b3f"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -58,6 +198,26 @@
   "provider_kpm_c56814bdf48ae5c686d5b2f1": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5e9153d4e32319cc759a7efd656e0972/view?project=6a916a6c0030a70a9d75",
     "version": "5e9153d4e32319cc759a7efd656e09726a0b56bf01c1edf654d900c27dcef3ce",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5e9153d4e32319cc759a7efd656e0972/view?project=6a916a6c0030a70a9d75",
+        "version": "5e9153d4e32319cc759a7efd656e09726a0b56bf01c1edf654d900c27dcef3ce",
+        "direction": "Original view",
+        "fileId": "s_5e9153d4e32319cc759a7efd656e0972"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_8648da571ae94622dbb3734138549883/view?project=6a916a6c0030a70a9d75",
+        "version": "8648da571ae94622dbb3734138549883610667567bd3d4ea7bbc18fd03c46353",
+        "direction": "Look left",
+        "fileId": "s_8648da571ae94622dbb3734138549883"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_65b704c40285576e40bea24382368a73/view?project=6a916a6c0030a70a9d75",
+        "version": "65b704c40285576e40bea24382368a733ac99193ebe6b23145c265198ce914e2",
+        "direction": "Look right",
+        "fileId": "s_65b704c40285576e40bea24382368a73"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -66,6 +226,26 @@
   "provider_21d3add9c2f1541e64bfd3c0db2": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_512e3bebf90e2dad49ee210f601e0209/view?project=6a916a6c0030a70a9d75",
     "version": "512e3bebf90e2dad49ee210f601e020904351b56ed4002022144a664bd54e11a",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_512e3bebf90e2dad49ee210f601e0209/view?project=6a916a6c0030a70a9d75",
+        "version": "512e3bebf90e2dad49ee210f601e020904351b56ed4002022144a664bd54e11a",
+        "direction": "Original view",
+        "fileId": "s_512e3bebf90e2dad49ee210f601e0209"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6f4bb629afa16e6b3af533da86b71cf7/view?project=6a916a6c0030a70a9d75",
+        "version": "6f4bb629afa16e6b3af533da86b71cf714e4fcb9622f6ef2342de46e0e29560e",
+        "direction": "Look left",
+        "fileId": "s_6f4bb629afa16e6b3af533da86b71cf7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_8a83f52e5f94ea524ca82f4b22f85fd5/view?project=6a916a6c0030a70a9d75",
+        "version": "8a83f52e5f94ea524ca82f4b22f85fd51633af1c86cbd6fffe2b10f51cc59784",
+        "direction": "Look right",
+        "fileId": "s_8a83f52e5f94ea524ca82f4b22f85fd5"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -74,6 +254,26 @@
   "provider_5c94476fd2ff9cb72e757c8be21": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_0f82a80c9591bcd5a5f1b863240ddfec/view?project=6a916a6c0030a70a9d75",
     "version": "0f82a80c9591bcd5a5f1b863240ddfec699b75dc841db21f6dae34361599dc95",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_0f82a80c9591bcd5a5f1b863240ddfec/view?project=6a916a6c0030a70a9d75",
+        "version": "0f82a80c9591bcd5a5f1b863240ddfec699b75dc841db21f6dae34361599dc95",
+        "direction": "Original view",
+        "fileId": "s_0f82a80c9591bcd5a5f1b863240ddfec"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c77b98275af914a37bb3e81b99be64c7/view?project=6a916a6c0030a70a9d75",
+        "version": "c77b98275af914a37bb3e81b99be64c78db08aa52d00f2636f961477f4d23f75",
+        "direction": "Look left",
+        "fileId": "s_c77b98275af914a37bb3e81b99be64c7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3fd4518801508fcc7d14ef69c1cee68f/view?project=6a916a6c0030a70a9d75",
+        "version": "3fd4518801508fcc7d14ef69c1cee68f90bde92acfc246b5aba2c6ca4d51e842",
+        "direction": "Look right",
+        "fileId": "s_3fd4518801508fcc7d14ef69c1cee68f"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -82,6 +282,26 @@
   "provider_cd892d6fec7884999990b15268f": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3a104c7b276ceaaadad3ff9162a00e65/view?project=6a916a6c0030a70a9d75",
     "version": "3a104c7b276ceaaadad3ff9162a00e6554b4233b6b7a998720f8491be4f0e027",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3a104c7b276ceaaadad3ff9162a00e65/view?project=6a916a6c0030a70a9d75",
+        "version": "3a104c7b276ceaaadad3ff9162a00e6554b4233b6b7a998720f8491be4f0e027",
+        "direction": "Original view",
+        "fileId": "s_3a104c7b276ceaaadad3ff9162a00e65"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c77556452979e579912d69c70b20ae6a/view?project=6a916a6c0030a70a9d75",
+        "version": "c77556452979e579912d69c70b20ae6ae47123bf89f210a2c4c96d6143024e63",
+        "direction": "Look left",
+        "fileId": "s_c77556452979e579912d69c70b20ae6a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_494079426e1b0468408d8ae0c198b65a/view?project=6a916a6c0030a70a9d75",
+        "version": "494079426e1b0468408d8ae0c198b65a6bbe0547465b8b8cb8aa173da094cc10",
+        "direction": "Look right",
+        "fileId": "s_494079426e1b0468408d8ae0c198b65a"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -90,6 +310,26 @@
   "provider_2f1597c7ee1e4fa15ac47d784e9": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_719cd24a4157ecbeccd6d331f57cf85c/view?project=6a916a6c0030a70a9d75",
     "version": "719cd24a4157ecbeccd6d331f57cf85c8fbe77b3affc782f1168b3248eb190ef",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_719cd24a4157ecbeccd6d331f57cf85c/view?project=6a916a6c0030a70a9d75",
+        "version": "719cd24a4157ecbeccd6d331f57cf85c8fbe77b3affc782f1168b3248eb190ef",
+        "direction": "Original view",
+        "fileId": "s_719cd24a4157ecbeccd6d331f57cf85c"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_cccca8e65dc869d54529ccb749f4cb85/view?project=6a916a6c0030a70a9d75",
+        "version": "cccca8e65dc869d54529ccb749f4cb85d80da15dfb43938356504efa91177414",
+        "direction": "Look left",
+        "fileId": "s_cccca8e65dc869d54529ccb749f4cb85"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b45bda3b9dee549be668ad4c995d38e9/view?project=6a916a6c0030a70a9d75",
+        "version": "b45bda3b9dee549be668ad4c995d38e90cb04757f16df6d3d510480a4507fd34",
+        "direction": "Look right",
+        "fileId": "s_b45bda3b9dee549be668ad4c995d38e9"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -98,6 +338,26 @@
   "provider_28394a2cc47dd757e4fda6716df": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_68e101e049bb4e7aa086226e31ef6bec/view?project=6a916a6c0030a70a9d75",
     "version": "68e101e049bb4e7aa086226e31ef6bec46e0238d186118cc2224ceef7a6e9618",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_68e101e049bb4e7aa086226e31ef6bec/view?project=6a916a6c0030a70a9d75",
+        "version": "68e101e049bb4e7aa086226e31ef6bec46e0238d186118cc2224ceef7a6e9618",
+        "direction": "Original view",
+        "fileId": "s_68e101e049bb4e7aa086226e31ef6bec"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b83b19af3adab80188ab699a1acf0660/view?project=6a916a6c0030a70a9d75",
+        "version": "b83b19af3adab80188ab699a1acf06605f2684fb6b8a9333f8e722878f3dfd35",
+        "direction": "Look left",
+        "fileId": "s_b83b19af3adab80188ab699a1acf0660"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_42dd0e5469d6fb195ebd2a821397e527/view?project=6a916a6c0030a70a9d75",
+        "version": "42dd0e5469d6fb195ebd2a821397e5278714c652e802aeafd7682292ebc46dd7",
+        "direction": "Look right",
+        "fileId": "s_42dd0e5469d6fb195ebd2a821397e527"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -106,6 +366,26 @@
   "provider_3cde969fd99209c91f1e5ed9899": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d76b6eb108a584a0f70e15d64f600474/view?project=6a916a6c0030a70a9d75",
     "version": "d76b6eb108a584a0f70e15d64f600474e069c50dedb6577f43c909ca60730b76",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d76b6eb108a584a0f70e15d64f600474/view?project=6a916a6c0030a70a9d75",
+        "version": "d76b6eb108a584a0f70e15d64f600474e069c50dedb6577f43c909ca60730b76",
+        "direction": "Original view",
+        "fileId": "s_d76b6eb108a584a0f70e15d64f600474"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3172276e82b431f5212c16117b4bc48d/view?project=6a916a6c0030a70a9d75",
+        "version": "3172276e82b431f5212c16117b4bc48d3563dfe8dd067538fbea2e38f8160493",
+        "direction": "Look left",
+        "fileId": "s_3172276e82b431f5212c16117b4bc48d"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_592741634ff5005afcc52734c415a094/view?project=6a916a6c0030a70a9d75",
+        "version": "592741634ff5005afcc52734c415a094f44f86f565ae6b72b47411650da97b47",
+        "direction": "Look right",
+        "fileId": "s_592741634ff5005afcc52734c415a094"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -114,6 +394,26 @@
   "provider_c50b83c9a0441e88ebde0e48c34": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e19165220862a7ce05a5b5940502e394/view?project=6a916a6c0030a70a9d75",
     "version": "e19165220862a7ce05a5b5940502e394e15c0a9e5dc8aa20a8bae8684520ba4b",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e19165220862a7ce05a5b5940502e394/view?project=6a916a6c0030a70a9d75",
+        "version": "e19165220862a7ce05a5b5940502e394e15c0a9e5dc8aa20a8bae8684520ba4b",
+        "direction": "Original view",
+        "fileId": "s_e19165220862a7ce05a5b5940502e394"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_222a8321d03718c0af2fb4e2ecae7822/view?project=6a916a6c0030a70a9d75",
+        "version": "222a8321d03718c0af2fb4e2ecae7822daa80a8f453fb2a681ef886181dcdb49",
+        "direction": "Look left",
+        "fileId": "s_222a8321d03718c0af2fb4e2ecae7822"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3b4c6512d1391bdc7e06ea55df47a9f2/view?project=6a916a6c0030a70a9d75",
+        "version": "3b4c6512d1391bdc7e06ea55df47a9f23b6576aad76e5a5279e3e24cdd8ed77f",
+        "direction": "Look right",
+        "fileId": "s_3b4c6512d1391bdc7e06ea55df47a9f2"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -122,6 +422,26 @@
   "provider_8decab43ab4f3e21d046f9bd1d2": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_208026a515ae6b0f81109706d24d14ff/view?project=6a916a6c0030a70a9d75",
     "version": "208026a515ae6b0f81109706d24d14ff62589ed08d982c6e8a7e34f68089eb36",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_208026a515ae6b0f81109706d24d14ff/view?project=6a916a6c0030a70a9d75",
+        "version": "208026a515ae6b0f81109706d24d14ff62589ed08d982c6e8a7e34f68089eb36",
+        "direction": "Original view",
+        "fileId": "s_208026a515ae6b0f81109706d24d14ff"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f49b70a63af205c0dcf133cb28f80925/view?project=6a916a6c0030a70a9d75",
+        "version": "f49b70a63af205c0dcf133cb28f8092512fba88d015213d76700c37dea53e6e9",
+        "direction": "Look left",
+        "fileId": "s_f49b70a63af205c0dcf133cb28f80925"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_88d87727fc78a0bc716aec2f26a89a4f/view?project=6a916a6c0030a70a9d75",
+        "version": "88d87727fc78a0bc716aec2f26a89a4fc20de40232c868b666fb24c2c254d577",
+        "direction": "Look right",
+        "fileId": "s_88d87727fc78a0bc716aec2f26a89a4f"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -130,6 +450,26 @@
   "provider_kpm_e568c0c0a13afedf16b7b6ea": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_02cd61e7fd355c668db17b011e9430fa/view?project=6a916a6c0030a70a9d75",
     "version": "02cd61e7fd355c668db17b011e9430fa7c6aea4b42e54d6cdb1829eb8aee9a14",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_02cd61e7fd355c668db17b011e9430fa/view?project=6a916a6c0030a70a9d75",
+        "version": "02cd61e7fd355c668db17b011e9430fa7c6aea4b42e54d6cdb1829eb8aee9a14",
+        "direction": "Original view",
+        "fileId": "s_02cd61e7fd355c668db17b011e9430fa"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_aaec97a2ae93dde0fd7cfe94bdc8a56b/view?project=6a916a6c0030a70a9d75",
+        "version": "aaec97a2ae93dde0fd7cfe94bdc8a56bc9cb363d2827ba407f46b0f05faa742f",
+        "direction": "Look left",
+        "fileId": "s_aaec97a2ae93dde0fd7cfe94bdc8a56b"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5f52f022187343e8a7cb01898ce54ac4/view?project=6a916a6c0030a70a9d75",
+        "version": "5f52f022187343e8a7cb01898ce54ac4d58ec9c1aa88fbe284fd0d7b885eab4b",
+        "direction": "Look right",
+        "fileId": "s_5f52f022187343e8a7cb01898ce54ac4"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -138,6 +478,26 @@
   "provider_33b9f65789da6f2690b9b5f6c56": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f56ea2a09a206bfd265316902a41c418/view?project=6a916a6c0030a70a9d75",
     "version": "f56ea2a09a206bfd265316902a41c41864b87bca0beb0918ecfd24c843dda142",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f56ea2a09a206bfd265316902a41c418/view?project=6a916a6c0030a70a9d75",
+        "version": "f56ea2a09a206bfd265316902a41c41864b87bca0beb0918ecfd24c843dda142",
+        "direction": "Original view",
+        "fileId": "s_f56ea2a09a206bfd265316902a41c418"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_456c6f7e2e3bbadf4dc378e078998042/view?project=6a916a6c0030a70a9d75",
+        "version": "456c6f7e2e3bbadf4dc378e078998042581acae354f09b3d464e3b26007449ff",
+        "direction": "Look left",
+        "fileId": "s_456c6f7e2e3bbadf4dc378e078998042"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_765c8690f6b7f20343a3ecef59e1f81a/view?project=6a916a6c0030a70a9d75",
+        "version": "765c8690f6b7f20343a3ecef59e1f81a7a84d5bb1da13a332b7bbe24e30f750e",
+        "direction": "Look right",
+        "fileId": "s_765c8690f6b7f20343a3ecef59e1f81a"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -146,6 +506,26 @@
   "provider_kpm_7dc3a788f13d94ad86341a4d": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2922b7d4cae148584f6575944ee478c6/view?project=6a916a6c0030a70a9d75",
     "version": "2922b7d4cae148584f6575944ee478c6592e6a78af877198bb8e5b905b1042ee",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2922b7d4cae148584f6575944ee478c6/view?project=6a916a6c0030a70a9d75",
+        "version": "2922b7d4cae148584f6575944ee478c6592e6a78af877198bb8e5b905b1042ee",
+        "direction": "Original view",
+        "fileId": "s_2922b7d4cae148584f6575944ee478c6"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a7173069a0f6045a1ad2ab850c456fc8/view?project=6a916a6c0030a70a9d75",
+        "version": "a7173069a0f6045a1ad2ab850c456fc80acfab1dda6c75944562982fe4ef8058",
+        "direction": "Look left",
+        "fileId": "s_a7173069a0f6045a1ad2ab850c456fc8"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b7e6b6b678f9f3636f4dc58b5fa06897/view?project=6a916a6c0030a70a9d75",
+        "version": "b7e6b6b678f9f3636f4dc58b5fa068978bb71e904fc927cd88e8b1df581ca9d9",
+        "direction": "Look right",
+        "fileId": "s_b7e6b6b678f9f3636f4dc58b5fa06897"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -154,6 +534,26 @@
   "provider_a691842089fe2437d88ce9972bb": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1911c2aafe040a9367278f822bb3c6fb/view?project=6a916a6c0030a70a9d75",
     "version": "1911c2aafe040a9367278f822bb3c6fb43bbec5a82ed98ae08740ceb89811385",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1911c2aafe040a9367278f822bb3c6fb/view?project=6a916a6c0030a70a9d75",
+        "version": "1911c2aafe040a9367278f822bb3c6fb43bbec5a82ed98ae08740ceb89811385",
+        "direction": "Original view",
+        "fileId": "s_1911c2aafe040a9367278f822bb3c6fb"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_75d24688e876a276d2afe93a5f40bc00/view?project=6a916a6c0030a70a9d75",
+        "version": "75d24688e876a276d2afe93a5f40bc00b12cb6e24c10b6a49a1fd848311d8da1",
+        "direction": "Look left",
+        "fileId": "s_75d24688e876a276d2afe93a5f40bc00"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_69a03469217c22434f12d93da895660f/view?project=6a916a6c0030a70a9d75",
+        "version": "69a03469217c22434f12d93da895660f45b04f161a76e1f87f2b9d37756f6e79",
+        "direction": "Look right",
+        "fileId": "s_69a03469217c22434f12d93da895660f"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -162,6 +562,26 @@
   "provider_5f64af17175fa5f63ffccf12619": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4ee3a3c7e8282c9909ea80228fe7fd8b/view?project=6a916a6c0030a70a9d75",
     "version": "4ee3a3c7e8282c9909ea80228fe7fd8bf24d4b03fcdf72c557e7f5cb16bc1085",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4ee3a3c7e8282c9909ea80228fe7fd8b/view?project=6a916a6c0030a70a9d75",
+        "version": "4ee3a3c7e8282c9909ea80228fe7fd8bf24d4b03fcdf72c557e7f5cb16bc1085",
+        "direction": "Original view",
+        "fileId": "s_4ee3a3c7e8282c9909ea80228fe7fd8b"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_74824f8a180b1424f089aafef158ff74/view?project=6a916a6c0030a70a9d75",
+        "version": "74824f8a180b1424f089aafef158ff74f64bb3eb6b620410e117487544cad314",
+        "direction": "Look left",
+        "fileId": "s_74824f8a180b1424f089aafef158ff74"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6840434c71f34c21c810e04b9676b36d/view?project=6a916a6c0030a70a9d75",
+        "version": "6840434c71f34c21c810e04b9676b36d5eedb7606eb0e50f1554f10246df43bf",
+        "direction": "Look right",
+        "fileId": "s_6840434c71f34c21c810e04b9676b36d"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -170,6 +590,26 @@
   "provider_78cd0bae5cb2573010c59e6b843": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_76344e114a53c016f5745b6a6f331036/view?project=6a916a6c0030a70a9d75",
     "version": "76344e114a53c016f5745b6a6f331036b98ab55ca97edd2266b6e6fa505e35c7",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_76344e114a53c016f5745b6a6f331036/view?project=6a916a6c0030a70a9d75",
+        "version": "76344e114a53c016f5745b6a6f331036b98ab55ca97edd2266b6e6fa505e35c7",
+        "direction": "Original view",
+        "fileId": "s_76344e114a53c016f5745b6a6f331036"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a3758862106d11857dc8135f9d3d26e9/view?project=6a916a6c0030a70a9d75",
+        "version": "a3758862106d11857dc8135f9d3d26e9e140b4d22e48307b78e6f9da771fa1a4",
+        "direction": "Look left",
+        "fileId": "s_a3758862106d11857dc8135f9d3d26e9"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_90ffdb24e61e8898325e200a637f2d5a/view?project=6a916a6c0030a70a9d75",
+        "version": "90ffdb24e61e8898325e200a637f2d5a2009b581ace35a8a71aba03f66406789",
+        "direction": "Look right",
+        "fileId": "s_90ffdb24e61e8898325e200a637f2d5a"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -178,6 +618,26 @@
   "provider_58ab78d3c7b844bdf28183c3d87": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_36d526c6d9ec9822fa9e495beba2821a/view?project=6a916a6c0030a70a9d75",
     "version": "36d526c6d9ec9822fa9e495beba2821ab33572c6439aa58700e961e17ddbdbfb",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_36d526c6d9ec9822fa9e495beba2821a/view?project=6a916a6c0030a70a9d75",
+        "version": "36d526c6d9ec9822fa9e495beba2821ab33572c6439aa58700e961e17ddbdbfb",
+        "direction": "Original view",
+        "fileId": "s_36d526c6d9ec9822fa9e495beba2821a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_943e506b5a77ec265f9fa574e3877bc0/view?project=6a916a6c0030a70a9d75",
+        "version": "943e506b5a77ec265f9fa574e3877bc05a34cdde06df8eb2ef0cb73af851f646",
+        "direction": "Look left",
+        "fileId": "s_943e506b5a77ec265f9fa574e3877bc0"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_acbabc8e370995c54612e828d5038f4d/view?project=6a916a6c0030a70a9d75",
+        "version": "acbabc8e370995c54612e828d5038f4d1ab892c0b817e74838cf8695b5dd6b8e",
+        "direction": "Look right",
+        "fileId": "s_acbabc8e370995c54612e828d5038f4d"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -186,6 +646,26 @@
   "provider_0c19aa2edd798d0ff6e45f497a7": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b1e3e222f13cbc44848f687b8a9accde/view?project=6a916a6c0030a70a9d75",
     "version": "b1e3e222f13cbc44848f687b8a9accde8b486b68241df6a6ad56173b9db77e74",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b1e3e222f13cbc44848f687b8a9accde/view?project=6a916a6c0030a70a9d75",
+        "version": "b1e3e222f13cbc44848f687b8a9accde8b486b68241df6a6ad56173b9db77e74",
+        "direction": "Original view",
+        "fileId": "s_b1e3e222f13cbc44848f687b8a9accde"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_12b6b2de3fa823ef78215e923f1bbd52/view?project=6a916a6c0030a70a9d75",
+        "version": "12b6b2de3fa823ef78215e923f1bbd5275c032cbd09d1de76c827b3c32107f0a",
+        "direction": "Look left",
+        "fileId": "s_12b6b2de3fa823ef78215e923f1bbd52"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_68fc135022dbc9d93b4fc13be9e5e6d6/view?project=6a916a6c0030a70a9d75",
+        "version": "68fc135022dbc9d93b4fc13be9e5e6d69bb19f39c2d71c04acb40472b925e10f",
+        "direction": "Look right",
+        "fileId": "s_68fc135022dbc9d93b4fc13be9e5e6d6"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -194,6 +674,26 @@
   "provider_15466d06ac276e3cdbffc2a041a": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9ab1baa54a0d39cb55323f56f4e50aa3/view?project=6a916a6c0030a70a9d75",
     "version": "9ab1baa54a0d39cb55323f56f4e50aa39463cec7f1ab3b8b01337c2fa3cc95b8",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9ab1baa54a0d39cb55323f56f4e50aa3/view?project=6a916a6c0030a70a9d75",
+        "version": "9ab1baa54a0d39cb55323f56f4e50aa39463cec7f1ab3b8b01337c2fa3cc95b8",
+        "direction": "Original view",
+        "fileId": "s_9ab1baa54a0d39cb55323f56f4e50aa3"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_739f32645c0ecb210443ec55a75d0a6d/view?project=6a916a6c0030a70a9d75",
+        "version": "739f32645c0ecb210443ec55a75d0a6da21eb17b78d81428247963e4ea9caa9e",
+        "direction": "Look left",
+        "fileId": "s_739f32645c0ecb210443ec55a75d0a6d"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_014f6b300b5c0c771ffa247b04305866/view?project=6a916a6c0030a70a9d75",
+        "version": "014f6b300b5c0c771ffa247b043058665ebb18fa815195229c3b7d06cc390327",
+        "direction": "Look right",
+        "fileId": "s_014f6b300b5c0c771ffa247b04305866"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -202,6 +702,26 @@
   "provider_dea488608830dad1689a5ea4ba9": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c42314f2ecd5b2688c0266835f2fa3b3/view?project=6a916a6c0030a70a9d75",
     "version": "c42314f2ecd5b2688c0266835f2fa3b33694fe8c0ea864133f8b8278ba83ab02",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c42314f2ecd5b2688c0266835f2fa3b3/view?project=6a916a6c0030a70a9d75",
+        "version": "c42314f2ecd5b2688c0266835f2fa3b33694fe8c0ea864133f8b8278ba83ab02",
+        "direction": "Original view",
+        "fileId": "s_c42314f2ecd5b2688c0266835f2fa3b3"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_54aa1656efde1f0ba90618151ca039a6/view?project=6a916a6c0030a70a9d75",
+        "version": "54aa1656efde1f0ba90618151ca039a6236471335b4d0965a8349bb686cf58ff",
+        "direction": "Look left",
+        "fileId": "s_54aa1656efde1f0ba90618151ca039a6"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_112f3d785c111300482dfcecb232e94c/view?project=6a916a6c0030a70a9d75",
+        "version": "112f3d785c111300482dfcecb232e94c9c705bab94613623349e1e55974cce57",
+        "direction": "Look right",
+        "fileId": "s_112f3d785c111300482dfcecb232e94c"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -210,6 +730,26 @@
   "provider_636b2a9c3d83d2b574befea79b3": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f4f2ec7c05482de17e22fceda208f4ae/view?project=6a916a6c0030a70a9d75",
     "version": "f4f2ec7c05482de17e22fceda208f4ae476478a7f561ffb847097d119344e4db",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f4f2ec7c05482de17e22fceda208f4ae/view?project=6a916a6c0030a70a9d75",
+        "version": "f4f2ec7c05482de17e22fceda208f4ae476478a7f561ffb847097d119344e4db",
+        "direction": "Original view",
+        "fileId": "s_f4f2ec7c05482de17e22fceda208f4ae"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_05c3b70afe8eccc62b471686bc2c2f96/view?project=6a916a6c0030a70a9d75",
+        "version": "05c3b70afe8eccc62b471686bc2c2f966f17f9d28be667e7fbb0101467b0cc01",
+        "direction": "Look left",
+        "fileId": "s_05c3b70afe8eccc62b471686bc2c2f96"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_abb311856f523d73a4fc2b4ec03e2395/view?project=6a916a6c0030a70a9d75",
+        "version": "abb311856f523d73a4fc2b4ec03e2395941368cb040ba131e7835449c790dfc0",
+        "direction": "Look right",
+        "fileId": "s_abb311856f523d73a4fc2b4ec03e2395"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -218,6 +758,26 @@
   "provider_3cdcb360805a96209116c9d79ff": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_8925077a3ea22862d7294f22617553a4/view?project=6a916a6c0030a70a9d75",
     "version": "8925077a3ea22862d7294f22617553a461a2e25ca043eb8febaccb7bc7325f72",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_8925077a3ea22862d7294f22617553a4/view?project=6a916a6c0030a70a9d75",
+        "version": "8925077a3ea22862d7294f22617553a461a2e25ca043eb8febaccb7bc7325f72",
+        "direction": "Original view",
+        "fileId": "s_8925077a3ea22862d7294f22617553a4"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a59d87e1e5b1e2d596de23f8543a6b7d/view?project=6a916a6c0030a70a9d75",
+        "version": "a59d87e1e5b1e2d596de23f8543a6b7d7392fc31fb2ce5e98401dd6ea6197a8b",
+        "direction": "Look left",
+        "fileId": "s_a59d87e1e5b1e2d596de23f8543a6b7d"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_561dbcafa73064858de9dc22062c62fa/view?project=6a916a6c0030a70a9d75",
+        "version": "561dbcafa73064858de9dc22062c62fa575c428522a60652174fce874c464767",
+        "direction": "Look right",
+        "fileId": "s_561dbcafa73064858de9dc22062c62fa"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -226,6 +786,26 @@
   "provider_e371a32c2b53792c04204023483": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_10dda60ecc72a14d85a4e58bfa22c693/view?project=6a916a6c0030a70a9d75",
     "version": "10dda60ecc72a14d85a4e58bfa22c693185b0c3b166d726198abe0c7bf12b748",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_10dda60ecc72a14d85a4e58bfa22c693/view?project=6a916a6c0030a70a9d75",
+        "version": "10dda60ecc72a14d85a4e58bfa22c693185b0c3b166d726198abe0c7bf12b748",
+        "direction": "Original view",
+        "fileId": "s_10dda60ecc72a14d85a4e58bfa22c693"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_7551a4ac0a23bbd661d53c11a27fec2c/view?project=6a916a6c0030a70a9d75",
+        "version": "7551a4ac0a23bbd661d53c11a27fec2c6748ee53e7bff6d3b98ee34e262a0fa4",
+        "direction": "Look left",
+        "fileId": "s_7551a4ac0a23bbd661d53c11a27fec2c"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_0c628c309f2c836b2be9dbc4c5381d32/view?project=6a916a6c0030a70a9d75",
+        "version": "0c628c309f2c836b2be9dbc4c5381d324b8a782ae0d18a2383d24f673ff5620e",
+        "direction": "Look right",
+        "fileId": "s_0c628c309f2c836b2be9dbc4c5381d32"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -234,6 +814,26 @@
   "provider_c2b689c2369c5c0faea1131f959": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d079e1373804f20be65c245c58da2f4f/view?project=6a916a6c0030a70a9d75",
     "version": "d079e1373804f20be65c245c58da2f4f2243c6017bd1f2f49bb755da4e5652a1",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d079e1373804f20be65c245c58da2f4f/view?project=6a916a6c0030a70a9d75",
+        "version": "d079e1373804f20be65c245c58da2f4f2243c6017bd1f2f49bb755da4e5652a1",
+        "direction": "Original view",
+        "fileId": "s_d079e1373804f20be65c245c58da2f4f"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5081b08ce9cf05e11d3a4ee41e0de527/view?project=6a916a6c0030a70a9d75",
+        "version": "5081b08ce9cf05e11d3a4ee41e0de527bfd81af3f2f232e2f998461d4df3c03e",
+        "direction": "Look left",
+        "fileId": "s_5081b08ce9cf05e11d3a4ee41e0de527"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_eddc41166716f573c08b5f1054b1d978/view?project=6a916a6c0030a70a9d75",
+        "version": "eddc41166716f573c08b5f1054b1d978d965e2859c54ab5bd1c3ea8bfaf0fee0",
+        "direction": "Look right",
+        "fileId": "s_eddc41166716f573c08b5f1054b1d978"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -242,6 +842,26 @@
   "provider_fcf44173179ebfa921a56884451": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c431b7fd2e85a4f29cc8332f14048b0e/view?project=6a916a6c0030a70a9d75",
     "version": "c431b7fd2e85a4f29cc8332f14048b0e532f3b9cae577fcd2648eb15d33ffb64",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c431b7fd2e85a4f29cc8332f14048b0e/view?project=6a916a6c0030a70a9d75",
+        "version": "c431b7fd2e85a4f29cc8332f14048b0e532f3b9cae577fcd2648eb15d33ffb64",
+        "direction": "Original view",
+        "fileId": "s_c431b7fd2e85a4f29cc8332f14048b0e"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_19b154d43cea08b9d330af1d1fbc246d/view?project=6a916a6c0030a70a9d75",
+        "version": "19b154d43cea08b9d330af1d1fbc246dfef8a912a2479b2868c5c336c02f1357",
+        "direction": "Look left",
+        "fileId": "s_19b154d43cea08b9d330af1d1fbc246d"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_294f525af256fef8979fbade35139905/view?project=6a916a6c0030a70a9d75",
+        "version": "294f525af256fef8979fbade35139905d860025cf21ec98a309efcf9a37bc48a",
+        "direction": "Look right",
+        "fileId": "s_294f525af256fef8979fbade35139905"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -250,6 +870,26 @@
   "provider_f2ccc44e691cd598685f58978f3": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2ce7b0e1c83d1ff2c052e496528eb5cb/view?project=6a916a6c0030a70a9d75",
     "version": "2ce7b0e1c83d1ff2c052e496528eb5cb5229591076329970686c0f220cae7b20",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2ce7b0e1c83d1ff2c052e496528eb5cb/view?project=6a916a6c0030a70a9d75",
+        "version": "2ce7b0e1c83d1ff2c052e496528eb5cb5229591076329970686c0f220cae7b20",
+        "direction": "Original view",
+        "fileId": "s_2ce7b0e1c83d1ff2c052e496528eb5cb"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d8a4fca58980346b444178b654121fe4/view?project=6a916a6c0030a70a9d75",
+        "version": "d8a4fca58980346b444178b654121fe42bba4b4b619abeedfec99004a0a39392",
+        "direction": "Look left",
+        "fileId": "s_d8a4fca58980346b444178b654121fe4"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_7b8c9acd89b239bd187f136cd9c351ef/view?project=6a916a6c0030a70a9d75",
+        "version": "7b8c9acd89b239bd187f136cd9c351effabc32ced40c2aaf40b2798c7024e215",
+        "direction": "Look right",
+        "fileId": "s_7b8c9acd89b239bd187f136cd9c351ef"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -258,6 +898,26 @@
   "provider_1008f8f75fac05329853063af74": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ad354743738acda56ff8eeaa3621d329/view?project=6a916a6c0030a70a9d75",
     "version": "ad354743738acda56ff8eeaa3621d329395719c288a7f181215e31f8910048aa",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ad354743738acda56ff8eeaa3621d329/view?project=6a916a6c0030a70a9d75",
+        "version": "ad354743738acda56ff8eeaa3621d329395719c288a7f181215e31f8910048aa",
+        "direction": "Original view",
+        "fileId": "s_ad354743738acda56ff8eeaa3621d329"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_40a88160ae17cb2558e2cc1d4f78a26f/view?project=6a916a6c0030a70a9d75",
+        "version": "40a88160ae17cb2558e2cc1d4f78a26f9b36fab38b59ac29792f41f35b26d45e",
+        "direction": "Look left",
+        "fileId": "s_40a88160ae17cb2558e2cc1d4f78a26f"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_0f5a02a2df52807625185c0e692dfdae/view?project=6a916a6c0030a70a9d75",
+        "version": "0f5a02a2df52807625185c0e692dfdae93514290ec9694e0760ea3744559b2a8",
+        "direction": "Look right",
+        "fileId": "s_0f5a02a2df52807625185c0e692dfdae"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -266,6 +926,26 @@
   "provider_a63702b978e2628289738c9db6c": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2bc6aff0b9867954aad78b3622a7ac17/view?project=6a916a6c0030a70a9d75",
     "version": "2bc6aff0b9867954aad78b3622a7ac171f922af8ea502e799c0190ac0a26a244",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2bc6aff0b9867954aad78b3622a7ac17/view?project=6a916a6c0030a70a9d75",
+        "version": "2bc6aff0b9867954aad78b3622a7ac171f922af8ea502e799c0190ac0a26a244",
+        "direction": "Original view",
+        "fileId": "s_2bc6aff0b9867954aad78b3622a7ac17"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2b62c346156c64f48882ee9a2a9d07e3/view?project=6a916a6c0030a70a9d75",
+        "version": "2b62c346156c64f48882ee9a2a9d07e351f1202e78c56b49a7a0914a617e7bc0",
+        "direction": "Look left",
+        "fileId": "s_2b62c346156c64f48882ee9a2a9d07e3"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_016785cbd6d434d5f5a039862426f8ef/view?project=6a916a6c0030a70a9d75",
+        "version": "016785cbd6d434d5f5a039862426f8efe251c413bc943b9e12ab1503692c4d50",
+        "direction": "Look right",
+        "fileId": "s_016785cbd6d434d5f5a039862426f8ef"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -274,6 +954,26 @@
   "provider_566a7ddf7a32d108137ee38f19a": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_012a68fde3b255254fad99688acd15f0/view?project=6a916a6c0030a70a9d75",
     "version": "012a68fde3b255254fad99688acd15f0e81fe284e2af899a32c012f3db11cef8",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_012a68fde3b255254fad99688acd15f0/view?project=6a916a6c0030a70a9d75",
+        "version": "012a68fde3b255254fad99688acd15f0e81fe284e2af899a32c012f3db11cef8",
+        "direction": "Original view",
+        "fileId": "s_012a68fde3b255254fad99688acd15f0"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_8874a0316bcc11db39f9b9a1d0906ea9/view?project=6a916a6c0030a70a9d75",
+        "version": "8874a0316bcc11db39f9b9a1d0906ea9fbcf4fac5ae0890cc87b0f692b69be64",
+        "direction": "Look left",
+        "fileId": "s_8874a0316bcc11db39f9b9a1d0906ea9"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3ac11ff59c63bf76b0381a78a5e92802/view?project=6a916a6c0030a70a9d75",
+        "version": "3ac11ff59c63bf76b0381a78a5e928021f8e70b1211f9b8c71872d9020933be2",
+        "direction": "Look right",
+        "fileId": "s_3ac11ff59c63bf76b0381a78a5e92802"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -282,6 +982,26 @@
   "provider_b98cf5c4416105eb3c18b26160b": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_be04a2934465dce522353d2a80ad6a5c/view?project=6a916a6c0030a70a9d75",
     "version": "be04a2934465dce522353d2a80ad6a5c3be9503cf20b3af2de4870143f6fc94e",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_be04a2934465dce522353d2a80ad6a5c/view?project=6a916a6c0030a70a9d75",
+        "version": "be04a2934465dce522353d2a80ad6a5c3be9503cf20b3af2de4870143f6fc94e",
+        "direction": "Original view",
+        "fileId": "s_be04a2934465dce522353d2a80ad6a5c"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_848d7dac9e8659236d5c183e644bd407/view?project=6a916a6c0030a70a9d75",
+        "version": "848d7dac9e8659236d5c183e644bd40705d015439e45798b70cd7be229a5b734",
+        "direction": "Look left",
+        "fileId": "s_848d7dac9e8659236d5c183e644bd407"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a59bed8e4ea7d65692a7a2cae2cb8629/view?project=6a916a6c0030a70a9d75",
+        "version": "a59bed8e4ea7d65692a7a2cae2cb86296b0cb7b15d4375e6a42272ca88ca4415",
+        "direction": "Look right",
+        "fileId": "s_a59bed8e4ea7d65692a7a2cae2cb8629"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -290,6 +1010,26 @@
   "provider_76fdeb6c22557cfc43a289d43a0": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1543ab00d90653a2e91ea052984f802d/view?project=6a916a6c0030a70a9d75",
     "version": "1543ab00d90653a2e91ea052984f802d87991d2a28375934c2f3430df38affdb",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1543ab00d90653a2e91ea052984f802d/view?project=6a916a6c0030a70a9d75",
+        "version": "1543ab00d90653a2e91ea052984f802d87991d2a28375934c2f3430df38affdb",
+        "direction": "Original view",
+        "fileId": "s_1543ab00d90653a2e91ea052984f802d"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_897a2e1061bc453adf33e601be3bb358/view?project=6a916a6c0030a70a9d75",
+        "version": "897a2e1061bc453adf33e601be3bb358c224a0ce2eb50ce188c9a49b3e4ed6aa",
+        "direction": "Look left",
+        "fileId": "s_897a2e1061bc453adf33e601be3bb358"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_dedf246fe82af51c7717ab174a6fc6da/view?project=6a916a6c0030a70a9d75",
+        "version": "dedf246fe82af51c7717ab174a6fc6dae6f14f8944d543879816e44deee5ac74",
+        "direction": "Look right",
+        "fileId": "s_dedf246fe82af51c7717ab174a6fc6da"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -298,6 +1038,26 @@
   "provider_65f929229eb841c37f92d3860a9": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_41903c035b2eeeff1e6de5a0ac8715a0/view?project=6a916a6c0030a70a9d75",
     "version": "41903c035b2eeeff1e6de5a0ac8715a0aa94464f7c6944e84c9cb758a330c2f5",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_41903c035b2eeeff1e6de5a0ac8715a0/view?project=6a916a6c0030a70a9d75",
+        "version": "41903c035b2eeeff1e6de5a0ac8715a0aa94464f7c6944e84c9cb758a330c2f5",
+        "direction": "Original view",
+        "fileId": "s_41903c035b2eeeff1e6de5a0ac8715a0"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c5cecc9502aa8f9409608780644a3ec5/view?project=6a916a6c0030a70a9d75",
+        "version": "c5cecc9502aa8f9409608780644a3ec56c47d9be3295c6050c66de26de41198e",
+        "direction": "Look left",
+        "fileId": "s_c5cecc9502aa8f9409608780644a3ec5"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e73e0bd0b3094e6c781e0aff470dbc84/view?project=6a916a6c0030a70a9d75",
+        "version": "e73e0bd0b3094e6c781e0aff470dbc843cebbec6d9443bf75583e8102526d303",
+        "direction": "Look right",
+        "fileId": "s_e73e0bd0b3094e6c781e0aff470dbc84"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -306,6 +1066,26 @@
   "provider_a4f81440a19cb9ccf4b2528b1a5": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_660f9bf0412eb5783fcf79c03df6b32f/view?project=6a916a6c0030a70a9d75",
     "version": "660f9bf0412eb5783fcf79c03df6b32fc33a41b7bbd3329c58dc8bb18f3edd93",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_660f9bf0412eb5783fcf79c03df6b32f/view?project=6a916a6c0030a70a9d75",
+        "version": "660f9bf0412eb5783fcf79c03df6b32fc33a41b7bbd3329c58dc8bb18f3edd93",
+        "direction": "Original view",
+        "fileId": "s_660f9bf0412eb5783fcf79c03df6b32f"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fd5dabb24a8aaf24197c96c08e0e1c15/view?project=6a916a6c0030a70a9d75",
+        "version": "fd5dabb24a8aaf24197c96c08e0e1c156fb5fa7d749681720dae2de4421fa300",
+        "direction": "Look left",
+        "fileId": "s_fd5dabb24a8aaf24197c96c08e0e1c15"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_47c2039a958ad189c6872ba91ecae078/view?project=6a916a6c0030a70a9d75",
+        "version": "47c2039a958ad189c6872ba91ecae078ca172f3c988e28ef71e01b6d789ac507",
+        "direction": "Look right",
+        "fileId": "s_47c2039a958ad189c6872ba91ecae078"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -314,6 +1094,26 @@
   "provider_bc393868c856c47ef03fd2043b1": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_bbe0e61037d3da49866a239a968cefe3/view?project=6a916a6c0030a70a9d75",
     "version": "bbe0e61037d3da49866a239a968cefe3d4e18030678e6977c1807420a8773ad7",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_bbe0e61037d3da49866a239a968cefe3/view?project=6a916a6c0030a70a9d75",
+        "version": "bbe0e61037d3da49866a239a968cefe3d4e18030678e6977c1807420a8773ad7",
+        "direction": "Original view",
+        "fileId": "s_bbe0e61037d3da49866a239a968cefe3"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b8887d055399038b656c11e62b946052/view?project=6a916a6c0030a70a9d75",
+        "version": "b8887d055399038b656c11e62b946052d69725e5f8e452adae8b26668037215f",
+        "direction": "Look left",
+        "fileId": "s_b8887d055399038b656c11e62b946052"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_70afbca77a80485ea6e4b5db9f7e9c24/view?project=6a916a6c0030a70a9d75",
+        "version": "70afbca77a80485ea6e4b5db9f7e9c243549da7aa51295f450d83f096db87f31",
+        "direction": "Look right",
+        "fileId": "s_70afbca77a80485ea6e4b5db9f7e9c24"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -322,6 +1122,26 @@
   "provider_63030c80b7dfee98bae1dc21311": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f79d6cf484e94a82d5cc084161327bef/view?project=6a916a6c0030a70a9d75",
     "version": "f79d6cf484e94a82d5cc084161327bef70d427ba6fc95c42553b44cfc65e7393",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f79d6cf484e94a82d5cc084161327bef/view?project=6a916a6c0030a70a9d75",
+        "version": "f79d6cf484e94a82d5cc084161327bef70d427ba6fc95c42553b44cfc65e7393",
+        "direction": "Original view",
+        "fileId": "s_f79d6cf484e94a82d5cc084161327bef"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6ebd315fb9fd90b800248d423fee080b/view?project=6a916a6c0030a70a9d75",
+        "version": "6ebd315fb9fd90b800248d423fee080b8819e64e5d23cd63d943288fcdf5f79b",
+        "direction": "Look left",
+        "fileId": "s_6ebd315fb9fd90b800248d423fee080b"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_06b66b4790646d1dc05596fcb8263d51/view?project=6a916a6c0030a70a9d75",
+        "version": "06b66b4790646d1dc05596fcb8263d514388e90b2b2272b7328fa259fc9cfc96",
+        "direction": "Look right",
+        "fileId": "s_06b66b4790646d1dc05596fcb8263d51"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -330,6 +1150,26 @@
   "provider_9bf9c5cf005742c633ea5954a42": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5139ab166cc15f1a9415cbc4ad1a15d6/view?project=6a916a6c0030a70a9d75",
     "version": "5139ab166cc15f1a9415cbc4ad1a15d6eee3b22720138a42b5578e76f8eb47b1",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5139ab166cc15f1a9415cbc4ad1a15d6/view?project=6a916a6c0030a70a9d75",
+        "version": "5139ab166cc15f1a9415cbc4ad1a15d6eee3b22720138a42b5578e76f8eb47b1",
+        "direction": "Original view",
+        "fileId": "s_5139ab166cc15f1a9415cbc4ad1a15d6"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_80fa1f77e8777dc3e689866397c1e2af/view?project=6a916a6c0030a70a9d75",
+        "version": "80fa1f77e8777dc3e689866397c1e2af40b1e53c2fd9e5290248e87846198041",
+        "direction": "Look left",
+        "fileId": "s_80fa1f77e8777dc3e689866397c1e2af"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fbe70a9aba42e40de92608f3474c025e/view?project=6a916a6c0030a70a9d75",
+        "version": "fbe70a9aba42e40de92608f3474c025eaa4c6da430ad4d7776d886356bed5ebe",
+        "direction": "Look right",
+        "fileId": "s_fbe70a9aba42e40de92608f3474c025e"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -338,6 +1178,26 @@
   "provider_9c0bd03e329d0c94e9abf11085a": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4c63ba8ae9f7a7b4e07c2fcdccc0b908/view?project=6a916a6c0030a70a9d75",
     "version": "4c63ba8ae9f7a7b4e07c2fcdccc0b908358b42e186c916b2dedc8e4c7ddc2a24",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4c63ba8ae9f7a7b4e07c2fcdccc0b908/view?project=6a916a6c0030a70a9d75",
+        "version": "4c63ba8ae9f7a7b4e07c2fcdccc0b908358b42e186c916b2dedc8e4c7ddc2a24",
+        "direction": "Original view",
+        "fileId": "s_4c63ba8ae9f7a7b4e07c2fcdccc0b908"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_677732117dd44ac24958f1a22817230b/view?project=6a916a6c0030a70a9d75",
+        "version": "677732117dd44ac24958f1a22817230b4f5aae4535607534199be5b5f5c8257b",
+        "direction": "Look left",
+        "fileId": "s_677732117dd44ac24958f1a22817230b"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_52d8d1254c1d02b049bfe64f0e7a0b26/view?project=6a916a6c0030a70a9d75",
+        "version": "52d8d1254c1d02b049bfe64f0e7a0b26da9fbd6364a4a5d15debb715fc2dba9f",
+        "direction": "Look right",
+        "fileId": "s_52d8d1254c1d02b049bfe64f0e7a0b26"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -346,6 +1206,26 @@
   "provider_aca4036ed9e9162d02bafe49beb": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5eea2b9611e83ae7e74ff174fb3441ef/view?project=6a916a6c0030a70a9d75",
     "version": "5eea2b9611e83ae7e74ff174fb3441ef669bd9add229f860edff1f643f5a90d6",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5eea2b9611e83ae7e74ff174fb3441ef/view?project=6a916a6c0030a70a9d75",
+        "version": "5eea2b9611e83ae7e74ff174fb3441ef669bd9add229f860edff1f643f5a90d6",
+        "direction": "Original view",
+        "fileId": "s_5eea2b9611e83ae7e74ff174fb3441ef"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d8a6624275da3aa07884c3055ef034b7/view?project=6a916a6c0030a70a9d75",
+        "version": "d8a6624275da3aa07884c3055ef034b7d6b395480db0aa2c989ada036be7fd13",
+        "direction": "Look left",
+        "fileId": "s_d8a6624275da3aa07884c3055ef034b7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ed91a105de82ffee9272c4c80db85186/view?project=6a916a6c0030a70a9d75",
+        "version": "ed91a105de82ffee9272c4c80db8518640c854dc662542c51ce8f3bdd94a38c8",
+        "direction": "Look right",
+        "fileId": "s_ed91a105de82ffee9272c4c80db85186"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -354,6 +1234,26 @@
   "provider_d35bfa333a7c00ff49f26afb074": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_147182fd217cc0db6ef347815bcf7f82/view?project=6a916a6c0030a70a9d75",
     "version": "147182fd217cc0db6ef347815bcf7f821be9aa1be3aac50c7d88b16f6d2a3b11",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_147182fd217cc0db6ef347815bcf7f82/view?project=6a916a6c0030a70a9d75",
+        "version": "147182fd217cc0db6ef347815bcf7f821be9aa1be3aac50c7d88b16f6d2a3b11",
+        "direction": "Original view",
+        "fileId": "s_147182fd217cc0db6ef347815bcf7f82"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_deb56718d55ed3b585dc6ba2d919d26d/view?project=6a916a6c0030a70a9d75",
+        "version": "deb56718d55ed3b585dc6ba2d919d26dd4e2a9de9c56fc664948e16f76f82739",
+        "direction": "Look left",
+        "fileId": "s_deb56718d55ed3b585dc6ba2d919d26d"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c93266088ae53d78921d5ce997bb4241/view?project=6a916a6c0030a70a9d75",
+        "version": "c93266088ae53d78921d5ce997bb4241d637fad84dadccd540df72ad79eec3c6",
+        "direction": "Look right",
+        "fileId": "s_c93266088ae53d78921d5ce997bb4241"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -362,6 +1262,26 @@
   "provider_043d95893fd6f7de6ec82f8cca2": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4177a410c53ff0dbd24efc732d5fec67/view?project=6a916a6c0030a70a9d75",
     "version": "4177a410c53ff0dbd24efc732d5fec670e15ae156bb943bc87278ebf5d79c8bb",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4177a410c53ff0dbd24efc732d5fec67/view?project=6a916a6c0030a70a9d75",
+        "version": "4177a410c53ff0dbd24efc732d5fec670e15ae156bb943bc87278ebf5d79c8bb",
+        "direction": "Original view",
+        "fileId": "s_4177a410c53ff0dbd24efc732d5fec67"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f2af76ed09af8378c0cb47ea3d9e0c56/view?project=6a916a6c0030a70a9d75",
+        "version": "f2af76ed09af8378c0cb47ea3d9e0c56ccc001c58c5a337aa7cf07a8b5b0eb7f",
+        "direction": "Look left",
+        "fileId": "s_f2af76ed09af8378c0cb47ea3d9e0c56"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_bc1d31ae8fcbbc7ed52168f21124fc6e/view?project=6a916a6c0030a70a9d75",
+        "version": "bc1d31ae8fcbbc7ed52168f21124fc6e54f9f3ad25ee9237f3d0578ebdff1be3",
+        "direction": "Look right",
+        "fileId": "s_bc1d31ae8fcbbc7ed52168f21124fc6e"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -370,6 +1290,26 @@
   "provider_kpm_ffcfa148da3c8a88092d82b2": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b759546f08d15eba682c23ccf469fa66/view?project=6a916a6c0030a70a9d75",
     "version": "b759546f08d15eba682c23ccf469fa66a270d03f96c4f10d5ca255203982cf6d",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b759546f08d15eba682c23ccf469fa66/view?project=6a916a6c0030a70a9d75",
+        "version": "b759546f08d15eba682c23ccf469fa66a270d03f96c4f10d5ca255203982cf6d",
+        "direction": "Original view",
+        "fileId": "s_b759546f08d15eba682c23ccf469fa66"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_acac845cf47ad679eec2e609cf3fdddf/view?project=6a916a6c0030a70a9d75",
+        "version": "acac845cf47ad679eec2e609cf3fdddf2e11daf6b6668319caa8a8f5d573c032",
+        "direction": "Look left",
+        "fileId": "s_acac845cf47ad679eec2e609cf3fdddf"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ea29a52de986717d394e8fc6d479a6cc/view?project=6a916a6c0030a70a9d75",
+        "version": "ea29a52de986717d394e8fc6d479a6cca3cc5dbd6015183a552f4981ad92fce9",
+        "direction": "Look right",
+        "fileId": "s_ea29a52de986717d394e8fc6d479a6cc"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -378,6 +1318,26 @@
   "provider_kpm_469c0bfc516d88c0e3a2854f": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_11b1cf0f882fec5018678ecedee30370/view?project=6a916a6c0030a70a9d75",
     "version": "11b1cf0f882fec5018678ecedee30370c2e50edfd842810943837ddb52101829",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_11b1cf0f882fec5018678ecedee30370/view?project=6a916a6c0030a70a9d75",
+        "version": "11b1cf0f882fec5018678ecedee30370c2e50edfd842810943837ddb52101829",
+        "direction": "Original view",
+        "fileId": "s_11b1cf0f882fec5018678ecedee30370"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f65bafe8cea5f82dec08d3b265b4173a/view?project=6a916a6c0030a70a9d75",
+        "version": "f65bafe8cea5f82dec08d3b265b4173a4595bdc7acf0fc818613323b4f52b2fc",
+        "direction": "Look left",
+        "fileId": "s_f65bafe8cea5f82dec08d3b265b4173a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_59fdad2d4043df4c98709ad77a320e06/view?project=6a916a6c0030a70a9d75",
+        "version": "59fdad2d4043df4c98709ad77a320e06136d440a8f162c31298cfb621e02b154",
+        "direction": "Look right",
+        "fileId": "s_59fdad2d4043df4c98709ad77a320e06"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -386,6 +1346,26 @@
   "provider_7617dd8dc6f837b9d9f170a9465": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ed6b96f56b6db87fc311ad62289a30ec/view?project=6a916a6c0030a70a9d75",
     "version": "ed6b96f56b6db87fc311ad62289a30ec5e0e3a2c0ec301e45c994ca761b11673",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ed6b96f56b6db87fc311ad62289a30ec/view?project=6a916a6c0030a70a9d75",
+        "version": "ed6b96f56b6db87fc311ad62289a30ec5e0e3a2c0ec301e45c994ca761b11673",
+        "direction": "Original view",
+        "fileId": "s_ed6b96f56b6db87fc311ad62289a30ec"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_0043d7be880376baa550db43c080b982/view?project=6a916a6c0030a70a9d75",
+        "version": "0043d7be880376baa550db43c080b982a2c18594c88caffd7db40e435925af98",
+        "direction": "Look left",
+        "fileId": "s_0043d7be880376baa550db43c080b982"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_512299e2d6ae281b70dd99fc71f867d1/view?project=6a916a6c0030a70a9d75",
+        "version": "512299e2d6ae281b70dd99fc71f867d1dc3c08d4823dcd76683c161c595b102b",
+        "direction": "Look right",
+        "fileId": "s_512299e2d6ae281b70dd99fc71f867d1"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -394,6 +1374,26 @@
   "provider_eff6a0d2f4e848f2dd3b30e7a27": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6834387ea91f159d18a7fa9e91b89094/view?project=6a916a6c0030a70a9d75",
     "version": "6834387ea91f159d18a7fa9e91b890945ddf367cd634bb9b8295d722c4007fa0",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6834387ea91f159d18a7fa9e91b89094/view?project=6a916a6c0030a70a9d75",
+        "version": "6834387ea91f159d18a7fa9e91b890945ddf367cd634bb9b8295d722c4007fa0",
+        "direction": "Original view",
+        "fileId": "s_6834387ea91f159d18a7fa9e91b89094"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_8ec2fdd6e4a125699c5a1d90111e6d39/view?project=6a916a6c0030a70a9d75",
+        "version": "8ec2fdd6e4a125699c5a1d90111e6d390a71261ef033acbab2bc4790c46cc7e8",
+        "direction": "Look left",
+        "fileId": "s_8ec2fdd6e4a125699c5a1d90111e6d39"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3f79a9a9295de5bd9afce580105cf1bb/view?project=6a916a6c0030a70a9d75",
+        "version": "3f79a9a9295de5bd9afce580105cf1bbb0e29763137877980f82939d40c92cdf",
+        "direction": "Look right",
+        "fileId": "s_3f79a9a9295de5bd9afce580105cf1bb"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -402,6 +1402,26 @@
   "provider_88408de0b4f21319175ac455673": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fd07cd08f52284de26d38effe5d54967/view?project=6a916a6c0030a70a9d75",
     "version": "fd07cd08f52284de26d38effe5d54967bc4070dd57e7167336e5d7c02e7c8476",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fd07cd08f52284de26d38effe5d54967/view?project=6a916a6c0030a70a9d75",
+        "version": "fd07cd08f52284de26d38effe5d54967bc4070dd57e7167336e5d7c02e7c8476",
+        "direction": "Original view",
+        "fileId": "s_fd07cd08f52284de26d38effe5d54967"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fad258f8149d3783ba8eccec18cd286e/view?project=6a916a6c0030a70a9d75",
+        "version": "fad258f8149d3783ba8eccec18cd286e14ea6b354274f5698377212fc252373c",
+        "direction": "Look left",
+        "fileId": "s_fad258f8149d3783ba8eccec18cd286e"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3dd2995860bcaca9929860e73c315d91/view?project=6a916a6c0030a70a9d75",
+        "version": "3dd2995860bcaca9929860e73c315d9102ff72a1b220c56ccc1cea4c7d6ff7f9",
+        "direction": "Look right",
+        "fileId": "s_3dd2995860bcaca9929860e73c315d91"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -410,6 +1430,26 @@
   "provider_4576ca09bd13bb7c7798a359247": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d2287d09bb86f27069809365f52ad96e/view?project=6a916a6c0030a70a9d75",
     "version": "d2287d09bb86f27069809365f52ad96eddd27d2516142e5bda9a916550988318",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d2287d09bb86f27069809365f52ad96e/view?project=6a916a6c0030a70a9d75",
+        "version": "d2287d09bb86f27069809365f52ad96eddd27d2516142e5bda9a916550988318",
+        "direction": "Original view",
+        "fileId": "s_d2287d09bb86f27069809365f52ad96e"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ee567ecaf24512b55c144bd4c3b03303/view?project=6a916a6c0030a70a9d75",
+        "version": "ee567ecaf24512b55c144bd4c3b03303089990ec9aa8496d7cdbd62efba7c273",
+        "direction": "Look left",
+        "fileId": "s_ee567ecaf24512b55c144bd4c3b03303"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9e4a84a472cfb87ed61c8227c7ac250e/view?project=6a916a6c0030a70a9d75",
+        "version": "9e4a84a472cfb87ed61c8227c7ac250e2f2aebe15a52879049548120de29e60f",
+        "direction": "Look right",
+        "fileId": "s_9e4a84a472cfb87ed61c8227c7ac250e"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -418,6 +1458,26 @@
   "provider_81e9c718b74e4991bd5fb4a16b1": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_997dbd863b10118b2d6f60b6f468deb0/view?project=6a916a6c0030a70a9d75",
     "version": "997dbd863b10118b2d6f60b6f468deb0fe28f0ee11bbba3c7b42da94cc88442a",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_997dbd863b10118b2d6f60b6f468deb0/view?project=6a916a6c0030a70a9d75",
+        "version": "997dbd863b10118b2d6f60b6f468deb0fe28f0ee11bbba3c7b42da94cc88442a",
+        "direction": "Original view",
+        "fileId": "s_997dbd863b10118b2d6f60b6f468deb0"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3a460cccd5705faf4c3557e08a9d5495/view?project=6a916a6c0030a70a9d75",
+        "version": "3a460cccd5705faf4c3557e08a9d5495c85f3648555b88759b12d9c7fe637184",
+        "direction": "Look left",
+        "fileId": "s_3a460cccd5705faf4c3557e08a9d5495"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e2f19da296e65a5625384d42829ddf4b/view?project=6a916a6c0030a70a9d75",
+        "version": "e2f19da296e65a5625384d42829ddf4beb6926c080285cd9b16e986108ff366b",
+        "direction": "Look right",
+        "fileId": "s_e2f19da296e65a5625384d42829ddf4b"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -426,6 +1486,26 @@
   "provider_193b316038c5bc2d8723f107a91": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_db5192cb3804c75a668d859c951c75ff/view?project=6a916a6c0030a70a9d75",
     "version": "db5192cb3804c75a668d859c951c75ffc8ef82ffa697dbd93c9231b414a4d76c",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_db5192cb3804c75a668d859c951c75ff/view?project=6a916a6c0030a70a9d75",
+        "version": "db5192cb3804c75a668d859c951c75ffc8ef82ffa697dbd93c9231b414a4d76c",
+        "direction": "Original view",
+        "fileId": "s_db5192cb3804c75a668d859c951c75ff"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_3b50961069b2d231dd5ade808a4c7830/view?project=6a916a6c0030a70a9d75",
+        "version": "3b50961069b2d231dd5ade808a4c78303e57616432408327b3b0e7dc9cdc1c1c",
+        "direction": "Look left",
+        "fileId": "s_3b50961069b2d231dd5ade808a4c7830"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_96e5bcb283f68807cfa3c627270e2604/view?project=6a916a6c0030a70a9d75",
+        "version": "96e5bcb283f68807cfa3c627270e260433233850ee37d2cf958c81609263e8d9",
+        "direction": "Look right",
+        "fileId": "s_96e5bcb283f68807cfa3c627270e2604"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -434,6 +1514,26 @@
   "provider_1c9df519e489a6da1a3659dfb02": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_13a7a6546ece74795a738c9dee207e30/view?project=6a916a6c0030a70a9d75",
     "version": "13a7a6546ece74795a738c9dee207e306c22062341bc4422a2d92180f2c61dd3",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_13a7a6546ece74795a738c9dee207e30/view?project=6a916a6c0030a70a9d75",
+        "version": "13a7a6546ece74795a738c9dee207e306c22062341bc4422a2d92180f2c61dd3",
+        "direction": "Original view",
+        "fileId": "s_13a7a6546ece74795a738c9dee207e30"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_5241f8ad62770cf256067193f66224d1/view?project=6a916a6c0030a70a9d75",
+        "version": "5241f8ad62770cf256067193f66224d1a5d551bc0a3ab3190936e90cae125ec5",
+        "direction": "Look left",
+        "fileId": "s_5241f8ad62770cf256067193f66224d1"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1bf0feeb584e92a292fabd8f2a2aa38a/view?project=6a916a6c0030a70a9d75",
+        "version": "1bf0feeb584e92a292fabd8f2a2aa38af9cc0232f752f54b65c155858b8eb316",
+        "direction": "Look right",
+        "fileId": "s_1bf0feeb584e92a292fabd8f2a2aa38a"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -442,6 +1542,26 @@
   "provider_6c3f5c31801a12fc760dda27dc4": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9ec8d256ed188f2f33cba8331511c921/view?project=6a916a6c0030a70a9d75",
     "version": "9ec8d256ed188f2f33cba8331511c921dc4e7c58f171d6922c08b82d835f0550",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9ec8d256ed188f2f33cba8331511c921/view?project=6a916a6c0030a70a9d75",
+        "version": "9ec8d256ed188f2f33cba8331511c921dc4e7c58f171d6922c08b82d835f0550",
+        "direction": "Original view",
+        "fileId": "s_9ec8d256ed188f2f33cba8331511c921"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_86c674947c41308f9a543745b2ad6a88/view?project=6a916a6c0030a70a9d75",
+        "version": "86c674947c41308f9a543745b2ad6a8867a210472185dac4eb6fa85d46f0a802",
+        "direction": "Look left",
+        "fileId": "s_86c674947c41308f9a543745b2ad6a88"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_97b61ba4b913dbc6e95c0932995400e4/view?project=6a916a6c0030a70a9d75",
+        "version": "97b61ba4b913dbc6e95c0932995400e420138b139a8fa7c91d902b131f5eaa6c",
+        "direction": "Look right",
+        "fileId": "s_97b61ba4b913dbc6e95c0932995400e4"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -450,6 +1570,26 @@
   "provider_aefc7e709e8a18e9559e85a8518": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d5015227aea5f24853fbcc73e0898dfb/view?project=6a916a6c0030a70a9d75",
     "version": "d5015227aea5f24853fbcc73e0898dfb311eca2c5ed3f6e7004ca1596895c2ba",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d5015227aea5f24853fbcc73e0898dfb/view?project=6a916a6c0030a70a9d75",
+        "version": "d5015227aea5f24853fbcc73e0898dfb311eca2c5ed3f6e7004ca1596895c2ba",
+        "direction": "Original view",
+        "fileId": "s_d5015227aea5f24853fbcc73e0898dfb"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_8b5cc2a027cb5113da7674df227bbb3e/view?project=6a916a6c0030a70a9d75",
+        "version": "8b5cc2a027cb5113da7674df227bbb3e54ce00f018b81b5bb88d22adaba7bc75",
+        "direction": "Look left",
+        "fileId": "s_8b5cc2a027cb5113da7674df227bbb3e"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4290c85371d0ec75db1488998cd51615/view?project=6a916a6c0030a70a9d75",
+        "version": "4290c85371d0ec75db1488998cd51615eb4614dfe35595a96ef747491c373b85",
+        "direction": "Look right",
+        "fileId": "s_4290c85371d0ec75db1488998cd51615"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -458,6 +1598,26 @@
   "provider_6952264f50219138dbe8dd6a25d": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f7219d16e43f1684f583ad27e8d0233a/view?project=6a916a6c0030a70a9d75",
     "version": "f7219d16e43f1684f583ad27e8d0233a9d07fb789f240ecf3b2b4db61fc15d7c",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f7219d16e43f1684f583ad27e8d0233a/view?project=6a916a6c0030a70a9d75",
+        "version": "f7219d16e43f1684f583ad27e8d0233a9d07fb789f240ecf3b2b4db61fc15d7c",
+        "direction": "Original view",
+        "fileId": "s_f7219d16e43f1684f583ad27e8d0233a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_17cef81f2af22059194793027808ef83/view?project=6a916a6c0030a70a9d75",
+        "version": "17cef81f2af22059194793027808ef8321babddc9d8f35d36f5933f040756506",
+        "direction": "Look left",
+        "fileId": "s_17cef81f2af22059194793027808ef83"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_0444e28a2566dde9a042345aa8d0f0e2/view?project=6a916a6c0030a70a9d75",
+        "version": "0444e28a2566dde9a042345aa8d0f0e2e9d15a8c30ee7ea47f18c2129ab4942d",
+        "direction": "Look right",
+        "fileId": "s_0444e28a2566dde9a042345aa8d0f0e2"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -466,6 +1626,26 @@
   "provider_038b7be988901ada265e733de80": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_bef0685ef0fc35966e27d5a8d82d4885/view?project=6a916a6c0030a70a9d75",
     "version": "bef0685ef0fc35966e27d5a8d82d4885434f919161260f9b7802d5fbcf5f7f89",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_bef0685ef0fc35966e27d5a8d82d4885/view?project=6a916a6c0030a70a9d75",
+        "version": "bef0685ef0fc35966e27d5a8d82d4885434f919161260f9b7802d5fbcf5f7f89",
+        "direction": "Original view",
+        "fileId": "s_bef0685ef0fc35966e27d5a8d82d4885"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_cf88828bff6fb96aca77e9f9d15f6c78/view?project=6a916a6c0030a70a9d75",
+        "version": "cf88828bff6fb96aca77e9f9d15f6c780a9ced94ff76c658b87731ab920689e9",
+        "direction": "Look left",
+        "fileId": "s_cf88828bff6fb96aca77e9f9d15f6c78"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f125bde0a333f60a8394eba4ba6a9c8a/view?project=6a916a6c0030a70a9d75",
+        "version": "f125bde0a333f60a8394eba4ba6a9c8abfa2af146a2e80d349ec9c7ef60e43b3",
+        "direction": "Look right",
+        "fileId": "s_f125bde0a333f60a8394eba4ba6a9c8a"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -474,6 +1654,26 @@
   "provider_21507892dc4fa7d9cba4819519a": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_74c8c90dd7cdd4b7c290a942dcaa184a/view?project=6a916a6c0030a70a9d75",
     "version": "74c8c90dd7cdd4b7c290a942dcaa184ad2e4fd185ae20597bd9fab49a596fc10",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_74c8c90dd7cdd4b7c290a942dcaa184a/view?project=6a916a6c0030a70a9d75",
+        "version": "74c8c90dd7cdd4b7c290a942dcaa184ad2e4fd185ae20597bd9fab49a596fc10",
+        "direction": "Original view",
+        "fileId": "s_74c8c90dd7cdd4b7c290a942dcaa184a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_bcd8049025cf6829acf990a923e2094e/view?project=6a916a6c0030a70a9d75",
+        "version": "bcd8049025cf6829acf990a923e2094e141aea7b9ef57e72aac6af0b95f9c6f3",
+        "direction": "Look left",
+        "fileId": "s_bcd8049025cf6829acf990a923e2094e"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9aee56b4701fe810cbb43fdd17d106a6/view?project=6a916a6c0030a70a9d75",
+        "version": "9aee56b4701fe810cbb43fdd17d106a6bc04b086e89c9b5c31c887f9da098a02",
+        "direction": "Look right",
+        "fileId": "s_9aee56b4701fe810cbb43fdd17d106a6"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -482,6 +1682,26 @@
   "provider_b5e469ac6144ecffad381d62593": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_eb88bd17d0c590d063ff54b2f9cc38e8/view?project=6a916a6c0030a70a9d75",
     "version": "eb88bd17d0c590d063ff54b2f9cc38e82b11a8a84df261157f216f77a4e7e5e8",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_eb88bd17d0c590d063ff54b2f9cc38e8/view?project=6a916a6c0030a70a9d75",
+        "version": "eb88bd17d0c590d063ff54b2f9cc38e82b11a8a84df261157f216f77a4e7e5e8",
+        "direction": "Original view",
+        "fileId": "s_eb88bd17d0c590d063ff54b2f9cc38e8"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_71613898429e8615e1867411944d2c9e/view?project=6a916a6c0030a70a9d75",
+        "version": "71613898429e8615e1867411944d2c9e028cf16e3be723fa88fe7ac0d48393c5",
+        "direction": "Look left",
+        "fileId": "s_71613898429e8615e1867411944d2c9e"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9e2d6c14666e2a50cdb2bbb642a56b0c/view?project=6a916a6c0030a70a9d75",
+        "version": "9e2d6c14666e2a50cdb2bbb642a56b0c9c66d3e7b93c22d963b70c54865c4950",
+        "direction": "Look right",
+        "fileId": "s_9e2d6c14666e2a50cdb2bbb642a56b0c"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -490,6 +1710,26 @@
   "provider_518fe32f1b03b0dd19e754c0b61": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_06647f4ea858f62a56a3eea73fad7d7a/view?project=6a916a6c0030a70a9d75",
     "version": "06647f4ea858f62a56a3eea73fad7d7a389920289ac68e5196110fc17a24996f",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_06647f4ea858f62a56a3eea73fad7d7a/view?project=6a916a6c0030a70a9d75",
+        "version": "06647f4ea858f62a56a3eea73fad7d7a389920289ac68e5196110fc17a24996f",
+        "direction": "Original view",
+        "fileId": "s_06647f4ea858f62a56a3eea73fad7d7a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_96072f4d736f45d9a192eb479a10e128/view?project=6a916a6c0030a70a9d75",
+        "version": "96072f4d736f45d9a192eb479a10e128578e817f8fb6cdc6a0cac03abb9a14b1",
+        "direction": "Look left",
+        "fileId": "s_96072f4d736f45d9a192eb479a10e128"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9ad24980530251112bc3900750f83aa4/view?project=6a916a6c0030a70a9d75",
+        "version": "9ad24980530251112bc3900750f83aa4c63a8bcb4296a9b27a9efd5a30f38485",
+        "direction": "Look right",
+        "fileId": "s_9ad24980530251112bc3900750f83aa4"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -498,6 +1738,26 @@
   "provider_57987832b49511aad3a52391f1b": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1ace2b5a3a9693a25251700f66125ee0/view?project=6a916a6c0030a70a9d75",
     "version": "1ace2b5a3a9693a25251700f66125ee0afbe3910dd48197c4bc9cb91bb6e6ec8",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1ace2b5a3a9693a25251700f66125ee0/view?project=6a916a6c0030a70a9d75",
+        "version": "1ace2b5a3a9693a25251700f66125ee0afbe3910dd48197c4bc9cb91bb6e6ec8",
+        "direction": "Original view",
+        "fileId": "s_1ace2b5a3a9693a25251700f66125ee0"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_609216117d493541e0d12330c1d92cb7/view?project=6a916a6c0030a70a9d75",
+        "version": "609216117d493541e0d12330c1d92cb71040a44e2b0ce366a28100c5dcf112aa",
+        "direction": "Look left",
+        "fileId": "s_609216117d493541e0d12330c1d92cb7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1811325433a53d6b30e1c8d9ab5705ff/view?project=6a916a6c0030a70a9d75",
+        "version": "1811325433a53d6b30e1c8d9ab5705ff95e472b4f2e5f49136fa20d7d2d55995",
+        "direction": "Look right",
+        "fileId": "s_1811325433a53d6b30e1c8d9ab5705ff"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -506,6 +1766,26 @@
   "provider_1bdfa3d76b9a23c6c4306edb6f4": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_36351c4a0c5acec3f114d94b5c107f13/view?project=6a916a6c0030a70a9d75",
     "version": "36351c4a0c5acec3f114d94b5c107f1342ed4864581c79ab20f620bcee882540",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_36351c4a0c5acec3f114d94b5c107f13/view?project=6a916a6c0030a70a9d75",
+        "version": "36351c4a0c5acec3f114d94b5c107f1342ed4864581c79ab20f620bcee882540",
+        "direction": "Original view",
+        "fileId": "s_36351c4a0c5acec3f114d94b5c107f13"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_25c0a312e8139a737ec8deacfe6e3a76/view?project=6a916a6c0030a70a9d75",
+        "version": "25c0a312e8139a737ec8deacfe6e3a76905b75321bb25157acedb2a8d94948df",
+        "direction": "Look left",
+        "fileId": "s_25c0a312e8139a737ec8deacfe6e3a76"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_82f2c9e507115c9ddefd1d6d800f20a0/view?project=6a916a6c0030a70a9d75",
+        "version": "82f2c9e507115c9ddefd1d6d800f20a05673fda103a80fc9016beb7b7821ccd3",
+        "direction": "Look right",
+        "fileId": "s_82f2c9e507115c9ddefd1d6d800f20a0"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -514,6 +1794,26 @@
   "provider_0463d276c19b108258221b7c61f": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_67e843c7c588f5b475d1a4f421b33465/view?project=6a916a6c0030a70a9d75",
     "version": "67e843c7c588f5b475d1a4f421b33465e195327ee45e5a2b0a7313ae245b627d",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_67e843c7c588f5b475d1a4f421b33465/view?project=6a916a6c0030a70a9d75",
+        "version": "67e843c7c588f5b475d1a4f421b33465e195327ee45e5a2b0a7313ae245b627d",
+        "direction": "Original view",
+        "fileId": "s_67e843c7c588f5b475d1a4f421b33465"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b19e5acf37680920aeae696c35146aab/view?project=6a916a6c0030a70a9d75",
+        "version": "b19e5acf37680920aeae696c35146aabd3ecaf92f805c5809aabd6209825df95",
+        "direction": "Look left",
+        "fileId": "s_b19e5acf37680920aeae696c35146aab"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_93953af38c9ce3c210d348c994e0393c/view?project=6a916a6c0030a70a9d75",
+        "version": "93953af38c9ce3c210d348c994e0393cd384256ff2a722e4f12797adcf974690",
+        "direction": "Look right",
+        "fileId": "s_93953af38c9ce3c210d348c994e0393c"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -522,6 +1822,26 @@
   "provider_e9c96afada4f977ef2cbb5b6df3": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_03d108f08d0061cd2d064ac2f0228b31/view?project=6a916a6c0030a70a9d75",
     "version": "03d108f08d0061cd2d064ac2f0228b31ebf34b42bcb706ba67d98e316d239b7b",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_03d108f08d0061cd2d064ac2f0228b31/view?project=6a916a6c0030a70a9d75",
+        "version": "03d108f08d0061cd2d064ac2f0228b31ebf34b42bcb706ba67d98e316d239b7b",
+        "direction": "Original view",
+        "fileId": "s_03d108f08d0061cd2d064ac2f0228b31"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6458163bd559c17e8f60ee1262e0e33d/view?project=6a916a6c0030a70a9d75",
+        "version": "6458163bd559c17e8f60ee1262e0e33dea8c97f7fe37da5fb7fee3e93259709a",
+        "direction": "Look left",
+        "fileId": "s_6458163bd559c17e8f60ee1262e0e33d"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_692a11ba11031c39f583d65ebf4d4144/view?project=6a916a6c0030a70a9d75",
+        "version": "692a11ba11031c39f583d65ebf4d4144afcf0429f9f209cd46f19a38fb1e4711",
+        "direction": "Look right",
+        "fileId": "s_692a11ba11031c39f583d65ebf4d4144"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -530,6 +1850,26 @@
   "provider_12805031be6164e7e5385a5ddb8": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_41db677f55c4a7446f6deb332c95dd94/view?project=6a916a6c0030a70a9d75",
     "version": "41db677f55c4a7446f6deb332c95dd94bfdb1a623ef326acd7476e01561018c5",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_41db677f55c4a7446f6deb332c95dd94/view?project=6a916a6c0030a70a9d75",
+        "version": "41db677f55c4a7446f6deb332c95dd94bfdb1a623ef326acd7476e01561018c5",
+        "direction": "Original view",
+        "fileId": "s_41db677f55c4a7446f6deb332c95dd94"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c98e8a8f75e4ca0584425f0de52b4cae/view?project=6a916a6c0030a70a9d75",
+        "version": "c98e8a8f75e4ca0584425f0de52b4caebac6a137f885fc736c737a445fb3f04b",
+        "direction": "Look left",
+        "fileId": "s_c98e8a8f75e4ca0584425f0de52b4cae"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b9f1fd05893c181d5e9df63b9fcf6c4c/view?project=6a916a6c0030a70a9d75",
+        "version": "b9f1fd05893c181d5e9df63b9fcf6c4c3797eea1c36dd0571581e46d82b24aba",
+        "direction": "Look right",
+        "fileId": "s_b9f1fd05893c181d5e9df63b9fcf6c4c"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -538,6 +1878,26 @@
   "provider_7cb3ea5e6283995e42d3e494f87": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2bfb81ea57c6b291fb28c46ce275e9ba/view?project=6a916a6c0030a70a9d75",
     "version": "2bfb81ea57c6b291fb28c46ce275e9ba5da4233c5a9223c72c457af4823e7d06",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2bfb81ea57c6b291fb28c46ce275e9ba/view?project=6a916a6c0030a70a9d75",
+        "version": "2bfb81ea57c6b291fb28c46ce275e9ba5da4233c5a9223c72c457af4823e7d06",
+        "direction": "Original view",
+        "fileId": "s_2bfb81ea57c6b291fb28c46ce275e9ba"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_460c7d106a70e3b7f6da6f879715cea6/view?project=6a916a6c0030a70a9d75",
+        "version": "460c7d106a70e3b7f6da6f879715cea60b5c690005afc35d22ac49f733ba8bbb",
+        "direction": "Look left",
+        "fileId": "s_460c7d106a70e3b7f6da6f879715cea6"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_63efde49529454210d3135aa4ad75994/view?project=6a916a6c0030a70a9d75",
+        "version": "63efde49529454210d3135aa4ad759947204c00bf3cbe6875839635d145afa8e",
+        "direction": "Look right",
+        "fileId": "s_63efde49529454210d3135aa4ad75994"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -546,6 +1906,26 @@
   "provider_2c2803915adcb4cbf28e4517953": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_96acf5a5eb1063e66e102cc45f9b152c/view?project=6a916a6c0030a70a9d75",
     "version": "96acf5a5eb1063e66e102cc45f9b152ceddda830b89fee43d44d495b4ab744a5",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_96acf5a5eb1063e66e102cc45f9b152c/view?project=6a916a6c0030a70a9d75",
+        "version": "96acf5a5eb1063e66e102cc45f9b152ceddda830b89fee43d44d495b4ab744a5",
+        "direction": "Original view",
+        "fileId": "s_96acf5a5eb1063e66e102cc45f9b152c"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_dd5c8a1ee609ba24f0dbd60e0e14edf4/view?project=6a916a6c0030a70a9d75",
+        "version": "dd5c8a1ee609ba24f0dbd60e0e14edf4173d9b2c88171b488ecf1b24f809fe89",
+        "direction": "Look left",
+        "fileId": "s_dd5c8a1ee609ba24f0dbd60e0e14edf4"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4ec778bcd24c1c6b69072e3dace78a40/view?project=6a916a6c0030a70a9d75",
+        "version": "4ec778bcd24c1c6b69072e3dace78a4095dc06ad56c6c30a58fdfe8cbf84aa5f",
+        "direction": "Look right",
+        "fileId": "s_4ec778bcd24c1c6b69072e3dace78a40"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -554,6 +1934,26 @@
   "provider_d397801cb0cdd18b2c05c195743": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_eb70abf8af19df4c2914fa9385e5a0b8/view?project=6a916a6c0030a70a9d75",
     "version": "eb70abf8af19df4c2914fa9385e5a0b85f2b6b60152cad6df6e677e017ce5fad",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_eb70abf8af19df4c2914fa9385e5a0b8/view?project=6a916a6c0030a70a9d75",
+        "version": "eb70abf8af19df4c2914fa9385e5a0b85f2b6b60152cad6df6e677e017ce5fad",
+        "direction": "Original view",
+        "fileId": "s_eb70abf8af19df4c2914fa9385e5a0b8"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c5e49aadd80ce2584e9cca2b7a15a827/view?project=6a916a6c0030a70a9d75",
+        "version": "c5e49aadd80ce2584e9cca2b7a15a8274f5edbffa629378317c7447aac30d295",
+        "direction": "Look left",
+        "fileId": "s_c5e49aadd80ce2584e9cca2b7a15a827"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_dbb21d958d557ff810314d77beaae3c3/view?project=6a916a6c0030a70a9d75",
+        "version": "dbb21d958d557ff810314d77beaae3c35eaa5b9e8395ecdc820f5383d4a9182b",
+        "direction": "Look right",
+        "fileId": "s_dbb21d958d557ff810314d77beaae3c3"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -562,6 +1962,26 @@
   "provider_kpm_90b4bd73497a245b83b815d4": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_13e247efc71ccba470bf735f3cde396b/view?project=6a916a6c0030a70a9d75",
     "version": "13e247efc71ccba470bf735f3cde396bc6e61a116c31b04d9155c72da6febf09",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_13e247efc71ccba470bf735f3cde396b/view?project=6a916a6c0030a70a9d75",
+        "version": "13e247efc71ccba470bf735f3cde396bc6e61a116c31b04d9155c72da6febf09",
+        "direction": "Original view",
+        "fileId": "s_13e247efc71ccba470bf735f3cde396b"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e6ffd9aecb0b1a9f7931ac2db3c5e06b/view?project=6a916a6c0030a70a9d75",
+        "version": "e6ffd9aecb0b1a9f7931ac2db3c5e06b4ceb4755c98709ffba3f92b74e9aa402",
+        "direction": "Look left",
+        "fileId": "s_e6ffd9aecb0b1a9f7931ac2db3c5e06b"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fdf7ea37dd65431d03b19e4ab394ffa1/view?project=6a916a6c0030a70a9d75",
+        "version": "fdf7ea37dd65431d03b19e4ab394ffa1dda686b6f30f25c72dc1d45d06ba33eb",
+        "direction": "Look right",
+        "fileId": "s_fdf7ea37dd65431d03b19e4ab394ffa1"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -570,6 +1990,26 @@
   "provider_kpm_ac92822a92ad1c8b7d5e582d": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b58cf09a2e514d4e14ccf44c88170f65/view?project=6a916a6c0030a70a9d75",
     "version": "b58cf09a2e514d4e14ccf44c88170f6539ff14cd68e78ccc9d7c0fe1240dcdb0",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_b58cf09a2e514d4e14ccf44c88170f65/view?project=6a916a6c0030a70a9d75",
+        "version": "b58cf09a2e514d4e14ccf44c88170f6539ff14cd68e78ccc9d7c0fe1240dcdb0",
+        "direction": "Original view",
+        "fileId": "s_b58cf09a2e514d4e14ccf44c88170f65"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_10094e99cdd7afcba246aff435963e05/view?project=6a916a6c0030a70a9d75",
+        "version": "10094e99cdd7afcba246aff435963e05faf5926d11910380b518a89eaca6d861",
+        "direction": "Look left",
+        "fileId": "s_10094e99cdd7afcba246aff435963e05"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_389519e741a8ea3376b9b10608ddd1f9/view?project=6a916a6c0030a70a9d75",
+        "version": "389519e741a8ea3376b9b10608ddd1f94cc745e115064b42ac57720acfbd2fdd",
+        "direction": "Look right",
+        "fileId": "s_389519e741a8ea3376b9b10608ddd1f9"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -578,6 +2018,26 @@
   "provider_kpm_2baeb8257e9258c2d97f4abe": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_71188baa860c73aed2c6a29c496872b3/view?project=6a916a6c0030a70a9d75",
     "version": "71188baa860c73aed2c6a29c496872b38f5ac3fe4288f69ec8198c6e80312de2",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_71188baa860c73aed2c6a29c496872b3/view?project=6a916a6c0030a70a9d75",
+        "version": "71188baa860c73aed2c6a29c496872b38f5ac3fe4288f69ec8198c6e80312de2",
+        "direction": "Original view",
+        "fileId": "s_71188baa860c73aed2c6a29c496872b3"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6294034dd190ec92028f4d7408e648e9/view?project=6a916a6c0030a70a9d75",
+        "version": "6294034dd190ec92028f4d7408e648e924f27266291363842f34b2bb95f4c6be",
+        "direction": "Look left",
+        "fileId": "s_6294034dd190ec92028f4d7408e648e9"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_054946408d634b0055dc19c2240bb9c2/view?project=6a916a6c0030a70a9d75",
+        "version": "054946408d634b0055dc19c2240bb9c20df1f29663782374ec8db6dc9c3a8625",
+        "direction": "Look right",
+        "fileId": "s_054946408d634b0055dc19c2240bb9c2"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -586,6 +2046,26 @@
   "provider_kpm_c1958a54dba5840001cf6e7e": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_557c40c439e39e9c19634b00113f9854/view?project=6a916a6c0030a70a9d75",
     "version": "557c40c439e39e9c19634b00113f985488ef17507fa116a15c64df22cd831653",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_557c40c439e39e9c19634b00113f9854/view?project=6a916a6c0030a70a9d75",
+        "version": "557c40c439e39e9c19634b00113f985488ef17507fa116a15c64df22cd831653",
+        "direction": "Original view",
+        "fileId": "s_557c40c439e39e9c19634b00113f9854"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_accab96b0904ae121a22137c67dd0c50/view?project=6a916a6c0030a70a9d75",
+        "version": "accab96b0904ae121a22137c67dd0c5066a8664ae8d992df7148388d736333cc",
+        "direction": "Look left",
+        "fileId": "s_accab96b0904ae121a22137c67dd0c50"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_a47e67e996dd91c61ac3076a443a6fea/view?project=6a916a6c0030a70a9d75",
+        "version": "a47e67e996dd91c61ac3076a443a6fea7246b36f5368d2aa1d2f0f607542b9a3",
+        "direction": "Look right",
+        "fileId": "s_a47e67e996dd91c61ac3076a443a6fea"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -594,6 +2074,26 @@
   "provider_kpm_1a5375e66fe0a69a3b03c8ca": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e5c4073e13959e874aaaaebe01370a2b/view?project=6a916a6c0030a70a9d75",
     "version": "e5c4073e13959e874aaaaebe01370a2bbac33cd965d2c81ae4a7536180a3b76c",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e5c4073e13959e874aaaaebe01370a2b/view?project=6a916a6c0030a70a9d75",
+        "version": "e5c4073e13959e874aaaaebe01370a2bbac33cd965d2c81ae4a7536180a3b76c",
+        "direction": "Original view",
+        "fileId": "s_e5c4073e13959e874aaaaebe01370a2b"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6b65fb3ee006f3d62d6c55336559992f/view?project=6a916a6c0030a70a9d75",
+        "version": "6b65fb3ee006f3d62d6c55336559992f3357f8bbd91727c0a434188ca0685472",
+        "direction": "Look left",
+        "fileId": "s_6b65fb3ee006f3d62d6c55336559992f"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6160d0217f84fa0e7d3f14bc14db7ee8/view?project=6a916a6c0030a70a9d75",
+        "version": "6160d0217f84fa0e7d3f14bc14db7ee821521adead45aaa6077ebfb4bb6cd053",
+        "direction": "Look right",
+        "fileId": "s_6160d0217f84fa0e7d3f14bc14db7ee8"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -602,6 +2102,26 @@
   "provider_kpm_449fed18f98381991639ddb8": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_11c8743792651d03f38d9d2d15cb5ab6/view?project=6a916a6c0030a70a9d75",
     "version": "11c8743792651d03f38d9d2d15cb5ab6389684fbfc0630ffaf9c626d4bc782d9",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_11c8743792651d03f38d9d2d15cb5ab6/view?project=6a916a6c0030a70a9d75",
+        "version": "11c8743792651d03f38d9d2d15cb5ab6389684fbfc0630ffaf9c626d4bc782d9",
+        "direction": "Original view",
+        "fileId": "s_11c8743792651d03f38d9d2d15cb5ab6"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_84edb94d7e0f542db3e028d3d6aa9eb6/view?project=6a916a6c0030a70a9d75",
+        "version": "84edb94d7e0f542db3e028d3d6aa9eb68f4d69735e539428b5fc40aca1817cc0",
+        "direction": "Look left",
+        "fileId": "s_84edb94d7e0f542db3e028d3d6aa9eb6"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_836d71e8c5ddc68c90fd757d0d4ccee4/view?project=6a916a6c0030a70a9d75",
+        "version": "836d71e8c5ddc68c90fd757d0d4ccee483b85c4bde41c430dee520442f3d63b7",
+        "direction": "Look right",
+        "fileId": "s_836d71e8c5ddc68c90fd757d0d4ccee4"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -610,6 +2130,26 @@
   "provider_kpm_e0ec76412f9945bc4209e066": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_07e293c9694627a115fe3371b60860b7/view?project=6a916a6c0030a70a9d75",
     "version": "07e293c9694627a115fe3371b60860b762833b1b47faca47d167496110fed12a",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_07e293c9694627a115fe3371b60860b7/view?project=6a916a6c0030a70a9d75",
+        "version": "07e293c9694627a115fe3371b60860b762833b1b47faca47d167496110fed12a",
+        "direction": "Original view",
+        "fileId": "s_07e293c9694627a115fe3371b60860b7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ad202c0db23d1281621fd5052243388a/view?project=6a916a6c0030a70a9d75",
+        "version": "ad202c0db23d1281621fd5052243388ad8d238282681d8e3d5cd03d3b3dbf66b",
+        "direction": "Look left",
+        "fileId": "s_ad202c0db23d1281621fd5052243388a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f709b69378280cd8379ea51f80970512/view?project=6a916a6c0030a70a9d75",
+        "version": "f709b69378280cd8379ea51f80970512bc4d7e75bdd061d2b14a5e296c36d9d2",
+        "direction": "Look right",
+        "fileId": "s_f709b69378280cd8379ea51f80970512"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -618,6 +2158,26 @@
   "provider_kpm_f531e40170000844a9386d08": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1f4f60875b026ecdb3d5e39362122345/view?project=6a916a6c0030a70a9d75",
     "version": "1f4f60875b026ecdb3d5e39362122345da19d61f73ad1cdee7f2405d314681d5",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_1f4f60875b026ecdb3d5e39362122345/view?project=6a916a6c0030a70a9d75",
+        "version": "1f4f60875b026ecdb3d5e39362122345da19d61f73ad1cdee7f2405d314681d5",
+        "direction": "Original view",
+        "fileId": "s_1f4f60875b026ecdb3d5e39362122345"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4e7e7f74d62aa593628fc730b9438011/view?project=6a916a6c0030a70a9d75",
+        "version": "4e7e7f74d62aa593628fc730b94380114379892280723eb98f78a180220a26fb",
+        "direction": "Look left",
+        "fileId": "s_4e7e7f74d62aa593628fc730b9438011"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9648f2dac6f7f4c1a9d502df5f98a973/view?project=6a916a6c0030a70a9d75",
+        "version": "9648f2dac6f7f4c1a9d502df5f98a9730ff15a44d746e7f1c2e14a673ada5e57",
+        "direction": "Look right",
+        "fileId": "s_9648f2dac6f7f4c1a9d502df5f98a973"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -626,6 +2186,26 @@
   "provider_6608d9c70e9c6ad94b4600b1e22": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_700a10635313870142d8c913179f8089/view?project=6a916a6c0030a70a9d75",
     "version": "700a10635313870142d8c913179f80897b09ffae1a91bdfc01462ec09bf6cd0f",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_700a10635313870142d8c913179f8089/view?project=6a916a6c0030a70a9d75",
+        "version": "700a10635313870142d8c913179f80897b09ffae1a91bdfc01462ec09bf6cd0f",
+        "direction": "Original view",
+        "fileId": "s_700a10635313870142d8c913179f8089"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_62be8d121e31901eb2a396c1418b7769/view?project=6a916a6c0030a70a9d75",
+        "version": "62be8d121e31901eb2a396c1418b7769ff5bd5e50927f5a6294aea14234986ce",
+        "direction": "Look left",
+        "fileId": "s_62be8d121e31901eb2a396c1418b7769"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_8055b4cfa0b074266e9bb7c4abd8ae32/view?project=6a916a6c0030a70a9d75",
+        "version": "8055b4cfa0b074266e9bb7c4abd8ae32d03123602e5afee903b695ed0c8e1398",
+        "direction": "Look right",
+        "fileId": "s_8055b4cfa0b074266e9bb7c4abd8ae32"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -634,6 +2214,26 @@
   "provider_bb3553049807255b4dfae54392e": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fcb6857b9391eb0ffc371ceab7683e4d/view?project=6a916a6c0030a70a9d75",
     "version": "fcb6857b9391eb0ffc371ceab7683e4d5debbcfcb2aedaac0a866037edc77af6",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fcb6857b9391eb0ffc371ceab7683e4d/view?project=6a916a6c0030a70a9d75",
+        "version": "fcb6857b9391eb0ffc371ceab7683e4d5debbcfcb2aedaac0a866037edc77af6",
+        "direction": "Original view",
+        "fileId": "s_fcb6857b9391eb0ffc371ceab7683e4d"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e65012a65107651e7946ebd9784ab49a/view?project=6a916a6c0030a70a9d75",
+        "version": "e65012a65107651e7946ebd9784ab49af824d73a6b6fa6390084461afd108240",
+        "direction": "Look left",
+        "fileId": "s_e65012a65107651e7946ebd9784ab49a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_172968ffac7ba4c10ee633f0bfb6ab4f/view?project=6a916a6c0030a70a9d75",
+        "version": "172968ffac7ba4c10ee633f0bfb6ab4fd853c4fd78359f55caeffaf8903b765d",
+        "direction": "Look right",
+        "fileId": "s_172968ffac7ba4c10ee633f0bfb6ab4f"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -642,6 +2242,26 @@
   "provider_ccfd96e74d4774f2e3e6bd81eb2": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_29aedcdfebbaabfd66089ef63e0fcdd7/view?project=6a916a6c0030a70a9d75",
     "version": "29aedcdfebbaabfd66089ef63e0fcdd7b5bef72c03206a07cf8a21e878a87432",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_29aedcdfebbaabfd66089ef63e0fcdd7/view?project=6a916a6c0030a70a9d75",
+        "version": "29aedcdfebbaabfd66089ef63e0fcdd7b5bef72c03206a07cf8a21e878a87432",
+        "direction": "Original view",
+        "fileId": "s_29aedcdfebbaabfd66089ef63e0fcdd7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ad11293cd4e39353dcb984ef67de5f10/view?project=6a916a6c0030a70a9d75",
+        "version": "ad11293cd4e39353dcb984ef67de5f1027d66a9234b4bef9b9a7b85fd8ba5baf",
+        "direction": "Look left",
+        "fileId": "s_ad11293cd4e39353dcb984ef67de5f10"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d46e176a73f1e6102857567cbb4e2e68/view?project=6a916a6c0030a70a9d75",
+        "version": "d46e176a73f1e6102857567cbb4e2e68f03329f10c53d8b1a7804336994584d6",
+        "direction": "Look right",
+        "fileId": "s_d46e176a73f1e6102857567cbb4e2e68"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -650,6 +2270,26 @@
   "provider_8ffcaeb5ece6819e21f579d5c34": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f2f2bc18d2f76809befee3150648f02f/view?project=6a916a6c0030a70a9d75",
     "version": "f2f2bc18d2f76809befee3150648f02f45fcb6276e011f938cce1c77e2bd07c2",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_f2f2bc18d2f76809befee3150648f02f/view?project=6a916a6c0030a70a9d75",
+        "version": "f2f2bc18d2f76809befee3150648f02f45fcb6276e011f938cce1c77e2bd07c2",
+        "direction": "Original view",
+        "fileId": "s_f2f2bc18d2f76809befee3150648f02f"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_75b77c176f0c1af9584626b9b279625f/view?project=6a916a6c0030a70a9d75",
+        "version": "75b77c176f0c1af9584626b9b279625fb11d1b00a6e2c0ea9c1341b5bca94ac3",
+        "direction": "Look left",
+        "fileId": "s_75b77c176f0c1af9584626b9b279625f"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_501d64d029e4a72db51e56d5224b1468/view?project=6a916a6c0030a70a9d75",
+        "version": "501d64d029e4a72db51e56d5224b1468cd482c72e9746c424e23b8d0c3cb83ac",
+        "direction": "Look right",
+        "fileId": "s_501d64d029e4a72db51e56d5224b1468"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -658,6 +2298,26 @@
   "provider_da5d3a13d1f8e90ac99bf6b55db": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c8a234b08a07421ac407245bada7f135/view?project=6a916a6c0030a70a9d75",
     "version": "c8a234b08a07421ac407245bada7f135aa1650da12d90a451c057dbf1bfeb391",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c8a234b08a07421ac407245bada7f135/view?project=6a916a6c0030a70a9d75",
+        "version": "c8a234b08a07421ac407245bada7f135aa1650da12d90a451c057dbf1bfeb391",
+        "direction": "Original view",
+        "fileId": "s_c8a234b08a07421ac407245bada7f135"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_386edce8fd38f6c13656ede8900fca35/view?project=6a916a6c0030a70a9d75",
+        "version": "386edce8fd38f6c13656ede8900fca35a642e35821d8a885e6017d73afaff48a",
+        "direction": "Look left",
+        "fileId": "s_386edce8fd38f6c13656ede8900fca35"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_9b0a9d46f2bf2b1aa71caa773599f84a/view?project=6a916a6c0030a70a9d75",
+        "version": "9b0a9d46f2bf2b1aa71caa773599f84a33b2fbd8d56a63d765629fec7bbc7e20",
+        "direction": "Look right",
+        "fileId": "s_9b0a9d46f2bf2b1aa71caa773599f84a"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -666,6 +2326,26 @@
   "provider_faf113b11a3a39d973d7704e42c": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_97a88d4ce8ff1af7ac171210572e11ac/view?project=6a916a6c0030a70a9d75",
     "version": "97a88d4ce8ff1af7ac171210572e11ac250c3eef11c320f791daee5c98c63bac",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_97a88d4ce8ff1af7ac171210572e11ac/view?project=6a916a6c0030a70a9d75",
+        "version": "97a88d4ce8ff1af7ac171210572e11ac250c3eef11c320f791daee5c98c63bac",
+        "direction": "Original view",
+        "fileId": "s_97a88d4ce8ff1af7ac171210572e11ac"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_7ad43a38e674b0ef7a0f1327fa149dc3/view?project=6a916a6c0030a70a9d75",
+        "version": "7ad43a38e674b0ef7a0f1327fa149dc363fa6190a7209bcc68b5865ca47c9a3a",
+        "direction": "Look left",
+        "fileId": "s_7ad43a38e674b0ef7a0f1327fa149dc3"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e057ce9ae956bd390f314dc5ce279fee/view?project=6a916a6c0030a70a9d75",
+        "version": "e057ce9ae956bd390f314dc5ce279fee4e01eb855f5b23bd4db0e2edabd6e335",
+        "direction": "Look right",
+        "fileId": "s_e057ce9ae956bd390f314dc5ce279fee"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -674,6 +2354,26 @@
   "provider_5024c5195d83091571c93fd9e30": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e5ab7577ddf73f9075f92c7a07e09676/view?project=6a916a6c0030a70a9d75",
     "version": "e5ab7577ddf73f9075f92c7a07e09676e09cfbce207ffb018916fdad20d5f0b3",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_e5ab7577ddf73f9075f92c7a07e09676/view?project=6a916a6c0030a70a9d75",
+        "version": "e5ab7577ddf73f9075f92c7a07e09676e09cfbce207ffb018916fdad20d5f0b3",
+        "direction": "Original view",
+        "fileId": "s_e5ab7577ddf73f9075f92c7a07e09676"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6d43717e4bee3cdd1b97fd39563cac98/view?project=6a916a6c0030a70a9d75",
+        "version": "6d43717e4bee3cdd1b97fd39563cac98d0a664a0ef9a666329caa420b95517a0",
+        "direction": "Look left",
+        "fileId": "s_6d43717e4bee3cdd1b97fd39563cac98"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_7efa761c9690513d1b2a8c7576e3c01b/view?project=6a916a6c0030a70a9d75",
+        "version": "7efa761c9690513d1b2a8c7576e3c01b165266597610412cab03a631957dc7fc",
+        "direction": "Look right",
+        "fileId": "s_7efa761c9690513d1b2a8c7576e3c01b"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -682,6 +2382,26 @@
   "provider_709a1c3af749886ea08b7c5e4db": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ab51efd4c185fac8586d37a545f5c4fa/view?project=6a916a6c0030a70a9d75",
     "version": "ab51efd4c185fac8586d37a545f5c4fabdbb9cbba15b9108c57f2dfaeeeee93a",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ab51efd4c185fac8586d37a545f5c4fa/view?project=6a916a6c0030a70a9d75",
+        "version": "ab51efd4c185fac8586d37a545f5c4fabdbb9cbba15b9108c57f2dfaeeeee93a",
+        "direction": "Original view",
+        "fileId": "s_ab51efd4c185fac8586d37a545f5c4fa"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_fd8ceac53fae1083bc4f663e6ccb6c77/view?project=6a916a6c0030a70a9d75",
+        "version": "fd8ceac53fae1083bc4f663e6ccb6c77a2636d7807c8b52ff40702eb7f906a69",
+        "direction": "Look left",
+        "fileId": "s_fd8ceac53fae1083bc4f663e6ccb6c77"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_2925994c666a7bac846818320cadf59f/view?project=6a916a6c0030a70a9d75",
+        "version": "2925994c666a7bac846818320cadf59f3e4394c1de8606bd28248fd1bd34fe44",
+        "direction": "Look right",
+        "fileId": "s_2925994c666a7bac846818320cadf59f"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -690,6 +2410,26 @@
   "provider_559f9a6222dfd0f4965232c05d5": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d6c42cd39f92ea1e6e57de2e85b7c564/view?project=6a916a6c0030a70a9d75",
     "version": "d6c42cd39f92ea1e6e57de2e85b7c564dc0b0e65e251c43b6614073115b93686",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d6c42cd39f92ea1e6e57de2e85b7c564/view?project=6a916a6c0030a70a9d75",
+        "version": "d6c42cd39f92ea1e6e57de2e85b7c564dc0b0e65e251c43b6614073115b93686",
+        "direction": "Original view",
+        "fileId": "s_d6c42cd39f92ea1e6e57de2e85b7c564"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_cbfcfe34ba948b4f744410797d32831a/view?project=6a916a6c0030a70a9d75",
+        "version": "cbfcfe34ba948b4f744410797d32831a1a39434130d71a942dbbba13fcda9f86",
+        "direction": "Look left",
+        "fileId": "s_cbfcfe34ba948b4f744410797d32831a"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ea5ff713cce0a04d179dd3910d421a16/view?project=6a916a6c0030a70a9d75",
+        "version": "ea5ff713cce0a04d179dd3910d421a16bb56575fd52e169d00eb5211b8571a3f",
+        "direction": "Look right",
+        "fileId": "s_ea5ff713cce0a04d179dd3910d421a16"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -698,6 +2438,26 @@
   "provider_048d12e84516f211fc58acceef1": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_710a87a3be05601500e736fa1a165236/view?project=6a916a6c0030a70a9d75",
     "version": "710a87a3be05601500e736fa1a165236127f7096bc6b055531af2ca0a41d98ac",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_710a87a3be05601500e736fa1a165236/view?project=6a916a6c0030a70a9d75",
+        "version": "710a87a3be05601500e736fa1a165236127f7096bc6b055531af2ca0a41d98ac",
+        "direction": "Original view",
+        "fileId": "s_710a87a3be05601500e736fa1a165236"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_ca22947bf292246e64068569a074aad7/view?project=6a916a6c0030a70a9d75",
+        "version": "ca22947bf292246e64068569a074aad793ccca02459d408473a4aed2313dfde5",
+        "direction": "Look left",
+        "fileId": "s_ca22947bf292246e64068569a074aad7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_313a1df8924ffadb2d8c17e5f746c7d4/view?project=6a916a6c0030a70a9d75",
+        "version": "313a1df8924ffadb2d8c17e5f746c7d40aeccd3c81887295f152da9699cefbcb",
+        "direction": "Look right",
+        "fileId": "s_313a1df8924ffadb2d8c17e5f746c7d4"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -706,6 +2466,26 @@
   "provider_a1987f88bcdf70382a2d28684b0": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4f969759b1862c44c35f53a840be5a47/view?project=6a916a6c0030a70a9d75",
     "version": "4f969759b1862c44c35f53a840be5a471f752f51d96ea21d15c4754117156cf3",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4f969759b1862c44c35f53a840be5a47/view?project=6a916a6c0030a70a9d75",
+        "version": "4f969759b1862c44c35f53a840be5a471f752f51d96ea21d15c4754117156cf3",
+        "direction": "Original view",
+        "fileId": "s_4f969759b1862c44c35f53a840be5a47"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_27867cc484b163f6dc174e2e40d69c0c/view?project=6a916a6c0030a70a9d75",
+        "version": "27867cc484b163f6dc174e2e40d69c0c9919dd00b330389f99ffdc51e3b971a8",
+        "direction": "Look left",
+        "fileId": "s_27867cc484b163f6dc174e2e40d69c0c"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_d7f8c017610e9e8f861b80af374ca9b5/view?project=6a916a6c0030a70a9d75",
+        "version": "d7f8c017610e9e8f861b80af374ca9b58b7c71ca382ecc2450a5427c06c3602b",
+        "direction": "Look right",
+        "fileId": "s_d7f8c017610e9e8f861b80af374ca9b5"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -714,6 +2494,26 @@
   "provider_78c604f1aa2ba48e9edf4a9aa14": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c01b03cbac111c9cb8d812899cf52365/view?project=6a916a6c0030a70a9d75",
     "version": "c01b03cbac111c9cb8d812899cf523652b70c55224243483751350969dfed8e2",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_c01b03cbac111c9cb8d812899cf52365/view?project=6a916a6c0030a70a9d75",
+        "version": "c01b03cbac111c9cb8d812899cf523652b70c55224243483751350969dfed8e2",
+        "direction": "Original view",
+        "fileId": "s_c01b03cbac111c9cb8d812899cf52365"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_7e5b58532f5e85f0904629453e888542/view?project=6a916a6c0030a70a9d75",
+        "version": "7e5b58532f5e85f0904629453e888542d34c28308438a04566291646542590fd",
+        "direction": "Look left",
+        "fileId": "s_7e5b58532f5e85f0904629453e888542"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_6343a82bd5774a1d60f88b57d9932177/view?project=6a916a6c0030a70a9d75",
+        "version": "6343a82bd5774a1d60f88b57d99321779836760e54384a65d8a22eec7e962d38",
+        "direction": "Look right",
+        "fileId": "s_6343a82bd5774a1d60f88b57d9932177"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "held_for_location_or_image_review",
@@ -722,6 +2522,26 @@
   "provider_05ae2bd1eaed1fbc438f3c4fc57": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_266be71cac79a567e329dd117807e9b7/view?project=6a916a6c0030a70a9d75",
     "version": "266be71cac79a567e329dd117807e9b7836b966e509f3a353866764b0254e008",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_266be71cac79a567e329dd117807e9b7/view?project=6a916a6c0030a70a9d75",
+        "version": "266be71cac79a567e329dd117807e9b7836b966e509f3a353866764b0254e008",
+        "direction": "Original view",
+        "fileId": "s_266be71cac79a567e329dd117807e9b7"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_280f57697d4378e7d1c62ae003799713/view?project=6a916a6c0030a70a9d75",
+        "version": "280f57697d4378e7d1c62ae0037997136f27cdc170fcd6b5cc87a1b631ad1ec1",
+        "direction": "Look left",
+        "fileId": "s_280f57697d4378e7d1c62ae003799713"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_0ca4a98c61f130b9464dd93d4830f2c0/view?project=6a916a6c0030a70a9d75",
+        "version": "0ca4a98c61f130b9464dd93d4830f2c083e3103b4434985057c8a6ae396a540d",
+        "direction": "Look right",
+        "fileId": "s_0ca4a98c61f130b9464dd93d4830f2c0"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",
@@ -730,6 +2550,26 @@
   "provider_d599142b1023ab80f309304845e": {
     "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4c66554e4c8429818e9ed9efe7c0c1f6/view?project=6a916a6c0030a70a9d75",
     "version": "4c66554e4c8429818e9ed9efe7c0c1f668fa9f29f84dc15860f23234e6fbceb2",
+    "images": [
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_4c66554e4c8429818e9ed9efe7c0c1f6/view?project=6a916a6c0030a70a9d75",
+        "version": "4c66554e4c8429818e9ed9efe7c0c1f668fa9f29f84dc15860f23234e6fbceb2",
+        "direction": "Original view",
+        "fileId": "s_4c66554e4c8429818e9ed9efe7c0c1f6"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_963f7e12c6b976e0c2d39b9bd0423c70/view?project=6a916a6c0030a70a9d75",
+        "version": "963f7e12c6b976e0c2d39b9bd0423c70e68724fa0176c53684a57d7492c0aa21",
+        "direction": "Look left",
+        "fileId": "s_963f7e12c6b976e0c2d39b9bd0423c70"
+      },
+      {
+        "url": "https://sgp.cloud.appwrite.io/v1/storage/buckets/web-surroundings/files/s_515375daff0aedeed9578f6d051333f2/view?project=6a916a6c0030a70a9d75",
+        "version": "515375daff0aedeed9578f6d051333f2b245f53677a40a624c8c767b2ca422eb",
+        "direction": "Look right",
+        "fileId": "s_515375daff0aedeed9578f6d051333f2"
+      }
+    ],
     "source": "Google Street View",
     "captureDate": null,
     "reviewStatus": "outdoor_candidate_address_reviewed",

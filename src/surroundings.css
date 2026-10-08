@@ -33,3 +33,10 @@
 }
 @keyframes surroundings-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .surroundings-thumb img, .surroundings-lightbox, .surroundings-loading { transition: none; animation: none; } }
+.surroundings-lightbox figure { width: min(1100px, 100%); }
+.surroundings-frame { aspect-ratio: 16 / 9; display: grid; place-items: center; color: #fff; }
+.surroundings-frame img { max-height: calc(100dvh - 230px); }
+.surroundings-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; color: #fff; }
+.surroundings-controls button { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 8px 14px; border-radius: 24px; background: var(--paper); color: var(--ink); }
+.surroundings-controls span { font-size: 14px; text-align: center; }
+@media (max-width: 480px) { .surroundings-lightbox { padding-inline: 12px; } .surroundings-controls { gap: 6px; } .surroundings-controls button { padding-inline: 10px; } }
