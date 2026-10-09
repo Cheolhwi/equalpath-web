@@ -25,6 +25,9 @@ export const SIMULATION = {
 };
 const sha = value => createHash('sha256').update(value).digest('hex');
 const clone = value => structuredClone(value);
+// V8 versions differ at ~1e-17 in review-score arithmetic. Persist fixed
+// precision so the same simulated dataset hashes identically on Node 22/26.
+const stableFeatures = values => values.map(v => Number(v.toFixed(12)));
 export function seededRandom(seed) {
   let state = seed >>> 0;
   return () => { state = (Math.imul(1664525, state) + 1013904223) >>> 0; return (state + .5) / 4294967296; };
@@ -115,7 +118,7 @@ export async function runSimulation({ output = '.build/recommendation-training/2
       // explicit simulation assumption, not an assertion about real visitors.
       const baseline = rankSearchResponse(response, { bootstrapModel: null, history: { ...history, ranking: [] }, library, now: at });
       const id = `sim_${persona.id}_${q}`;
-      const exposure = { id, at, careType: 'short_term', items: baseline.items.map((p, i) => ({ id: p.id, position: i + 1, features: p.learningFeatures })) };
+      const exposure = { id, at, careType: 'short_term', items: baseline.items.map((p, i) => ({ id: p.id, position: i + 1, features: stableFeatures(p.learningFeatures) })) };
       const actions = policyChoices(baseline.items, persona, library, random, at);
       const labelled = applyActions(recordExposure(history, exposure, at), library, baseline.items, actions, id, at);
       const slate = { ...labelled.history.ranking.find(s => s.id === id), actor: `u_synthetic_${persona.id}`, stage };
@@ -131,7 +134,7 @@ export async function runSimulation({ output = '.build/recommendation-training/2
         const control = rankSearchResponse(response, { bootstrapModel: null, history: { ...trainState.history, ranking: [] }, library: trainState.library, now });
         const labels = { ...slate, items: slate.items.map(i => ({ ...i,
           position: control.items.findIndex(p => p.id === i.id) + 1,
-          features: control.items.find(p => p.id === i.id).learningFeatures })) };
+          features: stableFeatures(control.items.find(p => p.id === i.id).learningFeatures) })) };
         sessions[sessions.length - 1] = labels;
         const changed = ranked.items.some((p, i) => p.id !== control.items[i].id);
         const check = { id, changed, activeItems: ranked.items.filter(p => p.rankingModel === 'local-ranknet').length,

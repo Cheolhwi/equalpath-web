@@ -27,7 +27,7 @@
     0
   ],
   "training": {
-    "datasetSha256": "f55e74450a3d5c4f6ccd91ca63c54a19824a82acfc17b4dedfafffdfad7b175e",
+    "datasetSha256": "c0a013a7d389151c2b5504649f0b5085aa0e7d2b7d1dc4dfe0d62bde8eac8e9f",
     "generator": "scripts/simulate-local-ranknet.mjs",
     "seed": 20261009,
     "personas": 6,
@@ -41,12 +41,12 @@
     "algorithm": "linear-ranknet",
     "featureVersion": "ep-ranking-v1",
     "weights": [
-      1.8331992433577866,
-      0.9680763459168611,
-      1.2553435380544051,
-      1.0930206929282151,
-      0.9917841530146106,
-      1.612910153124253,
+      1.833199243358,
+      0.968076345917,
+      1.255343538054,
+      1.093020692928,
+      0.991784153015,
+      1.612910153124,
       0,
       0
     ],

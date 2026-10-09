@@ -25,6 +25,7 @@ export function trainBootstrap(bytes) {
   // final test is reported even when it regresses, never used to refit weights.
   const ranker = trainRankNet(stage('train'));
   if (!ranker || ranker.weights.slice(6).some(w => w !== 0)) throw Error('Expected a content-only initial ranker');
+  ranker.weights = ranker.weights.map(w => Number(w.toFixed(12)));
   const evaluate = rows => ({ groups: rows.length, baselineNdcg: ndcg(rows, i => baselineScore(i.features)),
     ndcg: ndcg(rows, i => baselineScore(i.features) + rankAdjustment(ranker, i.features)) });
   const validation = evaluate(stage('validation')), test = evaluate(stage('test'));
