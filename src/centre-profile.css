@@ -56,12 +56,14 @@
    your search and Add to compare), the street photo on the right. Without a
    photo the left side takes the full width. */
 .equalpath .centre-hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px 22px; align-items: start; margin: 0 0 16px; }
-.equalpath .centre-hero:has(> .centre-surroundings) { grid-template-columns: minmax(0, 1fr) clamp(200px, 30%, 300px); }
+.equalpath .centre-hero:has(> .centre-hero-side) { grid-template-columns: minmax(0, 1fr) clamp(200px, 30%, 300px); }
+.equalpath .centre-hero-side { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.equalpath .centre-flag-link { display: inline-flex; align-items: center; gap: 6px; justify-self: start; min-height: 36px; font-size: 13px; color: var(--muted); }
 .equalpath .centre-hero-main { min-width: 0; display: grid; gap: 14px; }
 .equalpath .centre-hero .centre-identity { margin: 0; }
 .equalpath .centre-hero .centre-search-line { margin: 0; }
 @media (max-width: 760px) {
-  .equalpath .centre-hero:has(> .centre-surroundings) { grid-template-columns: minmax(0, 1fr); }
-  .equalpath .centre-hero > .centre-surroundings { order: -1; }
+  .equalpath .centre-hero:has(> .centre-hero-side) { grid-template-columns: minmax(0, 1fr); }
+  .equalpath .centre-hero > .centre-hero-side { order: -1; }
   .equalpath .centre-hero .surroundings-thumb { aspect-ratio: 16 / 7; }
 }

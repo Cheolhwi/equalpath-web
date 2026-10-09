@@ -139,7 +139,7 @@ export default function Recommendations({ mode, library, interests, request, onD
     <details className="recommendation-controls"><summary>How suggestions work</summary>
       <p>We use your choices and the centres you save, compare and look at. Recent activity counts more.</p>
       <p>Your choices move a centre up when parents praise those things in reviews. They never remove a centre that fits your search.</p>
-      <p>Your viewing history stays in this browser. It only keeps which centres you looked at, not your address, times or child’s age.</p>
+      <p>Your activity stays in this browser. Search learning keeps the centres you see, your choices and scores for up to 60 days, not your address, care times or child’s age.</p>
       <label><input type="checkbox" checked={history.enabled} onChange={e => update(h => ({ ...h, enabled: e.target.checked }))} />Use viewing history for suggestions</label>
       <p className="notice">When this is off, your saved centres are still used. Clearing history also brings back suggestions you hid. Your saved centres stay.</p>
       <button className="secondary" onClick={reset}><RotateCcw size={15} />Clear viewing history</button>

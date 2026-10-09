@@ -1,5 +1,6 @@
 import { hasContact, priorityValue } from './conditions.mjs';
 import { shortFeeFrom, monthlyFeeFrom, feePriorityGroup } from './result-summary.mjs';
+import { cleanSlates, recordRankingFeedback, createMLScorer } from './recommendation-learning.mjs';
 
 // Only public centre IDs and capped activity counts are remembered. Requests,
 // addresses, child ages, notes and provider snapshots never enter this store.
@@ -25,6 +26,9 @@ export function readInterests(storage, mode) {
     hidden: data.hidden.filter(v => validId(v?.id) && validType(v.careType)).slice(-100).map(v => ({ id: v.id, careType: v.careType })),
     preferences: normalisePreferenceTopics(data.preferences),
     preferenceSetup: validPreferenceSetup(data.preferenceSetup) ? data.preferenceSetup : (data.preferences?.length ? 'complete' : 'new'),
+    ...(data.ranking ? { ranking: cleanSlates(data.ranking) } : {}),
+    ...(data.rankingProvenance === 'synthetic-test' ? { rankingProvenance: 'synthetic-test' } : {}),
+    ...(/^u_[A-Za-z0-9_-]{8,100}$/.test(data.rankingActor ?? '') ? { rankingActor: data.rankingActor } : {}),
   };
 }
 export function updateInterests(storage, mode, change) {
@@ -33,7 +37,7 @@ export function updateInterests(storage, mode, change) {
   storage.setItem(interestKey(mode), JSON.stringify(safe));
   return safe;
 }
-export function recordInterest(data, providers, kind, now = new Date().toISOString()) {
+export function recordInterest(data, providers, kind, now = new Date().toISOString(), slateId) {
   if (!data.enabled || !['view', 'compare'].includes(kind)) return data;
   const visits = [...data.visits];
   for (const p of providers) {
@@ -47,10 +51,10 @@ export function recordInterest(data, providers, kind, now = new Date().toISOStri
     if (index >= 0) visits.splice(index, 1);
     visits.push({ ...prior, [`${kind}At`]: now, [`${kind}Count`]: Math.min(6, (prior[`${kind}Count`] || 0) + 1) });
   }
-  return { ...data, visits: visits.slice(-100) };
+  return recordRankingFeedback({ ...data, visits: visits.slice(-100) }, providers, kind, Date.parse(now), slateId);
 }
-export function hideRecommendation(data, p) {
-  return { ...data, hidden: [...data.hidden.filter(v => !same(v, p)), { id: p.id, careType: p.careType }].slice(-100) };
+export function hideRecommendation(data, p, slateId) {
+  return recordRankingFeedback({ ...data, hidden: [...data.hidden.filter(v => !same(v, p)), { id: p.id, careType: p.careType }].slice(-100) }, [p], 'hide', Date.now(), slateId);
 }
 export function interestSeeds(library, history, careType, now = Date.now()) {
   const seeds = new Map();
@@ -165,7 +169,7 @@ export function learnedPreferenceWeights({ seeds, library, history, careType, no
   }
   return { weights: Object.fromEntries(Object.entries(weights).map(([id,w]) => [id, w / Math.max(1,total)])), confidence: Math.min(1,total/8) };
 }
-export function rankCentres({ candidates, seeds: currentSeeds = [], request, library, history, preferences = history.preferences, now = Date.now(), excludeSaved = false, excludeHidden = true }) {
+export function rankCentres({ candidates, seeds: currentSeeds = [], request, library, history, preferences = history.preferences, now = Date.now(), excludeSaved = false, excludeHidden = true, model, bootstrapModel }) {
   const interests = interestSeeds(library, history, request.careType, now);
   const fresh = new Map([...currentSeeds, ...candidates].map(p => [p.id, p]));
   const seeds = interests.filter(s => fresh.has(s.id));
@@ -173,6 +177,7 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
   const hidden = new Set(history.hidden.filter(v => v.careType === request.careType).map(v => v.id));
   const pool = candidates.filter(p => p.careType === request.careType && p.location && p.fit && p.fit.counts.conflict === 0 && (!excludeSaved || !saved.has(p.id)) && (!excludeHidden || !hidden.has(p.id)));
   const learned = learnedPreferenceWeights({ seeds: [...fresh.values()], library, history, careType: request.careType, now });
+  const scoreML = createMLScorer({ history, seeds, careType: request.careType, now, model, bootstrapModel });
   const preferencesToMatch = normalisePreferenceTopics(preferences);
   const relevant = new Set(['admission', 'care', ...(request.age ? ['age'] : []), ...(request.transport === 'institution' ? ['transport', 'coverage', 'pickup'] : [])]);
   const scored = pool.map(p => {
@@ -201,7 +206,8 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
       similarity: .12 * learned.confidence * similarity,
       familiarity: own ? .24 * Math.min(1, own.weight / 4) : 0,
     };
-    const score = Object.values(scoreParts).reduce((sum, value) => sum + value, 0);
+    const ml = scoreML(p.id, scoreParts);
+    const score = Object.values(scoreParts).reduce((sum, value) => sum + value, 0) + ml.delta;
     const supported = matches.filter(e => e.state==='supported' && e.score>.5).sort((a,b)=>b.score-a.score);
     const learnedTopic = topics.map(t=>({...t,value:learned.weights[t.id]*(t.evidence.score-.5)})).sort((a,b)=>b.value-a.value)[0];
     const anchor = similarities.filter(s=>s.meaningful&&s.id!==p.id).sort((a,b)=>b.value*b.weight-a.value*a.weight)[0];
@@ -211,7 +217,7 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
     // stale reviews never manufacture a strength, and different branch IDs alone
     // do not imply different care. Keep the two strongest themes per centre.
     const strengths = strongestReviewTopics(topics).map(t => t.id);
-    return { p, score, scoreParts, strengths, reason, hidden: hidden.has(p.id), basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
+    return { p, score, scoreParts, ml, strengths, reason, hidden: hidden.has(p.id), basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
   });
   const priority = (a,b) => {
     const contact = Number(hasContact(b.p))-Number(hasContact(a.p)); if(contact) return contact;
@@ -242,12 +248,12 @@ export function recommendCentres(options) {
   return pool.slice(0,3);
 }
 // One page order and one suggestion set drive the list, pins and map cards.
-export function personaliseSearchItems({ items, seeds = [], request, library, history, now = Date.now() }) {
+export function personaliseSearchItems({ items, seeds = [], request, library, history, now = Date.now(), model, bootstrapModel }) {
   if(!Array.isArray(items)||!items.length||!request||!library||!history)return items??[];
   // Every eligible result goes through the same scoring pass, including a
   // visitor who skips preferences. Empty signals contribute zero; distance,
   // current condition fit and diversity provide the cold-start order.
-  const ranked=rankCentres({candidates:items,seeds:[...seeds,...items],request,library,history,now,excludeHidden:false});
+  const ranked=rankCentres({candidates:items,seeds:[...seeds,...items],request,library,history,now,excludeHidden:false,model,bootstrapModel});
   const byId=new Map(ranked.map((r,index)=>[r.p.id,{...r,index}]));
   const recommended=request.sort==='recommended';
   const order=recommended ? [...items].sort((a,b)=>{
@@ -263,6 +269,15 @@ export function personaliseSearchItems({ items, seeds = [], request, library, hi
     return { ...p, suggested: suggested.has(p.id), personalised: !!personal && suggested.has(p.id),
       personalisedReason: personal ? match.reason : null,
       personalisedRank: match ? (recommended ? match.index : index) + 1 : null,
-      rerankScore: match?.score ?? null };
+      rerankScore: match?.score ?? null,
+      learningFeatures: recommended ? match?.ml.features ?? null : null,
+      rankingModel: recommended ? match?.ml.source ?? 'ineligible' : 'factual' };
   });
+}
+
+// Capture the ranking once when a search completes. Subsequent saves/views
+// update the interest store, not this response's order or recommendation set.
+export function rankSearchResponse(response, personal) {
+  return { ...response, items: personaliseSearchItems({ ...personal,
+    items: response.items ?? [], seeds: response.seeds ?? [], request: response.request }) };
 }

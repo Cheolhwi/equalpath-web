@@ -245,7 +245,7 @@ export function assess(p, r) {
     state = "conflict";
     reason = "The centre is listed as closed on this day.";
   }
-  if(!exception&&!hasCareSchedule&&p.businessHours?.alternative){
+  if(!exception&&!hasCareSchedule&&p.businessHours?.alternative&&!primaryHoursWin(p)){
     const alt=p.businessHours.alternative,ws=applicableWindows(alt.windows,r.date),closed=alt.closedDays.includes(dayFor(r.date));
     if(ws.length||closed){
       const alternateState=!closed&&ws.some(w=>end>=w.start&&end<=w.end)?'supported':'conflict';
@@ -339,8 +339,12 @@ export function weeklyCareEndTimes(p, date) {
     return {day,date:selectedDate,...careEndScheduleFor(p,selectedDate)};
   });
 }
+// Hours from the current, branch-checked provider sheet outrank an older
+// public directory listing (8 Oct 2026). Only sources of equal standing are
+// treated as disagreeing; the other listing is still shown as a note.
+export const primaryHoursWin = (p) => p.businessHours?.source?.current === true && p.businessHours?.alternative?.source?.current !== true;
 export function hoursDisagree(p,date){
-  const a=p.businessHours?.alternative;if(!a)return false;
+  const a=p.businessHours?.alternative;if(!a||primaryHoursWin(p))return false;
   const signature=h=>{
     const ws=applicableWindows(h.windows,date);return ws.length?ws.map(w=>`${w.start}-${w.end}`).sort().join(','):h.closedDays?.includes(dayFor(date))?'closed':null;
   };

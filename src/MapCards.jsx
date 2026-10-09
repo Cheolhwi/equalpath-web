@@ -22,7 +22,7 @@ function Card({ p, highlights, index, selected, saved, compared, onOpen, onClose
       <span className={`map-card-fee${feeSummary(p).estimate ? " fee-estimate" : ""}`}>Fee: {feeSummary(p).label}</span>
     </div>
     <div className="map-card-actions" aria-label={`Actions for ${p.name}`}>
-      <button className={saved ? "is-saved" : ""} aria-label={`${saved ? "Edit saved centre" : "Save"}: ${p.name}`} onClick={() => onSave(p)}><Bookmark size={15} fill={saved ? "currentColor" : "none"} aria-hidden="true" />{saved ? "Saved" : "Save"}</button>
+      <button className={saved ? "is-saved" : ""} aria-label={`${saved ? "Remove from Saved" : "Save"}: ${p.name}`} aria-pressed={saved} onClick={() => onSave(p)}><Bookmark size={15} fill={saved ? "currentColor" : "none"} aria-hidden="true" />{saved ? "Saved" : "Save"}</button>
       {onCompare && <button aria-label={`Compare ${p.name}`} aria-pressed={compared} onClick={() => onCompare(p.id)}>{compared ? <Check size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}{compared ? "Added" : "Compare"}</button>}
       <button className="map-card-details" aria-label={`View details for ${p.name}`} onClick={() => onOpen(p)}>Details<ArrowRight size={15} aria-hidden="true" /></button>
     </div>

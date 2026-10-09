@@ -1,0 +1,127 @@
+/* Spacing pass (9 Oct 2026): one rhythm for the dialogs, the centre profile
+   and Compare. Steps used: 4 · 8 · 12 · 16 · 20 · 24. Loaded last. */
+
+/* Dialog shell: even header padding, title and Close on one centre line. */
+.equalpath.map-first dialog .dialog-top { padding: 20px var(--surface-pad) 20px; align-items: center; }
+.equalpath.map-first dialog .dialog-body { padding: 20px var(--surface-pad) var(--surface-pad); }
+
+/* Centre profile: 20px between the big blocks, 12–16px inside them. */
+.equalpath .centre-profile .centre-hero { margin: 0 0 20px; gap: 16px 24px; }
+.equalpath .centre-profile .centre-hero-main { gap: 12px; }
+.equalpath .centre-profile .centre-hero-side { gap: 8px; }
+.equalpath .centre-profile .arrival-flags { margin: 0 0 20px; }
+.equalpath.map-first .centre-profile .centre-metrics { margin: 0 0 20px; gap: 12px; }
+.equalpath .centre-profile .centre-layout.profile-layout { gap: 16px; }
+.equalpath .centre-profile .centre-profile-side { gap: 16px; }
+
+/* Every section card has the same inner padding and the same header:
+   56px tall, 16px semibold, and one divider under it when open. */
+.equalpath .centre-profile :is(.centre-reviews, .centre-profile-side > .extra-details, .centre-evidence) { padding: 0 20px; border-radius: 18px; }
+.equalpath .centre-profile :is(.centre-reviews, .centre-profile-side > .extra-details, .centre-evidence)[open] { padding-bottom: 16px; }
+.equalpath .centre-profile :is(.centre-reviews, .centre-profile-side > .extra-details, .centre-evidence) > summary { min-height: 56px; padding: 14px 0; font-size: 16px; font-weight: 650; }
+.equalpath .centre-profile .centre-evidence > summary strong { font-size: 16px; font-weight: 650; }
+.equalpath .centre-profile .centre-evidence > summary span { font-size: 13px; font-weight: 400; color: var(--muted); }
+.equalpath .centre-profile .centre-hours > :last-child, .equalpath .centre-profile .centre-hours .weekly-hours { margin-bottom: 0; }
+.equalpath .centre-profile .centre-hours .weekly-hours > summary { min-height: 44px; padding: 10px 0; }
+.equalpath .centre-profile :is(.centre-reviews, .centre-profile-side > .extra-details, .centre-evidence)[open] > summary { border-bottom: 1px solid var(--rule); margin-bottom: 14px; }
+.equalpath .centre-profile .centre-profile-side .extra-details > summary + * { border-top: 0; padding-top: 0; margin-top: 0; }
+.equalpath .centre-profile .centre-fees .fee-line { padding: 10px 0; }
+.equalpath .centre-profile .centre-fees h3 { margin: 0 0 6px; }
+
+/* Compare (computers): row names on one line beside their icon, even rows. */
+@media (min-width: 761px) {
+  .equalpath.map-first .compare-view table :is(tbody th, thead th:first-child) { width: 196px; }
+  .equalpath.map-first .compare-view table tbody th > svg { display: inline-block; vertical-align: -4px; margin: 0 8px 0 0; }
+  .equalpath.map-first .compare-view table :is(tbody th, tbody td) { padding: 14px 16px; }
+}
+
+@media (max-width: 760px) {
+  .equalpath.map-first dialog .dialog-top { padding: 14px 16px; }
+  .equalpath.map-first dialog .dialog-body { padding: 16px 16px 20px; }
+  .equalpath .centre-profile .centre-hero { gap: 12px; margin-bottom: 16px; }
+  .equalpath .centre-profile .arrival-flags { margin-bottom: 16px; }
+  .equalpath.map-first .centre-profile .centre-metrics { gap: 8px; margin-bottom: 16px; }
+  .equalpath .centre-profile .centre-layout.profile-layout, .equalpath .centre-profile .centre-profile-side { gap: 12px; }
+  .equalpath .centre-profile :is(.centre-reviews, .centre-profile-side > .extra-details, .centre-evidence) { padding: 0 16px; border-radius: 16px; }
+  .equalpath .centre-profile :is(.centre-reviews, .centre-profile-side > .extra-details, .centre-evidence) > summary { min-height: 52px; padding: 12px 0; }
+}
+
+/* Component pass (9 Oct 2026): the search panel, list, Saved, Contact,
+   Compare and Settings follow the same rhythm and the same controls. */
+
+/* Options panel: the hide button stays put while the list scrolls, so it gets
+   the panel's own surface instead of floating over a card. */
+.equalpath .family-collapse { background: var(--glass-thick, var(--paper)); box-shadow: 0 0 0 1px var(--glass-edge, var(--rule)); }
+.equalpath .family-collapse:hover { background: var(--glass-hover, var(--soft)); }
+
+/* Result list: the centre name lines up with the rows under it. */
+.equalpath .provider-select { padding-left: 0; padding-right: 0; }
+/* The nearby list starts right under its header (Saved lives in the top bar). */
+.equalpath.map-first .discovery-panel .request-form.collapsed + .before-results { margin-top: 0; border-top: 0; padding-top: 4px; }
+@media (min-width: 761px) {
+  /* Same 16px edge as the search bar above it. */
+  .equalpath.map-first .discovery-panel { left: 16px; bottom: 16px; }
+}
+
+/* More filters: radius as two segments, like the age row. */
+.dock-popover .radius-choice { margin: 0 0 16px; padding: 0; border: 0; min-width: 0; }
+.dock-popover .radius-choice legend { margin: 0 0 8px; padding: 0; font-size: 16px; font-weight: 600; }
+.radius-choice > div { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.radius-choice label { position: relative; display: flex; align-items: center; justify-content: center; min-height: 46px; border: 1px solid var(--rule); border-radius: 10px; background: var(--paper); font-size: 15px; cursor: pointer; }
+.radius-choice label:hover { background: var(--soft); }
+.radius-choice label.selected { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--soft); font-weight: 650; }
+.radius-choice input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.radius-choice label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Disclosures use one marker: a small chevron after the words. */
+.equalpath :is(.save-explanation, .recommendation-controls) > summary { display: flex; align-items: center; gap: 6px; min-height: 40px; list-style: none; cursor: pointer; }
+.equalpath :is(.save-explanation, .recommendation-controls) > summary::-webkit-details-marker { display: none; }
+.equalpath :is(.save-explanation, .recommendation-controls) > summary::after { content: ""; width: 7px; height: 7px; margin: -3px 0 0 2px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); opacity: .7; }
+.equalpath :is(.save-explanation, .recommendation-controls)[open] > summary::after { margin-top: 3px; transform: rotate(-135deg); }
+.equalpath.map-first .saved-library > .save-explanation { margin-top: 20px; padding-top: 8px; }
+.equalpath.map-first .saved-library > .save-explanation p { margin-top: 4px; }
+/* Settings: no empty band above the first row. */
+.equalpath dialog .dialog-body > .recommendation-controls:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.equalpath dialog .dialog-body > .recommendation-controls:first-child[open] { padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+
+/* Saved: one control height in "Check all saved centres". */
+.map-first .saved-check-field :is(input, .select-menu-trigger, .time-box) { height: 44px; min-height: 44px; padding: 0 12px; border-radius: 11px; font-size: 14px; font-weight: 400; }
+.map-first .saved-check-field .select-menu-trigger { gap: 8px; }
+.map-first .saved-row .saved-actions { gap: 8px; }
+
+/* Contact: the phone line and the demo note stack; the "After the centre
+   says yes" words take the room and the button keeps its own width. */
+.equalpath .simple-contact .enquiry-contact { flex-direction: column; align-items: flex-start; gap: 8px; }
+.equalpath .simple-contact .enquiry-contact .demo-notice { margin: 0; }
+.equalpath .simple-contact .enquiry-next > div { flex: 1; min-width: 0; }
+.equalpath .simple-contact .enquiry-next > button { flex: 0 0 auto; width: auto; padding-inline: 20px; }
+.equalpath .contact-question { padding: 4px 0; }
+.equalpath .contact-question > label { min-height: 0; padding: 10px 0; }
+
+/* Compare: the label column keeps the table's rounded corners. */
+.equalpath.map-first .compare-view table tbody tr:last-child > :first-child { border-bottom-left-radius: 17px; }
+.equalpath.map-first .compare-view table tbody tr:last-child > :last-child { border-bottom-right-radius: 17px; }
+
+/* For you: the three suggestion cards sit level. */
+.equalpath .recommendation-hero-card:is(:nth-child(2), :nth-child(3)) { transform: none; }
+.equalpath .recommendation-hero-card:is(:nth-child(2), :nth-child(3)):is(:hover, :focus-visible) { transform: translateY(-4px); }
+
+@media (min-width: 761px) {
+  /* A one-line comparison value doesn't leave an empty line under it. */
+  .equalpath.map-first .compare-view .compare-fact > summary { min-height: 24px; }
+}
+@media (max-width: 760px) {
+  /* Saved on phones: Check this centre on its own row, Edit and Remove under it. */
+  .map-first .saved-row .saved-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .map-first .saved-row .saved-actions > .secondary { grid-column: 1 / -1; justify-content: center; }
+  .map-first .saved-row .saved-actions > button:not(.secondary) { justify-content: center; min-height: 44px; }
+  .equalpath .simple-contact .enquiry-next > button { flex: none; width: 100%; }
+}
+/* An open search menu sits above the options panel and its "Show …" / "All N centres" row. */
+.equalpath.map-first .map-tools-overlay:has(.dock-popover) { z-index: 9; }
+/* Street photo: the credit sits on the photo (top right, where it can't meet the
+   "Nearby street" label) and the flag link follows straight under the photo. */
+.equalpath .centre-surroundings { position: relative; }
+.equalpath .centre-surroundings > figcaption { position: absolute; top: 8px; right: 8px; margin: 0; padding: 2px 8px; border-radius: 999px; font-size: 11px; line-height: 1.5; color: var(--ink); background: color-mix(in srgb, var(--paper) 80%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); pointer-events: none; }
+.equalpath .centre-profile .centre-hero-side { gap: 4px; }
+.equalpath .centre-profile .centre-hero-side > .centre-flag-link { min-height: 32px; }

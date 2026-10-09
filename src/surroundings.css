@@ -26,7 +26,10 @@
 }
 .surroundings-lightbox figure { margin: 0; max-width: min(1100px, 100%); cursor: default; }
 .surroundings-lightbox img { display: block; width: 100%; height: auto; max-height: calc(100dvh - 140px); object-fit: contain; border-radius: 12px; filter: saturate(.78) sepia(.12) hue-rotate(4deg) contrast(.97) brightness(1.02); }
-.surroundings-lightbox figcaption { margin-top: 10px; color: #e9ece6; font-size: 13px; text-align: center; }
+.surroundings-lightbox figcaption { margin-top: 10px; color: #e9ece6; font-size: 13px; text-align: center; display: grid; gap: 4px; justify-items: center; }
+.surroundings-lightbox figcaption > span + span { color: #c9cfc4; font-size: 12px; }
+.surroundings-flag { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; margin-top: 4px; padding: 0 14px; border-radius: 999px; border: 1px solid #ffffff55; background: transparent; color: #f2f4ef; font-size: 13px; }
+.surroundings-flag:hover { background: #ffffff1a; }
 .surroundings-close {
   position: absolute; top: 16px; right: 16px; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px;
   border-radius: 999px; background: var(--paper); color: var(--ink); font-weight: 600;
@@ -40,3 +43,10 @@
 .surroundings-controls button { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 8px 14px; border-radius: 24px; background: var(--paper); color: var(--ink); }
 .surroundings-controls span { font-size: 14px; text-align: center; }
 @media (max-width: 480px) { .surroundings-lightbox { padding-inline: 12px; } .surroundings-controls { gap: 6px; } .surroundings-controls button { padding-inline: 10px; } }
+
+/* No street photo (Epic 7.1.3): say so, and point to the address and map. */
+.surroundings-missing { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: start; padding: 14px; border: 1px dashed var(--rule); border-radius: 14px; background: var(--soft); }
+.surroundings-missing > svg { color: var(--accent); margin-top: 2px; }
+.surroundings-missing p { margin: 0; display: grid; gap: 3px; font-size: 13px; color: var(--muted); }
+.surroundings-missing strong { color: var(--ink); font-size: 14px; }
+.surroundings-missing .text-link { grid-column: 2; justify-self: start; min-height: 36px; font-size: 13px; }

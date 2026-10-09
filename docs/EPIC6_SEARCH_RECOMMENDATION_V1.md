@@ -4,6 +4,13 @@ Implementation record, updated 1 October 2026. This file describes the current c
 the earlier exported diagrams show the original five-theme design. This is a
 local implementation record, not a production release receipt.
 
+9 October extension: [RECOMMENDATION_ML.md](RECOMMENDATION_ML.md) documents
+item-based CF, implicit ALS and a linear RankNet adjustment, local exposure
+collection and offline training/evaluation. The formula below remains the
+cold-start fallback. The bundled collaborative model is untrained until a real
+consented interaction dataset passes evaluation; local learning also has a
+minimum-data and holdout gate. Do not report these as trained production models.
+
 ## Data and two-level classification
 
 The corrected, user-supplied `short-care-review.numbers` workbook contains

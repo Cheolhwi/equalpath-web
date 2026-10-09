@@ -27,6 +27,9 @@ const client = assets
   .filter((asset) => asset.endsWith(".js"))
   .map((asset) => readFileSync(resolve(root, `dist${asset}`), "utf8"))
   .join("\n");
+const bootstrap = JSON.parse(readFileSync(resolve(root, 'shared/recommendation-bootstrap.json'), 'utf8'));
+assert(client.includes(bootstrap.version), 'Production must bundle the approved initial RankNet weights');
+assert(!client.includes('__EQUALPATH_PREVIEW_REQUEST__') && !client.includes('u_synthetic_'), 'Local simulation profiles must not ship in the client');
 assert(
   client.includes(
     "https://sgp.cloud.appwrite.io/v1/functions/web-provider-query/executions",

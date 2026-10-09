@@ -1,4 +1,6 @@
-import Surroundings from "./Surroundings.jsx";
+import Surroundings, { surroundingImages } from "./Surroundings.jsx";
+import ArrivalFlags from "./ArrivalFlags.jsx";
+import { flagItems } from "../shared/arrival-flags.mjs";
 import { useId, useState } from "react";
 import CareJourney from "./CareJourney.jsx";
 import ReviewEvidence from "./ReviewEvidence.jsx";
@@ -26,10 +28,12 @@ import {
   Wallet,
   X,
   Heart,
+  Flag,
 } from "lucide-react";
 import { todayKL, isShortCare, ageBounds } from "../shared/request.mjs";
 import { drivingLabel, feeSummary, formatFee, feesForCare } from "../shared/result-summary.mjs";
 import { registrationBadge } from "../shared/registration.mjs";
+import { primaryHoursWin } from "../shared/conditions.mjs";
 import { displayName, displayAddress, dateLabel, placeLabel, placeLine, categoryLabel } from "../shared/display.mjs";
 import { plainEvidence, plainReason, plainSource } from "../shared/plain-copy.mjs";
 import { centreHighlights } from "../shared/recommendations.mjs";
@@ -402,13 +406,16 @@ function CareSchedule({ p }) {
     {isShortCare(p) && <div className="care-day"><span>Care ends at</span><strong>{p.careEndTimeLabel ?? p.businessHoursLabel}</strong></div>}
     <SourceDisclosure source={p.careEndTimeSource ?? p.businessHours?.source}>Source</SourceDisclosure>
     {p.businessHours?.publishedSchedule && <div className="notice"><p>{plainEvidence(p.businessHours.publishedSchedule.notes)}</p><SourceDisclosure source={p.businessHours.publishedSchedule.source} /></div>}
-    {p.businessHours?.alternative && <div className="notice"><p>Another listing: {plainEvidence(p.businessHours.alternative.notes)}</p><SourceDisclosure source={p.businessHours.alternative.source}>Other source</SourceDisclosure></div>}
+    {p.businessHours?.alternative && <div className="notice"><p>{primaryHoursWin(p) ? "An older directory listing says" : "Another listing"}: {plainEvidence(p.businessHours.alternative.notes)}</p><SourceDisclosure source={p.businessHours.alternative.source}>Other source</SourceDisclosure></div>}
     <details className="weekly-hours"><summary>Closing time for each day</summary><dl>
       {(p.weeklyCareEndTimes ?? []).map(({ day, label, source }) => <div key={day} className={day === p.businessHoursDay ? "requested-day" : ""}><dt>{day}{day === p.businessHoursDay ? " · your visit" : ""}</dt><dd>{label}{source?.url && source.url !== p.businessHours?.source?.url && <SourceDisclosure source={source} />}</dd></div>)}
     </dl></details>
   </section>;
 }
-export function Details({ p, request, onAskReview, onCompare, compared }) {
+export function Details({ p, request, onAskReview, onCompare, compared, onShowOnMap }) {
+  // Epic 7.5: a flag form opened from the photo viewer or the flag link.
+  const [flagRequest, setFlagRequest] = useState(null);
+  const openFlag = (item = "") => setFlagRequest({ item, at: Date.now() });
   const counts = p.fit.counts, badge = registrationBadge(p, todayKL());
   const fees = feeSummary(p);
   const shortCare = isShortCare(request);
@@ -438,8 +445,12 @@ export function Details({ p, request, onAskReview, onCompare, compared }) {
         {compared ? <Check size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}{compared ? "Added to compare" : "Add to compare"}</button>}
     </div>
     </div>
-    <Surroundings key={p.id} p={p} />
+    <div className="centre-hero-side">
+      <Surroundings key={p.id} p={p} onFlag={openFlag} onShowOnMap={onShowOnMap} />
+      {p.mode !== "demo" && <button type="button" className="text-link centre-flag-link" onClick={() => openFlag()}><Flag size={14} aria-hidden="true" />Something look wrong? Flag it</button>}
     </div>
+    </div>
+    {p.mode !== "demo" && <ArrivalFlags key={p.id} p={p} items={flagItems(p, surroundingImages(p))} request={flagRequest} onDone={() => setFlagRequest(null)} />}
     <dl className={`centre-metrics ${shortCare ? "" : "regular-metrics"}`} aria-label="Key information">
       {shortCare && <div className={care?.state === "conflict" ? "metric-conflict" : ""}><dt><Clock3 size={15} />Care ends at</dt><dd>{p.careEndTimeLabel ?? p.businessHoursLabel ?? "Not listed"}</dd><small>{p.businessHoursDay ?? "For your visit"}</small></div>}
       <div><dt><Users size={15} />Age</dt><dd>{detailAgeLabel(p)}</dd><small>{p.age?.basis === "type_reference" ? "Age guide for this centre type" : "Listed ages"}</small></div>

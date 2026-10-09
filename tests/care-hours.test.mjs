@@ -73,3 +73,18 @@ test('missing selected-day hours are distinguished from an entirely empty weekly
  assert.equal(businessHoursFor(weekday,'2026-09-13'),'Not listed for this day');
  assert.equal(businessHoursFor(weekday,'2026-09-12'),'Listed closed');
 });
+test('a current provider sheet outranks an older directory listing; equal sources still disagree',()=>{
+ const sheet={label:'Current provider data · user-provided completion sheet',kind:'user_provided_provider_sheet',current:true};
+ const directory={label:'Published business hours',kind:'public_directory'};
+ const base={...p,businessHours:{windows:[{days:['MON'],start:450,end:1080,source:sheet}],closedDays:[],source:sheet,
+  alternative:{windows:[{days:['MON'],start:420,end:1140}],closedDays:[],source:directory,notes:'Monday to Friday: 7:00 am - 7:00 pm'}}};
+ // The sheet says 18:00, the directory 19:00: the sheet's time is used.
+ assert.equal(careEndTimeFor(base,r.date),'18:00');
+ assert.equal(weeklyCareEndTimes(base,r.date)[0].label,'18:00');
+ assert.equal(care(base,{...r,end:'17:00'}).state,'supported');
+ assert.equal(care(base,{...r,end:'18:30'}).state,'conflict');
+ // Two listings of equal standing keep the "check details" state.
+ const equal={...base,businessHours:{...base.businessHours,source:directory,windows:[{days:['MON'],start:450,end:1080,source:directory}]}};
+ assert.equal(careEndTimeFor(equal,r.date),'Sources differ · check details');
+ assert.equal(care(equal,{...r,end:'18:30'}).state,'unknown');
+});

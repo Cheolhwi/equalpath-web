@@ -24,7 +24,7 @@ export default function useInterests(mode, paused) {
     try { saveInterests(mode, change); }
     catch { setState(s => ({ ...s, error: 'Viewing history could not be saved in this browser. Your saved centres are unchanged.' })); }
   }, [mode, paused]);
-  const record = useCallback((providers, kind) => update(data => recordInterest(data, providers, kind)), [update]);
+  const record = useCallback((providers, kind, slateId) => update(data => recordInterest(data, providers, kind, new Date().toISOString(), slateId)), [update]);
   const reset = () => {
     try {
       saveInterests(mode, current => ({ ...emptyInterests(), enabled: current.enabled,

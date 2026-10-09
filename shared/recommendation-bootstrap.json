@@ -1,0 +1,73 @@
+{
+  "schema": "ep-ranknet-bootstrap-v1",
+  "featureVersion": "ep-ranking-v1",
+  "provenance": "synthetic-bootstrap",
+  "status": "approved",
+  "careType": "short_term",
+  "trainedAt": "2026-10-09T04:00:00.000Z",
+  "version": "synthetic-bootstrap-20261009-v1",
+  "features": [
+    "distance",
+    "known",
+    "preferences",
+    "learned",
+    "similarity",
+    "familiarity",
+    "itemCF",
+    "matrixFactor"
+  ],
+  "initialWeights": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0
+  ],
+  "training": {
+    "datasetSha256": "f55e74450a3d5c4f6ccd91ca63c54a19824a82acfc17b4dedfafffdfad7b175e",
+    "generator": "scripts/simulate-local-ranknet.mjs",
+    "seed": 20261009,
+    "personas": 6,
+    "groups": 288,
+    "method": "Pooled linear RankNet; per-persona chronological 48/12/20 split",
+    "epochs": 100,
+    "rate": 0.3,
+    "regularisation": 0.03
+  },
+  "ranker": {
+    "algorithm": "linear-ranknet",
+    "featureVersion": "ep-ranking-v1",
+    "weights": [
+      1.8331992433577866,
+      0.9680763459168611,
+      1.2553435380544051,
+      1.0930206929282151,
+      0.9917841530146106,
+      1.612910153124253,
+      0,
+      0
+    ],
+    "pairs": 5430,
+    "groups": 288
+  },
+  "validation": {
+    "groups": 72,
+    "baselineNdcg": 0.8219835092751263,
+    "ndcg": 0.8236487439873393,
+    "passed": true
+  },
+  "test": {
+    "groups": 120,
+    "baselineNdcg": 0.8253447053119162,
+    "ndcg": 0.8239410277098089,
+    "delta": -0.001403677602107245
+  },
+  "limitations": [
+    "Synthetic behaviour, not observed parents. No real-user quality claim.",
+    "Final test did not improve on the heuristic baseline. Activation is an explicitly authorised bootstrap, not a proven quality upgrade.",
+    "No user IDs, saved centres, CF neighbours or matrix factors are shipped in this prior."
+  ]
+}

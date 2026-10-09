@@ -72,8 +72,12 @@ import {
   updateLibrary,
   storageKey,
   factSnapshot,
+  favourite,
 } from "../shared/saved.mjs";
-import { personaliseSearchItems, interestSeeds } from "../shared/recommendations.mjs";
+import { rankSearchResponse, interestSeeds } from "../shared/recommendations.mjs";
+import { recordRankingFeedback } from "../shared/recommendation-learning.mjs";
+import useRankingExposure from "./useRankingExposure.js";
+import RecommendationLearning from "./RecommendationLearning.jsx";
 import { addReviewQuestion, withReviewQuestions } from "../shared/contact-message.mjs";
 const EMPTY = [];
 const focusMapSearch = () => [...document.querySelectorAll(".mobile-search-summary, .map-search-launch")].find(el => el.getClientRects().length)?.focus({ preventScroll: true });
@@ -94,6 +98,8 @@ const initial = () => ({
   // Epic 8: a second child for "A few hours". Child 1 keeps the fields above.
   kids: 1,
   second: { age: "", same: true, deadline: "", end: "" },
+  // Only the dedicated local preview runner provides this initial scenario.
+  ...(import.meta.env.DEV ? globalThis.__EQUALPATH_PREVIEW_REQUEST__ ?? {} : {}),
 });
 const scenario = (r) =>
   r
@@ -198,8 +204,8 @@ export default function App({
     };
   }, []);
   useEffect(() => {
-    if (dialog === 'details' && profile?.p && !dialogBusy && !tourOpen) interests.record([profile.p], 'view');
-  }, [dialog, profile?.p?.id, profile?.p?.careType, dialogBusy, tourOpen, interests.record]);
+    if (dialog === 'details' && profile?.p && !dialogBusy && !tourOpen) interests.record([profile.p], 'view', results?.learningSlate?.id);
+  }, [dialog, profile?.p?.id, profile?.p?.careType, dialogBusy, tourOpen, interests.record, results?.learningSlate?.id]);
   const [searchFocus, setSearchFocus] = useState(null), [dockHeight, setDockHeight] = useState(150);
   const [searchCollapsed, setSearchCollapsed] = useState(false);
   // Phones: the navigation pill folds away once the map is in use and comes
@@ -298,11 +304,26 @@ export default function App({
       return false;
     }
   };
-  const saveFavourite = (item) =>
-    changeLibrary((x) => ({
+  const saveFavourite = (item) => {
+    const saved = changeLibrary((x) => ({
       ...x,
       favourites: [...x.favourites.filter((p) => p.id !== item.id), item],
     }));
+    if (saved) interests.update(h => recordRankingFeedback(h, [{ ...item, careType: item.careType ?? 'short_term' }], 'save', Date.now(), results?.learningSlate?.id));
+    return saved;
+  };
+  // Save on a map card or result row works straight away, with no dialog
+  // (9 Oct 2026). Tapping Saved again removes it; notes are added in Saved.
+  const quickSave = (p) => {
+    if (library.favourites.some((x) => x.id === p.id)) {
+      // The button itself shows the change; only a failure gets a message.
+      if (!changeLibrary((x) => ({ ...x, favourites: x.favourites.filter((f) => f.id !== p.id) }))) notify("Couldn’t update Saved. Please try again.");
+      return;
+    }
+    let item;
+    try { item = favourite(p, ""); } catch { return; }
+    if (!saveFavourite(item)) notify("Couldn’t save this centre. Please try again.");
+  };
   const editFavourite = (p, from = dialog) => {
     setSaveEditor({ p, from });
     setDialog("save-favourite");
@@ -480,11 +501,11 @@ export default function App({
   const dirty = results && fingerprint(draft) !== fingerprint(results.request),
     activeRequest = results?.request,
     rawItems = results?.items ?? nearby?.items ?? EMPTY;
-  const rankedItems = useMemo(() => results
-      ? personaliseSearchItems({ items: rawItems, seeds: results.seeds ?? [], request: results.request, library, history: interests.history })
-      : rawItems, [results, rawItems, library, interests.history]);
-  const items = useSearchRoutes(results, rankedItems, mode);
+  // Search responses already contain their ranking. Activity is remembered
+  // immediately but only the next submitted search consumes the new profile.
+  const items = useSearchRoutes(results, rawItems, mode);
   const familyMode = isShortCare(draft) && draft.kids === 2;
+  useRankingExposure({ results, items, mode, active: interests.history.enabled && !busy && !tourOpen && !familyMode && !dialog && !dirty, update: interests.update });
   const familyRequest = familyMode ? family.state?.request : null;
   const familyDock = familyRequest ? { request: familyRequest, total: family.state.status === "ready" ? family.built?.total ?? 0 : 1 } : null;
   const familyDirty = !!familyRequest && familyKey(draft) !== familyKey(familyRequest);
@@ -642,7 +663,9 @@ export default function App({
         });
         if (seq !== requestSeq.current) return;
       }
-      setResults(r);
+      const at = Date.now();
+      setResults({ ...rankSearchResponse(r, { library, history: interests.history, now: at }),
+        learningSlate: { id: crypto.randomUUID(), at } });
       rememberMap(mapView.current, r.request.pickup);
       const editedWhilePending =
         fingerprint(draftRef.current) !== fingerprint(request);
@@ -744,7 +767,7 @@ export default function App({
         request: { ...activeRequest, sort },
         version: results.version,
       });
-      if (seq === dialogSeq.current) { setComparison(r); setCompareSort(r.request.sort); interests.record(r.items, 'compare'); }
+      if (seq === dialogSeq.current) { setComparison(r); setCompareSort(r.request.sort); interests.record(r.items, 'compare', results?.learningSlate?.id); }
     } catch (e) {
       if (seq === dialogSeq.current) setDialogError(e);
     } finally {
@@ -862,7 +885,7 @@ export default function App({
       // next centre in the demo results rather than a fixed conflicting one.
       const garden = r.items.find((p) => p.id === "demo-garden") ?? r.items[0];
       const river = r.items.find((p) => p.id === "demo-river") ?? r.items.find((p) => p.id !== garden?.id);
-      setDraft(r.request); setResults(r); setSelected(garden.id); setFormOpen(false);
+      setDraft(r.request); setResults(rankSearchResponse(r, { library, history: interests.history })); setSelected(garden.id); setFormOpen(false);
       if (step <= 4) { setCompareIds([]); return; }
       if (step === 5) { setProfile({ p: garden, request: r.request }); setDialog("details"); return; }
       if (step === 6) {
@@ -1211,11 +1234,6 @@ export default function App({
           <SearchActions busy={busy} results={results} dirty={dirty} failure={failure} submitRef={submitRef} reopening={reopening} />
 
         </form>
-        {!results && <div className="request-save-actions">
-          <button className="text-link" onClick={() => { reloadLibrary(); setSavedTab("favourites"); setDialog("saved"); }}>
-            Saved centres{library.favourites.length > 0 && ` (${library.favourites.length})`}
-          </button>
-        </div>}
         {failure && (
           <div className="error-box" role="alert">
             <strong>We couldn’t load centres</strong>
@@ -1282,7 +1300,7 @@ export default function App({
                   onDetail={() => openDetails(p)}
                   onCompare={() => toggleCompare(p.id)}
                   saved={library.favourites.some((x) => x.id === p.id)}
-                  onSave={() => editFavourite(p)}
+                  onSave={() => quickSave(p)}
                   transport={results.request.transport}
                 />
               ))}
@@ -1446,7 +1464,7 @@ export default function App({
           selected={selected}
           showSuggestions={familyMode ? familyCards : !!results && !dirty && !busy}
           onOpen={familyMode ? openFamilyCentre : openDetails}
-          onSave={(p) => editFavourite(p, null)}
+          onSave={quickSave}
           onCompare={(id) => {
             if (familyMode || activeRequest) toggleCompare(id);
             else {
@@ -1458,7 +1476,7 @@ export default function App({
           compareIds={compareIds}
           onClosePreview={() => setSelected(null)}
           hasCompare={compareIds.length > 0}
-          topInset={dockHeight + 6}
+          topInset={dockHeight + 6 + ((oneShown || (familyMode && family.state?.collapsed)) && !narrow ? 54 : 0)}
           leftInset={(familyOpen || oneOpen) && !narrow ? FAMILY_PANEL_RIGHT : 0}
           cardsVisible={familyMode ? mobilePane === "map" && (!narrow || !familyOpen) && !family.busy : mobilePane === "map" && !dirty && !busy && (!narrow || !oneOpen)}
           onShowList={() => { setFormOpen(!results); setMobilePane("list"); }}
@@ -1526,7 +1544,7 @@ export default function App({
             dialog === "saved"
               ? "Saved for later"
               : dialog === "save-favourite"
-                ? "Save this centre"
+                ? "Note for this centre"
                   : dialog === "preparation"
                     ? "Get ready for childcare"
                     : dialog === "details"
@@ -1687,6 +1705,7 @@ export default function App({
                 }}
                 onCompare={() => toggleCompare(profile.p.id)}
                 compared={compareIds.includes(profile.p.id)}
+                onShowOnMap={profile.p.location ? () => { const id = profile.p.id; close(); setSelected(id); setMobilePane("map"); } : null}
               />
             </>
           )}
@@ -1818,6 +1837,7 @@ export default function App({
           )}
           {dialog === "settings" && (
             <>
+              <RecommendationLearning interests={interests} mode={mode} />
               <div className="setting-line"><span>Getting started</span><button className="secondary" onClick={startTour}>Replay quick tour</button></div>
               <div className="setting-line">
                 <span>Appearance</span>

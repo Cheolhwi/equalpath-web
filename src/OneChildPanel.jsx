@@ -75,7 +75,7 @@ function Options({ items, request, showAll, onShowAll, onSee }) {
 function Option({ p, pin, request, onSee }) {
   const plan = oneChildPlan(p, request), asks = askChecks(p, request), fee = feeSummary(p);
   const loading = p.driving?.state === "loading";
-  return <article className="family-option" aria-label={`Option ${pin}`}>
+  return <article className="family-option" data-provider-id={p.id} aria-label={`Option ${pin}`}>
     <div className="family-option-main">
       <p className="family-option-centre"><Pin n={pin} /><strong>{name(p)}</strong></p>
       {p.personalised && p.personalisedReason && <p className="family-reason" title={p.personalisedReason}><Heart size={13} aria-hidden="true" /><span>{shortReason(p.personalisedReason)}</span></p>}

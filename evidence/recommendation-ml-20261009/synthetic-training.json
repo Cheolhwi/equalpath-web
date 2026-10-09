@@ -1,0 +1,50 @@
+{
+  "scope": "Offline simulation and local RankNet training only",
+  "provenance": "synthetic-test",
+  "deployed": false,
+  "realBrowserHistoryModified": false,
+  "sourceCatalogHash": "a826c2aad39f756fcc0467afdf2ec58a6237f203b2f0d8fea31da8517e9580d1",
+  "datasetHash": "f55e74450a3d5c4f6ccd91ca63c54a19824a82acfc17b4dedfafffdfad7b175e",
+  "sessions": 480,
+  "exposedItems": 4049,
+  "uniqueCentres": 96,
+  "trainingPairs": 5430,
+  "modelsFitted": 6,
+  "modelsAccepted": 2,
+  "changedHeldOutQueries": 15,
+  "checks": {
+    "automatedTests": 319,
+    "passed": 319,
+    "failed": 0,
+    "inference": "Real rankSearchResponse replay changes order and reports local-ranknet",
+    "ui": "No UI changes",
+    "cloud": "Not released; no cloud mutations"
+  },
+  "artifacts": [
+    {
+      "name": "synthetic-interactions.json",
+      "bytes": 1588182,
+      "sha256": "f55e74450a3d5c4f6ccd91ca63c54a19824a82acfc17b4dedfafffdfad7b175e"
+    },
+    {
+      "name": "simulation-actions.json",
+      "bytes": 532620,
+      "sha256": "3c6a1dcb416920f2e2d6c6d01b5f530c1221314b511d215da12b8ab03379ea6b"
+    },
+    {
+      "name": "local-ranknet-models.json",
+      "bytes": 6819,
+      "sha256": "f762a9ddcb5d30c358eba21c132f9764e7c6b4f09668e0731efdd0931ad31294"
+    },
+    {
+      "name": "training-report.json",
+      "bytes": 42788,
+      "sha256": "6e8c499fdc7d3ebdfc7f464d4bd2561a3d1930f101a44745668375b8e9c0f93c"
+    },
+    {
+      "name": "inference-replays.json",
+      "bytes": 11489200,
+      "sha256": "6ba3950a5265bce8656bcd07391cc376af7bed25f00ed1906e33802bda852214"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+.learning-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.learning-actions button { min-height: 44px; max-width: 100%; white-space: normal; }

@@ -1,0 +1,16 @@
+{
+  "url": "http://127.0.0.1:4185/#discover",
+  "source": "synthetic-test",
+  "profile": "nearby_first",
+  "onScreenAlgorithmLabelsAdded": false,
+  "checks": {
+    "localSearch": "passed",
+    "visibleFullList": "Nemo Bestari at 7, Kinderland Playhouse at 8; matches trained replay",
+    "desktop": "1280x800 passed",
+    "mobile": "390x844 passed",
+    "automatedTests": 11,
+    "productionBuild": "passed",
+    "previewExcludedFromProductionBundle": true
+  },
+  "deployed": false
+}

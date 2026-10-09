@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Expand, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Expand, Flag, MapPin, X } from 'lucide-react';
+import { displayAddress } from '../shared/display.mjs';
 import photos from './surroundings.json';
 import { loadSurrounding } from './surroundings-cache.js';
 import './surroundings.css';
@@ -8,11 +9,16 @@ import './surroundings.css';
 // centre's address, so the page keeps its order (who, where, the key facts,
 // reviews). Selecting it shows the photo large over the page.
 const CAPTION = 'Google Street View';
-const captureText = date => /^\d{4}-(0[1-9]|1[0-2])$/.test(date ?? '')
-  ? `Captured ${new Intl.DateTimeFormat('en-GB', {month:'long', year:'numeric', timeZone:'UTC'}).format(new Date(`${date}-15T00:00:00Z`))}`
-  : 'Capture date not recorded';
+const monthYear = date => new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date.slice(0, 7)}-15T00:00:00Z`));
+// Epic 7.1: the source, where it was taken and when. The capture date sits in
+// the large view only; the thumbnail stays plain (8 Oct 2026).
+export const captureText = date => /^\d{4}-(0[1-9]|1[0-2])$/.test(date ?? '') ? `Captured ${monthYear(date)}` : 'Capture date not recorded';
+export function surroundingImages(p) {
+  const photo = p?.mode === 'demo' ? null : photos[p?.id];
+  return photo?.images?.length ? photo.images : photo ? [photo] : [];
+}
 
-export default function Surroundings({ p }) {
+export default function Surroundings({ p, onFlag, onShowOnMap }) {
   const photo = p.mode === 'demo' ? null : photos[p.id];
   const images = photo?.images?.length ? photo.images : photo ? [photo] : [];
   const [index, setIndex] = useState(0);
@@ -43,14 +49,19 @@ export default function Surroundings({ p }) {
     dialog?.addEventListener('cancel', cancel);
     return () => dialog?.removeEventListener('cancel', cancel);
   }, [large]);
-  if (!photo) return null;
+  // 7.1.3: without imagery the address and the map stay the way to find it.
+  if (!photo) return <div className="centre-surroundings surroundings-missing" role="note">
+    <MapPin size={18} aria-hidden="true" />
+    <p><strong>No street photo yet</strong><span>Use the address and the map to find this centre.</span></p>
+    {onShowOnMap && <button type="button" className="text-link" onClick={onShowOnMap}>Show on map</button>}
+  </div>;
   const move = delta => setIndex(i => (i + delta + images.length) % images.length);
   const shut = () => { setLarge(false); thumb.current?.focus({ preventScroll: true }); };
   return <figure className="centre-surroundings">
     <button ref={thumb} type="button" className="surroundings-thumb" disabled={!src && !failed} onClick={() => setLarge(true)}
       aria-label={failed ? `Open street views near ${p.name}` : src ? `Show the street photo near ${p.name} larger` : 'Loading the street photo'}>
       {src ? <img src={src} alt="" width="1024" height="576" decoding="async" onError={() => { setSrc(null); setFailed(true); }} /> : failed ? <span>Photo unavailable</span> : <span className="surroundings-loading" aria-hidden="true" />}
-      <span className="surroundings-label"><Expand size={13} aria-hidden="true" />Surroundings{images.length > 1 && ` · ${images.length} views`}</span>
+      <span className="surroundings-label"><Expand size={13} aria-hidden="true" />Nearby street{images.length > 1 && ` · ${images.length} views`}</span>
     </button>
     <figcaption>{CAPTION}</figcaption>
     {large && <div className="surroundings-lightbox" role="dialog" aria-modal="true" aria-label={`Street photo near ${p.name}`}
@@ -62,7 +73,11 @@ export default function Surroundings({ p }) {
           <span aria-live="polite">{index + 1} / {images.length} · {images[index]?.direction}</span>
           <button type="button" aria-label="Next view" onClick={() => move(1)}>Next<ChevronRight size={20} /></button>
         </div>}
-        <figcaption>{CAPTION} · {captureText(images[index]?.captureDate || photo.captureDate)}{images.length > 1 && ' · Different directions from the same spot'}</figcaption>
+        <figcaption>
+          <span>{CAPTION} · {captureText(images[index]?.captureDate || photo.captureDate)}{images.length > 1 && ' · Different directions from the same spot'}</span>
+          <span>Taken on the street near {displayAddress(p.address) ?? 'the centre'}. It isn’t a confirmed view of the entrance.</span>
+          {onFlag && <button type="button" className="surroundings-flag" onClick={() => { setLarge(false); onFlag(`photo:${index}`); }}><Flag size={14} aria-hidden="true" />Flag this view</button>}
+        </figcaption>
       </figure>
       <button ref={close} type="button" className="surroundings-close" onClick={shut}><X size={18} aria-hidden="true" />Close photo</button>
     </div>}
