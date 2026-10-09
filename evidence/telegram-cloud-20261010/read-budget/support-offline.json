@@ -1,0 +1,17 @@
+{
+  "basis": "Offline 60 minute scans: 3 unchanged families, 10 registration counters; sender configured, no pending work. Empty cleanup query counts one read. No cloud rows accessed.",
+  "before": {
+    "reads": 1380,
+    "gets": 540,
+    "lists": 60,
+    "prunes": 60,
+    "writes": 0
+  },
+  "after": {
+    "reads": 781,
+    "gets": 0,
+    "lists": 60,
+    "prunes": 1,
+    "writes": 0
+  }
+}

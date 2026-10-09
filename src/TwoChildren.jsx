@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, ClipboardList, Copy, Download, Heart, LoaderCircle, MessageCircle, PanelLeftClose, PanelLeftOpen, Phone, Plus, TriangleAlert, Wallet } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
+import VirtualEnquiry from './VirtualEnquiry.jsx';
 import { displayName } from "../shared/display.mjs";
 import { timeLabel } from "../shared/request.mjs";
 import { visitDate } from "../shared/enquiry-view.mjs";
 import {
-  KIDS, childName, childWithAge, openChecks, legMinutes, planSteps, sameCentreMessage, childMessage, familyPlanText,
+  KIDS, childName, childWithAge, childRequest, openChecks, legMinutes, planSteps, sameCentreMessage, childMessage, familyPlanText,
 } from "../shared/two-child.mjs";
 import { familyComparisonFee, childFeeShort } from "../shared/family-comparison.mjs";
 import "./two-children.css";
@@ -235,8 +236,9 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
     </div>
     <div className="family-actions">
       <button className="family-primary" onClick={() => onChecklist({ text: planText, date: plan.date, title: o.kind === "same" ? name(o.a) : `${name(o.a)} + ${name(o.b)}` })}><ClipboardList size={17} aria-hidden="true" />Save to Checklist</button>
-      {messages.map(([key, p, text]) => <button key={key} className="family-secondary" onClick={() => copy(key, text)}>
-        {copied === key ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}{copied === key ? "Copied" : `Copy message for ${name(p)}`}</button>)}
+      {messages.map(([key, p, text]) => <div key={key} className="enquiry-button-row"><button className="family-secondary" onClick={() => copy(key, text)}>
+        {copied === key ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}{copied === key ? "Copied" : `Copy message for ${name(p)}`}</button>
+        <VirtualEnquiry providerId={p.id} requests={(key === 'ab' ? KIDS : [key]).map(k => ({ ...childRequest(plan, k), label: childName(k) }))} /></div>)}
       {messages.map(([key, , text]) => copied === `manual:${key}` && <textarea key={`m-${key}`} readOnly value={text} aria-label="Message to copy" className="enquiry-manual-message" />)}
       <button className="text-link family-download" onClick={download}><Download size={15} aria-hidden="true" />Download the plan</button>
     </div>

@@ -6,6 +6,8 @@ import { PublishedContacts, SourceLink } from './ProviderViews.jsx';
 import { displayName, displayAddress } from '../shared/display.mjs';
 import { childFitLine, childFeeShort, familyComparisonFee, familyCompareOrder, FAMILY_SORTS, FAMILY_SORT_REASONS } from '../shared/family-comparison.mjs';
 import { ageText, childName, sameCentreMessage } from '../shared/two-child.mjs';
+import { childRequest } from '../shared/two-child.mjs';
+import VirtualEnquiry from './VirtualEnquiry.jsx';
 
 // Two children, organised by topic (like the one-child comparison) rather than
 // by child: the total first, the drive, one line per child for the checks, the
@@ -104,7 +106,8 @@ function FamilyContact({ refEl, p, plan, onClose, onPrepare, onToast }) {
     <div className="family-compare-contact-ways"><PublishedContacts p={p} compact /></div>
     {message && <>
       <pre className="family-compare-message">{message}</pre>
-      <button className="primary" onClick={copy}>{copied ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}{copied ? 'Copied' : 'Copy message'}</button>
+      <div className="enquiry-button-row"><button className="primary" onClick={copy}>{copied ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}{copied ? 'Copied' : 'Copy message'}</button>
+      <VirtualEnquiry providerId={p.id} requests={KIDS.map(k => childRequest(plan, k))} /></div>
       {manual && <textarea readOnly value={message} aria-label="Message to copy" className="enquiry-manual-message" />}
     </>}
     <p className="family-compare-contact-more">Need different questions for each child?{KIDS.map(k => <button key={k} className="text-link" onClick={() => onPrepare(p.children[k], k)}>Questions for {childName(k)}</button>)}</p>

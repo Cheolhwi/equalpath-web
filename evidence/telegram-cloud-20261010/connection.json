@@ -1,0 +1,10 @@
+{
+  "configuredAt": "2026-10-09T17:30:19.793Z",
+  "assistant": "EqualPathCareDemoBot",
+  "merchant": "EqualPathVirtualCentreBot",
+  "endpoint": "https://equalpath-enquiry-demo-6a916a6c.appwrite.network",
+  "secrets": "Appwrite Function secret variables only",
+  "webhooksVerified": true,
+  "roundtripVerified": true,
+  "roundtripEvidence": "roundtrip.json"
+}

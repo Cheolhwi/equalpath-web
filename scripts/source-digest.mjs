@@ -21,6 +21,7 @@ export function sourceDigest(root) {
     "server",
     "scripts",
     "tests",
+    "experiments/virtual-enquiry",
     "index.html",
     "vite.config.js",
     "playwright.config.mjs",

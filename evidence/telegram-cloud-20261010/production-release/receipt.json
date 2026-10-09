@@ -1,0 +1,30 @@
+{
+  "preparedAt": "2026-10-09T21:00:57.940035+00:00",
+  "repository": "Cheolhwi/equalpath-web",
+  "branch": "main",
+  "baseCommit": "757cdef17f61d2b205c3843a192437ec23c438ce",
+  "sourceTreeBeforeEvidence": "6d27fe026dfab2e5e8acec62bb2ae6fdc0314768",
+  "expectedSource": "23a2367d60066d9c630db003563e3deb2ee88cb8096420a6a3721480eeea5f4b",
+  "localChecks": {
+    "cleanSourceSnapshot": true,
+    "npmCi": "passed",
+    "release": "passed",
+    "tests": 353,
+    "failed": 0,
+    "secretScan": "passed"
+  },
+  "visualChecks": {
+    "localDesktop": "unverified: browser permission tool rejected access",
+    "localMobile": "unverified: browser permission tool rejected access",
+    "productionContact": "unverified",
+    "exception": "User explicitly instructed to publish first after the denial: 算了，你先发布吧"
+  },
+  "publication": "pending",
+  "cloudBackendPreviouslyVerified": {
+    "deployment": "6ac94e2f4a963a82ca7e",
+    "status": "ready",
+    "telegramConcurrentSessions": 4,
+    "allReplied": true
+  },
+  "realCentresContacted": false
+}

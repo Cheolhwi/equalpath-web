@@ -1,0 +1,103 @@
+{
+  "basis": "Offline replay of current service; returned rows counted, empty reads count one. Excludes metadata requests and provider implementation overhead.",
+  "pending_1_sessions": {
+    "createBatch": {
+      "reads": 8,
+      "calls": 5
+    },
+    "onePollPerSession": {
+      "reads": 11,
+      "calls": 5
+    },
+    "oneRecovery": {
+      "reads": 4,
+      "calls": 2
+    }
+  },
+  "pending_4_sessions": {
+    "createBatch": {
+      "reads": 32,
+      "calls": 17
+    },
+    "onePollPerSession": {
+      "reads": 44,
+      "calls": 20
+    },
+    "oneRecovery": {
+      "reads": 7,
+      "calls": 2
+    }
+  },
+  "pending_10_sessions": {
+    "createBatch": {
+      "reads": 107,
+      "calls": 41
+    },
+    "onePollPerSession": {
+      "reads": 164,
+      "calls": 50
+    },
+    "oneRecovery": {
+      "reads": 13,
+      "calls": 2
+    }
+  },
+  "pending_20_sessions": {
+    "createBatch": {
+      "reads": 312,
+      "calls": 81
+    },
+    "onePollPerSession": {
+      "reads": 524,
+      "calls": 100
+    },
+    "oneRecovery": {
+      "reads": 23,
+      "calls": 2
+    }
+  },
+  "successWithoutIntermediatePolls": {
+    "create": {
+      "reads": 8,
+      "calls": 5
+    },
+    "merchant": {
+      "reads": 4,
+      "calls": 2
+    },
+    "assistant": {
+      "reads": 11,
+      "calls": 4
+    },
+    "finalPoll": {
+      "reads": 12,
+      "calls": 4
+    },
+    "totalReads": 35
+  },
+  "noReply_1_sessions_130s": {
+    "reads": 291,
+    "calls": 134,
+    "elapsedMs": 120000,
+    "states": [
+      "timed_out"
+    ]
+  },
+  "noReply_10_sessions_130s": {
+    "reads": 4643,
+    "calls": 1432,
+    "elapsedMs": 130000,
+    "states": [
+      "timed_out",
+      "waiting",
+      "queued",
+      "queued",
+      "queued",
+      "queued",
+      "queued",
+      "queued",
+      "queued",
+      "queued"
+    ]
+  }
+}

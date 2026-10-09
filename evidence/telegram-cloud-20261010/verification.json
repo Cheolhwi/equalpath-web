@@ -1,0 +1,54 @@
+{
+  "checkedAt": "2026-10-09T17:46:31.978375+00:00",
+  "health": {
+    "ok": true,
+    "simulation": true,
+    "transport": "telegram-cloud",
+    "enabled": true,
+    "retentionMinutes": 30,
+    "dailyLimit": 200,
+    "queue": {
+      "concurrency": 1,
+      "maxWaitMinutes": 10,
+      "replyTimeoutSeconds": 120
+    }
+  },
+  "probeRowPermissions": [],
+  "anonymousKnownRowRead": 404,
+  "actualEncryptedPayloadWrite": true,
+  "telegramRoundtrip": "passed-four-concurrent-sessions",
+  "roundtripEvidence": "roundtrip.json",
+  "fifoConcurrency": 1,
+  "duplicateRequestReused": true,
+  "crossSessionDenied": true,
+  "invalidWebhookDenied": true,
+  "roundtripDurationMs": 22119,
+  "unitTests": {
+    "passed": 350,
+    "failed": 0
+  },
+  "releaseCheck": "passed",
+  "localSourceDigest": "0d7ae88410cd7c0b77e3c38396d7012f8f2e56d74f00e3657e9c7f1d5ffdeea8",
+  "repositoryHead": "757cdef17f61d2b205c3843a192437ec23c438ce",
+  "workingTree": "uncommitted-feature-work",
+  "cloudDeployment": "6ac926619ca1077d9177",
+  "cloudDeploymentStatus": "ready",
+  "cloudDeploymentActive": true,
+  "websiteFeatureEnabled": false,
+  "websitePublished": false,
+  "productionContactUiCheck": "not-run-feature-disabled",
+  "localVisualCheck": "blocked-saved-browser-denial-despite-user-origin-allow",
+  "browserBlockedOrigin": "http://127.0.0.1:4186",
+  "ci": "not-run-unpushed",
+  "searchFunctionChanged": false,
+  "ownerResourcesChanged": false,
+  "setupTemporaryCredentialFilesRemoved": 14,
+  "queueRecovery": {
+    "schedule": "* * * * *",
+    "approximateDailyExecutions": 1440,
+    "cleanup": "hourly",
+    "maxQueueWaitMinutes": 10,
+    "replyDeadlineSeconds": 120
+  },
+  "supersededByReadBudgetVerification": "read-budget/receipt.json"
+}

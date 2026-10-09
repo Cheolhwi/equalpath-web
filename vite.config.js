@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { api, errorResponse } from "./server/api.mjs";
+import { virtualEnquiryPlugin } from './experiments/virtual-enquiry/plugin.mjs';
 function localAPI() {
   return {
     name: "equalpath-local-api",
@@ -36,7 +37,7 @@ function localAPI() {
   };
 }
 export default defineConfig({
-  plugins: [react(), localAPI()],
+  plugins: [react(), virtualEnquiryPlugin(), localAPI()],
   server: {
     host: "127.0.0.1",
     port: 4179,

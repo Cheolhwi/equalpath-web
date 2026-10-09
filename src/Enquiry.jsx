@@ -6,6 +6,7 @@ import { PublishedContacts, SourceLink } from "./ProviderViews.jsx";
 import { contactIntro, contactMessage, contactQuestions } from "../shared/contact-message.mjs";
 import "./enquiry.css";
 import { ReviewQuote } from './ReviewEvidence.jsx';
+import VirtualEnquiry from './VirtualEnquiry.jsx';
 
 export default function Enquiry({ p, request, selection, onSelection, onPreparation }) {
   const [copyState, setCopyState] = useState("");
@@ -57,7 +58,8 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
           <p className="contact-message-thanks">Thank you!</p>
         </div>
         <div className="message-copy-action">
-          <button className="primary" disabled={!selected.length} onClick={copy}>{copyState === "copied" ? <Check size={18} /> : <Copy size={18} />}{copyState === "copied" ? "Copied" : "Copy message"}</button>
+          <div className="enquiry-button-row"><button className="primary" disabled={!selected.length} onClick={copy}>{copyState === "copied" ? <Check size={18} /> : <Copy size={18} />}{copyState === "copied" ? "Copied" : "Copy message"}</button>
+          <VirtualEnquiry providerId={p.id} requests={[request]} questionIds={selected.map(q => q.id)} /></div>
           <p className="enquiry-copy-status" role="status">{!selected.length ? "Tick a question to include it." : copyState === "copied" ? "Paste it into WhatsApp or a text message to send." : copyState === "manual" ? "Copying didn’t work. Select the text below and copy it." : "Copies your details and the ticked questions."}</p>
         </div>
         {copyState === "manual" && <textarea className="enquiry-manual-message" ref={messageRef} readOnly aria-label="Message to copy" value={text} />}

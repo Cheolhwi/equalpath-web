@@ -1,0 +1,51 @@
+{
+  "checkedAt": "2026-10-09T20:31:11.875Z",
+  "functions": {
+    "web-enquiry-demo": {
+      "activeDeployment": "6ac94e2f4a963a82ca7e",
+      "status": "ready",
+      "schedule": "*/5 * * * *"
+    },
+    "support-coordination": {
+      "activeDeployment": "6ac94e6a34f810c36d4e",
+      "status": "ready",
+      "schedule": "* * * * *"
+    }
+  },
+  "health": {
+    "ok": true,
+    "simulation": true,
+    "transport": "telegram-cloud",
+    "enabled": true,
+    "retentionMinutes": 30,
+    "dailyLimit": 200,
+    "queue": {
+      "concurrency": 1,
+      "maxWaitMinutes": 10,
+      "replyTimeoutSeconds": 120,
+      "recoveryMinutes": 5
+    },
+    "readBudget": {
+      "version": 2,
+      "statusScansQueue": false,
+      "queueHeadLimit": 1
+    }
+  },
+  "eventIndexAvailable": true,
+  "privateTableAndEncryptedPayload": true,
+  "enquiryPackageDigest": "f26019ab60321e2cb468eb02312d81ba3efda6cc532bd31b9233967520f119b2",
+  "legacyPublicHeaderVersion": 2,
+  "legacyPublicStatus": 200,
+  "searchUnchanged": {
+    "deployment": "6ac8d86e0489029360e1",
+    "schedule": "* * * * *"
+  },
+  "publicWebsiteSource": "a3c408005838697931944630de909a6867168a6aff945e1d246f09bbfe4e1eb1",
+  "websiteFeatureEnabled": false,
+  "ownerRowsRead": false,
+  "ownerRowsMutated": false,
+  "legacySchedulerManuallyInvoked": false,
+  "webpagePublished": false,
+  "localContactVisualCheck": "blocked by saved browser permission denial for http://127.0.0.1:4186",
+  "productionBotUiCheck": "pending, feature disabled"
+}

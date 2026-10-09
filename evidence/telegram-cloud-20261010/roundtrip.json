@@ -1,0 +1,146 @@
+{
+  "checkedAt": "2026-10-09T20:29:21.021Z",
+  "endpoint": "https://equalpath-enquiry-demo-6a916a6c.appwrite.network",
+  "health": {
+    "ok": true,
+    "simulation": true,
+    "transport": "telegram-cloud",
+    "enabled": true,
+    "retentionMinutes": 30,
+    "dailyLimit": 200,
+    "queue": {
+      "concurrency": 1,
+      "maxWaitMinutes": 10,
+      "replyTimeoutSeconds": 120,
+      "recoveryMinutes": 5
+    },
+    "readBudget": {
+      "version": 2,
+      "statusScansQueue": false,
+      "queueHeadLimit": 1
+    }
+  },
+  "durationMs": 25657,
+  "request": {
+    "branchId": "virtual-748b775895708e71",
+    "date": "2026-10-12",
+    "children": [
+      {
+        "label": "Child 1",
+        "age": "2",
+        "start": "09:00",
+        "end": "11:00"
+      }
+    ],
+    "questions": [
+      "fees",
+      "visit"
+    ],
+    "scenario": "rules"
+  },
+  "duplicateReused": true,
+  "crossSessionDenied": true,
+  "invalidWebhookDenied": true,
+  "requests": [
+    {
+      "id": "b988fee67a00ad6d311c0321",
+      "sessionId": "844dd28791f52bf2fa4c93c9",
+      "initialState": "queued",
+      "state": "replied",
+      "outcome": "available",
+      "events": [
+        {
+          "at": 1791577736823,
+          "text": "Demo request added to the queue."
+        },
+        {
+          "at": 1791577757324,
+          "text": "Sent through Telegram to the virtual centre."
+        },
+        {
+          "at": 1791577758250,
+          "text": "The virtual centre received your request on Telegram."
+        },
+        {
+          "at": 1791577759163,
+          "text": "The virtual centre replied through Telegram."
+        }
+      ]
+    },
+    {
+      "id": "1177d2c3228a7c871425c43d",
+      "sessionId": "ebe6e7fbab3f2772d12a6e50",
+      "initialState": "queued",
+      "state": "replied",
+      "outcome": "available",
+      "events": [
+        {
+          "at": 1791577736817,
+          "text": "Demo request added to the queue."
+        },
+        {
+          "at": 1791577753637,
+          "text": "Sent through Telegram to the virtual centre."
+        },
+        {
+          "at": 1791577754683,
+          "text": "The virtual centre received your request on Telegram."
+        },
+        {
+          "at": 1791577755588,
+          "text": "The virtual centre replied through Telegram."
+        }
+      ]
+    },
+    {
+      "id": "8a348cc2825768bb9434c102",
+      "sessionId": "e6f9178675bfc9f9352a510f",
+      "initialState": "waiting",
+      "state": "replied",
+      "outcome": "available",
+      "events": [
+        {
+          "at": 1791577736732,
+          "text": "Demo request added to the queue."
+        },
+        {
+          "at": 1791577738254,
+          "text": "Sent through Telegram to the virtual centre."
+        },
+        {
+          "at": 1791577747300,
+          "text": "The virtual centre received your request on Telegram."
+        },
+        {
+          "at": 1791577748237,
+          "text": "The virtual centre replied through Telegram."
+        }
+      ]
+    },
+    {
+      "id": "512602eb5ec8f8d6f295456c",
+      "sessionId": "0c28637615ac5d217f98d5ee",
+      "initialState": "queued",
+      "state": "replied",
+      "outcome": "available",
+      "events": [
+        {
+          "at": 1791577736818,
+          "text": "Demo request added to the queue."
+        },
+        {
+          "at": 1791577749964,
+          "text": "Sent through Telegram to the virtual centre."
+        },
+        {
+          "at": 1791577750444,
+          "text": "The virtual centre received your request on Telegram."
+        },
+        {
+          "at": 1791577751373,
+          "text": "The virtual centre replied through Telegram."
+        }
+      ]
+    }
+  ]
+}

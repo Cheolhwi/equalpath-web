@@ -239,6 +239,9 @@ export default function App({
       Object.keys(window.localStorage)
         .filter(key => key.startsWith("equalpath:"))
         .forEach(key => window.localStorage.removeItem(key));
+      Object.keys(window.sessionStorage)
+        .filter(key => key.startsWith('equalpath:virtual-enquiry:'))
+        .forEach(key => window.sessionStorage.removeItem(key));
       interests.clear();
       setLibrary(emptyLibrary());
       setDraft(initial());

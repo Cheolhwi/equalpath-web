@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-09T20:28:26.487Z",
+  "function": "support-coordination",
+  "previousDeployment": "6aa3bc1dbb327ac92ddb",
+  "sourceDigest": "a52f3fdba57f971522e2f08434f3b6ddab0622c585be17bcc6a6429e88182169",
+  "deployment": "6ac94e6a34f810c36d4e",
+  "status": "waiting",
+  "schedulePreserved": "* * * * *",
+  "ownerRowsRead": false,
+  "ownerRowsMutated": false,
+  "variablesChanged": false,
+  "externalRequestsSent": false
+}

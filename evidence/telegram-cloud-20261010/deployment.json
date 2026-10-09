@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-09T20:27:27.717Z",
+  "function": "web-enquiry-demo",
+  "database": "equalpath-enquiry-demo",
+  "table": "events",
+  "publicTablePermissions": [],
+  "deployment": "6ac94e2f4a963a82ca7e",
+  "status": "waiting",
+  "queueConcurrency": 1,
+  "queueRecoverySchedule": "*/5 * * * *",
+  "ownerResourcesChanged": false,
+  "searchFunctionChanged": false
+}

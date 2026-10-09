@@ -4,12 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev:enquiry": "node experiments/virtual-enquiry/start.mjs",
+    "enquiry:setup": "node experiments/virtual-enquiry/setup.mjs",
     "snapshot:refresh": "node scripts/build-catalog-snapshot.mjs --live",
     "dev": "vite --host 127.0.0.1 --port 4179",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4179",
     "test": "node --test tests/*.test.mjs",
-    "release": "npm test && node scripts/deploy-api.mjs && npm run build && node scripts/check-build.mjs",
+    "release": "npm test && node scripts/deploy-api.mjs && node scripts/package-enquiry.mjs && npm run build && node scripts/check-build.mjs",
     "test:browser": "playwright test"
   },
   "dependencies": {
