@@ -17,8 +17,10 @@ export async function loadFamilyComparison({ api, mode, ids, plan, version }) {
   })) };
 }
 
+// The start-time check only exists when hours are listed; a missing one is not a question.
+const childConditions = p => CHILD_CHECKS.map(id => p?.fit?.conditions?.find(c => c.id === id)).filter((c, i) => c || CHILD_CHECKS[i] !== 'opening');
 export function childComparisonFit(p) {
-  const conditions = CHILD_CHECKS.map(id => p?.fit?.conditions?.find(c => c.id === id));
+  const conditions = childConditions(p);
   if (conditions.some(c => c?.state === 'conflict')) return { state: 'conflict', label: 'Does not fit' };
   if (conditions.every(c => c?.state === 'supported')) return { state: 'supported', label: 'Fits listed details' };
   return { state: 'unknown', label: 'Ask the centre' };
@@ -33,14 +35,14 @@ export function familyComparisonFee(children) {
 
 // One line per child for the comparison table: whether the listed details fit,
 // and what to ask or what doesn't fit, without opening anything.
-const CHECK_WORDS = { age: 'age', admission: 'short care', care: 'care hours' };
+const CHECK_WORDS = { age: 'age', admission: 'short care', opening: 'start time', care: 'care hours' };
 export function childFitLine(p) {
   const fit = childComparisonFit(p);
-  const open = CHILD_CHECKS.map(id => p?.fit?.conditions?.find(c => c.id === id)).filter(c => c && c.state !== 'supported');
+  const open = childConditions(p).filter(c => c && c.state !== 'supported');
   const words = state => open.filter(c => c.state === state).map(c => CHECK_WORDS[c.id] ?? c.label?.toLowerCase()).join(', ');
   if (fit.state === 'supported') return { state: 'supported', text: 'Fits' };
   if (fit.state === 'conflict') return { state: 'conflict', text: `Doesn’t fit: ${words('conflict')}` };
-  const missing = CHILD_CHECKS.filter(id => !p?.fit?.conditions?.some(c => c.id === id)).map(id => CHECK_WORDS[id]);
+  const missing = CHILD_CHECKS.filter(id => id !== 'opening' && !p?.fit?.conditions?.some(c => c.id === id)).map(id => CHECK_WORDS[id]);
   return { state: 'unknown', text: `Ask: ${[words('unknown'), ...missing].filter(Boolean).join(', ')}` };
 }
 
@@ -73,7 +75,7 @@ function sortKey(p, sort) {
   if (sort === 'distance') return p.driving?.state === 'available' && Number.isFinite(p.driving.minutes) ? p.driving.minutes : null;
   if (sort === 'price') return familyTotal(p.children ?? {});
   if (sort === 'closing') { const m = toMinutes(p.careEndTimeLabel ?? p.businessHoursLabel); return m === null ? null : -m; }
-  return ['a', 'b'].reduce((sum, k) => sum + CHILD_CHECKS.reduce((s, id) => s + (WEIGHT[p.children?.[k]?.fit?.conditions?.find(c => c.id === id)?.state] ?? 1), 0), 0);
+  return ['a', 'b'].reduce((sum, k) => sum + childConditions(p.children?.[k]).reduce((s, c) => s + (WEIGHT[c?.state] ?? 1), 0), 0);
 }
 export function familyCompareOrder(items, sort) {
   const available = Object.fromEntries(FAMILY_SORTS.map(s => [s.value, s.value === 'fit' || items.some(p => sortKey(p, s.value) !== null)]));

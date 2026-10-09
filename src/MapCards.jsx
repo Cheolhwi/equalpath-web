@@ -30,7 +30,7 @@ function Card({ p, highlights, index, selected, saved, compared, onOpen, onClose
   </>;
 }
 
-export default function MapCards({ entries: rawEntries, pins, width, height, compact, topInset = 148, leftInset = 0, quiet = false, hasCompare, reduced, onOpen, onClose, savedIds = [], compareIds = [], onSave, onCompare }) {
+export default function MapCards({ entries: rawEntries, pins, width, height, compact, topInset = 148, leftInset = 0, rightInset = 0, quiet = false, hasCompare, reduced, onOpen, onClose, savedIds = [], compareIds = [], onSave, onCompare }) {
   const entries = useMemo(() => rawEntries.map(entry => ({ ...entry,
     highlights: entry.p.suggested || entry.p.personalised ? [] : centreHighlights(entry.p),
   })), [rawEntries]);
@@ -48,7 +48,7 @@ export default function MapCards({ entries: rawEntries, pins, width, height, com
   const highlightHeight = highlightCount ? (highlightCount > 1 && cardWidth < 280 ? 54 : 28) : 0;
   const cardHeight = (compact ? (shortMap ? 164 : 178) : 190) + (entries.some(e => e.p?.personalised) ? 20 : 0) + (entries.some(e => e.p?.familyFor) ? 20 : 0) + highlightHeight;
   const bottom = compact ? (hasCompare && !shortMap ? 112 : 48) : (hasCompare ? 116 : 96);
-  const options = { width, height, top: topInset, bottom, cardWidth, cardHeight, pins, left: Math.max(12, leftInset) };
+  const options = { width: compact ? width : Math.max(cardWidth + 24 + Math.max(12, leftInset), width - rightInset), height, top: topInset, bottom, cardWidth, cardHeight, pins, left: Math.max(12, leftInset) };
   // Phones keep one row of cards even after the search toolbar folds away.
   // Filling the newly freed map with three stacked cards would hide the pins.
   // Native scrolling keeps every recommendation and its full-size actions reachable.

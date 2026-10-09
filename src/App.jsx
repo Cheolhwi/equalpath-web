@@ -48,6 +48,7 @@ import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
 import Preparation from "./Preparation.jsx";
 import Enquiry from "./Enquiry.jsx";
+import { EnquiryProvider, EnquiryDock } from "./VirtualEnquiry.jsx";
 import FamilyPanel, { FamilyPlanCard, familyMapItems, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
 import OneChildPanel, { initialOnePanel } from "./OneChildPanel.jsx";
 import useFamily, { familyKey, secondChildErrors } from "./useFamily.js";
@@ -173,6 +174,7 @@ export default function App({
     [reduced, setReduced] = useState(readMotionPreference),
     [health, setHealth] = useState(null),
     [toast, setToast] = useState(""),
+    [chatOpen, setChatOpen] = useState(false),
     [clearCacheConfirm, setClearCacheConfirm] = useState(false),
     [mapStatus, setMapStatus] = useState("loading"),
     [library, setLibrary] = useState(emptyLibrary),
@@ -925,7 +927,18 @@ export default function App({
   const checklistChoices = results && !dirty
     ? items.filter((p) => compareIds.includes(p.id) || library.favourites.some((f) => f.id === p.id)).slice(0, 4)
     : [];
+  const enquiryActions = {
+    closeDialogs: () => setDialog(null),
+    prepare: (p, request) => { if (p) startPreparation(p, request ?? activeRequest); },
+    contact: (p, request) => { if (p) prepare(p, request ?? activeRequest); },
+    options: () => {
+      setDialog(null); setMobilePane("map");
+      if (familyMode) family.collapse(false);
+      else setOnePanel((s) => ({ ...s, collapsed: false, view: "options", selected: null }));
+    },
+  };
   return (
+    <EnquiryProvider actions={enquiryActions} onChatChange={setChatOpen}>
     <main
       className={`equalpath map-first ${theme} mobile-${mobilePane}${navCollapsed ? " nav-collapsed" : ""}`}
       tabIndex={-1}
@@ -1481,6 +1494,7 @@ export default function App({
           hasCompare={compareIds.length > 0}
           topInset={dockHeight + 6 + ((oneShown || (familyMode && family.state?.collapsed)) && !narrow ? 54 : 0)}
           leftInset={(familyOpen || oneOpen) && !narrow ? FAMILY_PANEL_RIGHT : 0}
+          rightInset={chatOpen && !narrow ? 404 : 0}
           cardsVisible={familyMode ? mobilePane === "map" && (!narrow || !familyOpen) && !family.busy : mobilePane === "map" && !dirty && !busy && (!narrow || !oneOpen)}
           onShowList={() => { setFormOpen(!results); setMobilePane("list"); }}
           onSelect={familyMode && narrow ? (id) => openFamilyCentre(mapItems.find((p) => p.id === id)) : select}
@@ -1962,7 +1976,9 @@ export default function App({
       )}
       </DialogPresence>
       {tourOpen && <GettingStarted onClose={finishTour} onStep={showTourStep} reduced={reduced || introReduced} />}
+      {!tourOpen && <EnquiryDock />}
     </main>
+    </EnquiryProvider>
   );
 }
 function PlusIcon() {

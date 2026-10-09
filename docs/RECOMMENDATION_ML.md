@@ -3,6 +3,41 @@
 Implementation: 9 October 2026. This is a local implementation record, not a
 production deployment or evidence of improved real-user satisfaction.
 
+## Hours correction — 10 October 2026 (current)
+
+Known opening-time and midday-gap conflicts are filtered before ranking, in
+addition to age and care-end constraints. The prior version checked only the
+end time. Replaying its 4,049 candidate records found 92 opening conflicts,
+including 35 positive simulated labels (24 in training). Six branches were
+involved. Regenerate whole histories, not just individual labels, because saves
+in earlier queries affect later profiles.
+
+`ep-ranking-v2-hours` versions the corrected eligibility and known-facts feature.
+Old slates are discarded on reading/training; explicit preferences, saved centres
+and activity are preserved. An old approved model cannot pass the new feature
+version check. New qualified personal RankNet fits remain available.
+
+The unchanged six-persona simulation and training hyperparameters were rerun:
+validation NDCG@10 **0.819417 versus 0.822764** (72 queries), test **0.821141
+versus 0.818827** (120 queries). The validation margin remains +0.001.
+The candidate is **rejected and inactive**. The test improvement cannot reverse
+the validation decision. Default ranking therefore uses the content baseline,
+explicit preferences and behaviour unless a new personal model independently
+qualifies. No synthetic behaviour is injected into browser history.
+
+Reproduce without overwriting historical training evidence:
+
+```sh
+node scripts/simulate-local-ranknet.mjs .build/recommendation-training/hours-v2
+node scripts/train-bootstrap-ranknet.mjs .build/recommendation-training/hours-v2/synthetic-interactions.json shared/recommendation-bootstrap.json --record-rejected
+```
+
+`--record-rejected` records a disabled candidate; it never approves weights.
+Without this explicit flag, failed validation still aborts before writing.
+The earlier 9 October activation and metrics below are historical, superseded
+by this correction. Further tuning must use training/validation data and a new
+untouched final test; these inspected holdouts are now diagnostic evidence.
+
 ## What runs
 
 The existing server eligibility, radius and nearest-page membership are
@@ -36,7 +71,7 @@ activated. The collaborative bundle currently says **untrained**. No real multi-
 interaction dataset has been supplied. Synthetic regression tests exercise
 the algorithms; their results are not production accuracy claims.
 
-### Published initial RankNet (9 October update)
+### Historical initial RankNet (9 October; superseded above)
 
 The user explicitly requested that the simulated training affect the released
 website, including the first search. `shared/recommendation-bootstrap.json`

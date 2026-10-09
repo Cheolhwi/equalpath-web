@@ -179,7 +179,7 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
   const learned = learnedPreferenceWeights({ seeds: [...fresh.values()], library, history, careType: request.careType, now });
   const scoreML = createMLScorer({ history, seeds, careType: request.careType, now, model, bootstrapModel });
   const preferencesToMatch = normalisePreferenceTopics(preferences);
-  const relevant = new Set(['admission', 'care', ...(request.age ? ['age'] : []), ...(request.transport === 'institution' ? ['transport', 'coverage', 'pickup'] : [])]);
+  const relevant = new Set(['admission', 'opening', 'care', ...(request.age ? ['age'] : []), ...(request.transport === 'institution' ? ['transport', 'coverage', 'pickup'] : [])]);
   const scored = pool.map(p => {
     const checks = p.fit.conditions.filter(c => relevant.has(c.id));
     const known = checks.filter(c => c.state === 'supported').length / Math.max(1, checks.length);

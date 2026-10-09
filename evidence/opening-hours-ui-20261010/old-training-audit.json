@@ -1,0 +1,135 @@
+{
+  "totals": {
+    "train": {
+      "slates": 288,
+      "items": 2454,
+      "positiveItems": 864,
+      "affectedSlates": 34,
+      "openingConflicts": 58,
+      "positiveOpeningConflicts": 24,
+      "saveOpeningConflicts": 4
+    },
+    "validation": {
+      "slates": 72,
+      "items": 613,
+      "positiveItems": 216,
+      "affectedSlates": 12,
+      "openingConflicts": 20,
+      "positiveOpeningConflicts": 7,
+      "saveOpeningConflicts": 1
+    },
+    "test": {
+      "slates": 120,
+      "items": 982,
+      "positiveItems": 360,
+      "affectedSlates": 9,
+      "openingConflicts": 14,
+      "positiveOpeningConflicts": 4,
+      "saveOpeningConflicts": 0
+    }
+  },
+  "branches": [
+    {
+      "id": "provider_4576ca09bd13bb7c7798a359247",
+      "name": "Learning Fresh — Mont Kiara",
+      "items": 25,
+      "positive": 9
+    },
+    {
+      "id": "provider_78c604f1aa2ba48e9edf4a9aa14",
+      "name": "TOY8 Playground — The Gardens Mall",
+      "items": 22,
+      "positive": 6
+    },
+    {
+      "id": "provider_eff6a0d2f4e848f2dd3b30e7a27",
+      "name": "Learning Fresh — Damansara Heights",
+      "items": 20,
+      "positive": 7
+    },
+    {
+      "id": "provider_d599142b1023ab80f309304845e",
+      "name": "We Rock the Spectrum — Taman Desa",
+      "items": 12,
+      "positive": 11
+    },
+    {
+      "id": "provider_88408de0b4f21319175ac455673",
+      "name": "Learning Fresh — KLCC",
+      "items": 9,
+      "positive": 1
+    },
+    {
+      "id": "provider_7ac2d78d14abd37d859b7dfcae9",
+      "name": "Limoncito — Bukit Tunku Art Drop",
+      "items": 4,
+      "positive": 1
+    }
+  ],
+  "examples": [
+    {
+      "slate": "sim_care_first_4",
+      "provider": "Learning Fresh — Damansara Heights",
+      "reward": 2,
+      "start": "12:00",
+      "end": "14:00",
+      "reason": "The centre opens at 13:00. Your visit starts at 12:00."
+    },
+    {
+      "slate": "sim_care_first_4",
+      "provider": "Learning Fresh — KLCC",
+      "reward": 0,
+      "start": "12:00",
+      "end": "14:00",
+      "reason": "The centre opens at 13:00. Your visit starts at 12:00."
+    },
+    {
+      "slate": "sim_care_first_4",
+      "provider": "Learning Fresh — Mont Kiara",
+      "reward": 0,
+      "start": "12:00",
+      "end": "14:00",
+      "reason": "The centre opens at 13:00. Your visit starts at 12:00."
+    },
+    {
+      "slate": "sim_care_first_12",
+      "provider": "Learning Fresh — Damansara Heights",
+      "reward": 3,
+      "start": "11:00",
+      "end": "13:00",
+      "reason": "The centre opens at 13:00. Your visit starts at 11:00."
+    },
+    {
+      "slate": "sim_care_first_12",
+      "provider": "Learning Fresh — Mont Kiara",
+      "reward": 0,
+      "start": "11:00",
+      "end": "13:00",
+      "reason": "The centre opens at 13:00. Your visit starts at 11:00."
+    },
+    {
+      "slate": "sim_care_first_17",
+      "provider": "We Rock the Spectrum — Taman Desa",
+      "reward": 2,
+      "start": "09:00",
+      "end": "11:00",
+      "reason": "The centre opens at 10:00. Your visit starts at 09:00."
+    },
+    {
+      "slate": "sim_care_first_17",
+      "provider": "TOY8 Playground — The Gardens Mall",
+      "reward": 0,
+      "start": "09:00",
+      "end": "11:00",
+      "reason": "The centre opens at 10:00. Your visit starts at 09:00."
+    },
+    {
+      "slate": "sim_care_first_18",
+      "provider": "Learning Fresh — Damansara Heights",
+      "reward": 0,
+      "start": "11:00",
+      "end": "13:00",
+      "reason": "The centre opens at 13:00. Your visit starts at 11:00."
+    }
+  ]
+}

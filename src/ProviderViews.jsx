@@ -387,9 +387,10 @@ function ageAdvice(p, request) {
   return null;
 }
 const checkReason = (c, p, request) => (c.id === "age" && c.state === "unknown" && ageAdvice(p, request)) || plainReason(c.reason);
-const checkLabels = { care: "Care ends at", age: "Age", admission: "Care for a few hours", transport: "Centre pickup", coverage: "Pickup area", pickup: "Pickup time", transfer: "Arrival time" };
+const checkLabels = { opening: "Care starts at", care: "Care ends at", age: "Age", admission: "Care for a few hours", transport: "Centre pickup", coverage: "Pickup area", pickup: "Pickup time", transfer: "Arrival time" };
 function checkValue(c, p, request) {
   switch (c.id) {
+    case "opening": return `${p.businessHoursLabel ?? "Hours not listed"} · you start ${request.deadline}`;
     case "care": return `${p.careEndTimeLabel ?? p.businessHoursLabel ?? "Hours not listed"} · you need ${request.end}`;
     case "age": return detailAgeLabel(p);
     case "admission": return p.admission?.value === true ? "Care for a few hours listed" : p.admission?.value === false ? "Care for a few hours not offered" : "Ask if they can take your child on this date";

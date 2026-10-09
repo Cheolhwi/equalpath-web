@@ -22,6 +22,7 @@ export default function MapCanvas({
   topInset = 148,
   // A panel over the left of the map (two children): keep pins and cards clear of it.
   leftInset = 0,
+  rightInset = 0,
   onShowList,
   onPick,
   choosing,
@@ -475,7 +476,7 @@ export default function MapCanvas({
           }}>Use this location</button></div>
         </div>
       </> : null}
-      <MapCards entries={entries} pins={m ? items.filter(p => p.location).map(p => { const point = m.project([p.location.lng, p.location.lat]); const [dx, dy] = displayOffsets.current.get(p.id) ?? pinOffsets.get(p.id) ?? [0, 0]; return { x: point.x + dx, y: point.y + dy }; }) : []} width={width} height={height} compact={width < 600} topInset={topInset} leftInset={leftInset} quiet={settling} hasCompare={hasCompare} reduced={reduced || introReduced} onOpen={onOpen} onSave={onSave} onCompare={onCompare} savedIds={savedIds} compareIds={compareIds} onClose={id => selected ? onClosePreview() : setDismissedCards(ids => [...ids, id])} />
+      <MapCards entries={entries} pins={m ? items.filter(p => p.location).map(p => { const point = m.project([p.location.lng, p.location.lat]); const [dx, dy] = displayOffsets.current.get(p.id) ?? pinOffsets.get(p.id) ?? [0, 0]; return { x: point.x + dx, y: point.y + dy }; }) : []} width={width} height={height} compact={width < 600} topInset={topInset} leftInset={leftInset} rightInset={rightInset} quiet={settling} hasCompare={hasCompare} reduced={reduced || introReduced} onOpen={onOpen} onSave={onSave} onCompare={onCompare} savedIds={savedIds} compareIds={compareIds} onClose={id => selected ? onClosePreview() : setDismissedCards(ids => [...ids, id])} />
       <div className="map-tools">
         <button onClick={fit} aria-label="Show all results on the map">
           <LocateFixed size={19} />

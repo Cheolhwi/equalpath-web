@@ -88,7 +88,7 @@ test("search excludes known conflicts by default but keeps centres with details 
     result.items.find((p) => p.id === "confirmed").fit.conditions
       .filter((condition) => condition.id !== "transfer")
       .map((condition) => condition.state),
-    ["supported", "supported", "supported", "supported", "supported", "supported"],
+    ["supported", "supported", "supported", "supported", "supported", "supported", "supported"],
   );
 });
 test("driving uses one bounded table, caches pairs across search/compare and coalesces concurrent requests", async()=>{

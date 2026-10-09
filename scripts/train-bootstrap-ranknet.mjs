@@ -33,21 +33,25 @@ export function trainBootstrap(bytes) {
   test.delta = test.ndcg - test.baselineNdcg;
   return { schema: 'ep-ranknet-bootstrap-v1', featureVersion: FEATURE_VERSION, provenance: 'synthetic-bootstrap',
     status: validation.passed ? 'approved' : 'rejected', careType: 'short_term', trainedAt: data.config.asOf,
-    version: 'synthetic-bootstrap-20261009-v1', features: FEATURES, initialWeights: INITIAL_WEIGHTS,
+    version: `synthetic-bootstrap-${data.config.version}`, features: FEATURES, initialWeights: INITIAL_WEIGHTS,
     training: { datasetSha256: createHash('sha256').update(bytes).digest('hex'), generator: 'scripts/simulate-local-ranknet.mjs',
       seed: data.config.seed, personas: new Set(data.sessions.map(s => s.actor)).size, groups: stage('train').length,
       method: 'Pooled linear RankNet; per-persona chronological 48/12/20 split', epochs: 100, rate: .3, regularisation: .03 },
     ranker, validation, test,
     limitations: ['Synthetic behaviour, not observed parents. No real-user quality claim.',
-      'Final test did not improve on the heuristic baseline. Activation is an explicitly authorised bootstrap, not a proven quality upgrade.',
+      validation.passed ? 'Validation passed; synthetic holdout results do not establish real-user improvement.' : 'Validation did not beat the baseline. These weights are inactive; retain content and preference ranking.',
+      test.delta > 0 ? 'Final-test improvement does not override the validation gate.' : 'Final test did not improve on the heuristic baseline.',
       'No user IDs, saved centres, CF neighbours or matrix factors are shipped in this prior.'] };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  const input = process.argv[2] ?? '.build/recommendation-training/2026-10-09/synthetic-interactions.json';
-  const output = process.argv[3] ?? 'shared/recommendation-bootstrap.json';
+  const paths = process.argv.slice(2).filter(arg => !arg.startsWith('--'));
+  const input = paths[0] ?? '.build/recommendation-training/2026-10-09/synthetic-interactions.json';
+  const output = paths[1] ?? 'shared/recommendation-bootstrap.json';
   const model = trainBootstrap(readFileSync(input, 'utf8'));
-  if (model.status !== 'approved') throw Error('Initial ranker did not pass validation');
+  // Explicitly recording a rejection retires an incompatible shipped prior;
+  // it never changes status or relaxes the runtime acceptance gate.
+  if (model.status !== 'approved' && !process.argv.includes('--record-rejected')) throw Error('Initial ranker did not pass validation');
   writeFileSync(output, JSON.stringify(model, null, 2) + '\n');
-  console.log(JSON.stringify({ output, weights: model.ranker.weights, validation: model.validation, test: model.test }));
+  console.log(JSON.stringify({ output, status: model.status, weights: model.ranker.weights, validation: model.validation, test: model.test }));
 }

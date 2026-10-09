@@ -5,7 +5,7 @@ import { feeSummary } from "./result-summary.mjs";
 // Keep its IDs so selections stay tied to the same centre and dated request.
 const topics = {
   age: "Age", admission: "Care for a few hours", transport: "Centre pickup",
-  coverage: "Pickup area", pickup: "Pickup time", care: "Care ends at",
+  coverage: "Pickup area", pickup: "Pickup time", opening: "Care starts at", care: "Care ends at",
   transfer: "Arrival time", capacity: "Can they take your child?", fees: "Fee",
 };
 export const visitDate = date => new Intl.DateTimeFormat("en-GB", {
@@ -55,6 +55,7 @@ function wording(q, p, r, c) {
     case "transport": return "Can you arrange pickup for this visit?";
     case "coverage": return `Can you pick up from ${r.pickup.label}? Is there a seat available?`;
     case "pickup": return `Can you pick up my child by ${r.deadline}?`;
+    case "opening": return `Can my child start at ${r.deadline} on ${visitDate(r.date)}?`;
     case "care": return `Can my child stay until ${r.end} on ${visitDate(r.date)}? What happens if I’m late?`;
     case "transfer": return r.transport === "self"
       ? "What time should I arrive? How long does it take to drop off my child?"

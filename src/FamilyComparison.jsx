@@ -107,7 +107,7 @@ function FamilyContact({ refEl, p, plan, onClose, onPrepare, onToast }) {
     {message && <>
       <pre className="family-compare-message">{message}</pre>
       <div className="enquiry-button-row"><button className="primary" onClick={copy}>{copied ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}{copied ? 'Copied' : 'Copy message'}</button>
-      <VirtualEnquiry providerId={p.id} requests={KIDS.map(k => childRequest(plan, k))} /></div>
+      <VirtualEnquiry providerId={p.id} centre={p} family requests={KIDS.map(k => childRequest(plan, k))} /></div>
       {manual && <textarea readOnly value={message} aria-label="Message to copy" className="enquiry-manual-message" />}
     </>}
     <p className="family-compare-contact-more">Need different questions for each child?{KIDS.map(k => <button key={k} className="text-link" onClick={() => onPrepare(p.children[k], k)}>Questions for {childName(k)}</button>)}</p>

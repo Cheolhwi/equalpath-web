@@ -88,3 +88,15 @@ test('a current provider sheet outranks an older directory listing; equal source
  assert.equal(careEndTimeFor(equal,r.date),'Sources differ · check details');
  assert.equal(care(equal,{...r,end:'18:30'}).state,'unknown');
 });
+
+test('the whole visit must fit the listed hours: a start before opening or across a break does not fit', () => {
+  const base = { ...p, businessHours: { windows: [{ start: 600, end: 1320 }], closedDays: [] }, careWindows: [] };
+  const opening = (q, r) => assess(q, { careType: 'short_term', date: '2026-10-12', age: '4', deadline: r[0], end: r[1], transport: 'self', pickup: { label: 'x' } }).conditions.find(c => c.id === 'opening');
+  assert.equal(opening(base, ['09:00', '12:00']).state, 'conflict');
+  assert.match(opening(base, ['09:00', '12:00']).reason, /opens at 10:00/);
+  assert.equal(opening(base, ['10:30', '13:00']).state, 'supported');
+  const split = { ...base, businessHours: { windows: [{ start: 480, end: 720 }, { start: 840, end: 1080 }], closedDays: [] } };
+  assert.equal(opening(split, ['11:00', '15:00']).state, 'conflict');
+  assert.equal(opening(split, ['08:30', '11:30']).state, 'supported');
+  assert.equal(opening({ ...base, businessHours: { windows: [], closedDays: [] } }, ['09:00', '12:00']), undefined);
+});

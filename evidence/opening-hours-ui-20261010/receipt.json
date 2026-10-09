@@ -1,0 +1,25 @@
+{
+  "release": "Full-visit hours filtering and floating enquiry chat",
+  "baseCommit": "5357dd33a04771c333c2de3b548570188547eaf1",
+  "source": "e2452bdcc4e0ad492a3e2ded28f4b4d50842d23c11689b9925925138510c012b",
+  "scope": [
+    "Claude floating enquiry chat and reply notices",
+    "Full-interval opening-hours search checks and two-child/contact labels",
+    "Versioned ranking features; rejected synthetic candidate inactive",
+    "Forward chat exclusion width to map cards"
+  ],
+  "checks": {
+    "localTests": {
+      "passed": 357,
+      "failed": 0
+    },
+    "releaseBuild": "passed",
+    "secretScan": "passed; one negative-test fixture reviewed",
+    "publicDigest": "pending",
+    "publicSearchAPI": "passed; active deployment 6ac9653a9ea6bf6d5ae8; TOY8 excluded at 09:00, included at 10:00",
+    "productionPage": "pending",
+    "CI": "not started"
+  },
+  "ownerDataChanged": false,
+  "secretVariablesChanged": false
+}

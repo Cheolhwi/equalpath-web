@@ -13,7 +13,7 @@ export const TOP_PER_CHILD = 5;
 export const OPTIONS_SHOWN = 10;
 export const DEFAULT_ALLOWANCE = 5;
 // The adult brings each child, so only the centre's own conditions matter here.
-export const CHILD_CHECKS = ["age", "admission", "care"];
+export const CHILD_CHECKS = ["age", "admission", "opening", "care"];
 export const MAX_LEG_KM = 10;
 
 export function emptyPlan(seed = {}) {

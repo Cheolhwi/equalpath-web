@@ -270,6 +270,27 @@ export function assess(p, r) {
     reason = "No care end time is listed for this weekend date, so this centre does not match your search.";
     careSource = schedule.source;
   }
+  // The whole visit must fit the listed hours, not only the collection time:
+  // a start before opening (or a midday break) is a mismatch too. Same rule as
+  // the Ask for me simulation; skipped when hours are unknown or disputed.
+  const start = minutes(r.deadline);
+  if (!exception && care.length && start != null && end != null && end > start && state !== "unknown") {
+    const opening = visitCoverage(care, start, end);
+    let openState = opening.covered ? "supported" : "conflict",
+      openReason = opening.covered
+        ? `Open from ${timeLabel(opening.opens)}. Your visit starts at ${r.deadline}.`
+        : start < opening.opens
+          ? `The centre opens at ${timeLabel(opening.opens)}. Your visit starts at ${r.deadline}.`
+          : `The listed hours (${care.map((w) => `${timeLabel(w.start)}–${timeLabel(w.end)}`).join(", ")}) don’t cover your whole visit, ${r.deadline}–${r.end}.`;
+    if (!hasCareSchedule && p.businessHours?.alternative && !primaryHoursWin(p)) {
+      const alt = p.businessHours.alternative, ws = applicableWindows(alt.windows, r.date);
+      if (ws.length && visitCoverage(ws, start, end).covered !== opening.covered) {
+        openState = "unknown";
+        openReason += " Another listing has different hours; the sources disagree for your start time.";
+      }
+    }
+    states.push(result("opening", "Care starts at", openState, openReason, care[0].source, "Can my child start at this time?"));
+  }
   states.push(
     result(
       "care",
@@ -342,6 +363,13 @@ export function weeklyCareEndTimes(p, date) {
 // Hours from the current, branch-checked provider sheet outrank an older
 // public directory listing (8 Oct 2026). Only sources of equal standing are
 // treated as disagreeing; the other listing is still shown as a note.
+// Walks the listed windows from the start time; a gap or a later opening stops it.
+export function visitCoverage(windows, start, end) {
+  const ws = [...windows].sort((a, b) => a.start - b.start);
+  let until = start;
+  for (const w of ws) if (w.start <= until && w.end > until) until = w.end;
+  return { covered: until >= end, opens: ws.length ? ws[0].start : null };
+}
 export const primaryHoursWin = (p) => p.businessHours?.source?.current === true && p.businessHours?.alternative?.source?.current !== true;
 export function hoursDisagree(p,date){
   const a=p.businessHours?.alternative;if(!a||primaryHoursWin(p))return false;

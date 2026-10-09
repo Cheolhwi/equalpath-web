@@ -90,7 +90,7 @@ export const rankAdjustment = (ranker, features) => ranker ? .12 * Math.tanh(dot
 export function validBootstrap(model, type) {
   return model?.schema === 'ep-ranknet-bootstrap-v1' && model.featureVersion === FEATURE_VERSION &&
     model.provenance === 'synthetic-bootstrap' && model.status === 'approved' && model.careType === type &&
-    model.ranker?.algorithm === 'linear-ranknet' && Array.isArray(model.ranker.weights) &&
+    model.ranker?.algorithm === 'linear-ranknet' && model.ranker.featureVersion === FEATURE_VERSION && Array.isArray(model.ranker.weights) &&
     model.ranker.weights.length === FEATURES.length && model.ranker.weights.every(w => Number.isFinite(w) && Math.abs(w) <= 4) &&
     model.ranker.weights.slice(6).every(w => w === 0) && model.validation?.passed === true &&
     model.validation.ndcg > model.validation.baselineNdcg + .001;

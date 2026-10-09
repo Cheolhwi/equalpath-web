@@ -39,7 +39,7 @@ export function contactQuestions(p, request, now = Date.now()) {
   };
   let care = short ? `Can you care for my child on this date until ${request.end}?` : 'Can my child join? When could they start?';
   if (rows.some(q => q.id === 'age') && (request.age === '' || p.age?.alternative)) care += ' What ages do you accept?';
-  add('visit', ['capacity', 'age', 'care', ...(!specialAdmission ? ['admission'] : [])], care);
+  add('visit', ['capacity', 'age', 'opening', 'care', ...(!specialAdmission ? ['admission'] : [])], care);
   if (specialAdmission) add('booking', ['admission'], bookingQuestions.get(p.admission.question) || rows.find(q => q.id === 'admission').text || 'How early must I book? What else do I need to know?');
   add('fees', ['fees'], short
     ? p.cost?.available

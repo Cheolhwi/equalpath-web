@@ -12,7 +12,7 @@ import { baselineScore, ndcg, FEATURES, FEATURE_VERSION, INITIAL_WEIGHTS, prefer
 // GPT-authored virtual personas, not observed parents or an LLM labelling API.
 // The policy, seeds, hyperparameters and splits are fixed before evaluation.
 export const SIMULATION = {
-  version: 'synthetic-local-ranknet-v1', provenance: 'synthetic-test', seed: 20261009,
+  version: 'synthetic-local-ranknet-v2-hours', provenance: 'synthetic-test', seed: 20261009,
   asOf: '2026-10-09T04:00:00.000Z', collectionQueries: 60, testQueries: 20,
   personas: [
     { id: 'care_first', preferences: ['caring_teachers', 'secure_pickup', 'clean_environment'], topicWeights: [2, 1.5, 1], distancePenalty: .015 },

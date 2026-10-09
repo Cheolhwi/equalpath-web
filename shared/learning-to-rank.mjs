@@ -1,6 +1,8 @@
 // Linear RankNet: learn pairwise preferences with logistic loss and L2
 // regularisation. This is a trained ranker, not LambdaMART or a neural network.
-export const FEATURE_VERSION = 'ep-ranking-v1';
+// v2 excludes visits outside the complete care interval and includes opening
+// coverage in the known-facts contribution. Old feature snapshots are not reusable.
+export const FEATURE_VERSION = 'ep-ranking-v2-hours';
 export const FEATURES = ['distance', 'known', 'preferences', 'learned', 'similarity', 'familiarity', 'itemCF', 'matrixFactor'];
 export const dot = (a, b) => a.reduce((n, v, i) => n + v * (b[i] ?? 0), 0);
 export const validFeatures = x => Array.isArray(x) && x.length === FEATURES.length && x.every(v => Number.isFinite(v) && Math.abs(v) <= 1);

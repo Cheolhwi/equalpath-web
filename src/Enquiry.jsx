@@ -59,7 +59,7 @@ export default function Enquiry({ p, request, selection, onSelection, onPreparat
         </div>
         <div className="message-copy-action">
           <div className="enquiry-button-row"><button className="primary" disabled={!selected.length} onClick={copy}>{copyState === "copied" ? <Check size={18} /> : <Copy size={18} />}{copyState === "copied" ? "Copied" : "Copy message"}</button>
-          <VirtualEnquiry providerId={p.id} requests={[request]} questionIds={selected.map(q => q.id)} /></div>
+          <VirtualEnquiry providerId={p.id} centre={p} requests={[request]} questionIds={selected.map(q => q.id)} /></div>
           <p className="enquiry-copy-status" role="status">{!selected.length ? "Tick a question to include it." : copyState === "copied" ? "Paste it into WhatsApp or a text message to send." : copyState === "manual" ? "Copying didn’t work. Select the text below and copy it." : "Copies your details and the ticked questions."}</p>
         </div>
         {copyState === "manual" && <textarea className="enquiry-manual-message" ref={messageRef} readOnly aria-label="Message to copy" value={text} />}

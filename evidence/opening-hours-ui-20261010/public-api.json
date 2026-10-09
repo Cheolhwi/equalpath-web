@@ -1,0 +1,44 @@
+{
+  "status": "passed",
+  "at": "2026-10-09T22:07:56.992Z",
+  "origin": "https://equalpathcare.me",
+  "provider": "TOY8 Playground — The Gardens Mall",
+  "request": {
+    "date": "2026-10-12",
+    "age": "4",
+    "start": "09:00",
+    "end": "12:00",
+    "radius": 5
+  },
+  "checks": [
+    {
+      "action": "health",
+      "ms": 174,
+      "deployment": "6ac9653a9ea6bf6d5ae8"
+    },
+    {
+      "action": "search",
+      "ms": 191,
+      "deployment": "6ac9653a9ea6bf6d5ae8",
+      "returned": 4,
+      "total": 4
+    },
+    {
+      "action": "search",
+      "ms": 203,
+      "deployment": "6ac9653a9ea6bf6d5ae8",
+      "returned": 10,
+      "total": 10,
+      "opening": "conflict"
+    },
+    {
+      "action": "search",
+      "ms": 113,
+      "deployment": "6ac9653a9ea6bf6d5ae8",
+      "returned": 6,
+      "total": 6,
+      "opening": "supported"
+    }
+  ],
+  "ownerDataChanged": false
+}

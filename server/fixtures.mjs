@@ -63,7 +63,7 @@ const base = {
     source: s,
   },
   pickupWindows: [w(900, 930)],
-  careWindows: [w(900, 1140)],
+  careWindows: [w(780, 1140)],
   businessHours: { windows: [w(480, 1140)], closedDays: [], source: s },
   dateExceptions: [],
   lateRule: { latestEnd: 1140, source: s },
