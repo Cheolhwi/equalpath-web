@@ -1,20 +1,23 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowRight, CalendarDays, Check, ChevronDown, ClipboardList, Clock3, List, LoaderCircle, MessageCircle, Square, TriangleAlert, Volume2, VolumeX, X } from 'lucide-react';
+import { ArrowRight, CalendarDays, Check, ChevronDown, ClipboardList, Clock3, Info, List, LoaderCircle, MessageCircle, Square, TriangleAlert, Volume2, VolumeX, X } from 'lucide-react';
 import { displayName } from '../shared/display.mjs';
+import { contactQuestions } from '../shared/contact-message.mjs';
 import './virtual-enquiry.css';
 import cloudConfig from './enquiry-config.json';
 
 const cloud = cloudConfig.enabled && /^https:\/\/[a-z0-9.-]+\.appwrite\.(run|network)$/.test(cloudConfig.endpoint);
 export const virtualEnquiryEnabled = cloud || (import.meta.env.DEV && import.meta.env.VITE_VIRTUAL_ENQUIRY === '1');
-const OUTCOMES = { available: 'A place is available in this test', unavailable: 'This request cannot be accepted', partial: 'Only one child can be accepted', conditional: 'The centre suggests a change', more_info: 'Some details still need checking' };
-const CHILD_STATES = { available: 'Test place available', unavailable: 'Cannot accept', conditional: 'Offered with a change', more_info: 'Needs checking' };
+const OUTCOMES = { available: 'A place is available', unavailable: 'This request cannot be accepted', partial: 'Only one child can be accepted', conditional: 'The centre suggests a change', more_info: 'Some details still need checking' };
+const CHILD_STATES = { available: 'Place available', unavailable: 'Cannot accept', conditional: 'Offered with a change', more_info: 'Needs checking' };
 const ENDED = ['failed', 'timed_out', 'cancelled'];
 // A place for every child is the news, even when other questions are still open.
 const summary = r => r.outcome !== 'available' && r.children?.length && r.children.every(c => c.state === 'available')
   ? { good: true, title: OUTCOMES.available, note: 'Your other questions still need an answer from the centre.' }
   : { good: r.outcome === 'available', title: OUTCOMES[r.outcome] };
 const active = j => j && ['queued', 'waiting'].includes(j.state);
+// Still something to wait for: the reply, or the centre's answer to the parent's decision.
+const following = j => active(j) || j?.confirmation?.state === 'sending';
 const sessionKey = 'equalpath:virtual-enquiry:session', jobsKey = 'equalpath:virtual-enquiry:jobs';
 function session() {
   let token = sessionStorage.getItem(sessionKey);
@@ -30,11 +33,10 @@ function call(body, signal) {
 }
 async function query(body, signal) {
   const r = await call(body, signal || AbortSignal.timeout(cloud ? 30000 : 8000)), value = await r.json();
-  if (!r.ok) { const error = new Error(value.error || 'The test service is unavailable.'); error.status = r.status; throw error; }
+  if (!r.ok) { const error = new Error(value.error || 'The enquiry service is unavailable.'); error.status = r.status; throw error; }
   return value.job;
 }
 const visitDay = (date) => { try { return new Date(`${date}T12:00:00+08:00`).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Kuala_Lumpur' }); } catch { return date; } };
-const ageText = (age) => age === '' ? 'age not set' : age === '0' ? 'under 1' : `${age} years old`;
 const centreName = (t) => displayName(t.centre?.name || t.job?.branch?.listedName || t.job?.branch?.name || 'The centre');
 
 /* Ask for me (10 Oct 2026): the enquiry runs at page level, so it keeps going
@@ -62,17 +64,198 @@ function chime() {
 // Unlock audio and ask once for system notifications while the parent is
 // pressing Ask for me (browsers only allow both after a user action).
 function prepareAlerts() {
+  void languageModel({ allowDownload: true });
   try { audio ??= new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.(); } catch { /* optional */ }
   try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission().catch(() => {}); } catch { /* optional */ }
 }
-const replyHeadline = (job) => job?.result ? summary(job.result).title : job?.state === 'cancelled' ? 'Enquiry stopped.' : 'No reply yet. No place has been confirmed.';
+/* Natural wording (10 Oct 2026): where Chrome's built-in AI (Prompt API) is
+   available on this device, the virtual centre's reply is reworded to sound
+   like a receptionist. The rules still decide everything; the model only
+   rewords the facts, and its text is shown only if every time, date, price
+   and the yes/no survive. Otherwise the template reply is shown unchanged. */
+const LM_OPTIONS = { expectedInputs: [{ type: 'text', languages: ['en'] }], expectedOutputs: [{ type: 'text', languages: ['en'] }] };
+const SYSTEM = {
+  centre: 'You reword short messages from a childcare centre receptionist in Kuala Lumpur to a parent, as a friendly WhatsApp reply. Write as the centre itself; never mention a test, a simulation or a virtual centre. Use only the facts given. Never add facts, offers, names, prices, times or promises. Keep every time, date and amount exactly as written. Plain text, no emojis, no greeting placeholders, at most 90 words.',
+  parent: 'You rewrite a parent\u2019s WhatsApp enquiry to a childcare centre in Kuala Lumpur so it reads naturally and politely, in the parent\u2019s own voice. Keep every question, and keep every date, time, age and amount exactly as written. Do not add questions, facts, names, requests or sign-offs with names. Plain text, no emojis, no placeholders, at most 110 words.',
+};
+const lmBases = {};
+const wordingCache = new Map();
+async function languageModel({ allowDownload = false, voice = 'centre' } = {}) {
+  const LM = globalThis.LanguageModel;
+  if (!LM?.availability || !LM?.create) return null;
+  try {
+    const state = await LM.availability(LM_OPTIONS);
+    if (state === 'unavailable' || (state !== 'available' && !allowDownload && !lmBases[voice])) return null;
+    // A first download needs a click, so it only starts from Ask for me.
+    lmBases[voice] ??= LM.create({ ...LM_OPTIONS, initialPrompts: [{ role: 'system', content: SYSTEM[voice] }] })
+      .catch(() => { delete lmBases[voice]; return null; });
+    return await lmBases[voice];
+  } catch { return null; }
+}
+// Model output may not bring in a time, date or amount of its own, or a
+// placeholder such as [Name].
+// Facts are compared by meaning, not spelling (10 Oct 2026): "MYR 54.00",
+// "MYR 54" and "RM54" are the same amount; "1:20 pm" is 13:20; "Monday,
+// 12 October" is Mon 12 Oct. Wording that drops one, or adds one of its own,
+// is not shown.
+const DAY = '(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*', MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*';
+const KEEP = new RegExp(`\\b\\d{1,2}:\\d{2}(?:\\s?[ap]\\.?m\\b\\.?)?|\\b\\d{1,2}\\s?[ap]\\.?m\\b\\.?|(?:MYR|RM)\\s?\\d[\\d,]*(?:\\.\\d+)?|\\b(?:${DAY},? )?\\d{1,2} ${MONTH}\\b|\\b(?:${DAY},? )?${MONTH} \\d{1,2}\\b`, 'gi');
+const cap3 = w => w.slice(0, 1).toUpperCase() + w.slice(1, 3).toLowerCase();
+function norm(token) {
+  const t = token.replace(/\s+/g, ' ').trim();
+  let m = t.match(/^(?:MYR|RM)\s?([\d,]+(?:\.\d+)?)$/i);
+  if (m) return `MYR${Number(m[1].replace(/,/g, '')).toFixed(2)}`;
+  m = t.match(/^(\d{1,2})(?::(\d{2}))?\s?([ap])?\.?m?\.?$/i);
+  if (m && (m[2] || m[3])) { let h = +m[1]; if (m[3]) h = (h % 12) + (/p/i.test(m[3]) ? 12 : 0); return `${String(h).padStart(2, '0')}:${m[2] ?? '00'}`; }
+  // Dates: the weekday is optional, "12 Oct" and "October 12" are the same day.
+  m = t.match(/(\d{1,2}) ([A-Za-z]+)$/) || t.match(/([A-Za-z]+) (\d{1,2})$/);
+  if (m) { const [n, mon] = /\d/.test(m[1]) ? [m[1], m[2]] : [m[2], m[1]]; return `${+n}${cap3(mon)}`; }
+  return t;
+}
+const tokens = (text) => new Set((text.match(KEEP) ?? []).map(norm));
+const missingFacts = (text, source) => { const have = tokens(text); return [...tokens(source)].filter(x => !have.has(x)); };
+const newFacts = (text, source) => { const known = tokens(source); return [...tokens(text)].filter(x => !known.has(x)); };
+// Older replies from the server still carry test wording and source tags; the
+// parent never sees them, and the model is never shown them.
+export const cleanReply = (raw) => raw.split('\n').map(l => l
+  .replace(/^Test reply for (\d{4}-\d{2}-\d{2})$/, (_, d) => `Reply about ${visitDay(d).replace(',', '')}`)
+  .replace(/\s*\((Listed|(?:Demo|Test|Made-up) answer|Listed \+ (?:demo|test|made-up) detail)\)\s*$/i, '')
+  .replace(/a simulated place is available/gi, 'we have a place for this visit')
+  .replace(/\b(?:simulated|test) (?=place|places|answer|details?)/gi, '')).join('\n');
+const factLines = (result) => cleanReply(result.rawReply).split(/\n+/).slice(1).map(l => l.trim()).filter(Boolean);
+const debug = (what, why) => { try { console.info(`[Ask for me] ${what} kept the rules' wording: ${why}`); } catch { /* optional */ } };
+function replyProblem(text, result) {
+  const facts = factLines(result).join('\n');
+  const lost = missingFacts(text, facts); if (lost.length) return `left out ${lost.join(', ')}`;
+  const added = newFacts(text, facts); if (added.length) return `added ${added.join(', ')}`;
+  if (/[[\]{}<>]/.test(text)) return 'placeholder';
+  if (/\b(simulat\w*|test|virtual)\b/i.test(text)) return 'mentioned the simulation';
+  const no = /\b(sorry|unfortunately|unable|cannot|can’t|can't|fully booked|no place|not able)\b/i.test(text);
+  if (summary(result).good && no) return 'sounded like a no';
+  if (result.outcome === 'unavailable' && !no) return 'did not say no';
+  if (text.length <= 20 || text.length >= 900) return 'length';
+  return null;
+}
+// One wording per reply: started as soon as the reply arrives (even with the
+// chat tucked away) and shared by whoever asks for it.
+const inflight = new Map();
+export function naturalReply(result, name, key, { allowDownload = false } = {}) {
+  if (wordingCache.has(key)) return Promise.resolve(wordingCache.get(key));
+  if (inflight.has(key)) return inflight.get(key);
+  const job = (async () => {
+    const base = await languageModel({ allowDownload });
+    if (!base) return null;
+    let session;
+    try {
+      session = base.clone ? await base.clone() : base;
+      const text = (await session.prompt(`Reply from ${name}. Facts:\n- ${factLines(result).join('\n- ')}`, { signal: AbortSignal.timeout(40000) })).trim();
+      const why = replyProblem(text, result);
+      if (why) debug('Reply', why);
+      // A reply that was already shown with the template keeps it.
+      if (!wordingCache.has(key)) wordingCache.set(key, why ? null : text);
+      return wordingCache.get(key);
+    } catch (e) { debug('Reply', e?.name === 'TimeoutError' ? 'the model took too long' : 'the model failed'); return null; }
+    finally { if (session && session !== base) session.destroy?.(); inflight.delete(key); }
+  })();
+  inflight.set(key, job);
+  return job;
+}
+/* The parent's side (10 Oct 2026): the chat shows the enquiry as a message
+   with the questions the parent ticked. Rules write it; where Chrome's
+   built-in AI is ready it is reworded, and kept only if every date, time, age
+   and amount and every question survive. The request sent to the centre is
+   the same structured payload either way. */
+const childAge = (age) => age === '' || age == null ? 'my child' : age === '0' ? 'my child (under 1)' : `my ${age}‑year‑old`;
+function askParts(t) {
+  const { payload } = t, kids = payload.children, day = visitDay(payload.date);
+  let extra = [], ages = false;
+  if (kids.length === 1 && t.centre && t.request) {
+    try {
+      const all = contactQuestions(t.centre, t.request);
+      extra = payload.questions.map(id => all.find(q => q.id === id)).filter(Boolean).filter(q => q.id !== 'visit').map(q => q.text);
+      ages = /What ages do you accept\?/.test(all.find(q => q.id === 'visit')?.text ?? '');
+    } catch { /* fall back to a count */ }
+  }
+  const missing = payload.questions.filter(id => id !== 'visit').length - extra.length;
+  if (kids.length > 1 && payload.questions.includes('fees')) extra = ['How much will it cost for both children? Are there any extra charges?'];
+  else if (missing > 0) extra.push(`I have ${missing === 1 ? 'one more question' : `${missing} more questions`} about the visit.`);
+  const opening = kids.length === 1
+    ? `Hello! Do you have a place for ${childAge(kids[0].age)} on ${day}, from ${kids[0].start} to ${kids[0].end}?${ages ? ' What ages do you accept?' : ''}`
+    : `Hello! Do you have places for my ${kids.length === 2 ? 'two children' : 'children'} on ${day}?`;
+  const lines = kids.length > 1 ? kids.map(c => `${c.label}${c.age === '' ? '' : c.age === '0' ? ', under 1' : `, ${c.age} years old`}: ${c.start}–${c.end}`) : [];
+  return { opening, lines, extra };
+}
+function askText(t) {
+  const { opening, lines, extra } = askParts(t);
+  return [opening, ...lines.map(l => `• ${l}`), ...(extra.length ? [extra.length > 1 ? 'I’d also like to ask:' : '', ...extra.map(q => extra.length > 1 ? `• ${q}` : q)] : []), 'Thank you!'].filter(Boolean).join('\n');
+}
+function askProblem(text, t, template) {
+  const lost = missingFacts(text, template); if (lost.length) return `left out ${lost.join(', ')}`;
+  const added = newFacts(text, template); if (added.length) return `added ${added.join(', ')}`;
+  if (/[[\]{}<>]/.test(text)) return 'placeholder';
+  // Every child's age, as "3-year-old" or "3 years".
+  if (!t.payload.children.every(c => c.age === '' || (c.age === '0' ? /under\s*(1|one)/i.test(text) : new RegExp(`\\b${c.age}[-\u2011 ]years?`, 'i').test(text)))) return 'left out an age';
+  // Questions may be merged, but not dropped: at least one per asked topic.
+  const asked = 1 + askParts(t).extra.length;
+  if ((text.match(/\?/g) ?? []).length < asked) return 'dropped a question';
+  if (/\b(booked|confirmed|thank you for (?:your|the) reply)\b/i.test(text)) return 'claimed a booking';
+  if (text.length <= 30 || text.length >= 900) return 'length';
+  return null;
+}
+export async function naturalAsk(t, template, key) {
+  if (wordingCache.has(key)) return wordingCache.get(key);
+  const base = await languageModel({ voice: 'parent' });
+  if (!base) return null;
+  let session;
+  try {
+    session = base.clone ? await base.clone() : base;
+    const text = (await session.prompt(`Rewrite this enquiry to ${centreName(t)}:\n${template}`, { signal: AbortSignal.timeout(20000) })).trim();
+    const why = askProblem(text, t, template);
+    if (why) debug('Your message', why);
+    if (!wordingCache.has(key)) wordingCache.set(key, why ? null : text);
+    return wordingCache.get(key);
+  } catch (e) { debug('Your message', e?.name === 'TimeoutError' ? 'the model took too long' : 'the model failed'); return null; }
+  finally { if (session && session !== base) session.destroy?.(); }
+}
+function AskBubble({ thread: t, onReady }) {
+  const template = askText(t), key = `ask:${t.key}`;
+  // undefined while the on-device model is writing; null: the rules' wording.
+  const [worded, setWorded] = useState(() => wordingCache.has(key) ? wordingCache.get(key) : undefined);
+  const [original, setOriginal] = useState(false);
+  useEffect(() => {
+    if (worded !== undefined) return;
+    let live = true;
+    const settle = text => { if (live) setWorded(w => w === undefined ? text : w); };
+    // No model ready on this device: show the rules' wording straight away.
+    (async () => {
+      const LM = globalThis.LanguageModel;
+      const ready = LM?.availability && await LM.availability(LM_OPTIONS).catch(() => 'unavailable') === 'available';
+      if (!ready) { if (!wordingCache.has(key)) wordingCache.set(key, null); return settle(null); }
+      naturalAsk(t, template, key).then(settle);
+    })();
+    const fallback = setTimeout(() => { if (!wordingCache.has(key)) { wordingCache.set(key, null); debug('Your message', 'the model took longer than 12 s'); } settle(null); }, 12000);
+    return () => { live = false; clearTimeout(fallback); };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  // The rest of the conversation waits for the parent's message.
+  const waited = useRef(worded === undefined);
+  useEffect(() => { if (worded !== undefined) onReady?.(waited.current); }, [worded]); // eslint-disable-line react-hooks/exhaustive-deps
+  if (worded === undefined) return <article className="virtual-bubble virtual-bubble-you" aria-busy="true"><span className="virtual-wait-inline"><span className="virtual-dots" aria-hidden="true"><i /><i /><i /></span>Writing your message…</span></article>;
+  const text = worded && !original ? worded : template;
+  return <article className={`virtual-bubble virtual-bubble-you${waited.current ? ' enter' : ''}`}>
+    <p className="virtual-ask-text">{text}</p>
+    {worded && <small className="virtual-ask-note">{original ? 'Original wording.' : 'Worded on this device by Chrome’s built-in AI.'} <button className="text-link" onClick={() => setOriginal(x => !x)}>{original ? 'Show reworded' : 'Show original'}</button></small>}
+  </article>;
+}
+const replyHeadline = (job) => job?.confirmation?.state === 'acknowledged' ? (job.confirmation.decision === 'accept' ? 'Your place is confirmed' : 'The centre knows you won’t need it')
+  : job?.result ? summary(job.result).title : job?.state === 'cancelled' ? 'Enquiry stopped.' : 'No reply yet. No place has been confirmed.';
 
 function useTopModal() {
   const [modal, setModal] = useState(null);
   useEffect(() => {
     const check = () => {
       const open = [...document.querySelectorAll('dialog[open]')].filter(d => { try { return d.matches(':modal'); } catch { return true; } });
-      setModal(open.at(-1) || null);
+      // The Contact panel sits where the chat sits, so it hosts the notice too.
+      setModal(open.at(-1) || document.querySelector('.contact-panel') || null);
     };
     check();
     const watcher = new MutationObserver(check);
@@ -137,6 +320,10 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
         }
       } catch { /* optional */ }
     }
+    // A "no place" with no other time takes that plan off the options.
+    const thread = threadsRef.current.find(x => x.key === key);
+    if (job?.result && thread) try { actionsRef.current?.declined?.(thread, job.result); } catch { /* optional */ }
+    if (job?.result) void naturalReply(job.result, thread ? centreName({ ...thread, job }) : 'The centre', job.id);
     const v = viewRef.current;
     if (v.open && v.key === key && !modalRef.current && !document.hidden) return;
     patch(key, { unread: true }); setNotice(key);
@@ -175,7 +362,16 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     document.addEventListener('visibilitychange', back);
     return () => document.removeEventListener('visibilitychange', back);
   }, []);
-  const value = { threads, view, notice, modal, ask, show, minimise, remove, start, patch, settle, sound, setSound, dismissNotice: () => setNotice(null), actions: actionsRef };
+  // The parent keeps or lets go of an offered place; the centre answers it.
+  const decide = useCallback(async (key, decision) => {
+    const t = threadsRef.current.find(x => x.key === key);
+    if (!t?.job?.id || t.job.confirmation || t.deciding) return;
+    patch(key, { deciding: true, error: '' });
+    try { const job = await query({ action: 'confirm', id: t.job.id, decision }); patch(key, x => ({ job, retry: x.retry + 1 })); }
+    catch (e) { patch(key, { error: e.message }); }
+    finally { patch(key, { deciding: false }); }
+  }, [patch]);
+  const value = { threads, view, notice, modal, ask, show, minimise, remove, start, patch, settle, decide, sound, setSound, dismissNotice: () => setNotice(null), actions: actionsRef };
   return <EnquiryContext.Provider value={value}>{children}{threads.map(t => <ThreadFollower key={t.key} thread={t} />)}</EnquiryContext.Provider>;
 }
 
@@ -184,9 +380,15 @@ function ThreadFollower({ thread }) {
   const { patch, settle } = useContext(EnquiryContext);
   const { key, job, paused, retry } = thread;
   useEffect(() => {
-    if (!job?.id || !active(job) || paused) return;
+    if (!job?.id || !following(job) || paused) return;
     const controller = new AbortController();
-    const update = (next) => { if (controller.signal.aborted) return false; const done = !active(next); patch(key, { job: next, settled: done }); if (done) settle(key, next); return done; };
+    const update = (next) => {
+      if (controller.signal.aborted) return false;
+      // The reply is known before it is shown: word it during the staff
+      // member's simulated response time.
+      if (next?.draft && !next.result) void naturalReply(next.draft, centreName({ ...thread, job: next }), next.id);
+      const done = !following(next); patch(key, { job: next, settled: done }); if (done) settle(key, next); return done;
+    };
     (async () => {
       try {
         if (cloud) {
@@ -221,7 +423,7 @@ function ThreadFollower({ thread }) {
       } catch (e) { if (!controller.signal.aborted) patch(key, { error: e.message, paused: true }); }
     })();
     return () => controller.abort();
-  }, [job?.id, paused, retry]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [job?.id, paused, retry, following(job)]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
 }
 
@@ -239,19 +441,29 @@ export default function VirtualEnquiry(props) {
   return <button className="secondary virtual-enquiry-toggle" disabled={disabled}
     onClick={() => thread?.job && !ENDED.includes(thread.job.state) ? ctx.show(thread.key) : ctx.ask({ payload, centre: props.centre, request: props.requests?.[0], family: children.length > 1 || !!props.family })}>
     {active(thread?.job) ? <LoaderCircle size={17} className="spin" aria-hidden="true" /> : <MessageCircle size={17} aria-hidden="true" />}
-    {label}<span className="virtual-badge">Test</span>
+    {label}
   </button>;
 }
 
-function nextSteps(t, act, ask) {
+function nextSteps(t, act, ask, decide) {
   const r = t.job?.result;
-  const options = { label: t.family ? 'Back to your plan' : 'See other options', icon: List, run: () => act.current?.options?.(t.family) };
+  // A "no place" took that plan off the list, so the way back is to the others.
+  const declined = t.job?.result?.children?.some(c => c.state === 'unavailable' && !c.offer);
+  const options = { label: t.family ? (declined ? 'See other plans' : 'Back to your plan') : 'See other options', icon: List, run: () => act.current?.options?.(t.family) };
   const prepare = { label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepare?.(t.centre, t.request) };
   const contact = { label: 'Contact the centre', icon: MessageCircle, run: () => act.current?.contact?.(t.centre, t.request) };
   if (!r) return [];
+  // A place for every child: the parent decides first, and the centre is told.
+  if (summary(r).good) {
+    const c = t.job.confirmation;
+    if (!c && decide) return [
+      { label: 'Yes, keep the place', icon: Check, run: () => decide(t.key, 'accept'), stay: true },
+      { label: 'No, thanks', icon: X, run: () => decide(t.key, 'decline'), stay: true }];
+    if (c?.state === 'acknowledged') return c.decision === 'accept' ? [t.family || !t.centre ? options : prepare] : [options];
+    if (c?.state === 'failed') return [contact];
+    if (c) return [];
+  }
   if (t.family || !t.centre) return [options];
-  // A place for every child: the only next step is getting ready.
-  if (summary(r).good) return [prepare];
   // The centre offered another time or day: one tap asks for it.
   const offer = r.children.length === 1 && r.children[0].offer;
   if (offer && ask) {
@@ -272,7 +484,7 @@ export function EnquiryDock() {
   const { threads, view, modal } = ctx;
   const current = threads.find(t => t.key === view.key);
   return <>
-    {!modal && view.open && current && <ChatWindow thread={current} />}
+    {!modal && view.open && current && <ChatWindow key={current.key} thread={current} />}
     {!modal && !(view.open && current) && <ChatPill />}
     <ReplyNotice />
   </>;
@@ -296,14 +508,14 @@ function ReplyNotice() {
   const t = ctx?.notice && ctx.threads.find(x => x.key === ctx.notice);
   if (!t) return null;
   const r = t.job?.result, failed = !r;
-  const steps = nextSteps(t, ctx.actions, ctx.ask).slice(0, 1);
+  const steps = nextSteps(t, ctx.actions, ctx.ask, ctx.decide).slice(0, 1);
   const body = <div className={`enquiry-notice${ctx.modal ? ' in-window' : ''}`} role="status" aria-live="polite">
     <span className={`enquiry-notice-icon ${r && summary(r).good ? 'good' : 'warn'}`} aria-hidden="true">{r && summary(r).good ? <Check size={18} /> : failed ? <Clock3 size={18} /> : <TriangleAlert size={18} />}</span>
     <div className="enquiry-notice-main">
       <strong>{failed ? `No reply from ${centreName(t)}` : `${centreName(t)} replied`}</strong>
-      <p>{failed ? 'No place has been confirmed. You can try again from the chat.' : summary(r).title}</p>
+      <p>{failed ? 'No place has been confirmed. You can try again from the chat.' : replyHeadline(t.job)}</p>
       <div className="enquiry-notice-actions">
-        {steps.map(s => <button key={s.label} className="primary" onClick={() => { ctx.dismissNotice(); ctx.patch(t.key, { unread: false }); s.run(); }}>{s.label}<ArrowRight size={15} aria-hidden="true" /></button>)}
+        {steps.map(s => <button key={s.label} className="primary" onClick={() => { ctx.dismissNotice(); ctx.patch(t.key, { unread: false }); if (s.stay) ctx.show(t.key); s.run(); }}>{s.label}<ArrowRight size={15} aria-hidden="true" /></button>)}
         <button className="text-link enquiry-notice-view" onClick={() => ctx.show(t.key)}>View chat</button>
       </div>
     </div>
@@ -314,21 +526,28 @@ function ReplyNotice() {
   return ctx.modal ? createPortal(body, ctx.modal) : body;
 }
 
+// Replies already typed out once are shown whole when the chat is reopened.
+const shownReplies = new Set();
 function ChatWindow({ thread: t }) {
   const ctx = useContext(EnquiryContext);
-  const { threads, show, minimise, remove, start, patch, actions, ask, sound, setSound } = ctx;
+  const { threads, show, minimise, remove, start, patch, actions, ask, sound, setSound, decide } = ctx;
   const [picking, setPicking] = useState(false);
-  const log = useRef(null), nearEnd = useRef(true), shown = useRef(new Set());
+  const log = useRef(null), nearEnd = useRef(true);
+  // Steps after the parent's message appear once it is written, one by one.
+  const [ready, setReady] = useState(() => wordingCache.has(`ask:${t.key}`));
+  const [fresh, setFresh] = useState(false);
+  const batch = useRef(0);
+  const enter = (i, base) => fresh ? { className: `${base} enter`, style: { animationDelay: `${i <= batch.current ? 120 + i * 140 : 0}ms` } } : { className: base };
   const { payload, job, busy, error, paused } = t;
   const ended = job && ENDED.includes(job.state);
   useEffect(() => { nearEnd.current = true; }, [t.key]);
-  useEffect(() => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; }, [t.key, job?.events?.length, job?.state, busy]);
+  useEffect(() => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; }, [t.key, job?.events?.length, job?.state, busy, ready]);
   const cancel = async () => { patch(t.key, { busy: true }); try { const j = await query({ action: 'cancel', id: job.id }); patch(t.key, { job: j }); } catch (e) { patch(t.key, { error: e.message }); } finally { patch(t.key, { busy: false }); } };
-  const one = payload.children.length === 1;
-  const steps = nextSteps(t, actions, ask);
+  const steps = nextSteps(t, actions, ask, decide);
+  const decided = job?.confirmation;
   return <section className="enquiry-chat" role="dialog" aria-modal="false" aria-label={`Ask for me: ${centreName(t)}`} onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); minimise(); } }}>
     <header className="enquiry-chat-top">
-      <div><p className="enquiry-chat-kicker">Ask for me <span className="virtual-badge">Test</span></p><h2>{centreName(t)}</h2></div>
+      <div><p className="enquiry-chat-kicker">Ask for me</p><h2>{centreName(t)}</h2></div>
       <button className="enquiry-chat-icon" onClick={() => setSound(!sound)} aria-pressed={sound} aria-label={sound ? 'Mute reply sound' : 'Turn on reply sound'} title={sound ? 'Sound on' : 'Sound off'}>{sound ? <Volume2 size={18} /> : <VolumeX size={18} />}</button>
       <button className="enquiry-chat-icon" onClick={minimise} aria-label="Minimise chat" title="Minimise"><ChevronDown size={19} /></button>
       {!active(job) && !busy && <button className="enquiry-chat-icon" onClick={() => remove(t.key)} aria-label="Close chat" title="Close"><X size={18} /></button>}
@@ -345,21 +564,20 @@ function ChatWindow({ thread: t }) {
     </div>}
     <p className="enquiry-chat-note">Simulated reply. Uses the centre’s listed ages and hours; no real centre is contacted.</p>
     <div className="enquiry-chat-log" ref={log} role="log" aria-label="Enquiry messages" aria-live="polite" aria-relevant="additions" onScroll={() => { const el = log.current; nearEnd.current = el.scrollHeight - el.scrollTop - el.clientHeight < 60; }}>
-      <article className="virtual-bubble virtual-bubble-you">
-        <p>{visitDay(payload.date)} · {payload.children.map(c => `${one ? 'my child' : c.label}, ${ageText(c.age)}, ${c.start}–${c.end}`).join('; ')}</p>
-        <p>Can you take {payload.children.length === 2 ? 'both children' : 'my child'} for this visit?</p>
-        {payload.questions.length > 1 && <small>Also asks your {payload.questions.length - 1} other {payload.questions.length === 2 ? 'question' : 'questions'}.</small>}
-      </article>
+      <AskBubble key={t.key} thread={t} onReady={waited => { batch.current = t.job?.events.length ?? 0; setReady(true); setFresh(waited); }} />
+      {ready && <>
       {busy && !job && <p className="virtual-chat-event"><LoaderCircle size={14} className="spin" />Sending your request…</p>}
-      {job?.events.map((event, i) => <p className="virtual-chat-event" key={`${job.id}-${i}`}><Check size={14} /><span>{event.text}</span></p>)}
-      {active(job) && !paused && <div className="virtual-bubble virtual-wait"><span className="virtual-dots" aria-hidden="true"><i /><i /><i /></span><span>{job.state === 'queued' ? 'In line. It will be sent when it’s your turn.' : 'The centre is replying… Replies usually take under a minute.'}</span></div>}
-      {job?.result && <Reply key={job.id} name={centreName(t)} result={job.result} animate={!shown.current.has(job.id)} onComplete={() => shown.current.add(job.id)} steps={steps} onStep={minimise}
+      {job?.events.map((event, i) => <p key={`${job.id}-${i}`} {...enter(i, 'virtual-chat-event')}><Check size={14} /><span>{event.text}</span></p>)}
+      {active(job) && !paused && <div {...enter(job?.events.length ?? 0, 'virtual-bubble virtual-wait')}><span className="virtual-dots" aria-hidden="true"><i /><i /><i /></span><span>{job.state === 'queued' ? 'In line. It will be sent when it’s your turn.' : 'The centre is replying… Replies usually take under a minute.'}</span></div>}
+      {job?.result && <Reply key={job.id} id={job.id} name={centreName(t)} result={job.result} animate={!shownReplies.has(job.id)} onComplete={() => shownReplies.add(job.id)} steps={decided ? [] : steps} onStep={minimise}
         scroll={() => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; }} />}
+      {decided && <Decision c={decided} name={centreName(t)} steps={steps} onStep={minimise} scroll={() => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; }} />}
       {ended && <div className="virtual-bubble virtual-unresolved"><Clock3 size={18} /><div><strong>{job.state === 'timed_out' ? 'No reply yet' : job.state === 'cancelled' ? 'Enquiry stopped' : 'Could not send the request'}</strong><p>No place has been confirmed.</p></div></div>}
       {error && <div className="virtual-chat-error" role="alert"><TriangleAlert size={17} /><p>{error}</p></div>}
+      </>}
     </div>
     <footer className="enquiry-chat-footer">
-      <p>{active(job) ? 'You can keep browsing. We’ll let you know when the centre replies.' : job?.result ? 'This test doesn’t make a booking.' : ' '}</p>
+      <p>{following(job) ? 'You can keep browsing. We’ll let you know when the centre replies.' : job?.result ? 'This doesn’t make a real booking.' : ' '}</p>
       {active(job) && <button className="secondary" disabled={busy} onClick={cancel}><Square size={13} />Stop</button>}
       {paused && <button className="secondary" onClick={() => patch(t.key, x => ({ error: '', paused: false, retry: x.retry + 1 }))}>Reconnect</button>}
       {((!job && error && !busy) || ended) && <button className="secondary" disabled={busy} onClick={() => start(t.key, payload)}>Try again</button>}
@@ -367,20 +585,57 @@ function ChatWindow({ thread: t }) {
   </section>;
 }
 
-function Reply({ name, result, scroll, animate, onComplete, steps, onStep }) {
-  const [count, setCount] = useState(() => !animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches ? result.rawReply.length : 0);
+// The parent's decision and the centre's answer, after the first reply.
+function Decision({ c, name, steps, onStep, scroll }) {
+  useEffect(() => { scroll?.(); }, [c.state]); // eslint-disable-line react-hooks/exhaustive-deps
+  const yes = c.decision === 'accept';
+  return <>
+    <article className="virtual-bubble virtual-bubble-you enter"><p className="virtual-ask-text">{c.message}</p></article>
+    {c.state === 'sending' && <div className="virtual-bubble virtual-wait enter" style={{ animationDelay: '160ms' }}><span className="virtual-dots" aria-hidden="true"><i /><i /><i /></span><span>The centre is replying…</span></div>}
+    {c.state === 'failed' && <div className="virtual-chat-error" role="alert"><TriangleAlert size={17} /><p>Your answer couldn’t be sent. Please call or message the centre yourself.</p></div>}
+    {c.state === 'acknowledged' && <>
+      <article className="virtual-bubble virtual-bubble-reply enter"><strong>{name}</strong><p className="virtual-reply-text">{c.reply}</p></article>
+      <section className={`virtual-chat-result ${yes ? 'good' : 'warn'} enter`} style={{ animationDelay: '140ms' }} aria-label="Your decision">
+        <h3>{yes ? <Check size={18} /> : <Info size={18} />}{yes ? 'Your place is confirmed' : 'You let this place go'}</h3>
+        <p className="virtual-result-note">{yes ? 'The centre has noted your visit.' : 'The centre knows you won’t need it.'}</p>
+        {steps.length > 0 && <div className="virtual-next"><p>Next step</p>
+          {steps.map((s, i) => <button key={s.label} className={i === 0 ? 'primary' : 'secondary'} onClick={() => { if (!s.stay) onStep?.(); s.run(); }}><s.icon size={16} aria-hidden="true" />{s.label}{i === 0 && <ArrowRight size={15} aria-hidden="true" />}</button>)}
+        </div>}
+      </section>
+    </>}
+  </>;
+}
+
+function Reply({ id, name, result, scroll, animate, onComplete, steps, onStep }) {
+  const still = !animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // undefined: still asking the on-device model; null: use the template.
+  const [worded, setWorded] = useState(() => wordingCache.has(id) ? wordingCache.get(id) : animate ? undefined : null);
+  const [original, setOriginal] = useState(false);
+  useEffect(() => {
+    if (worded !== undefined) return;
+    let live = true;
+    // The receptionist "types" for up to 25 s while the on-device model works.
+    const fallback = setTimeout(() => { if (!wordingCache.has(id)) { wordingCache.set(id, null); debug('Reply', 'the model took longer than 25 s'); } if (live) setWorded(w => w === undefined ? null : w); }, 25000);
+    naturalReply(result, name, id).then(text => { if (live) setWorded(w => w === undefined ? text : w); });
+    return () => { live = false; clearTimeout(fallback); };
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const text = worded && !original ? worded : cleanReply(result.rawReply);
+  const [count, setCount] = useState(() => still ? Infinity : 0);
   const onScroll = useRef(scroll); onScroll.current = scroll;
   useEffect(() => {
-    if (count >= result.rawReply.length) return;
-    const timer = setTimeout(() => setCount(n => Math.min(result.rawReply.length, n + 24)), 35);
+    if (worded === undefined || count >= text.length) return;
+    const timer = setTimeout(() => setCount(n => Math.min(text.length, n + 24)), 35);
     return () => clearTimeout(timer);
-  }, [result.rawReply, count]);
-  useEffect(() => { onScroll.current(); }, [count]);
-  const done = count >= result.rawReply.length;
+  }, [text, count, worded]);
+  useEffect(() => { onScroll.current(); }, [count, worded]);
+  const done = worded !== undefined && count >= text.length;
   useEffect(() => { if (done) onComplete(); }, [done, onComplete]);
   return <>
     <article className="virtual-bubble virtual-bubble-reply" aria-busy={!done}><strong>{name}</strong>
-      <p className="virtual-reply-text" aria-hidden={!done}>{result.rawReply.slice(0, count)}{!done && <span className="virtual-caret" aria-hidden="true">▍</span>}</p>
+      {worded === undefined
+        ? <span className="virtual-wait-inline"><span className="virtual-dots" aria-hidden="true"><i /><i /><i /></span>Typing…</span>
+        : <p className="virtual-reply-text" aria-hidden={!done}>{text.slice(0, count)}{!done && <span className="virtual-caret" aria-hidden="true">▍</span>}</p>}
+      {done && worded && <p className="virtual-ai-note">{original ? 'Original reply.' : 'Worded on this device by Chrome’s built-in AI.'} <button className="text-link" onClick={() => setOriginal(x => !x)}>{original ? 'Show reworded' : 'Show original'}</button></p>}
     </article>
     {done && <section className={`virtual-chat-result ${summary(result).good ? 'good' : 'warn'}`} aria-label="Reply summary">
       <h3>{summary(result).good ? <Check size={18} /> : <TriangleAlert size={18} />}{summary(result).title}</h3>
@@ -388,7 +643,7 @@ function Reply({ name, result, scroll, animate, onComplete, steps, onStep }) {
       {result.children.map(c => <div key={c.label} className="virtual-child-result"><strong>{result.children.length > 1 ? `${c.label} · ` : ''}{CHILD_STATES[c.state]}</strong><p>{c.reason}</p>{c.estimatedFee !== null && <small>Listed estimate: MYR {c.estimatedFee.toFixed(2)}</small>}</div>)}
       {steps.length > 0 && <div className="virtual-next">
         <p>Next step</p>
-        {steps.map((s, i) => <button key={s.label} className={i === 0 ? 'primary' : 'secondary'} onClick={() => { onStep?.(); s.run(); }}><s.icon size={16} aria-hidden="true" />{s.label}{i === 0 && <ArrowRight size={15} aria-hidden="true" />}</button>)}
+        {steps.map((s, i) => <button key={s.label} className={i === 0 ? 'primary' : 'secondary'} onClick={() => { if (!s.stay) onStep?.(); s.run(); }}><s.icon size={16} aria-hidden="true" />{s.label}{i === 0 && !s.stay && <ArrowRight size={15} aria-hidden="true" />}</button>)}
       </div>}
       <details><summary>What still needs checking</summary><ul>{result.limitations.map(x => <li key={x}>{x}</li>)}</ul><p>These hours use your search start and end. Travel time is not included.</p></details>
     </section>}

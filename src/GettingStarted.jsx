@@ -11,7 +11,7 @@ const steps = [
   { title: "Save or compare a centre", target: ".map-centre-card:not(.leaving) .map-card-actions", icon: Bookmark, body: "Save keeps a centre for later. Compare lines up to 3 centres side by side. Details shows everything we know." },
   { title: "Read about the centre", target: ".centre-search-line", icon: CheckCircle2, body: "Details shows the centre’s fees, ages, opening hours and parent reviews. Select Add to compare to put it on your shortlist." },
   { title: "Compare your choices", target: ".comparison-scroll", icon: Scale, body: "Add 2 or 3 centres, then open Compare to read their fees and services side by side." },
-  { title: "Contact the centre", target: ".enquiry-contact", icon: MessageCircle, body: "Call or message to ask if they have a place for your child. A short message is ready: untick any question you don’t need, then copy it and send it yourself." },
+  { title: "Contact the centre", target: ".contact-panel", icon: MessageCircle, body: "Call or message to ask if they have a place for your child. A short message is ready: untick any question you don’t need, then copy it and send it yourself." },
 ];
 const visibleTarget = selector => selector && [...document.querySelectorAll(selector)].find(el => el.getClientRects().length);
 
@@ -43,7 +43,7 @@ export default function GettingStarted({ onClose, onStep, reduced }) {
         frame = null;
         const element = visibleTarget(current.target);
         const r = element?.getBoundingClientRect();
-        const boundary = element?.closest(".dialog-body, .tour-behind, .discovery-panel, .map-wrap")?.getBoundingClientRect();
+        const boundary = element?.closest(".dialog-body, .contact-panel-body, .tour-behind, .discovery-panel, .map-wrap")?.getBoundingClientRect();
         const top = Math.max(8, r?.top ?? 0, boundary?.top ?? 0), left = Math.max(8, r?.left ?? 0, boundary?.left ?? 0);
         const right = Math.min(innerWidth - 8, r?.right ?? 0, boundary?.right ?? innerWidth), bottom = Math.min(innerHeight - 8, r?.bottom ?? 0, boundary?.bottom ?? innerHeight);
         const target = r && right > left && bottom > top ? { top, left, right, bottom, width: right - left, height: bottom - top } : null;
@@ -57,7 +57,7 @@ export default function GettingStarted({ onClose, onStep, reduced }) {
         const r = el.getBoundingClientRect(), p = panel.getBoundingClientRect();
         panel.scrollTop += r.top - p.top - 20;
       }
-      const detail = el?.closest(".dialog-body");
+      const detail = el?.closest(".dialog-body, .contact-panel-body");
       if (detail) detail.scrollTop += el.getBoundingClientRect().top - detail.getBoundingClientRect().top - 20;
       heading.current?.focus({ preventScroll: true });
       card.current?.scrollTo({ top: 0 });

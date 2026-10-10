@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, ClipboardList, Download, Heart, Info, MessageCircle, PanelLeftClose, PanelLeftOpen, Phone, TriangleAlert, Wallet } from "lucide-react";
+import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, ClipboardList, Download, Heart, Info, MessageCircle, PanelLeftClose, PanelLeftOpen, Phone, TriangleAlert, Wallet, X } from "lucide-react";
 import { displayName } from "../shared/display.mjs";
 import { timeLabel } from "../shared/request.mjs";
 import { visitDate, childAge } from "../shared/enquiry-view.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { askChecks, oneChildPlan, oneChildSteps, oneChildPlanText } from "../shared/one-child-plan.mjs";
+import VirtualEnquiry from "./VirtualEnquiry.jsx";
+import { contactQuestions } from "../shared/contact-message.mjs";
 import "./two-children.css";
 import "./one-child-panel.css";
 
@@ -25,7 +27,40 @@ function Call({ p }) {
   return null;
 }
 
-export default function OneChildPanel({ items, request, state, onChange, top = 300, onSelectCentre, onContact, onChecklist, onDetails, extra = null }) {
+/* The end of a plan, the same for one child and two (10 Oct 2026): one block
+   per centre with its name, whose care and when, then two equal buttons —
+   message the centre and Ask for me — and under all centres two quiet
+   buttons for the checklist and the download. */
+export function PlanActions({ centres, onChecklist, onDownload }) {
+  return <div className="plan-actions">
+    <h4 className="plan-actions-title">{centres.length > 1 ? "Ask the centres about a place" : "Ask the centre about a place"}</h4>
+    {centres.map((c) => <div key={c.key} className="plan-centre">
+      <div className="plan-centre-head">
+        <Pin n={c.pin} />
+        <div><strong>{name(c.p)}</strong>{c.who && <small>{c.who}</small>}</div>
+        {c.onDetails && <button className="text-link plan-centre-about" onClick={c.onDetails} aria-label={`About ${name(c.p)}`}>About<ArrowRight size={14} aria-hidden="true" /></button>}
+      </div>
+      <div className="plan-centre-buttons">{c.message}{c.ask}</div>
+      {c.after}
+    </div>)}
+    <div className="plan-more">
+      <button className="family-secondary" onClick={onChecklist}><ClipboardList size={16} aria-hidden="true" />Save to Checklist</button>
+      <button className="family-secondary" onClick={onDownload}><Download size={16} aria-hidden="true" />Download plan</button>
+    </div>
+  </div>;
+}
+
+// A centre that replied it has no place (and offered no other time) is taken
+// off the options, with a short note and Undo (10 Oct 2026).
+export function DeclinedNote({ name: centre, two = false, onUndo, onClose }) {
+  return <div className="family-declined" role="status">
+    <Info size={17} aria-hidden="true" />
+    <p><strong>{name({ name: centre })}</strong> has no place for {two ? "this plan" : "this visit"}, so we’ve taken it off your options. <button className="text-link" onClick={onUndo}>Undo</button></p>
+    <button className="family-declined-close" onClick={onClose} aria-label="Dismiss"><X size={16} /></button>
+  </div>;
+}
+
+export default function OneChildPanel({ items, request, state, onChange, top = 300, onSelectCentre, onContact, onChecklist, onDetails, extra = null, hidden = [], note = null, onUndo, onCloseNote, questionIds }) {
   const panel = useRef(null);
   useEffect(() => { panel.current?.scrollTo?.({ top: 0 }); }, [state.view, state.selected, state.collapsed]);
   const [closing, setClosing] = useState(false);
@@ -36,7 +71,7 @@ export default function OneChildPanel({ items, request, state, onChange, top = 3
     setClosing(true);
     setTimeout(() => { set({ collapsed: true }); setClosing(false); }, 180);
   };
-  const chosen = state.view === "plan" ? items.find((p) => p.id === state.selected) : null;
+  const chosen = state.view === "plan" && !hidden.includes(state.selected) ? items.find((p) => p.id === state.selected) : null;
   if (state.collapsed) {
     const label = chosen ? "Show your plan" : "Show the options";
     // The tab and "All N centres" share one row under the search bar.
@@ -50,24 +85,27 @@ export default function OneChildPanel({ items, request, state, onChange, top = 3
     <div className="family-topbar"><button className="family-collapse" onClick={hide} disabled={closing} aria-label="Hide the panel and show the whole map" title="Hide panel">
       <PanelLeftClose size={18} className="family-wide" aria-hidden="true" /><ChevronDown size={20} className="family-narrow" aria-hidden="true" /></button></div>
     {chosen
-      ? <Plan p={chosen} pin={items.indexOf(chosen) + 1} request={request} onBack={() => { set({ view: "options", selected: null }); onSelectCentre?.(null); }}
+      ? <Plan p={chosen} pin={items.indexOf(chosen) + 1} request={request} questionIds={questionIds} onBack={() => { set({ view: "options", selected: null }); onSelectCentre?.(null); }}
           onContact={onContact} onChecklist={onChecklist} onDetails={onDetails} />
-      : <Options items={items} request={request} showAll={state.showAll} onShowAll={() => set({ showAll: true })}
+      : <Options items={items} hidden={hidden} note={note && <DeclinedNote name={note.name} onUndo={() => onUndo?.(note.id)} onClose={onCloseNote} />} request={request} showAll={state.showAll} onShowAll={() => set({ showAll: true })}
           onSee={(p) => { set({ view: "plan", selected: p.id }); onSelectCentre?.(p.id); }} />}
   </section></>;
 }
 
-function Options({ items, request, showAll, onShowAll, onSee }) {
-  const shown = showAll ? items : items.slice(0, SHOWN);
+function Options({ items, hidden = [], note = null, request, showAll, onShowAll, onSee }) {
+  const open = items.filter((p) => !hidden.includes(p.id));
+  const shown = showAll ? open : open.slice(0, SHOWN);
   return <>
     <header className="family-head">
       <h3>Suggested for your child</h3>
       <p>{visitDate(request.date)} · {request.age ? childAge(request.age) : "Age not chosen"} · {request.deadline}–{request.end}</p>
     </header>
+    {note}
+    {!open.length && <p className="family-note">None of the suggested centres has a place left for this visit. Try another time or date, or see all centres.</p>}
     <ol className="family-options">
-      {shown.map((p, i) => <li key={p.id}><Option p={p} pin={i + 1} request={request} onSee={() => onSee(p)} /></li>)}
+      {shown.map((p) => <li key={p.id}><Option p={p} pin={items.indexOf(p) + 1} request={request} onSee={() => onSee(p)} /></li>)}
     </ol>
-    {!showAll && items.length > SHOWN && <button className="family-more" onClick={onShowAll}>Show {items.length - SHOWN} more {items.length - SHOWN === 1 ? "option" : "options"}</button>}
+    {!showAll && open.length > SHOWN && <button className="family-more" onClick={onShowAll}>Show {open.length - SHOWN} more {open.length - SHOWN === 1 ? "option" : "options"}</button>}
     <p className="family-note">A match isn’t a booking. Contact the centre to confirm a place.</p>
   </>;
 }
@@ -94,7 +132,8 @@ function Option({ p, pin, request, onSee }) {
   </article>;
 }
 
-function Plan({ p, pin, request, onBack, onContact, onChecklist, onDetails }) {
+const safeQuestionIds = (p, request) => { try { return contactQuestions(p, request).map((q) => q.id); } catch { return undefined; } };
+function Plan({ p, pin, request, onBack, onContact, onChecklist, onDetails, questionIds }) {
   const { plan, steps } = oneChildSteps(p, request, name);
   const asks = [...new Set(askChecks(p, request).map((c) => c.label.toLowerCase()))];
   const download = () => {
@@ -123,12 +162,9 @@ function Plan({ p, pin, request, onBack, onContact, onChecklist, onDetails }) {
     </ol>
     {plan.short && <p className="family-note family-warn"><Info size={15} aria-hidden="true" /><span>This is a short visit: you may want to wait nearby instead of going back.</span></p>}
     <div className="family-pickup-from"><p>Pickup starts from <strong>{request.pickup?.label ?? "your starting point"}</strong>.</p></div>
-    <div className="family-actions">
-      <button className="family-primary" onClick={() => onContact(p)}><MessageCircle size={17} aria-hidden="true" />Contact the centre</button>
-      <button className="family-secondary" onClick={() => onChecklist(p)}><ClipboardList size={16} aria-hidden="true" />Save to Checklist</button>
-      <button className="family-secondary" onClick={() => onDetails(p)}>About this centre<ArrowRight size={16} aria-hidden="true" /></button>
-      <button className="text-link family-download" onClick={download}><Download size={15} aria-hidden="true" />Download the plan</button>
-    </div>
+    <PlanActions onChecklist={() => onChecklist(p)} onDownload={download} centres={[{ key: p.id, p, pin, who: `Your child · ${request.deadline}–${request.end}`, onDetails: () => onDetails(p),
+      message: <button className="family-primary" onClick={() => onContact(p)}><MessageCircle size={17} aria-hidden="true" />Contact</button>,
+      ask: <VirtualEnquiry providerId={p.id} centre={p} requests={[request]} questionIds={questionIds?.(p) ?? safeQuestionIds(p, request)} /> }]} />
     <p className="family-note">Drive times are road estimates without traffic. The centre still needs to confirm a place and the arrival time.</p>
   </>;
 }

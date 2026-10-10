@@ -1,9 +1,12 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { canonicalEnquiry, decide, EnquiryError, hash, messageFor, replyDelayMs } from '../../experiments/virtual-enquiry/model.mjs';
+import { ackDelayMs, canonicalEnquiry, confirmationFor, decide, EnquiryError, hash, messageFor, replyDelayMs } from '../../experiments/virtual-enquiry/model.mjs';
 export const RETENTION_MS = 30 * 60 * 1000, REPLY_MS = 120000;
 export const QUEUE_MS = 10 * 60 * 1000;
 export const requestText = j => `EPDEMO/1 REQUEST ${j.id}\n${j.message}`;
 export const replyText = (j, result) => `EPDEMO/1 REPLY ${j.id}\n${result.rawReply}`;
+// The parent's decision on an offered place, and the centre's answer.
+export const confirmText = (j, c) => `EPDEMO/1 CONFIRM ${j.id}\n${c.decision}\n${c.message}`;
+export const ackText = (j, c) => `EPDEMO/1 ACK ${j.id}\n${c.reply}`;
 const eventId = (id, phase) => `${id}_${phase}`;
 export function equalSecret(a, b) { return typeof a === 'string' && typeof b === 'string' && a.length >= 32 && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b)); }
 export function createCloudEnquiry({ branches, store, telegram, env, now = Date.now, replyDelay = replyDelayMs }) {
@@ -38,9 +41,25 @@ export function createCloudEnquiry({ branches, store, telegram, env, now = Date.
     const labels = { sent:'Sent through Telegram to the virtual centre.', merchant:'The virtual centre received your request on Telegram.', received:'The virtual centre replied through Telegram.', cancel:'Enquiry stopped. No booking was made.', failed:'The Telegram enquiry could not be completed. No place is confirmed.' };
     return { id:j.id, request:j.request, branch:j.branch, simulation:true, transport:'telegram-cloud', message:j.message,
       sessionId:j.sessionId,createdAt:j.at, updatedAt:events.at(-1)?.at || j.at, expiresAt, state,
-      events:[{ at:j.at,text:'Test request added to the queue.' },...events.filter(e=>labels[e.phase]&&(e.phase!=='received'||received)).map(e=>({at:e.phase==='received'?received.at:e.at,text:labels[e.phase]})),
+      events:[{ at:j.at,text:'Request added to the queue.' },...events.filter(e=>labels[e.phase]&&(e.phase!=='received'||received)).map(e=>({at:e.phase==='received'?received.at:e.at,text:labels[e.phase]})),
         ...(state==='timed_out'?[{at:expiresAt,text:dispatch?'No reply arrived in time. This does not mean no places.':'The queue wait ended. Please try again.'}]:[])],
-      result: state === 'replied' ? received.result : null };
+      result: state === 'replied' ? received.result : null,
+      // While the virtual staff member is still "replying", the owner's page
+      // already gets the reply so the on-device model can word it in time.
+      ...(state === 'waiting' && arrived && !received ? { draft: arrived.result, replyAt: answeredAt } : {}),
+      confirmation: state === 'replied' ? confirmationState(j, events, received.result) : null };
+  }
+  // A decision is shown as sent until the merchant bot's exact answer arrives
+  // through the assistant bot, and then after a short, human pause.
+  function confirmationState(j, events, result) {
+    const asked = events.find(e => e.phase === 'decide');
+    if (!asked) return null;
+    let c; try { c = confirmationFor(j.request, result, asked.decision); } catch { return null; }
+    const ack = events.find(e => e.phase === 'ack'), failed = events.find(e => e.phase === 'dfail');
+    const shownAt = ack ? Math.max(ack.at, asked.at + ackDelayMs(j.id)) : null;
+    if (ack && now() >= shownAt) return { decision: c.decision, message: c.message, state: 'acknowledged', reply: c.reply, at: asked.at, repliedAt: shownAt };
+    if (failed) return { decision: c.decision, message: c.message, state: 'failed', reply: null, at: asked.at };
+    return { decision: c.decision, message: c.message, state: 'sending', reply: null, at: asked.at };
   }
   async function isPending(j) { return ['queued','waiting'].includes((await snapshot(j)).state); }
   async function pump() {
@@ -109,6 +128,16 @@ export function createCloudEnquiry({ branches, store, telegram, env, now = Date.
       // Telegram webhooks and cancellation advance the queue immediately;
       // scheduled recovery handles interrupted workers and reply timeouts.
       if(body.action === 'get') return { job:await snapshot(j) };
+      if(body.action === 'confirm') {
+        const s = await snapshot(j);
+        if(s.state !== 'replied' || !s.result) throw new EnquiryError('There is no reply to answer yet.');
+        if(s.confirmation) return { job:s };
+        const c = confirmationFor(j.request, s.result, body.decision);
+        if(!await event(j,'decide',{decision:c.decision})) return { job:await snapshot(j) };
+        try { await telegram.send('assistant', confirmText(j,c)); }
+        catch { await event(j,'dfail'); }
+        return { job:await snapshot(j) };
+      }
       if(body.action === 'cancel') { if(await isPending(j)) await event(j,'cancel');await finish(j);return { job:await snapshot(j) }; }
       throw new EnquiryError('Unknown test action.');
     },
@@ -118,9 +147,26 @@ export function createCloudEnquiry({ branches, store, telegram, env, now = Date.
       const m=update?.message,peer=role==='merchant'?env.TELEGRAM_ASSISTANT_ID:env.TELEGRAM_MERCHANT_ID;
       // Ignore human chats, groups, forwards, arbitrary bots and edited messages.
       if(!m || !m.from?.is_bot || String(m.from.id)!==peer || m.chat?.type!=='private' || String(m.chat.id)!==peer || m.forward_origin) return {ok:true,ignored:true};
-      const match=/^EPDEMO\/1 (REQUEST|REPLY) ([a-f0-9]{24})\n/.exec(m.text||'');
-      if(!match || match[1] !== (role==='merchant'?'REQUEST':'REPLY')) return {ok:true,ignored:true};
+      const match=/^EPDEMO\/1 (REQUEST|REPLY|CONFIRM|ACK) ([a-f0-9]{24})\n/.exec(m.text||'');
+      if(!match || !(role==='merchant'?['REQUEST','CONFIRM']:['REPLY','ACK']).includes(match[1])) return {ok:true,ignored:true};
       let j; try { j=await load(match[2]); } catch(e) { if(e.status===404) return {ok:true,ignored:true}; throw e; }
+      if(match[1]==='CONFIRM' || match[1]==='ACK') {
+        // The decision round trip: the merchant answers the parent's exact
+        // decision; the assistant accepts only that exact answer.
+        const events=(await store.events(j.id)).filter(e=>e.phase), asked=events.find(e=>e.phase==='decide');
+        const replied=events.find(e=>e.phase==='received');
+        if(!asked || !replied?.result) return {ok:true,ignored:true};
+        let c; try { c=confirmationFor(j.request, replied.result, asked.decision); } catch { return {ok:true,ignored:true}; }
+        if(match[1]==='CONFIRM') {
+          if(m.text!==confirmText(j,c)) return {ok:true,ignored:true};
+          if(!await event(j,'dseen')) return {ok:true,duplicate:true};
+          try { await telegram.send('merchant',ackText(j,c)); } catch { await event(j,'dfail'); }
+        } else {
+          if(m.text!==ackText(j,c)) { await event(j,'dfail'); return {ok:true,invalidReply:true}; }
+          await event(j,'ack');
+        }
+        return {ok:true};
+      }
       if((await snapshot(j)).state!=='waiting') return {ok:true,ignored:true};
       const branch=branches.find(b=>b.id===j.request.branchId),result=decide(j.request,branch);
       if(role==='merchant') {

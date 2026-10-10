@@ -38,7 +38,7 @@ export function virtualEnquiryPlugin() {
             unsubscribe = service.subscribe(token, body.id, job => {
               if (res.destroyed || res.writableEnded) return;
               res.write(JSON.stringify({ job }) + '\n');
-              if (!['queued', 'waiting'].includes(job.state)) res.end();
+              if (!['queued', 'waiting'].includes(job.state) && job.confirmation?.state !== 'sending') res.end();
             });
             if (res.writableEnded) cleanup();
             return;

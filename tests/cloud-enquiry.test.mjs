@@ -164,3 +164,24 @@ test('cloud adapter excludes the job from event lists and reads only the FIFO he
  assert(queue.some(q=>q.method==='limit'&&q.values[0]===1));
  assert(queue.some(q=>q.method==='orderAsc'&&q.attribute==='$sequence'));
 });
+test('after a place is offered, the parent decision and the centre answer make one exact Telegram round trip',async()=>{
+ const f=fixture(),a=await f.create().handle(owner,{action:'create',request:input(),nonce});
+ await f.create().webhook('merchant',secret,f.update('merchant',f.sent[0].text));
+ await f.create().webhook('assistant',secret,f.update('assistant',f.sent[1].text));
+ f.advance(60000);
+ await assert.rejects(f.create().handle(owner,{action:'confirm',id:a.job.id,decision:'maybe'}));
+ const asked=(await f.create().handle(owner,{action:'confirm',id:a.job.id,decision:'accept'})).job;
+ assert.equal(asked.confirmation.state,'sending');assert.match(asked.confirmation.message,/^Yes, please keep the place for my child on Fri 9 Oct, 14:00–16:00/);
+ assert.equal(f.sent.length,3);assert.match(f.sent[2].text,/^EPDEMO\/1 CONFIRM /);
+ // A second click never sends again, and a changed decision is ignored.
+ await f.create().handle(owner,{action:'confirm',id:a.job.id,decision:'decline'});assert.equal(f.sent.length,3);
+ await f.create().webhook('merchant',secret,f.update('merchant',f.sent[2].text+'x'));assert.equal(f.sent.length,3);
+ await f.create().webhook('merchant',secret,f.update('merchant',f.sent[2].text));
+ assert.equal(f.sent.length,4);assert.match(f.sent[3].text,/^EPDEMO\/1 ACK /);
+ await f.create().webhook('assistant',secret,f.update('assistant',f.sent[3].text));
+ assert.equal((await f.create().handle(owner,{action:'get',id:a.job.id})).job.confirmation.state,'sending');
+ f.advance(10000);
+ const done=(await f.create().handle(owner,{action:'get',id:a.job.id})).job;
+ assert.equal(done.confirmation.state,'acknowledged');assert.match(done.confirmation.reply,/^Thank you, that’s confirmed: your child on Fri 9 Oct, 14:00–16:00/);
+ assert(!done.events.some(e=>/confirm|answer/i.test(e.text)));
+});

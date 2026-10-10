@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, ClipboardList, Copy, Download, Heart, LoaderCircle, MessageCircle, PanelLeftClose, PanelLeftOpen, Phone, Plus, TriangleAlert, Wallet } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
 import VirtualEnquiry from './VirtualEnquiry.jsx';
+import { DeclinedNote, PlanActions } from './OneChildPanel.jsx';
 import { displayName } from "../shared/display.mjs";
 import { timeLabel } from "../shared/request.mjs";
 import { visitDate } from "../shared/enquiry-view.mjs";
@@ -120,6 +121,8 @@ function Options({ family, onWider, compareIds, onCompare, onViewOption }) {
       <h3>Suggested for your two children</h3>
       <p>{visitDate(plan.date)} · {KIDS.map((k) => childWithAge(k, plan)).join(" and ")}</p>
     </header>
+    {s.declineNote && <DeclinedNote name={s.declineNote.name} two onUndo={() => family.undecline(s.declineNote.id)} onClose={family.dismissDecline} />}
+    {!options.length && <p className="family-note">None of the suggested plans has a place left. Try other times or another date.</p>}
     {options.some((o) => o.dropOff === null) && <p className="family-note">Some drive times didn’t load. <button className="text-link" onClick={family.retry}>Try again</button></p>}
     <ol className="family-options">
       {options.map((o, i) => <li key={o.id}><Option o={o} index={i + 1} pins={pins} lp={family.plans.get(o.id)} onSee={() => { onViewOption?.(o); family.select(o.id); }} compareIds={compareIds} onCompare={onCompare} /></li>)}
@@ -174,6 +177,9 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
   const messages = o.kind === "same" ? [["ab", o.a, sameCentreMessage(o, plan)]] : KIDS.map((k) => [k, o[k], childMessage(o, plan, k)]);
   const copy = async (key, text) => { try { await navigator.clipboard.writeText(text); setCopied(key); onToast?.("Message copied. Paste it into WhatsApp or a text message."); } catch { setCopied(`manual:${key}`); } };
   const planText = familyPlanText(o, plan, lp, name);
+  const pins = new Map(familyMapItems(family).map((p, i) => [p.id, i + 1]));
+  const span = (k) => `${plan.children[k].start}–${plan.children[k].end}`;
+  const who = (key) => key === "ab" ? `Both children${span("a") === span("b") ? ` · ${span("a")}` : ` · ${span("a")} and ${span("b")}`}` : `${childName(key)} · ${span(key)}`;
   const download = () => {
     const url = URL.createObjectURL(new Blob([planText], { type: "text/plain" }));
     const a = document.createElement("a"); a.href = url; a.download = `equalpath-family-plan-${plan.date}.txt`; a.click();
@@ -234,14 +240,11 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
             onChange={(p) => { if (p) { family.setCollectPlace(p, o); setEditingPickup(false); } }} />
         : <p>Pickup starts from <strong>{s.plan.run.collectPlace?.label}</strong>. <button className="text-link" onClick={() => setEditingPickup(true)}>Change</button></p>}
     </div>
-    <div className="family-actions">
-      <button className="family-primary" onClick={() => onChecklist({ text: planText, date: plan.date, title: o.kind === "same" ? name(o.a) : `${name(o.a)} + ${name(o.b)}` })}><ClipboardList size={17} aria-hidden="true" />Save to Checklist</button>
-      {messages.map(([key, p, text]) => <div key={key} className="enquiry-button-row"><button className="family-secondary" onClick={() => copy(key, text)}>
-        {copied === key ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}{copied === key ? "Copied" : `Copy message for ${name(p)}`}</button>
-        <VirtualEnquiry providerId={p.id} centre={p} family requests={(key === 'ab' ? KIDS : [key]).map(k => ({ ...childRequest(plan, k), label: childName(k) }))} /></div>)}
-      {messages.map(([key, , text]) => copied === `manual:${key}` && <textarea key={`m-${key}`} readOnly value={text} aria-label="Message to copy" className="enquiry-manual-message" />)}
-      <button className="text-link family-download" onClick={download}><Download size={15} aria-hidden="true" />Download the plan</button>
-    </div>
+    <PlanActions onChecklist={() => onChecklist({ text: planText, date: plan.date, title: o.kind === "same" ? name(o.a) : `${name(o.a)} + ${name(o.b)}` })} onDownload={download}
+      centres={messages.map(([key, p, text]) => ({ key, p, pin: pins.get(p.id), who: who(key),
+        message: <button className="family-primary" onClick={() => copy(key, text)}>{copied === key ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}{copied === key ? "Copied" : "Copy message"}</button>,
+        ask: <VirtualEnquiry providerId={p.id} centre={p} family requests={(key === "ab" ? KIDS : [key]).map((k) => ({ ...childRequest(plan, k), label: childName(k) }))} />,
+        after: copied === `manual:${key}` && <textarea readOnly value={text} aria-label="Message to copy" className="enquiry-manual-message" /> }))} />
     <p className="family-note">Leave times allow 5 minutes for each handover and round to the earlier 5 minutes. Each centre still needs to confirm a place.</p>
   </>;
 }

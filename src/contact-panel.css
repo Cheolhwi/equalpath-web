@@ -1,0 +1,75 @@
+/* Contact the centre (10 Oct 2026): a panel beside the map in the Ask for me
+   chat's place, not a window over the plan. Same paper, rules and sage. */
+.equalpath .contact-panel {
+  position: fixed; z-index: 40; right: 16px; bottom: 16px; width: min(400px, calc(100vw - 32px));
+  max-height: min(660px, calc(100dvh - 104px)); display: flex; flex-direction: column; overflow: hidden;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 20px;
+  box-shadow: 0 2px 6px #30382f10, 0 18px 48px #30382f2e; font-size: 14px;
+  animation: enquiry-in 240ms cubic-bezier(.2, .7, .2, 1) both;
+}
+.equalpath .contact-panel-top { display: flex; align-items: flex-start; gap: 4px; padding: 14px 10px 12px 18px; border-bottom: 1px solid var(--rule); flex-shrink: 0; }
+.equalpath .contact-panel-top > div { flex: 1; min-width: 0; }
+.equalpath .contact-panel-kicker { margin: 0 0 3px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.equalpath .contact-panel-top h2 { margin: 0; font-size: 17px; line-height: 1.3; font-weight: 650; letter-spacing: -.01em; overflow-wrap: anywhere; outline: none; }
+.equalpath .contact-panel-top h2:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.equalpath .contact-panel-close { display: grid; place-items: center; width: 36px; height: 36px; min-height: 36px; padding: 0; border-radius: 10px; color: var(--muted); background: transparent; flex-shrink: 0; }
+.equalpath .contact-panel-close:hover { background: var(--soft); color: var(--ink); }
+
+.equalpath .contact-panel-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 14px 18px 16px; }
+.equalpath .contact-panel-body > .notice { margin: 0 0 12px; font-size: 13px; }
+
+/* Call / WhatsApp / website: one compact row. */
+.equalpath .contact-panel .enquiry-contact { display: flex; flex-flow: row wrap; align-items: center; gap: 8px; margin: 0 0 16px; padding: 0; border: 0; }
+.equalpath .contact-panel .contact-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.equalpath .contact-panel .call-link { min-height: 40px; padding: 6px 14px; font-size: 14px; }
+.equalpath .contact-panel .contact-website { min-height: 40px; font-size: 13px; }
+.equalpath .contact-panel .enquiry-contact .demo-notice,
+.equalpath .contact-panel .enquiry-contact p { flex-basis: 100%; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+/* The message: a quiet block, not a card in a card. */
+.equalpath .contact-panel .enquiry-send { padding: 0; border: 0; border-radius: 0; background: transparent; }
+.equalpath .contact-panel .contact-message-heading { margin: 0 0 10px; }
+.equalpath .contact-panel .enquiry-send h3 { font-size: 15px; line-height: 1.35; font-weight: 650; }
+.equalpath .contact-panel .enquiry-guide { margin: 2px 0 0; font-size: 13px; line-height: 1.45; }
+.equalpath .contact-panel .contact-request { margin: 0 0 4px; padding: 0 12px; border-radius: 12px; background: var(--bg); }
+.equalpath .contact-panel .contact-request > summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; color: var(--ink); font-size: 13px; font-weight: 600; cursor: pointer; list-style: none; }
+.equalpath .contact-panel .contact-request > summary::-webkit-details-marker { display: none; }
+.equalpath .contact-panel .contact-request > summary svg { color: var(--muted); flex-shrink: 0; }
+.equalpath .contact-panel .contact-request[open] { padding-bottom: 10px; }
+.equalpath .contact-panel .contact-message-intro { font-size: 13px; line-height: 1.6; color: var(--muted); }
+.equalpath .contact-panel .contact-question { padding: 2px 0; }
+.equalpath .contact-panel .contact-question:first-child { border-top: 0; }
+.equalpath .contact-panel .contact-question > label { gap: 10px; padding: 9px 0; font-size: 14px; line-height: 1.5; }
+.equalpath .contact-panel .contact-question input { width: 18px; height: 18px; margin-top: 1px; }
+.equalpath .contact-panel .question-excluded { display: block; margin: -6px 0 8px 28px; color: var(--muted); font-size: 12px; }
+.equalpath .contact-panel .question-review-note { display: block; margin: -4px 0 8px 28px; color: var(--muted); font-size: 12px; }
+.equalpath .contact-panel .contact-question-warning { margin: -2px 0 8px 28px; font-size: 12px; }
+.equalpath .contact-panel .enquiry-manual-message { height: 180px; margin-top: 10px; font-size: 13px; }
+.equalpath .contact-panel .contact-question-evidence { margin-top: 6px; }
+.equalpath .contact-panel .contact-question-evidence > summary { min-height: 40px; font-size: 13px; }
+.equalpath .contact-panel-next { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 6px 0 0; padding: 10px 0 0; border-top: 1px solid var(--rule); color: var(--muted); font-size: 13px; line-height: 1.45; }
+.equalpath .contact-panel-next > span { white-space: nowrap; }
+.equalpath .contact-panel-next > .text-link { display: inline-flex; white-space: nowrap; align-items: center; gap: 4px; min-height: 32px; margin: 0; padding: 0; color: var(--ink); font-size: 13px; font-weight: 600; }
+
+/* Copy / Ask for me stay in reach while the questions scroll. */
+.equalpath .contact-panel-footer { flex-shrink: 0; margin: 0; padding: 12px 18px 12px; border-top: 1px solid var(--rule); background: var(--paper); }
+.equalpath .contact-panel-footer .enquiry-button-row { flex-wrap: nowrap; }
+.equalpath .contact-panel-footer .enquiry-button-row > button { flex: 1 1 0; min-width: 0; min-height: 44px; padding-inline: 12px; border-radius: 999px; font-size: 14px; }
+.equalpath .contact-panel-footer .enquiry-copy-status { margin: 8px 0 0; font-size: 12px; line-height: 1.45; }
+
+/* Ask for me's chat opens in the same place and at the same width. */
+.equalpath .enquiry-chat { width: min(400px, calc(100vw - 32px)); }
+
+@media (max-width: 760px) {
+  /* Phones: a sheet over the bottom of the map, like the chat. */
+  .equalpath .contact-panel { left: 8px; right: 8px; bottom: 8px; width: auto; max-height: min(84dvh, calc(100dvh - 24px)); }
+  .equalpath .contact-panel-body { padding: 12px 16px 14px; }
+  .equalpath .contact-panel-footer { padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .equalpath .contact-panel-footer .enquiry-button-row > button { font-size: 14px; padding-inline: 10px; }
+  .equalpath .contact-panel .call-link { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  .equalpath .contact-panel-footer .enquiry-button-row { flex-wrap: wrap; }
+}
+.equalpath[data-reduced="true"] .contact-panel { animation: none; }
+@media (prefers-reduced-motion: reduce) { .equalpath .contact-panel { animation: none; } }

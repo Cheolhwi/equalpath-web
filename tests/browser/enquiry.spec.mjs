@@ -49,7 +49,7 @@ const expectedMessage = async dialog => {
 for (const width of [390, 1440]) test(`${width}px: one ready message, visible checkboxes and a direct copy action`, async ({ page }) => {
   await page.setViewportSize({ width, height: 844 });
   const dialog = await openQuestions(page);
-  await expect(dialog.locator(".contact-request")).toHaveAttribute("open", "");
+  await expect(dialog.locator(".contact-request")).not.toHaveAttribute("open");
   await expect(dialog.getByRole("heading", { name: "Your message", exact: true })).toBeVisible();
   await expect(dialog.locator(".contact-question")).toHaveCount(3);
   await expect(dialog.locator(".contact-question input:checked")).toHaveCount(3);
@@ -69,7 +69,7 @@ for (const width of [390, 1440]) test(`${width}px: one ready message, visible ch
   expect(await page.evaluate(() => window.copiedQuestions)).not.toContain(excluded);
   await dialog.locator(".enquiry-send").evaluate(el => el.scrollIntoView({ block: "start" }));
   await page.screenshot({ path: `${out}/message-${width}.png` });
-  await dialog.getByRole("button", { name: "Close dialog", exact: true }).click();
+  await dialog.getByRole("button", { name: "Close contact", exact: true }).click();
   await page.getByRole("button", { name: `View details for ${name}`, exact: true }).click();
   await page.getByRole("button", { name: "Contact the centre", exact: true }).click();
   await expect(fee.getByRole("checkbox")).not.toBeChecked();

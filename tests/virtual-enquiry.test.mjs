@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setTimeout as wait } from 'node:timers/promises';
-import { virtualBranches, canonicalEnquiry, decide, demand, replyDelayMs } from '../experiments/virtual-enquiry/model.mjs';
+import { virtualBranches, canonicalEnquiry, decide, demand, replyDelayMs, confirmationFor } from '../experiments/virtual-enquiry/model.mjs';
 import { createEnquiryService } from '../experiments/virtual-enquiry/service.mjs';
 import { telegramTransport } from '../experiments/virtual-enquiry/telegram.mjs';
 import { createSearchStore } from '../server/search-catalog.mjs';
@@ -66,11 +66,12 @@ test('every selected question is answered, listed facts first, and simulated rep
   const by = id => r.answers.find(a => a.id === id);
   assert.equal(by('review:clear_late_rules').basis, 'Listed'); assert.match(by('review:clear_late_rules').text, /RM10 per 15 min after 18:00/);
   assert.match(by('arrival').text, /We open at 08:00/);
-  assert.equal(by('review:healthy_meals').basis, 'Test answer');
-  assert.equal(by('review:safety').basis, 'Test answer');
+  assert.equal(by('review:healthy_meals').basis, 'Made-up answer');
+  assert.equal(by('review:safety').basis, 'Made-up answer');
   assert.ok(!r.rawReply.includes('still need an answer'));
-  assert.match(r.rawReply, /\(Test answer\)/);
-  assert.ok(r.limitations.some(l => /simulated/.test(l)));
+  // The reply reads like a centre's message; what was made up is listed once.
+  assert.doesNotMatch(r.rawReply, /\btest\b|simulated/i);
+  assert.ok(r.limitations.some(l => /simulat/.test(l) && /Meals/.test(l)));
   assert.equal(run({ scenario:'no_reply' }), null);
 });
 test('one rejected child and one unresolved child is never partial acceptance', () => {
@@ -168,4 +169,40 @@ test('not every centre has a place: busy days and full start times are simulated
   }
   assert.ok(tally.available > tally.unavailable && tally.unavailable > 20 && tally.conditional > 10, JSON.stringify(tally));
   for (const id of ['a', 'b', 'c', 'd']) { const ms = replyDelayMs(id); assert.ok(ms >= 20000 && ms < 60000); assert.equal(ms, replyDelayMs(id)); }
+});
+
+test('two children: one line when both get the same answer, and the fee is stated once with the total', () => {
+  const r = run({ scenario:'available', questions:['visit','fees'], children:[{ label:'Child 1', age:'3', start:'09:00', end:'12:00' }, { label:'Child 2', age:'2', start:'09:00', end:'12:00' }] });
+  const lines = r.rawReply.split('\n\n');
+  assert.equal(lines.filter(l => /we have a place/.test(l)).length, 1);
+  assert.match(lines.find(l => /we have a place/.test(l)), /^Both children/);
+  const fees = lines.filter(l => /^Fees?:/.test(l)) ;
+  assert.equal(fees.length, 1);
+  if (r.children.every(c => c.estimatedFee !== null)) assert.match(fees[0], new RegExp(`MYR ${(r.children[0].estimatedFee + r.children[1].estimatedFee).toFixed(2)} estimated in total`));
+});
+test('local service: the parent keeps or lets go of an offered place, once, and the centre answers', async () => {
+  const svc = createEnquiryService({ branches: [branch()], delayMs: 5 });
+  const { job } = await svc.handle(owner, { action: 'create', request: { ...input(), scenario: 'available' } });
+  await assert.rejects(svc.handle(owner, { action: 'confirm', id: job.id, decision: 'accept' }));
+  await wait(80);
+  const sent = (await svc.handle(owner, { action: 'confirm', id: job.id, decision: 'decline' })).job;
+  assert.equal(sent.confirmation.state, 'sending'); assert.match(sent.confirmation.message, /won’t need the place/);
+  assert.equal((await svc.handle(owner, { action: 'confirm', id: job.id, decision: 'accept' })).job.confirmation.decision, 'decline');
+  await wait(80);
+  const done = (await svc.handle(owner, { action: 'get', id: job.id })).job;
+  assert.equal(done.confirmation.state, 'acknowledged'); assert.match(done.confirmation.reply, /No problem/);
+  svc.close();
+});
+test('the centre never says test, simulated, virtual or demo in any reply or answer', async () => {
+  const branches = virtualBranches((await createSearchStore().catalog('short_term')).items);
+  const qs = ['visit','fees','pickup','arrival','booking','review:caring_teachers','review:secure_pickup','review:healthy_meals','review:clear_late_rules','review:convenient_hours','review:safety'];
+  let checked = 0;
+  for (const b of branches.slice(0, 40)) for (const scenario of ['rules','available','full','conditional','more_info']) for (const children of [[{ age:'3', start:'09:30', end:'13:00' }], [{ age:'2', start:'13:00', end:'17:00' }, { age:'5', start:'13:00', end:'17:00' }]]) {
+    let request; try { request = canonicalEnquiry({ branchId: b.id, date: '2026-10-12', children, questions: qs, scenario }, branches); } catch { continue; }
+    const r = decide(request, b); if (!r) continue; checked++;
+    const texts = [r.rawReply, ...r.children.map(c => c.reason)];
+    for (const d of ['accept', 'decline']) try { const c = confirmationFor(request, r, d); texts.push(c.message, c.reply); } catch { /* no place to keep */ }
+    for (const text of texts) assert.doesNotMatch(text, /\b(simulat\w*|test\w*|virtual|demo)\b/i, text);
+  }
+  assert.ok(checked > 100);
 });

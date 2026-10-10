@@ -80,7 +80,7 @@ import { recordRankingFeedback } from "../shared/recommendation-learning.mjs";
 import { familyLearningSlateIds, recordFamilyOptionView } from "../shared/family-learning.mjs";
 import useRankingExposure from "./useRankingExposure.js";
 import RecommendationLearning from "./RecommendationLearning.jsx";
-import { addReviewQuestion, withReviewQuestions } from "../shared/contact-message.mjs";
+import { addReviewQuestion, withReviewQuestions, contactQuestions } from "../shared/contact-message.mjs";
 const EMPTY = [];
 const focusMapSearch = () => [...document.querySelectorAll(".mobile-search-summary, .map-search-launch")].find(el => el.getClientRects().length)?.focus({ preventScroll: true });
 const initial = () => ({
@@ -186,9 +186,13 @@ export default function App({
     [savedCheck, setSavedCheck] = useState(null),
     [preparation, setPreparation] = useState(null);
   const [tourOpen, setTourOpen] = useState(false);
+  // Contact the centre is a panel beside the map, not a window over it.
+  const modalDialog = dialog && dialog !== "enquiry";
   // Epic 8 family plan in the Checklist: in memory only, cleared with the mode.
   const [familyPlan, setFamilyPlan] = useState(null);
   const [onePanel, setOnePanel] = useState(initialOnePanel);
+  // Centres that replied "no place" for this exact visit (no other time offered).
+  const [declined, setDeclined] = useState([]), [declineNote, setDeclineNote] = useState(null);
   const family = useFamily(mode);
   // First visit: offer the tour once, without starting it on its own.
   const [tourInvite, setTourInvite] = useState(() => { try { return !tourSeen(window.localStorage); } catch { return false; } });
@@ -444,7 +448,7 @@ export default function App({
       if (
         introPhase === "ready" &&
         e.key === "/" &&
-        !dialog && !tourOpen &&
+        !modalDialog && !tourOpen &&
         !["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)
       ) {
         e.preventDefault();
@@ -518,7 +522,10 @@ export default function App({
   useRankingExposure({ familyResults: family.state?.results, items: EMPTY, mode,
     active: interests.history.enabled && familyMode && family.state?.status === 'ready' && !tourOpen && !dialog && !familyDirty,
     update: interests.update });
-  const mapItems = familyMode && family.state ? familyMapItems(family) : items;
+  // A centre that said it has no place stops being a suggestion on the map too.
+  const declinedKey = activeRequest ? declined.filter((d) => d.scenario === scenario(activeRequest)).map((d) => d.id).join(",") : "";
+  const oneMapItems = useMemo(() => (declinedKey ? items.map((p) => (declinedKey.split(",").includes(p.id) ? { ...p, suggested: false, personalised: false } : p)) : items), [items, declinedKey]);
+  const mapItems = familyMode && family.state ? familyMapItems(family) : oneMapItems;
   const narrow = typeof window !== "undefined" && window.matchMedia?.("(max-width: 760px)").matches;
   // Two children: the same no-match websites as one child when either child has
   // no centre, and the same floating cards for the top suggestions.
@@ -528,7 +535,8 @@ export default function App({
   const familyOpen = familyMode && !!family.state && !family.state.collapsed;
   // One child: the same left panel as two children, over the current page of
   // results (suggested centres, then a plan). A new search starts it again.
-  useEffect(() => { setOnePanel(initialOnePanel); }, [results]);
+  useEffect(() => { setOnePanel(initialOnePanel); setDeclineNote(null); }, [results]);
+  const declinedHere = activeRequest ? declined.filter((d) => d.scenario === scenario(activeRequest)).map((d) => d.id) : [];
   const oneShown = !familyMode && !!results && !busy && !tourOpen && !choosing && mobilePane === "map" && isShortCare(activeRequest) && items.length > 0;
   const oneOpen = oneShown && !onePanel.collapsed;
   // "All N centres" (8 Oct 2026): one button, no Saved shortcut (Saved is in
@@ -936,6 +944,23 @@ export default function App({
     closeDialogs: () => setDialog(null),
     prepare: (p, request) => { if (p) startPreparation(p, request ?? activeRequest); },
     contact: (p, request) => { if (p) prepare(p, request ?? activeRequest); },
+    // The centre has no place and offered no other time: take that plan off
+    // the options on the left, with a note and Undo (10 Oct 2026).
+    declined: (t, result) => {
+      const kids = result.children.map((c, i) => ({ c, k: c.label === "Child 2" ? "b" : c.label === "Child 1" || i === 0 ? "a" : "b" }))
+        .filter(({ c }) => c.state === "unavailable" && !c.offer).map(({ k }) => k);
+      if (!kids.length || !t.centre?.id) return;
+      if (t.family && familyMode && family.state?.plan) {
+        if (childRequest(family.state.plan, "a").date === t.payload.date) family.decline([...new Set(kids)], t.centre);
+        return;
+      }
+      if (t.family || !t.request) return;
+      const key = scenario(t.request);
+      setDeclined((d) => d.some((x) => x.id === t.centre.id && x.scenario === key) ? d : [...d, { id: t.centre.id, scenario: key }]);
+      setDeclineNote({ id: t.centre.id, name: t.centre.name });
+      setOnePanel((s) => (s.view === "plan" && s.selected === t.centre.id ? { ...s, view: "options", selected: null } : s));
+      setSelected((id) => (id === t.centre.id ? null : id));
+    },
     options: () => {
       setDialog(null); setMobilePane("map");
       if (familyMode) family.collapse(false);
@@ -981,7 +1006,7 @@ export default function App({
         </button>
         <nav aria-label="Main navigation" onClickCapture={() => setNavHidden(true)}>
           <button
-            className={!dialog ? "active" : ""}
+            className={!modalDialog ? "active" : ""}
             onClick={() => {
               close();
               setFormOpen(true); setMobilePane("map"); setSearchFocus({field:"pickup", at:Date.now()});
@@ -1114,7 +1139,7 @@ export default function App({
             label={isShortCare(draft) ? "Where will your child leave from?" : "Where do you need care?"}
             placeholder={isShortCare(draft) ? "Starting point, e.g. KL Sentral" : "Home, work or school, e.g. KL Sentral"}
             queryReset={pickupQueryReset}
-            active={introPhase === "ready" && !dialog && !tourOpen}
+            active={introPhase === "ready" && !modalDialog && !tourOpen}
             mode={mode}
             value={draft.pickup}
             onChange={(p) => setField("pickup", p)}
@@ -1435,7 +1460,7 @@ export default function App({
           onPointerOutCapture={e => { if (e.target.closest?.(".map-search-dock") && !e.relatedTarget?.closest?.(".map-search-dock")) tuckArmed.current = true; }}>
           <MapSearchDock draft={draft} setField={setField} errors={errors} onSearch={search}
             busy={familyMode ? family.busy : busy} results={familyMode ? familyDock : results} dirty={familyMode ? familyDirty : dirty}
-            mode={tourOpen ? "demo" : mode} active={introPhase === "ready" && !dialog && !tourOpen} queryReset={pickupQueryReset}
+            mode={tourOpen ? "demo" : mode} active={introPhase === "ready" && !modalDialog && !tourOpen} queryReset={pickupQueryReset}
             onQueryChange={value => setPickupQueryReset({value})}
             onPanel={() => { setFormOpen(true); setMobilePane("list"); }}
             onMap={() => { setChoosing(true); setMobilePane("map"); }} submitRef={submitRef}
@@ -1468,7 +1493,11 @@ export default function App({
             onSelectCentre={(id) => setSelected(id)}
             onContact={(p) => prepare(p, activeRequest)}
             onChecklist={(p) => startPreparation(p, activeRequest)}
-            onDetails={(p) => openDetails(p)} extra={listButton} />
+            onDetails={(p) => openDetails(p)} extra={listButton}
+            hidden={declinedHere} note={declineNote && declinedHere.includes(declineNote.id) ? declineNote : null}
+            onUndo={(id) => { setDeclined((d) => d.filter((x) => !(x.id === id && x.scenario === scenario(activeRequest)))); setDeclineNote(null); }}
+            onCloseNote={() => setDeclineNote(null)}
+            questionIds={(p) => { const key = "contact-v2:" + p.id + scenario(activeRequest); try { return questionSelection[key] ?? contactQuestions(withReviewQuestions(p, questionSelection, key), activeRequest).map((q) => q.id); } catch { return undefined; } }} />
         )}
         {(mapStarted || mapActive) && <Suspense fallback={null}><MapCanvas
           key={mode}
@@ -1500,7 +1529,7 @@ export default function App({
           hasCompare={compareIds.length > 0}
           topInset={dockHeight + 6 + ((oneShown || (familyMode && family.state?.collapsed)) && !narrow ? 54 : 0)}
           leftInset={(familyOpen || oneOpen) && !narrow ? FAMILY_PANEL_RIGHT : 0}
-          rightInset={chatOpen && !narrow ? 404 : 0}
+          rightInset={(chatOpen || dialog === "enquiry") && !narrow ? 424 : 0}
           cardsVisible={familyMode ? mobilePane === "map" && (!narrow || !familyOpen) && !family.busy : mobilePane === "map" && !dirty && !busy && (!narrow || !oneOpen)}
           onShowList={() => { setFormOpen(!results); setMobilePane("list"); }}
           onSelect={familyMode && narrow ? (id) => openFamilyCentre(mapItems.find((p) => p.id === id)) : select}
@@ -1558,7 +1587,7 @@ export default function App({
         </div>
       )}
       <DialogPresence immediate={reduced || introReduced || tourOpen}>
-      {dialog && (
+      {dialog && dialog !== "enquiry" && (
         <Dialog
           tourBehind={tourOpen}
           className={dialog === "details" ? "centre-dialog" : `${dialog}-dialog`}
@@ -1806,35 +1835,6 @@ export default function App({
                 )}
               </>
             ))}
-          {dialog === "enquiry" &&
-            enquiry &&
-            (familyMode ? familyDirty || !family.state?.plan || !["a", "b"].some(key => scenario(enquiry.request) === scenario(canonicalRequest(childRequest(family.state.plan, key)))) : scenario(enquiry.request) !== scenario(activeRequest)) && (
-              <p className="notice">
-                These questions use your earlier search. For new questions,
-                open a centre from your new results.
-              </p>
-            )}
-          {dialog === "enquiry" && enquiry && (
-            <>
-              {enquiry.forChild && <p className="notice">Questions for {enquiry.forChild}</p>}
-              <Enquiry
-                key={enquiry.p.id + scenario(enquiry.request)}
-                p={enquiry.p}
-                request={enquiry.request}
-                selection={
-                  questionSelection["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]
-                }
-                onSelection={(ids) =>
-                  setQuestionSelection((x) => ({
-                    ...x,
-                    ["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]: ids,
-                  }))
-                }
-                onCompare={() => loadComparison()}
-                onPreparation={() => startPreparation(enquiry.p, enquiry.request)}
-              />
-            </>
-          )}
           {dialog === "ordering" && (
             <div className="prose">
               <OrderingNote ordering={results?.ordering} radius={results?.request.radius} />
@@ -1981,6 +1981,24 @@ export default function App({
         </Dialog>
       )}
       </DialogPresence>
+      {dialog === "enquiry" && enquiry && (
+        <Enquiry
+          key={enquiry.p.id + scenario(enquiry.request)}
+          p={enquiry.p}
+          request={enquiry.request}
+          tourBehind={tourOpen}
+          onClose={close}
+          notices={<>
+            {(familyMode ? familyDirty || !family.state?.plan || !["a", "b"].some(key => scenario(enquiry.request) === scenario(canonicalRequest(childRequest(family.state.plan, key)))) : scenario(enquiry.request) !== scenario(activeRequest)) && (
+              <p className="notice">These questions use your earlier search. For new questions, open a centre from your new results.</p>
+            )}
+            {enquiry.forChild && <p className="notice">Questions for {enquiry.forChild}</p>}
+          </>}
+          selection={questionSelection["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]}
+          onSelection={(ids) => setQuestionSelection((x) => ({ ...x, ["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]: ids }))}
+          onPreparation={() => startPreparation(enquiry.p, enquiry.request)}
+        />
+      )}
       {tourOpen && <GettingStarted onClose={finishTour} onStep={showTourStep} reduced={reduced || introReduced} />}
       {!tourOpen && <EnquiryDock />}
     </main>

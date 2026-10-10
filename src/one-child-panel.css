@@ -15,3 +15,13 @@
   .family-tab-row { left: 10px; z-index: 8; }
   .family-side-extra { left: 10px; }
 }
+
+/* An option taken off after the centre said it has no place (10 Oct 2026). */
+.family-declined { display: flex; align-items: flex-start; gap: 10px; margin: 0 0 12px; padding: 10px 6px 10px 12px; border-radius: 12px; background: var(--amber-bg, var(--soft)); color: var(--ink); font-size: 13px; line-height: 1.5; animation: enquiry-step-in 260ms cubic-bezier(.2, .7, .2, 1) both; }
+.family-declined > svg { flex-shrink: 0; margin-top: 2px; color: var(--amber, var(--accent)); }
+.family-declined p { flex: 1; margin: 0; }
+.family-declined .text-link { min-height: 0; padding: 0; font-size: 13px; font-weight: 600; color: var(--ink); }
+.family-declined-close { display: grid; place-items: center; width: 28px; height: 28px; min-height: 28px; padding: 0; border-radius: 8px; background: transparent; color: var(--muted); flex-shrink: 0; }
+.family-declined-close:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); }
+@keyframes enquiry-step-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.equalpath[data-reduced="true"] .family-declined { animation: none; }

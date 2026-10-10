@@ -218,7 +218,16 @@ export default function useFamily(mode) {
 
   const legs = useMemo(() => (f?.results ? legsFor(f.plan, f.plan.run.collectPlace, f.results, cache.current, dead.current).legs : new Map()),
     [f?.results, f?.plan, f?.tick]);
-  const built = useMemo(() => (f?.results ? buildOptions(f.results, { preference: "prefer", legs }) : null), [f?.results, legs]);
+  // A centre that replied it has no place for a child (and offered no other
+  // time) leaves every option that uses it for that child (10 Oct 2026).
+  const built = useMemo(() => {
+    if (!f?.results) return null;
+    const b = buildOptions(f.results, { preference: "prefer", legs });
+    const no = new Set(f.declined ?? []);
+    if (!no.size) return b;
+    const all = b.all.filter((o) => !no.has(`a:${o.a.id}`) && !no.has(`b:${o.b.id}`));
+    return { ...b, all, options: all.slice(0, b.options.length), total: all.length, declined: b.all.length - all.length };
+  }, [f?.results, legs, f?.declined]);
   const option = built?.all.find((o) => o.id === f?.selected) ?? null;
   const plans = useMemo(() => new Map((built?.options ?? []).map((o) => [o.id, leavePlan(o, f.plan, legs)])), [built, legs, f?.plan]);
   const lp = option ? plans.get(option.id) ?? leavePlan(option, f.plan, legs) : null;
@@ -234,6 +243,15 @@ export default function useFamily(mode) {
       if (picked) ensure(picked);
     },
     back: () => setF((x) => ({ ...x, view: "options" })),
+    decline: (kids, centre) => setF((x) => {
+      if (!x?.results || !kids.length) return x;
+      const declined = [...new Set([...(x.declined ?? []), ...kids.map((k) => `${k}:${centre.id}`)])];
+      const [sa, sb] = (x.selected ?? "").split("|");
+      const hit = x.view === "plan" && kids.some((k) => (k === "a" ? sa : sb) === centre.id);
+      return { ...x, declined, declineNote: { id: centre.id, name: centre.name, kids }, ...(hit ? { view: "options", selected: null } : {}) };
+    }),
+    undecline: (id) => setF((x) => x && { ...x, declined: (x.declined ?? []).filter((k) => !k.endsWith(`:${id}`)), declineNote: null }),
+    dismissDecline: () => setF((x) => x && { ...x, declineNote: null }),
     showAll: () => setF((x) => ({ ...x, showAll: true })),
     collapse: (collapsed) => setF((x) => x && { ...x, collapsed }),
   };

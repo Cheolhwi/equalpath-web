@@ -85,7 +85,7 @@ export function messageFor(request, branch) {
 // Every selected question gets an answer (10 Oct 2026). Listed facts are used
 // where the catalogue has them; otherwise the virtual staff member gives a
 // clearly marked test answer, like the simulated places themselves.
-const LISTED = 'Listed', DEMO = 'Test answer', MIXED = 'Listed + test detail';
+const LISTED = 'Listed', DEMO = 'Made-up answer', MIXED = 'Listed + made-up detail';
 const DEMO_ANSWERS = {
   'review:caring_teachers': ['Settling in', 'A teacher stays with a new child for the first half hour and checks in with them through the visit.'],
   'review:secure_pickup': ['Collection', 'Only the adult you name at drop-off can collect your child. We check their IC at the door.'],
@@ -159,18 +159,18 @@ export function decide(request, branch) {
   const children = request.children.map(c => {
     const { checks, fee } = listedChecks(branch, request.date, c);
     const conflict = checks.find(x => x.state === 'conflict'), unknown = checks.find(x => x.state !== 'supported');
-    let state = 'available', reason = 'The listed ages and hours fit, and a simulated place is available.', offer = null;
+    let state = 'available', reason = 'The listed ages and hours fit, and we have a place for this visit.', offer = null;
     if (conflict) { state = 'unavailable'; reason = conflict.reason.replace(/\.\.(\s|$)/g, '.$1'); }
-    else if (capacity.places === 0) { state = 'unavailable'; reason = 'There are no simulated places left.'; }
+    else if (capacity.places === 0) { state = 'unavailable'; reason = 'We have no places left.'; }
     else if (unknown) { state = 'more_info'; reason = unknown.reason.replace(/\.\.(\s|$)/g, '.$1'); }
     else {
       const overlapping = reserved.filter(x => minute(x.start) < minute(c.end) && minute(c.start) < minute(x.end));
       if (overlapping.length >= capacity.places || (+c.age >= 4 && overlapping.filter(x => +x.age >= 4).length >= capacity.olderPlaces)) {
-        state = 'unavailable'; reason = 'There is no simulated place left for this age and time.';
+        state = 'unavailable'; reason = 'We have no place left for this age and time.';
       } else if (request.scenario === 'conditional') {
-        state = 'conditional'; reason = 'The simulated staff member asks you to confirm drop-off arrangements before accepting.';
+        state = 'conditional'; reason = 'Please confirm the drop-off arrangements with us before we accept.';
       } else if (request.scenario === 'more_info') {
-        state = 'more_info'; reason = 'The simulated staff member asks for the child’s exact age and arrival time.';
+        state = 'more_info'; reason = 'Please tell us your child’s exact age and arrival time.';
       } else if (request.scenario === 'rules') {
         const busy = demand(branch, request.date, c);
         if (busy.state === 'full_day') {
@@ -201,9 +201,43 @@ export function decide(request, branch) {
     ...(request.questions.includes('fees') ? [{ id: 'fees', topic: 'Fee', text: 'Listed estimates, before any extra charges.', basis: LISTED }] : []),
     ...extra];
   const limitations = ['Simulated spaces and replies only. No real place has been reserved.'];
-  if (extra.some(a => a.basis !== LISTED)) limitations.push('“Test answer” and “test detail” parts are simulated, not taken from the centre’s listing.');
-  const rawReply = [`Test reply for ${request.date}`, ...children.map(c => `${c.label} (${c.start}–${c.end}): ${c.reason}`),
-    ...(request.questions.includes('fees') ? children.map(c => c.estimatedFee === null ? `${c.label}: the fee needs checking.` : `${c.label}: MYR ${c.estimatedFee.toFixed(2)} estimated total, before any extra charges.`) : []),
-    ...extra.map(a => `${a.topic}: ${a.text} (${a.basis})`)].join('\n\n');
+  const madeUp = extra.filter(a => a.basis !== LISTED).map(a => a.topic);
+  if (madeUp.length) limitations.push(`Not from the centre’s listing (made up for this simulation): ${madeUp.join(', ')}.`);
+  // Read as one reply (10 Oct 2026): children with the same answer share a
+  // line, and the fee is stated once.
+  const same = children.every(c => c.reason === children[0].reason);
+  const times = [...new Set(children.map(c => `${c.start}–${c.end}`))].join(', ');
+  const placeLines = same ? [`${children.length === 1 ? 'Your child' : children.length === 2 ? 'Both children' : 'All children'} (${times}): ${children[0].reason}`]
+    : children.map(c => `${c.label} (${c.start}–${c.end}): ${c.reason}`);
+  const known = children.filter(c => c.estimatedFee !== null), myr = n => `MYR ${n.toFixed(2)}`;
+  const feeLine = !request.questions.includes('fees') ? [] : children.length === 1
+    ? [known.length ? `Fee: ${myr(known[0].estimatedFee)} estimated total, before any extra charges.` : 'Fee: this needs checking with us.']
+    : [known.length === children.length
+      ? `Fees: ${children.map(c => `${c.label} ${myr(c.estimatedFee)}`).join(' and ')}, so ${myr(known.reduce((sum, c) => sum + c.estimatedFee, 0))} estimated in total, before any extra charges.`
+      : known.length ? `Fees: ${children.map(c => c.estimatedFee === null ? `${c.label}’s fee needs checking` : `${c.label} ${myr(c.estimatedFee)} estimated`).join('; ')}, before any extra charges.`
+      : 'Fees: these need checking with us for both children.'];
+  const rawReply = [`Reply about ${shortDay(request.date)}`, ...placeLines, ...feeLine,
+    ...extra.map(a => `${a.topic}: ${a.text}`)].join('\n\n');
   return { outcome, children, answers, unanswered, limitations, rawReply, basis: 'listed-facts-with-simulated-capacity', scenario: request.scenario };
 }
+
+// After "a place is available" the parent decides (10 Oct 2026): keep the
+// place or let it go. Both bots compute the same words, so the assistant can
+// check the merchant's acknowledgement exactly, as for the first reply.
+export const DECISIONS = ['accept', 'decline'];
+export function confirmationFor(request, result, decision) {
+  if (!DECISIONS.includes(decision)) throw new EnquiryError('Choose whether to keep the place.');
+  const kids = (result?.children ?? []).filter(c => c.state === 'available');
+  if (!kids.length) throw new EnquiryError('There is no place to keep for this request.');
+  const day = shortDay(request.date), one = request.children.length === 1;
+  const who = one ? 'my child' : kids.length === request.children.length ? (kids.length === 2 ? 'both children' : 'the children') : kids.map(c => c.label).join(' and ');
+  const times = [...new Set(kids.map(c => `${c.start}–${c.end}`))].join(' and ');
+  const first = kids.map(c => c.start).sort()[0];
+  return decision === 'accept'
+    ? { decision, message: `Yes, please keep the place for ${who} on ${day}, ${times}. We’ll see you then.`,
+      reply: `Thank you, that’s confirmed: ${who === 'my child' ? 'your child' : who} on ${day}, ${times}. Please come by ${first}, and call us if anything changes.` }
+    : { decision, message: `Thank you, but we won’t need the place on ${day} after all.`,
+      reply: 'No problem, thank you for letting us know. We hope to see you another time.' };
+}
+// The virtual staff member answers a decision after 4–10 seconds.
+export const ackDelayMs = id => 4000 + Math.floor(unit('ack-delay', id) * 6000);

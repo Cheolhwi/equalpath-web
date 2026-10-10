@@ -34,7 +34,7 @@ export function createEntry({ env=process.env, storeFactory=createCloudStore, te
       const service=createCloudEnquiry({branches:needFacts?await branches():[],store,telegram:telegramFactory(env),env});
       const value=webhook?await service.webhook(webhook[1],req.headers?.['x-telegram-bot-api-secret-token'],body):await service.handle(req.headers?.authorization?.replace(/^Bearer /,''),body);
       return res.json(value,200,headers);
-    } catch(e) { return res.json({error:e instanceof EnquiryError?e.message:'The test service is temporarily unavailable.'},e instanceof EnquiryError?e.status:503,headers); }
+    } catch(e) { return res.json({error:e instanceof EnquiryError?e.message:'The enquiry service is temporarily unavailable.'},e instanceof EnquiryError?e.status:503,headers); }
   };
 }
 async function defaultBranches() { return catalogue??=(async()=>virtualBranches((await createSearchStore().catalog('short_term')).items))(); }
