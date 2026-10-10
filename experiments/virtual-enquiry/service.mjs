@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
-import { canonicalEnquiry, decide, EnquiryError, hash, messageFor } from './model.mjs';
+import { canonicalEnquiry, decide, EnquiryError, hash, messageFor, replyDelayMs } from './model.mjs';
 
-export function createEnquiryService({ branches, transport = null, delayMs = 1800, timeoutMs = transport ? 120000 : 15000, ttlMs = 30 * 60 * 1000, now = Date.now } = {}) {
+export function createEnquiryService({ branches, transport = null, delayMs = null, timeoutMs = 120000, ttlMs = 30 * 60 * 1000, now = Date.now } = {}) {
   const jobs = new Map(), timers = new Set(), listeners = new Map();
   const later = (fn, delay) => { const t = setTimeout(() => { timers.delete(t); fn(); }, delay); t.unref?.(); timers.add(t); };
   const prune = () => { for (const [id, job] of jobs) if (now() - job.createdAt >= ttlMs) jobs.delete(id); };
@@ -50,7 +50,7 @@ export function createEnquiryService({ branches, transport = null, delayMs = 180
             if (transport) await transport.sendRequest(job);
             if (job.state !== 'queued') return;
             job.state = 'waiting'; note(job, transport ? 'Sent to your private Telegram test chat. Use a reply button there.' : 'The virtual centre is checking the test details.');
-            if (!transport) later(() => { void reply(job.id); }, delayMs);
+            if (!transport) later(() => { void reply(job.id); }, delayMs ?? replyDelayMs(job.id));
           } catch { if (job.state === 'queued') { job.state = 'failed'; note(job, 'The Telegram test message could not be sent.'); } }
         }, 20);
         later(() => { if (['queued', 'waiting'].includes(job.state)) { job.state = 'timed_out'; note(job, 'No reply arrived before the test time limit. This does not mean no places.'); } }, timeoutMs);

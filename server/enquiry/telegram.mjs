@@ -15,10 +15,10 @@ export function createTelegram(env, fetcher = fetch) {
       const value = await r.json();
       if (!r.ok || !value.ok) throw Error();
       return value.result;
-    } catch { throw Error('Telegram could not complete the demo message.'); }
+    } catch { throw Error('Telegram could not complete the test message.'); }
   };
   return { send: (role, text) => {
-    if (!roles[role] || text.length > 4000) throw Error('Invalid demo message.');
+    if (!roles[role] || text.length > 4000) throw Error('Invalid test message.');
     return call(role, 'sendMessage', { chat_id: `@${roles[role].peer}`, text, disable_notification: true });
   } };
 }

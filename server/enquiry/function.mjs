@@ -25,7 +25,7 @@ export function createEntry({ env=process.env, storeFactory=createCloudStore, te
       if(req.method!=='POST') throw new EnquiryError('Use the enquiry button.',405);
       if((req.bodyText||'').length>10000) throw new EnquiryError('Request too large.',413);
       let body; try {body=req.bodyJson??JSON.parse(req.bodyText);} catch {throw new EnquiryError('Invalid request.');}
-      if(!configured) throw new EnquiryError('The Telegram demo is not connected yet.',503);
+      if(!configured) throw new EnquiryError('The Telegram test is not connected yet.',503);
       const webhook=/^\/telegram\/(assistant|merchant)$/.exec(path);
       if(!webhook && origin && !allowed) throw new EnquiryError('Not allowed.',403);
       // Status polls/cancellation need no catalogue reads. It is loaded only for
@@ -34,7 +34,7 @@ export function createEntry({ env=process.env, storeFactory=createCloudStore, te
       const service=createCloudEnquiry({branches:needFacts?await branches():[],store,telegram:telegramFactory(env),env});
       const value=webhook?await service.webhook(webhook[1],req.headers?.['x-telegram-bot-api-secret-token'],body):await service.handle(req.headers?.authorization?.replace(/^Bearer /,''),body);
       return res.json(value,200,headers);
-    } catch(e) { return res.json({error:e instanceof EnquiryError?e.message:'The demo service is temporarily unavailable.'},e instanceof EnquiryError?e.status:503,headers); }
+    } catch(e) { return res.json({error:e instanceof EnquiryError?e.message:'The test service is temporarily unavailable.'},e instanceof EnquiryError?e.status:503,headers); }
   };
 }
 async function defaultBranches() { return catalogue??=(async()=>virtualBranches((await createSearchStore().catalog('short_term')).items))(); }

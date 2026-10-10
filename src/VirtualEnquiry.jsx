@@ -1,14 +1,14 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowRight, Check, ChevronDown, ClipboardList, Clock3, List, LoaderCircle, MessageCircle, Square, TriangleAlert, X } from 'lucide-react';
+import { ArrowRight, CalendarDays, Check, ChevronDown, ClipboardList, Clock3, List, LoaderCircle, MessageCircle, Square, TriangleAlert, Volume2, VolumeX, X } from 'lucide-react';
 import { displayName } from '../shared/display.mjs';
 import './virtual-enquiry.css';
 import cloudConfig from './enquiry-config.json';
 
 const cloud = cloudConfig.enabled && /^https:\/\/[a-z0-9.-]+\.appwrite\.(run|network)$/.test(cloudConfig.endpoint);
 export const virtualEnquiryEnabled = cloud || (import.meta.env.DEV && import.meta.env.VITE_VIRTUAL_ENQUIRY === '1');
-const OUTCOMES = { available: 'A place is available in this demo', unavailable: 'This request cannot be accepted', partial: 'Only one child can be accepted', conditional: 'One more step is needed', more_info: 'Some details still need checking' };
-const CHILD_STATES = { available: 'Demo place available', unavailable: 'Cannot accept', conditional: 'A condition applies', more_info: 'Needs checking' };
+const OUTCOMES = { available: 'A place is available in this test', unavailable: 'This request cannot be accepted', partial: 'Only one child can be accepted', conditional: 'The centre suggests a change', more_info: 'Some details still need checking' };
+const CHILD_STATES = { available: 'Test place available', unavailable: 'Cannot accept', conditional: 'Offered with a change', more_info: 'Needs checking' };
 const ENDED = ['failed', 'timed_out', 'cancelled'];
 // A place for every child is the news, even when other questions are still open.
 const summary = r => r.outcome !== 'available' && r.children?.length && r.children.every(c => c.state === 'available')
@@ -30,7 +30,7 @@ function call(body, signal) {
 }
 async function query(body, signal) {
   const r = await call(body, signal || AbortSignal.timeout(cloud ? 30000 : 8000)), value = await r.json();
-  if (!r.ok) { const error = new Error(value.error || 'The demo service is unavailable.'); error.status = r.status; throw error; }
+  if (!r.ok) { const error = new Error(value.error || 'The test service is unavailable.'); error.status = r.status; throw error; }
   return value.job;
 }
 const visitDay = (date) => { try { return new Date(`${date}T12:00:00+08:00`).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Kuala_Lumpur' }); } catch { return date; } };
@@ -42,6 +42,30 @@ const centreName = (t) => displayName(t.centre?.name || t.job?.branch?.listedNam
    right (a sheet on phones), and a reply that arrives while the chat is tucked
    away, or while another window is open, raises a notice with the next step. */
 const EnquiryContext = createContext(null);
+const soundKey = 'equalpath:enquiry-sound';
+const readSound = () => { try { return localStorage.getItem(soundKey) !== 'off'; } catch { return true; } };
+// A short, soft two-note chime made in the browser (no audio file to load).
+let audio;
+function chime() {
+  try {
+    audio ??= new (window.AudioContext || window.webkitAudioContext)();
+    if (audio.state === 'suspended') audio.resume();
+    const t = audio.currentTime;
+    [[659.25, 0], [880, .14]].forEach(([freq, delay]) => {
+      const osc = audio.createOscillator(), gain = audio.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, t + delay); gain.gain.linearRampToValueAtTime(.18, t + delay + .02); gain.gain.exponentialRampToValueAtTime(.001, t + delay + .45);
+      osc.connect(gain).connect(audio.destination); osc.start(t + delay); osc.stop(t + delay + .5);
+    });
+  } catch { /* Sound is optional. */ }
+}
+// Unlock audio and ask once for system notifications while the parent is
+// pressing Ask for me (browsers only allow both after a user action).
+function prepareAlerts() {
+  try { audio ??= new (window.AudioContext || window.webkitAudioContext)(); audio.resume?.(); } catch { /* optional */ }
+  try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission().catch(() => {}); } catch { /* optional */ }
+}
+const replyHeadline = (job) => job?.result ? summary(job.result).title : job?.state === 'cancelled' ? 'Enquiry stopped.' : 'No reply yet. No place has been confirmed.';
 
 function useTopModal() {
   const [modal, setModal] = useState(null);
@@ -97,12 +121,28 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     } catch (e) { patch(key, { error: e.message }); }
     finally { locks.current.delete(key); patch(key, { busy: false }); }
   }, [patch]);
-  const settle = useCallback((key) => {
+  const [sound, setSoundState] = useState(readSound);
+  const soundRef = useRef(sound); soundRef.current = sound;
+  const setSound = useCallback((on) => { setSoundState(on); try { localStorage.setItem(soundKey, on ? 'on' : 'off'); } catch { /* per-browser preference */ } }, []);
+  const settle = useCallback((key, job) => {
+    // Every reply rings (unless muted); a system notification appears when
+    // the tab is in the background.
+    if (job?.state !== 'cancelled') {
+      if (soundRef.current) chime();
+      try {
+        if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+          const t = threadsRef.current.find(x => x.key === key);
+          const note = new Notification(`${t ? centreName({ ...t, job }) : 'The centre'} replied`, { body: replyHeadline(job), tag: `equalpath-${job?.id ?? key}` });
+          note.onclick = () => { window.focus(); showRef.current?.(key); note.close(); };
+        }
+      } catch { /* optional */ }
+    }
     const v = viewRef.current;
-    if (v.open && v.key === key && !modalRef.current) return;
+    if (v.open && v.key === key && !modalRef.current && !document.hidden) return;
     patch(key, { unread: true }); setNotice(key);
   }, [patch]);
   const ask = useCallback(({ payload, centre, request, family }) => {
+    prepareAlerts();
     const key = JSON.stringify(payload);
     setThreads(list => list.some(t => t.key === key) ? list : [...list.slice(-4),
       { key, payload, centre, request, family, job: null, error: '', busy: false, paused: false, retry: 0, unread: false }]);
@@ -112,18 +152,30 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     start(key, payload);
   }, [start]);
   const show = useCallback((key) => { actionsRef.current?.closeDialogs?.(); setView({ key, open: true }); setNotice(null); patch(key, { unread: false }); }, [patch]);
+  const showRef = useRef(show); showRef.current = show;
   const minimise = useCallback(() => setView(v => ({ ...v, open: false })), []);
   const remove = useCallback((key) => { setThreads(list => list.filter(t => t.key !== key)); setView(v => v.key === key ? { key: null, open: false } : v); setNotice(n => n === key ? null : n); }, []);
   const chatShown = view.open && !modal && threads.some(t => t.key === view.key);
   useEffect(() => { onChatChange?.(chatShown); }, [chatShown, onChatChange]);
+  // A waiting reply shows in the tab title while the parent is elsewhere.
+  const unreadCount = threads.filter(t => t.unread).length;
+  useEffect(() => {
+    const base = document.title.replace(/^\(\d+\) /, '');
+    document.title = unreadCount ? `(${unreadCount}) ${base}` : base;
+  }, [unreadCount]);
   // Reading the open chat clears its unread mark.
   useEffect(() => {
     if (!view.open || modal) return;
     const t = threads.find(x => x.key === view.key);
-    if (t?.unread) patch(t.key, { unread: false });
+    if (t?.unread && !document.hidden) patch(t.key, { unread: false });
     if (notice === view.key) setNotice(null);
   }, [view, modal, threads, notice, patch]);
-  const value = { threads, view, notice, modal, ask, show, minimise, remove, start, patch, settle, dismissNotice: () => setNotice(null), actions: actionsRef };
+  useEffect(() => {
+    const back = () => { if (!document.hidden && viewRef.current.open && !modalRef.current) { const k = viewRef.current.key; setThreads(list => list.map(t => t.key === k && t.unread ? { ...t, unread: false } : t)); } };
+    document.addEventListener('visibilitychange', back);
+    return () => document.removeEventListener('visibilitychange', back);
+  }, []);
+  const value = { threads, view, notice, modal, ask, show, minimise, remove, start, patch, settle, sound, setSound, dismissNotice: () => setNotice(null), actions: actionsRef };
   return <EnquiryContext.Provider value={value}>{children}{threads.map(t => <ThreadFollower key={t.key} thread={t} />)}</EnquiryContext.Provider>;
 }
 
@@ -134,7 +186,7 @@ function ThreadFollower({ thread }) {
   useEffect(() => {
     if (!job?.id || !active(job) || paused) return;
     const controller = new AbortController();
-    const update = (next) => { if (controller.signal.aborted) return false; const done = !active(next); patch(key, { job: next, settled: done }); if (done) settle(key); return done; };
+    const update = (next) => { if (controller.signal.aborted) return false; const done = !active(next); patch(key, { job: next, settled: done }); if (done) settle(key, next); return done; };
     (async () => {
       try {
         if (cloud) {
@@ -187,11 +239,11 @@ export default function VirtualEnquiry(props) {
   return <button className="secondary virtual-enquiry-toggle" disabled={disabled}
     onClick={() => thread?.job && !ENDED.includes(thread.job.state) ? ctx.show(thread.key) : ctx.ask({ payload, centre: props.centre, request: props.requests?.[0], family: children.length > 1 || !!props.family })}>
     {active(thread?.job) ? <LoaderCircle size={17} className="spin" aria-hidden="true" /> : <MessageCircle size={17} aria-hidden="true" />}
-    {label}<span className="virtual-badge">Demo</span>
+    {label}<span className="virtual-badge">Test</span>
   </button>;
 }
 
-function nextSteps(t, act) {
+function nextSteps(t, act, ask) {
   const r = t.job?.result;
   const options = { label: t.family ? 'Back to your plan' : 'See other options', icon: List, run: () => act.current?.options?.(t.family) };
   const prepare = { label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepare?.(t.centre, t.request) };
@@ -200,6 +252,14 @@ function nextSteps(t, act) {
   if (t.family || !t.centre) return [options];
   // A place for every child: the only next step is getting ready.
   if (summary(r).good) return [prepare];
+  // The centre offered another time or day: one tap asks for it.
+  const offer = r.children.length === 1 && r.children[0].offer;
+  if (offer && ask) {
+    const date = offer.date ?? t.payload.date, child = { ...t.payload.children[0], ...(offer.start ? { start: offer.start } : {}) };
+    const retry = { label: offer.date ? `Ask for ${visitDay(offer.date)}` : `Ask for ${offer.start} instead`, icon: offer.date ? CalendarDays : Clock3,
+      run: () => ask({ payload: { ...t.payload, date, children: [child] }, centre: t.centre, request: { ...t.request, date, deadline: child.start }, family: t.family }) };
+    return [retry, options];
+  }
   if (r.outcome === 'unavailable') return [options, contact];
   return [contact, options];
 }
@@ -236,7 +296,7 @@ function ReplyNotice() {
   const t = ctx?.notice && ctx.threads.find(x => x.key === ctx.notice);
   if (!t) return null;
   const r = t.job?.result, failed = !r;
-  const steps = nextSteps(t, ctx.actions).slice(0, 1);
+  const steps = nextSteps(t, ctx.actions, ctx.ask).slice(0, 1);
   const body = <div className={`enquiry-notice${ctx.modal ? ' in-window' : ''}`} role="status" aria-live="polite">
     <span className={`enquiry-notice-icon ${r && summary(r).good ? 'good' : 'warn'}`} aria-hidden="true">{r && summary(r).good ? <Check size={18} /> : failed ? <Clock3 size={18} /> : <TriangleAlert size={18} />}</span>
     <div className="enquiry-notice-main">
@@ -256,7 +316,8 @@ function ReplyNotice() {
 
 function ChatWindow({ thread: t }) {
   const ctx = useContext(EnquiryContext);
-  const { threads, show, minimise, remove, start, patch, actions } = ctx;
+  const { threads, show, minimise, remove, start, patch, actions, ask, sound, setSound } = ctx;
+  const [picking, setPicking] = useState(false);
   const log = useRef(null), nearEnd = useRef(true), shown = useRef(new Set());
   const { payload, job, busy, error, paused } = t;
   const ended = job && ENDED.includes(job.state);
@@ -264,15 +325,24 @@ function ChatWindow({ thread: t }) {
   useEffect(() => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; }, [t.key, job?.events?.length, job?.state, busy]);
   const cancel = async () => { patch(t.key, { busy: true }); try { const j = await query({ action: 'cancel', id: job.id }); patch(t.key, { job: j }); } catch (e) { patch(t.key, { error: e.message }); } finally { patch(t.key, { busy: false }); } };
   const one = payload.children.length === 1;
-  const steps = nextSteps(t, actions);
+  const steps = nextSteps(t, actions, ask);
   return <section className="enquiry-chat" role="dialog" aria-modal="false" aria-label={`Ask for me: ${centreName(t)}`} onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); minimise(); } }}>
     <header className="enquiry-chat-top">
-      <div><p className="enquiry-chat-kicker">Ask for me <span className="virtual-badge">Demo</span></p><h2>{centreName(t)}</h2></div>
+      <div><p className="enquiry-chat-kicker">Ask for me <span className="virtual-badge">Test</span></p><h2>{centreName(t)}</h2></div>
+      <button className="enquiry-chat-icon" onClick={() => setSound(!sound)} aria-pressed={sound} aria-label={sound ? 'Mute reply sound' : 'Turn on reply sound'} title={sound ? 'Sound on' : 'Sound off'}>{sound ? <Volume2 size={18} /> : <VolumeX size={18} />}</button>
       <button className="enquiry-chat-icon" onClick={minimise} aria-label="Minimise chat" title="Minimise"><ChevronDown size={19} /></button>
       {!active(job) && !busy && <button className="enquiry-chat-icon" onClick={() => remove(t.key)} aria-label="Close chat" title="Close"><X size={18} /></button>}
     </header>
-    {threads.length > 1 && <nav className="enquiry-chat-threads" aria-label="Your enquiries">{threads.map(x => <button key={x.key} aria-current={x.key === t.key ? 'true' : undefined} onClick={() => show(x.key)}>
-      {active(x.job) ? <LoaderCircle size={13} className="spin" aria-hidden="true" /> : x.job?.result && summary(x.job.result).good ? <Check size={13} aria-hidden="true" /> : <MessageCircle size={13} aria-hidden="true" />}<span>{centreName(x)}</span><small>{visitDay(x.payload.date)}</small>{x.unread && <i aria-label="New reply" />}</button>)}</nav>}
+    {threads.length > 1 && <div className="enquiry-chat-switch">
+      <button className="enquiry-chat-switch-toggle" aria-expanded={picking} onClick={() => setPicking(x => !x)}>
+        <List size={15} aria-hidden="true" />Your enquiries · {threads.length}{threads.some(x => x.unread && x.key !== t.key) && <i aria-label="New reply" />}<ChevronDown size={15} aria-hidden="true" />
+      </button>
+      {picking && <ul className="enquiry-chat-switch-list" aria-label="Your enquiries">{[...threads].reverse().map(x => <li key={x.key}><button aria-current={x.key === t.key ? 'true' : undefined} onClick={() => { setPicking(false); show(x.key); }}>
+        <span className="enquiry-switch-icon" aria-hidden="true">{active(x.job) || x.busy ? <LoaderCircle size={14} className="spin" /> : x.job?.result && summary(x.job.result).good ? <Check size={14} /> : x.job?.result ? <TriangleAlert size={14} /> : <MessageCircle size={14} />}</span>
+        <span className="enquiry-switch-text"><strong>{centreName(x)}</strong><small>{visitDay(x.payload.date)} · {x.payload.children[0].start}–{x.payload.children[0].end} · {active(x.job) || x.busy ? 'Waiting for reply' : x.job?.result ? replyHeadline(x.job) : ENDED.includes(x.job?.state) ? 'No reply' : 'Sending'}</small></span>
+        {x.unread && <i aria-label="New reply" />}
+      </button></li>)}</ul>}
+    </div>}
     <p className="enquiry-chat-note">Simulated reply. Uses the centre’s listed ages and hours; no real centre is contacted.</p>
     <div className="enquiry-chat-log" ref={log} role="log" aria-label="Enquiry messages" aria-live="polite" aria-relevant="additions" onScroll={() => { const el = log.current; nearEnd.current = el.scrollHeight - el.scrollTop - el.clientHeight < 60; }}>
       <article className="virtual-bubble virtual-bubble-you">
@@ -282,14 +352,14 @@ function ChatWindow({ thread: t }) {
       </article>
       {busy && !job && <p className="virtual-chat-event"><LoaderCircle size={14} className="spin" />Sending your request…</p>}
       {job?.events.map((event, i) => <p className="virtual-chat-event" key={`${job.id}-${i}`}><Check size={14} /><span>{event.text}</span></p>)}
-      {active(job) && !paused && <div className="virtual-bubble virtual-wait"><span className="virtual-dots" aria-hidden="true"><i /><i /><i /></span><span>{job.state === 'queued' ? 'In line. It will be sent when it’s your turn.' : 'The centre is replying…'}</span></div>}
+      {active(job) && !paused && <div className="virtual-bubble virtual-wait"><span className="virtual-dots" aria-hidden="true"><i /><i /><i /></span><span>{job.state === 'queued' ? 'In line. It will be sent when it’s your turn.' : 'The centre is replying… Replies usually take under a minute.'}</span></div>}
       {job?.result && <Reply key={job.id} name={centreName(t)} result={job.result} animate={!shown.current.has(job.id)} onComplete={() => shown.current.add(job.id)} steps={steps} onStep={minimise}
         scroll={() => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; }} />}
       {ended && <div className="virtual-bubble virtual-unresolved"><Clock3 size={18} /><div><strong>{job.state === 'timed_out' ? 'No reply yet' : job.state === 'cancelled' ? 'Enquiry stopped' : 'Could not send the request'}</strong><p>No place has been confirmed.</p></div></div>}
       {error && <div className="virtual-chat-error" role="alert"><TriangleAlert size={17} /><p>{error}</p></div>}
     </div>
     <footer className="enquiry-chat-footer">
-      <p>{active(job) ? 'You can keep browsing. We’ll let you know when the centre replies.' : job?.result ? 'This demo doesn’t make a booking.' : ' '}</p>
+      <p>{active(job) ? 'You can keep browsing. We’ll let you know when the centre replies.' : job?.result ? 'This test doesn’t make a booking.' : ' '}</p>
       {active(job) && <button className="secondary" disabled={busy} onClick={cancel}><Square size={13} />Stop</button>}
       {paused && <button className="secondary" onClick={() => patch(t.key, x => ({ error: '', paused: false, retry: x.retry + 1 }))}>Reconnect</button>}
       {((!job && error && !busy) || ended) && <button className="secondary" disabled={busy} onClick={() => start(t.key, payload)}>Try again</button>}

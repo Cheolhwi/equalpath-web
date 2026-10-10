@@ -25,6 +25,10 @@ test('durable bot roundtrip requires actual merchant reply; worker restart retai
  assert.equal(f.sent.length,2);assert.equal(f.sent[1].role,'merchant');
  assert.equal((await f.create().handle(owner,{action:'get',id:a.job.id})).job.result,null);
  await f.create().webhook('assistant',secret,f.update('assistant',f.sent[1].text));
+ // The virtual staff member's answer appears after a simulated 20–60 s.
+ const early=(await f.create().handle(owner,{action:'get',id:a.job.id})).job;
+ assert.equal(early.state,'waiting');assert.equal(early.result,null);
+ f.advance(60000);
  const reply=(await f.create().handle(owner,{action:'get',id:a.job.id})).job;
  assert.equal(reply.state,'replied');assert.equal(reply.result.outcome,'available');assert.match(reply.events.at(-1).text,/Telegram/);
 });
@@ -81,7 +85,18 @@ test('different sessions share a FIFO queue, keep private ownership, and advance
  await f.create().webhook('merchant',secret,f.update('merchant',f.sent[0].text));
  await f.create().webhook('assistant',secret,f.update('assistant',f.sent[1].text));
  assert.equal(f.sent.length,3);assert.match(f.sent[2].text,new RegExp(b.job.id));
+ assert.equal((await f.create().handle(owner,{action:'get',id:a.job.id})).job.state,'waiting'); // Simulated delay does not block the next Telegram job.
  assert.equal((await f.create().handle(other,{action:'get',id:b.job.id})).job.state,'waiting');
+});
+test('cancelling while an actual reply is hidden never reveals a later acceptance',async()=>{
+ const f=fixture(),{job}=await f.create().handle(owner,{action:'create',request:input(),nonce});
+ await f.create().webhook('merchant',secret,f.update('merchant',f.sent[0].text));
+ await f.create().webhook('assistant',secret,f.update('assistant',f.sent[1].text));
+ const stopped=await f.create().handle(owner,{action:'cancel',id:job.id});
+ assert.equal(stopped.job.state,'cancelled');assert.equal(stopped.job.result,null);
+ f.advance(60000);
+ const later=await f.create().handle(owner,{action:'get',id:job.id});
+ assert.equal(later.job.state,'cancelled');assert.equal(later.job.result,null);
 });
 test('reply timeout releases the queue after a worker restart; cancelled queued jobs never send',async()=>{
  const f=fixture(),a=await f.create().handle(owner,{action:'create',request:input(),nonce});f.advance(1);

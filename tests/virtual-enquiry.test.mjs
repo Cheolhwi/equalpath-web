@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setTimeout as wait } from 'node:timers/promises';
-import { virtualBranches, canonicalEnquiry, decide } from '../experiments/virtual-enquiry/model.mjs';
+import { virtualBranches, canonicalEnquiry, decide, demand, replyDelayMs } from '../experiments/virtual-enquiry/model.mjs';
 import { createEnquiryService } from '../experiments/virtual-enquiry/service.mjs';
 import { telegramTransport } from '../experiments/virtual-enquiry/telegram.mjs';
 import { createSearchStore } from '../server/search-catalog.mjs';
@@ -66,10 +66,10 @@ test('every selected question is answered, listed facts first, and simulated rep
   const by = id => r.answers.find(a => a.id === id);
   assert.equal(by('review:clear_late_rules').basis, 'Listed'); assert.match(by('review:clear_late_rules').text, /RM10 per 15 min after 18:00/);
   assert.match(by('arrival').text, /We open at 08:00/);
-  assert.equal(by('review:healthy_meals').basis, 'Demo answer');
-  assert.equal(by('review:safety').basis, 'Demo answer');
+  assert.equal(by('review:healthy_meals').basis, 'Test answer');
+  assert.equal(by('review:safety').basis, 'Test answer');
   assert.ok(!r.rawReply.includes('still need an answer'));
-  assert.match(r.rawReply, /\(Demo answer\)/);
+  assert.match(r.rawReply, /\(Test answer\)/);
   assert.ok(r.limitations.some(l => /simulated/.test(l)));
   assert.equal(run({ scenario:'no_reply' }), null);
 });
@@ -147,4 +147,25 @@ test('stopping a streamed enquiry emits cancellation and no later reply', async 
   const states = [], off = service.subscribe(owner, job.id, j => states.push(j.state));
   await wait(30); await service.handle(owner, { action:'cancel', id:job.id }); await wait(80); off();
   assert.deepEqual(states, ['queued','waiting','cancelled']);
+});
+
+test('not every centre has a place: busy days and full start times are simulated, with a real alternative', async () => {
+  const catalogue = await createSearchStore().catalog('short_term'), branches = virtualBranches(catalogue.items);
+  const tally = { available: 0, unavailable: 0, conditional: 0 };
+  for (const b of branches) for (const date of ['2026-10-12', '2026-10-13', '2026-10-14']) {
+    let request; try { request = canonicalEnquiry({ branchId: b.id, date, children: [{ age: '3', start: '09:30', end: '13:00' }], questions: ['visit'] }, branches); } catch { continue; }
+    const r = decide(request, b), c = r.children[0];
+    if (r.outcome in tally) tally[r.outcome]++;
+    if (c.offer?.start) {
+      assert.equal(r.outcome, 'conditional');
+      const again = decide(canonicalEnquiry({ ...request, children: [{ ...request.children[0], start: c.offer.start }] }, branches), b);
+      assert.equal(again.outcome, 'available', 'the offered time fits listed facts and simulated demand');
+    }
+    if (c.offer?.date) {
+      const again = decide(canonicalEnquiry({ ...request, date: c.offer.date }, branches), b);
+      assert.equal(again.outcome, 'available', 'the offered day fits the whole visit and simulated demand');
+    }
+  }
+  assert.ok(tally.available > tally.unavailable && tally.unavailable > 20 && tally.conditional > 10, JSON.stringify(tally));
+  for (const id of ['a', 'b', 'c', 'd']) { const ms = replyDelayMs(id); assert.ok(ms >= 20000 && ms < 60000); assert.equal(ms, replyDelayMs(id)); }
 });

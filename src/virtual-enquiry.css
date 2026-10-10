@@ -129,3 +129,19 @@
   :is(.enquiry-chat, .enquiry-pill, .enquiry-notice) { animation: none; }
   .virtual-dots i, .enquiry-chat .spin, .virtual-enquiry-toggle .spin, .enquiry-pill .spin { animation: none; }
 }
+
+/* Several enquiries: one switch that opens a list (chips scrolled out of reach). */
+.enquiry-chat-switch { position: relative; padding: 10px 18px 0; flex-shrink: 0; }
+.enquiry-chat-switch-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 10px 0 12px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 13px; font-weight: 600; }
+.enquiry-chat-switch-toggle:hover, .enquiry-chat-switch-toggle[aria-expanded="true"] { border-color: var(--accent); background: var(--soft); }
+.enquiry-chat-switch-toggle svg:last-child { color: var(--muted); }
+.enquiry-chat-switch-toggle[aria-expanded="true"] svg:last-child { transform: rotate(180deg); }
+.enquiry-chat-switch-toggle i, .enquiry-chat-switch-list i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.enquiry-chat-switch-list { position: absolute; z-index: 3; left: 12px; right: 12px; top: calc(100% + 6px); max-height: 280px; overflow-y: auto; margin: 0; padding: 6px; list-style: none; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; box-shadow: 0 12px 32px #30382f26; }
+.enquiry-chat-switch-list button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 8px 10px; border-radius: 10px; background: transparent; color: var(--ink); text-align: left; }
+.enquiry-chat-switch-list button:hover { background: var(--soft); }
+.enquiry-chat-switch-list button[aria-current="true"] { background: var(--soft); }
+.enquiry-switch-icon { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--bg); color: var(--accent); flex-shrink: 0; }
+.enquiry-switch-text { display: grid; gap: 1px; flex: 1; min-width: 0; }
+.enquiry-switch-text strong { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.enquiry-switch-text small { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

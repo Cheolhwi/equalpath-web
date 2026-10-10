@@ -26,7 +26,9 @@ export function virtualBranches(providers) {
     facts: structuredClone({ ...Object.fromEntries(['age', 'businessHours', 'careWindows', 'dateExceptions', 'lateRule', 'admission', 'fees', 'feeRule'].filter(k => p[k] !== undefined).map(k => [k, p[k]])),
       // Whether a pickup service is listed, without its coverage places.
       ...(p.transport ? { transport: { exists: p.transport.exists ?? null, wording: p.transport.wording ?? null } } : {}) }),
-    capacity: { places: [2, 1, 0, 2, 2, 1][i % 6], olderPlaces: i % 4 === 1 ? 0 : 2 },
+    // How busy a branch is on a given day comes from `demand` below, not a
+    // branch that is always full.
+    capacity: { places: [2, 1, 2, 2, 1, 2][i % 6], olderPlaces: i % 4 === 1 ? 1 : 2 },
   }));
 }
 
@@ -82,8 +84,8 @@ export function messageFor(request, branch) {
 
 // Every selected question gets an answer (10 Oct 2026). Listed facts are used
 // where the catalogue has them; otherwise the virtual staff member gives a
-// clearly marked demo answer, like the simulated places themselves.
-const LISTED = 'Listed', DEMO = 'Demo answer', MIXED = 'Listed + demo detail';
+// clearly marked test answer, like the simulated places themselves.
+const LISTED = 'Listed', DEMO = 'Test answer', MIXED = 'Listed + test detail';
 const DEMO_ANSWERS = {
   'review:caring_teachers': ['Settling in', 'A teacher stays with a new child for the first half hour and checks in with them through the visit.'],
   'review:secure_pickup': ['Collection', 'Only the adult you name at drop-off can collect your child. We check their IC at the door.'],
@@ -119,6 +121,36 @@ export function answerQuestions(request, branch) {
   };
   return request.questions.filter(q => !['visit', 'fees'].includes(q)).map(id => { const [topic, text, basis] = answer(id); return { id, topic, text, basis }; });
 }
+// Deterministic "randomness" (10 Oct 2026): the merchant and the assistant
+// must compute the same reply, so draws come from a hash of the request.
+const unit = (...parts) => parseInt(hash(parts.join('|')).slice(0, 8), 16) / 0x100000000;
+// The virtual staff member takes 20–60 seconds to answer.
+export const replyDelayMs = id => 20000 + Math.floor(unit('reply-delay', id) * 40000);
+const shortDay = date => new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+const addDays = (date, n) => new Date(Date.parse(`${date}T12:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
+// Not every centre has a place. About a quarter of branch-days are fully
+// booked, and some popular start times are full with a later opening.
+export function demand(branch, date, child) {
+  if (branch.demand === false) return { state: 'open' };
+  const fits = (d, c) => listedChecks(branch, d, c).checks.every(check => check.state === 'supported');
+  if (unit('day', branch.id, date) < .25) {
+    let next = null;
+    for (let n = 1; n <= 6 && !next; n++) {
+      const d = addDays(date, n);
+      if (fits(d, child) && unit('day', branch.id, d) >= .25 && unit('slot', branch.id, d, child.start) >= .22) next = d;
+    }
+    return { state: 'full_day', next };
+  }
+  const start = minute(child.start), end = minute(child.end);
+  if (unit('slot', branch.id, date, child.start) < .22) {
+    for (const step of [60, 90, 120]) {
+      const later = start + step;
+      if (later + 60 <= end && fits(date, { ...child, start: clock(later) }) && unit('slot', branch.id, date, clock(later)) >= .22) return { state: 'full_slot', later: clock(later) };
+    }
+    return { state: 'full_slot', later: null };
+  }
+  return { state: 'open' };
+}
 export function decide(request, branch) {
   if (request.scenario === 'no_reply') return null;
   const capacity = request.scenario === 'available' ? { places: 2, olderPlaces: 2 }
@@ -127,7 +159,7 @@ export function decide(request, branch) {
   const children = request.children.map(c => {
     const { checks, fee } = listedChecks(branch, request.date, c);
     const conflict = checks.find(x => x.state === 'conflict'), unknown = checks.find(x => x.state !== 'supported');
-    let state = 'available', reason = 'The listed ages and hours fit, and a simulated place is available.';
+    let state = 'available', reason = 'The listed ages and hours fit, and a simulated place is available.', offer = null;
     if (conflict) { state = 'unavailable'; reason = conflict.reason.replace(/\.\.(\s|$)/g, '.$1'); }
     else if (capacity.places === 0) { state = 'unavailable'; reason = 'There are no simulated places left.'; }
     else if (unknown) { state = 'more_info'; reason = unknown.reason.replace(/\.\.(\s|$)/g, '.$1'); }
@@ -139,10 +171,21 @@ export function decide(request, branch) {
         state = 'conditional'; reason = 'The simulated staff member asks you to confirm drop-off arrangements before accepting.';
       } else if (request.scenario === 'more_info') {
         state = 'more_info'; reason = 'The simulated staff member asks for the child’s exact age and arrival time.';
+      } else if (request.scenario === 'rules') {
+        const busy = demand(branch, request.date, c);
+        if (busy.state === 'full_day') {
+          state = 'unavailable'; offer = busy.next ? { date: busy.next } : null;
+          reason = `Sorry, we’re fully booked on ${shortDay(request.date)}.${busy.next ? ` We have places on ${shortDay(busy.next)}.` : ''}`;
+        } else if (busy.state === 'full_slot' && busy.later) {
+          state = 'conditional'; offer = { start: busy.later };
+          reason = `We’re full at ${c.start}, but a place opens at ${busy.later}. We can take your child from ${busy.later} until ${c.end}.`;
+        } else if (busy.state === 'full_slot') {
+          state = 'unavailable'; reason = `Sorry, we’re full for ${c.start}–${c.end}.`;
+        }
       }
     }
     if (state === 'available' || state === 'conditional') reserved.push(c);
-    return { ...c, state, reason, checks, estimatedFee: fee.available ? fee.total : null, feeSource: fee.source ?? null };
+    return { ...c, state, reason, checks, offer, estimatedFee: fee.available ? fee.total : null, feeSource: fee.source ?? null };
   });
   const states = children.map(c => c.state);
   let outcome = states.every(s => s === 'available') ? 'available' : states.every(s => s === 'unavailable') ? 'unavailable'
@@ -150,7 +193,7 @@ export function decide(request, branch) {
   // Partial acceptance requires an actual available child. A rejected child
   // plus an unresolved sibling must not become "one child can be accepted".
   // Every other selected question is answered, from listed facts or as a
-  // marked demo answer, so it no longer holds back an acceptance.
+  // marked test answer, so it no longer holds back an acceptance.
   const unanswered = [];
   const extra = answerQuestions(request, branch);
   const answers = [
@@ -158,8 +201,8 @@ export function decide(request, branch) {
     ...(request.questions.includes('fees') ? [{ id: 'fees', topic: 'Fee', text: 'Listed estimates, before any extra charges.', basis: LISTED }] : []),
     ...extra];
   const limitations = ['Simulated spaces and replies only. No real place has been reserved.'];
-  if (extra.some(a => a.basis !== LISTED)) limitations.push('“Demo answer” and “demo detail” parts are simulated, not taken from the centre’s listing.');
-  const rawReply = [`Demo reply for ${request.date}`, ...children.map(c => `${c.label} (${c.start}–${c.end}): ${c.reason}`),
+  if (extra.some(a => a.basis !== LISTED)) limitations.push('“Test answer” and “test detail” parts are simulated, not taken from the centre’s listing.');
+  const rawReply = [`Test reply for ${request.date}`, ...children.map(c => `${c.label} (${c.start}–${c.end}): ${c.reason}`),
     ...(request.questions.includes('fees') ? children.map(c => c.estimatedFee === null ? `${c.label}: the fee needs checking.` : `${c.label}: MYR ${c.estimatedFee.toFixed(2)} estimated total, before any extra charges.`) : []),
     ...extra.map(a => `${a.topic}: ${a.text} (${a.basis})`)].join('\n\n');
   return { outcome, children, answers, unanswered, limitations, rawReply, basis: 'listed-facts-with-simulated-capacity', scenario: request.scenario };

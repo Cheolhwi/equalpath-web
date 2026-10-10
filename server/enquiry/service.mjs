@@ -1,37 +1,44 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { canonicalEnquiry, decide, EnquiryError, hash, messageFor } from '../../experiments/virtual-enquiry/model.mjs';
+import { canonicalEnquiry, decide, EnquiryError, hash, messageFor, replyDelayMs } from '../../experiments/virtual-enquiry/model.mjs';
 export const RETENTION_MS = 30 * 60 * 1000, REPLY_MS = 120000;
 export const QUEUE_MS = 10 * 60 * 1000;
 export const requestText = j => `EPDEMO/1 REQUEST ${j.id}\n${j.message}`;
 export const replyText = (j, result) => `EPDEMO/1 REPLY ${j.id}\n${result.rawReply}`;
 const eventId = (id, phase) => `${id}_${phase}`;
 export function equalSecret(a, b) { return typeof a === 'string' && typeof b === 'string' && a.length >= 32 && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b)); }
-export function createCloudEnquiry({ branches, store, telegram, env, now = Date.now }) {
-  if (!env.ENQUIRY_OWNER_SECRET || env.ENQUIRY_OWNER_SECRET.length < 32) throw Error('Demo service configuration is incomplete.');
+export function createCloudEnquiry({ branches, store, telegram, env, now = Date.now, replyDelay = replyDelayMs }) {
+  if (!env.ENQUIRY_OWNER_SECRET || env.ENQUIRY_OWNER_SECRET.length < 32) throw Error('Test service configuration is incomplete.');
   const ownerHash = token => {
-    if(!/^[a-f0-9]{64}$/.test(token || '')) throw new EnquiryError('Open a new demo session.', 401);
+    if(!/^[a-f0-9]{64}$/.test(token || '')) throw new EnquiryError('Open a new test session.', 401);
     return createHmac('sha256', env.ENQUIRY_OWNER_SECRET).update(token).digest('hex');
   };
   const event = (j, phase, data = {}) => store.put(eventId(j.id, phase), { phase, ...data }, { parent: j.id, expiresAt: j.retainedUntil });
   async function load(id) {
-    if(!/^[a-f0-9]{24}$/.test(id || '')) throw new EnquiryError('This demo request has expired.', 404);
+    if(!/^[a-f0-9]{24}$/.test(id || '')) throw new EnquiryError('This test request has expired.', 404);
     const j = await store.get(id);
-    if(!j || now() >= j.retainedUntil) throw new EnquiryError('This demo request has expired.', 404);
+    if(!j || now() >= j.retainedUntil) throw new EnquiryError('This test request has expired.', 404);
     return j;
   }
-  async function snapshot(j) {
+  // `settled` reads a reply as soon as it has really arrived; the queue uses it,
+  // so the simulated response time never holds up the next request.
+  async function snapshot(j, { settled = false } = {}) {
     const events = (await store.events(j.id)).filter(e => e.phase).sort((a,b) => a.at-b.at);
     const cancel = events.find(e => e.phase === 'cancel'), failed = events.find(e => e.phase === 'failed');
     const dispatch = events.find(e => e.phase === 'dispatch');
     const expiresAt=dispatch?dispatch.at+REPLY_MS:j.queueUntil;
-    const received = events.find(e => e.phase === 'received' && e.at < expiresAt);
-    let state = received ? 'replied' : now() >= expiresAt ? 'timed_out' : dispatch ? 'waiting' : 'queued';
-    if(cancel && (!received || cancel.at <= received.at)) state = 'cancelled';
-    if(failed && (!received || failed.at < received.at) && state !== 'cancelled') state = 'failed';
+    const arrived = events.find(e => e.phase === 'received' && e.at < expiresAt);
+    // The Telegram roundtrip is real and fast; the virtual staff member's
+    // answer is shown after a simulated 20–60 s response time (always well
+    // inside the reply window). Until then the request still reads as waiting.
+    const answeredAt = arrived ? Math.min(Math.max(arrived.at, (dispatch?.at ?? arrived.at) + replyDelay(j.id)), expiresAt - 1) : null;
+    const received = arrived && (settled || now() >= answeredAt) ? { ...arrived, at: answeredAt } : null;
+    let state = received ? 'replied' : arrived ? 'waiting' : now() >= expiresAt ? 'timed_out' : dispatch ? 'waiting' : 'queued';
+    if(cancel && (!arrived || cancel.at <= answeredAt)) state = 'cancelled';
+    if(failed && (!arrived || failed.at < answeredAt) && state !== 'cancelled') state = 'failed';
     const labels = { sent:'Sent through Telegram to the virtual centre.', merchant:'The virtual centre received your request on Telegram.', received:'The virtual centre replied through Telegram.', cancel:'Enquiry stopped. No booking was made.', failed:'The Telegram enquiry could not be completed. No place is confirmed.' };
     return { id:j.id, request:j.request, branch:j.branch, simulation:true, transport:'telegram-cloud', message:j.message,
       sessionId:j.sessionId,createdAt:j.at, updatedAt:events.at(-1)?.at || j.at, expiresAt, state,
-      events:[{ at:j.at,text:'Demo request added to the queue.' },...events.filter(e=>labels[e.phase]).map(e=>({at:e.at,text:labels[e.phase]})),
+      events:[{ at:j.at,text:'Test request added to the queue.' },...events.filter(e=>labels[e.phase]&&(e.phase!=='received'||received)).map(e=>({at:e.phase==='received'?received.at:e.at,text:labels[e.phase]})),
         ...(state==='timed_out'?[{at:expiresAt,text:dispatch?'No reply arrived in time. This does not mean no places.':'The queue wait ended. Please try again.'}]:[])],
       result: state === 'replied' ? received.result : null };
   }
@@ -46,7 +53,7 @@ export function createCloudEnquiry({ branches, store, telegram, env, now = Date.
     for(let scanned=0;scanned<20;scanned++) {
       const [j]=await store.queue();
       if(!j)return;
-      const s=await snapshot(j);
+      const s=await snapshot(j,{settled:true});
       if(!['queued','waiting'].includes(s.state)) { await store.setKind(j.id,'done');continue; }
       if(s.state==='waiting')return;
       if(!await event(j,'dispatch'))return;
@@ -59,14 +66,14 @@ export function createCloudEnquiry({ branches, store, telegram, env, now = Date.
       return;
     }
   }
-  async function finish(j) {if(!await isPending(j))await store.setKind(j.id,'done');await pump();}
+  async function finish(j) {if(!['queued','waiting'].includes((await snapshot(j,{settled:true})).state))await store.setKind(j.id,'done');await pump();}
   return {
     pump,
     async handle(token, body) {
       const owner = ownerHash(token);
       if(body.action === 'create') {
-        if(env.ENQUIRY_ENABLED !== '1') throw new EnquiryError('The Telegram demo is not connected yet.', 503);
-        if(!/^[a-f0-9]{32}$/.test(body.nonce || '')) throw new EnquiryError('Start a new demo request.');
+        if(env.ENQUIRY_ENABLED !== '1') throw new EnquiryError('The Telegram test is not connected yet.', 503);
+        if(!/^[a-f0-9]{32}$/.test(body.nonce || '')) throw new EnquiryError('Start a new test request.');
         // Scenario overrides are internal local QA only, never public controls.
         if(body.request?.scenario && body.request.scenario !== 'rules') throw new EnquiryError('Only the virtual centre can choose its reply.');
         const request = canonicalEnquiry(body.request, branches), fingerprint=hash(JSON.stringify(request));
@@ -74,7 +81,7 @@ export function createCloudEnquiry({ branches, store, telegram, env, now = Date.
         const existing = await store.get(id);
         if(existing) {
           if(existing.owner !== owner || existing.fingerprint !== fingerprint) throw new EnquiryError('Request details changed. Start again.',409);
-          if(now()>=existing.retainedUntil)throw new EnquiryError('This demo request has expired.',404);
+          if(now()>=existing.retainedUntil)throw new EnquiryError('This test request has expired.',404);
           return { job:await snapshot(existing),reused:true };
         }
         const branch = branches.find(b=>b.id===request.branchId), createdAt=now();
@@ -97,13 +104,13 @@ export function createCloudEnquiry({ branches, store, telegram, env, now = Date.
         return { job:await snapshot(saved) };
       }
       const j = await load(body.id);
-      if(j.owner !== owner) throw new EnquiryError('This demo request is not in this browser session.',404);
+      if(j.owner !== owner) throw new EnquiryError('This test request is not in this browser session.',404);
       // Progress reads never scan or advance other users' jobs. Submission,
       // Telegram webhooks and cancellation advance the queue immediately;
       // scheduled recovery handles interrupted workers and reply timeouts.
       if(body.action === 'get') return { job:await snapshot(j) };
       if(body.action === 'cancel') { if(await isPending(j)) await event(j,'cancel');await finish(j);return { job:await snapshot(j) }; }
-      throw new EnquiryError('Unknown demo action.');
+      throw new EnquiryError('Unknown test action.');
     },
     async webhook(role, secret, update) {
       const expectedSecret = role==='merchant'?env.TELEGRAM_MERCHANT_WEBHOOK_SECRET:env.TELEGRAM_ASSISTANT_WEBHOOK_SECRET;
