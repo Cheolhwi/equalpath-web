@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { requestAPI } from "./api.js";
 import { minutes, isChildAge } from "../shared/request.mjs";
 import { KIDS, childRequest, buildOptions, legKey, legMinutes, leavePlan, emptyPlan, startIds, nextLegCall, legsNeeded, hasConflict } from "../shared/two-child.mjs";
-import { personaliseSearchItems } from "../shared/recommendations.mjs";
+import { rankFamilyResults } from "../shared/family-learning.mjs";
 
 // Epic 8 inside the main search: two ordinary short-care searches (one per
 // child) plus road times from the existing routes action. Memory only.
@@ -183,10 +183,8 @@ export default function useFamily(mode) {
     try {
       const [ra, rb] = await Promise.all(KIDS.map((k) => requestAPI({ action: "search", mode, request: childRequest(plan, k), page: 0, seedIds: personal?.seedIds ?? [] })));
       if (r !== seq.current) return null;
-      const ranked = (res) => personal
-        ? personaliseSearchItems({ items: res.items ?? [], seeds: res.seeds ?? [], request: res.request, library: personal.library, history: personal.history })
-        : res.items ?? [];
-      const results = { a: ranked(ra), b: ranked(rb), version: ra.version, mode };
+      const results = rankFamilyResults({ a: ra, b: rb }, personal,
+        { id: crypto.randomUUID(), at: Date.now(), mode });
       setF((x) => ({ ...x, results, status: "routing" }));
       await lookups(results, plan, r);
       if (r !== seq.current) return null;

@@ -78,7 +78,7 @@ export default function MapCards({ entries: rawEntries, pins, width, height, com
     {/* Anchor the scrolling rail to the viewport bottom. The toolbar's measured
         height can lag behind its collapse; it must never push actions offscreen. */}
     {rail && entries.length > 0 && <div className={`map-card-rail${compact ? " narrow-rail" : ""}`} aria-label="Recommended centres, scroll for more" style={{ bottom: Math.max(0, bottom - 8), height: cardHeight + 8, ...(!compact && leftInset ? { left: Math.max(0, leftInset - 12) } : {}) }}>
-      {entries.map(point => <article key={point.id} className={`map-centre-card rail-card${point.selected ? " selected" : ""}`} data-provider-id={point.id} data-anchor-x={point.x} data-anchor-y={point.y} aria-label={point.p.name} style={{ width: cardWidth, height: cardHeight }}>
+      {entries.map(point => <article key={point.id} className={`map-centre-card rail-card${point.selected ? " selected" : ""}`} data-provider-id={point.id} data-family-role={point.p.familyRole} data-anchor-x={point.x} data-anchor-y={point.y} aria-label={point.p.name} style={{ width: cardWidth, height: cardHeight }}>
         <Card {...point} saved={savedIds.includes(point.id)} compared={compareIds.includes(point.id)} onOpen={onOpen} onClose={onClose} onSave={onSave} onCompare={onCompare} />
       </article>)}
     </div>}
@@ -94,6 +94,7 @@ export default function MapCards({ entries: rawEntries, pins, width, height, com
       key={`${point.id}-${exiting ? "out" : "in"}`}
       className={`map-centre-card${point.selected ? " selected" : ""}${exiting ? " leaving" : ""}`}
       data-provider-id={point.id}
+      data-family-role={point.p.familyRole}
       data-anchor-x={point.x}
       data-anchor-y={point.y}
       aria-label={point.p.name}

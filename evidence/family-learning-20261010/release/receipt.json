@@ -1,0 +1,22 @@
+{
+  "scope": [
+    "Two-child personal RankNet feedback integration",
+    "Claude Ask for me question answers and next step"
+  ],
+  "baseCommit": "8abc1a173eeeb20261a7043953807aafc207847d",
+  "expectedSource": "06e0d3df75c3feaee65718d0d8d5baceac8cdb1c98e59456e866a52d8da344bd",
+  "checks": {
+    "lockedInstall": "passed",
+    "releaseGate": "364 tests passed; API/enquiry packaging, production build and integrity passed",
+    "secretScan": "0 matches in 14 intended code/document files",
+    "localVisual": "User waived for this release; permission block unresolved",
+    "public": "pending",
+    "CI": "pending"
+  },
+  "functionsToPublish": [
+    "web-enquiry-demo"
+  ],
+  "ownerDataChanged": false,
+  "secretVariablesChanged": false,
+  "status": "ready for publication"
+}

@@ -131,15 +131,35 @@ adjustments. Explicit preferences and favourites continue to work when it is
 off. Clear learning history deletes slates and the export pseudonym; Clear
 local cache removes this with all other local app data. No telemetry is sent.
 
-Only ordinary, one-child Recommended searches create training slates. Actual
-`article[data-provider-id]` cards must be at least half visible for 400 ms in a
-visible browser tab; loading/nearby/manual sorts, tutorials, dirty requests,
-dialogs and two-child combination views do not generate slates. Two-child
-ranking still consumes existing qualified models. We intentionally do not
-turn a family combination impression into two independent child choices.
+One-child and two-child Recommended searches can create training slates.
+Actual result cards must be at least half visible for 400 ms in a visible
+browser tab. Loading/nearby/manual sorts, tutorials, dirty requests, dialogs
+and exiting cards do not generate impressions.
+
+Two-child searches use one slate per child with a shared random search ID
+prefix and exactly the same timestamp. Both siblings therefore remain in
+the same chronological training or validation partition. An option card
+exposes only its two assigned branches; a map card exposes its labelled
+child or both children. Each entry retains that child's pre-action feature
+vector and candidate rank. Repeated appearances across cards are deduplicated.
+An impression alone has reward zero; it is not a pair of positive choices.
+
+Opening a family plan gives weak view feedback to its assigned branches.
+Details uses the map card's child context; an actual loaded family comparison
+uses both child contexts, and a successful map-card save uses the card's
+context. Each label still requires an existing eligible impression for that
+child and search. A shared branch can have two distinct feature snapshots;
+it does not create two independent validation searches. See
+`shared/family-learning.mjs` and `tests/family-learning.test.mjs`.
+
+Qualified personal weights rerank both child candidate lists on the next
+search, after age and complete-hours filtering. Existing combination scoring
+then accounts for the two child ranks, one versus two stops and known road
+times; the personal model does not learn a separate travel-plan network.
+Current results stay frozen. These changes add no API calls or server writes.
 
 The first observed feature vector and position are frozen before feedback.
-Detail view gives relevance 1, actual comparison 2, successful save 3; a
+Detail/plan view gives relevance 1, actual comparison 2, successful save 3; a
 hidden recommendation can give -1 when linked to an exposed slate.
 Feedback uses the exact displayed search ID and branch, with no time-window
 guessing. Other-page activity without that context can update the interest

@@ -198,8 +198,8 @@ function nextSteps(t, act) {
   const contact = { label: 'Contact the centre', icon: MessageCircle, run: () => act.current?.contact?.(t.centre, t.request) };
   if (!r) return [];
   if (t.family || !t.centre) return [options];
-  if (r.outcome === 'available') return [prepare, options];
-  if (summary(r).good) return [prepare, contact];
+  // A place for every child: the only next step is getting ready.
+  if (summary(r).good) return [prepare];
   if (r.outcome === 'unavailable') return [options, contact];
   return [contact, options];
 }

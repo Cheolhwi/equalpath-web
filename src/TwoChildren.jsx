@@ -70,7 +70,7 @@ export function familyMapItems(family) {
   });
 }
 
-export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, onRetrySearch, onChecklist, onToast, compareIds = [], onCompare }) {
+export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, onRetrySearch, onChecklist, onToast, compareIds = [], onCompare, onViewOption }) {
   const s = family.state;
   // Opening a plan (or going back to the options) starts at the top of the panel.
   const panel = useRef(null);
@@ -102,11 +102,11 @@ export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, o
     {s.status === "error" && <div className="family-status family-error" role="alert">We couldn’t load centres. <button className="text-link" onClick={onRetrySearch}>Try again</button></div>}
     {s.status === "ready" && (s.view === "plan" && family.option
       ? <Plan family={family} mode={mode} onFix={onFix} onChecklist={onChecklist} onToast={onToast} />
-      : <Options family={family} onWider={onWider} compareIds={compareIds} onCompare={onCompare} />)}
+      : <Options family={family} onWider={onWider} compareIds={compareIds} onCompare={onCompare} onViewOption={onViewOption} />)}
   </section>;
 }
 
-function Options({ family, onWider, compareIds, onCompare }) {
+function Options({ family, onWider, compareIds, onCompare, onViewOption }) {
   const { built, state: s } = family, plan = s.plan, options = shownOptions(family);
   const pins = new Map(familyMapItems(family).map((p, i) => [p.id, i + 1]));
   const who = built.missing.length > 1 ? "either child" : childName(built.missing[0]);
@@ -122,7 +122,7 @@ function Options({ family, onWider, compareIds, onCompare }) {
     </header>
     {options.some((o) => o.dropOff === null) && <p className="family-note">Some drive times didn’t load. <button className="text-link" onClick={family.retry}>Try again</button></p>}
     <ol className="family-options">
-      {options.map((o, i) => <li key={o.id}><Option o={o} index={i + 1} pins={pins} lp={family.plans.get(o.id)} onSee={() => family.select(o.id)} compareIds={compareIds} onCompare={onCompare} /></li>)}
+      {options.map((o, i) => <li key={o.id}><Option o={o} index={i + 1} pins={pins} lp={family.plans.get(o.id)} onSee={() => { onViewOption?.(o); family.select(o.id); }} compareIds={compareIds} onCompare={onCompare} /></li>)}
     </ol>
     {!s.showAll && built.options.length > SHOWN && <button className="family-more" onClick={family.showAll}>Show {built.options.length - SHOWN} more options</button>}
     <p className="family-note">A match isn’t a booking. Call each centre to confirm a place.</p>
@@ -133,7 +133,7 @@ const Pin = ({ n }) => n ? <span className="map-card-number family-pin" aria-lab
 function Option({ o, index, pins, lp, onSee, compareIds = [], onCompare }) {
   const same = o.kind === "same", d = lp?.dropoff;
   const ask = [...new Set(KIDS.flatMap((k) => openChecks(o[k]).map((c) => c.label.toLowerCase())))];
-  return <article className="family-option" aria-label={`Option ${index}`}>
+  return <article className="family-option" data-family-provider-a={o.a.id} data-family-provider-b={o.b.id} aria-label={`Option ${index}`}>
     <div className="family-option-main">
       {same ? <p className="family-option-centre"><Pin n={pins.get(o.a.id)} /><strong>Both at {name(o.a)}</strong></p>
         : <div className="family-option-pair">{KIDS.map((k) => <p key={k} className="family-option-centre"><Pin n={pins.get(o[k].id)} /><span><small>{childName(k)}</small><strong>{name(o[k])}</strong></span></p>)}</div>}

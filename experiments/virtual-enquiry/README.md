@@ -20,7 +20,7 @@ Open `http://127.0.0.1:4186/#discover`, search, open a plan, then **Contact the 
 - All 101 short-care branches use the bundled catalogue's existing age limits, business hours, care windows, date exceptions, admission and fee rules. These are listed facts, not fresh provider verification.
 - Capacity and staff replies are simulated. Known age/hours conflicts always prevent acceptance, including a start before opening, end after closing, split-session gap and existing weekend restrictions. Missing/conflicting facts require confirmation.
 - One or two children are evaluated separately. Overlapping visits compete for simulated places. Missing/partial answers do not become complete acceptance.
-- The simulation only answers visit suitability and listed fee estimates. Other selected question IDs remain unresolved. It never invents pickup, booking or review answers.
+- Every selected question is answered (10 Oct 2026, user decision). Listed facts come first (opening hours, late-fee rule, same-day booking flag, whether a pickup service is listed); anything the catalogue lacks gets a fixed demo answer, labelled “Demo answer” or “Listed + demo detail” in the reply. Answers are deterministic so the assistant bot can verify the merchant reply. Only `exists`/`wording` of transport are copied into the virtual branch, never coverage places.
 - There is no real booking, no contact with real providers, and no change to catalogue, recommendations or public availability.
 
 ## Chat and transport

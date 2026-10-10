@@ -57,11 +57,20 @@ test('two children share simulated capacity only when their intervals overlap', 
   children[1] = { ...children[1], start:'16:00', end:'18:00' };
   assert.equal(run({ children }, b).outcome, 'available');
 });
-test('unanswered questions and simulated conditional replies stay unresolved', () => {
+test('every selected question is answered, listed facts first, and simulated replies stay marked', () => {
   assert.equal(run({ scenario:'conditional' }).outcome, 'conditional');
   assert.equal(run({ scenario:'more_info' }).outcome, 'more_info');
-  const r = run({ scenario:'available', questions:['visit','pickup','review:safety'] });
-  assert.equal(r.outcome,'more_info'); assert.equal(r.unanswered.length,2);
+  const b = branch(); b.facts.lateRule = { latestEnd: 1080, wording: 'RM10 per 15 min after 18:00', source };
+  const r = run({ scenario:'available', questions:['visit','pickup','arrival','booking','review:clear_late_rules','review:healthy_meals','review:safety'] }, b);
+  assert.equal(r.outcome, 'available'); assert.equal(r.unanswered.length, 0);
+  const by = id => r.answers.find(a => a.id === id);
+  assert.equal(by('review:clear_late_rules').basis, 'Listed'); assert.match(by('review:clear_late_rules').text, /RM10 per 15 min after 18:00/);
+  assert.match(by('arrival').text, /We open at 08:00/);
+  assert.equal(by('review:healthy_meals').basis, 'Demo answer');
+  assert.equal(by('review:safety').basis, 'Demo answer');
+  assert.ok(!r.rawReply.includes('still need an answer'));
+  assert.match(r.rawReply, /\(Demo answer\)/);
+  assert.ok(r.limitations.some(l => /simulated/.test(l)));
   assert.equal(run({ scenario:'no_reply' }), null);
 });
 test('one rejected child and one unresolved child is never partial acceptance', () => {

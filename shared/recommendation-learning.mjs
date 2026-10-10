@@ -33,18 +33,21 @@ export function recordExposure(history, { id, at, careType: type, items }, now =
   return { ...history, ranking: slates.slice(-60) };
 }
 export function recordRankingFeedback(history, providers, kind, now = Date.now(), slateId) {
-  if (!history.enabled || !(kind in REWARDS) || !safeId(slateId)) return history;
+  const ids = Array.isArray(slateId) ? [...new Set(slateId)].filter(safeId).slice(0, 2) : safeId(slateId) ? [slateId] : [];
+  if (!history.enabled || !(kind in REWARDS) || !ids.length) return history;
   const slates = cleanSlates(history.ranking, now);
   let changed = false;
   for (const p of providers) {
     // Attribute to the actual displayed search, not a time window or an old
     // search that happened to contain the same branch. Other-page activity
     // still updates the interest profile without inventing a ranking label.
-    const slate = slates.find(s => s.id === slateId && s.careType === p.careType && s.items.some(i => i.id === p.id));
-    const item = slate?.items.find(i => i.id === p.id);
-    if (!item) continue;
-    const reward = kind === 'hide' ? -1 : Math.max(item.reward, REWARDS[kind]);
-    if (reward !== item.reward) { item.reward = reward; changed = true; }
+    for (const id of ids) {
+      const slate = slates.find(s => s.id === id && s.careType === p.careType && s.items.some(i => i.id === p.id));
+      const item = slate?.items.find(i => i.id === p.id);
+      if (!item) continue;
+      const reward = kind === 'hide' ? -1 : Math.max(item.reward, REWARDS[kind]);
+      if (reward !== item.reward) { item.reward = reward; changed = true; }
+    }
   }
   return changed ? { ...history, ranking: slates } : history;
 }

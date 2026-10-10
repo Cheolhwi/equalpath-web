@@ -77,6 +77,7 @@ import {
 } from "../shared/saved.mjs";
 import { rankSearchResponse, interestSeeds } from "../shared/recommendations.mjs";
 import { recordRankingFeedback } from "../shared/recommendation-learning.mjs";
+import { familyLearningSlateIds, recordFamilyOptionView } from "../shared/family-learning.mjs";
 import useRankingExposure from "./useRankingExposure.js";
 import RecommendationLearning from "./RecommendationLearning.jsx";
 import { addReviewQuestion, withReviewQuestions } from "../shared/contact-message.mjs";
@@ -206,8 +207,8 @@ export default function App({
     };
   }, []);
   useEffect(() => {
-    if (dialog === 'details' && profile?.p && !dialogBusy && !tourOpen) interests.record([profile.p], 'view', results?.learningSlate?.id);
-  }, [dialog, profile?.p?.id, profile?.p?.careType, dialogBusy, tourOpen, interests.record, results?.learningSlate?.id]);
+    if (dialog === 'details' && profile?.p && !dialogBusy && !tourOpen) interests.record([profile.p], 'view', profile.learningSlateIds ?? results?.learningSlate?.id);
+  }, [dialog, profile?.p?.id, profile?.p?.careType, profile?.learningSlateIds, dialogBusy, tourOpen, interests.record, results?.learningSlate?.id]);
   const [searchFocus, setSearchFocus] = useState(null), [dockHeight, setDockHeight] = useState(150);
   const [searchCollapsed, setSearchCollapsed] = useState(false);
   // Phones: the navigation pill folds away once the map is in use and comes
@@ -309,12 +310,12 @@ export default function App({
       return false;
     }
   };
-  const saveFavourite = (item) => {
+  const saveFavourite = (item, learningSlateIds = results?.learningSlate?.id) => {
     const saved = changeLibrary((x) => ({
       ...x,
       favourites: [...x.favourites.filter((p) => p.id !== item.id), item],
     }));
-    if (saved) interests.update(h => recordRankingFeedback(h, [{ ...item, careType: item.careType ?? 'short_term' }], 'save', Date.now(), results?.learningSlate?.id));
+    if (saved) interests.update(h => recordRankingFeedback(h, [{ ...item, careType: item.careType ?? 'short_term' }], 'save', Date.now(), learningSlateIds));
     return saved;
   };
   // Save on a map card or result row works straight away, with no dialog
@@ -327,7 +328,7 @@ export default function App({
     }
     let item;
     try { item = favourite(p, ""); } catch { return; }
-    if (!saveFavourite(item)) notify("Couldn’t save this centre. Please try again.");
+    if (!saveFavourite(item, p.familyRole ? familyLearningSlateIds(family.state?.results, p.familyRole) : results?.learningSlate?.id)) notify("Couldn’t save this centre. Please try again.");
   };
   const editFavourite = (p, from = dialog) => {
     setSaveEditor({ p, from });
@@ -514,6 +515,9 @@ export default function App({
   const familyRequest = familyMode ? family.state?.request : null;
   const familyDock = familyRequest ? { request: familyRequest, total: family.state.status === "ready" ? family.built?.total ?? 0 : 1 } : null;
   const familyDirty = !!familyRequest && familyKey(draft) !== familyKey(familyRequest);
+  useRankingExposure({ familyResults: family.state?.results, items: EMPTY, mode,
+    active: interests.history.enabled && familyMode && family.state?.status === 'ready' && !tourOpen && !dialog && !familyDirty,
+    update: interests.update });
   const mapItems = familyMode && family.state ? familyMapItems(family) : items;
   const narrow = typeof window !== "undefined" && window.matchMedia?.("(max-width: 760px)").matches;
   // Two children: the same no-match websites as one child when either child has
@@ -624,7 +628,8 @@ export default function App({
     if (!state?.results || !p) return;
     const centre = state.results[k]?.find((x) => x.id === p.id)
       ?? [...(state.results.a ?? []), ...(state.results.b ?? [])].find((x) => x.id === p.id) ?? p;
-    setProfile({ p: { ...centre, driving: p.driving, familyFor: p.familyFor }, request: canonicalRequest(childRequest(state.plan, k)) });
+    setProfile({ p: { ...centre, driving: p.driving, familyFor: p.familyFor }, request: canonicalRequest(childRequest(state.plan, k)),
+      learningSlateIds: familyLearningSlateIds(state.results, p.familyRole ?? k) });
     setSelected(p.id); setDialogError(null); setDialog("details");
   };
   const search = async (e, page = 0, override = null) => {
@@ -761,7 +766,7 @@ export default function App({
         const r = await loadFamilyComparison({ api: requestAPI, mode, ids, plan: context.plan, version: context.results.version });
         if (seq === dialogSeq.current) {
           setComparison({ ...r, family: true, familyKey: familyKey(context.request) });
-          interests.record(r.items, 'compare');
+          interests.record(r.items, 'compare', familyLearningSlateIds(context.results));
         }
         return;
       }
@@ -1455,6 +1460,7 @@ export default function App({
             onRetrySearch={() => searchFamily(draft)}
             onChecklist={(plan) => { setFamilyPlan(plan); notify("Saved to your Checklist."); }}
             compareIds={compareIds} onCompare={toggleCompareMany}
+            onViewOption={(option) => interests.update(h => recordFamilyOptionView(h, family.state?.results, option))}
             onToast={notify} />
         )}
         {oneShown && (
