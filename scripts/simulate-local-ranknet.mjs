@@ -12,7 +12,7 @@ import { baselineScore, ndcg, FEATURES, FEATURE_VERSION, INITIAL_WEIGHTS, prefer
 // GPT-authored virtual personas, not observed parents or an LLM labelling API.
 // The policy, seeds, hyperparameters and splits are fixed before evaluation.
 export const SIMULATION = {
-  version: 'synthetic-local-ranknet-v2-hours', provenance: 'synthetic-test', seed: 20261009,
+  version: 'synthetic-local-ranknet-v3-preferences', provenance: 'synthetic-test', seed: 20261009,
   asOf: '2026-10-09T04:00:00.000Z', collectionQueries: 60, testQueries: 20,
   personas: [
     { id: 'care_first', preferences: ['caring_teachers', 'secure_pickup', 'clean_environment'], topicWeights: [2, 1.5, 1], distancePenalty: .015 },
@@ -81,7 +81,7 @@ export async function runSimulation({ output = '.build/recommendation-training/2
   for (const [personaIndex, persona] of config.personas.entries()) {
     const random = seededRandom(config.seed + personaIndex * 1009);
     let history = { ...emptyInterests(), preferences: persona.preferences, preferenceSetup: 'done' }, library = emptyLibrary();
-    let trainState, model, candidate, validation, fitMilliseconds;
+    let trainState, model, candidate, validation, fitMilliseconds, blend;
     const checks = [];
     for (let q = 0; q < config.collectionQueries + config.testQueries; q++) {
       if (q === config.collectionQueries) {
@@ -92,8 +92,10 @@ export async function runSimulation({ output = '.build/recommendation-training/2
         const boundary = Math.floor(config.collectionQueries * .8);
         const train = history.ranking.slice(0, boundary), held = history.ranking.slice(boundary);
         candidate = trainRankNet(train);
+        const groups = new Set(history.ranking.filter(s => new Set(s.items.map(i => i.reward)).size > 1).map(s => s.at)).size;
+        blend = groups / (groups + 8);
         validation = { groups: held.length, baselineNdcg: ndcg(held, i => baselineScore(i.features)),
-          ndcg: ndcg(held, i => baselineScore(i.features) + rankAdjustment(candidate, i.features)),
+          ndcg: ndcg(held, i => baselineScore(i.features) + blend * rankAdjustment(candidate, i.features)),
           trainLossBefore: pairwiseLoss(train, INITIAL_WEIGHTS), trainLossAfter: pairwiseLoss(train, candidate.weights),
           validationLossBefore: pairwiseLoss(held, INITIAL_WEIGHTS), validationLossAfter: pairwiseLoss(held, candidate.weights) };
       }
@@ -139,7 +141,7 @@ export async function runSimulation({ output = '.build/recommendation-training/2
         const changed = ranked.items.some((p, i) => p.id !== control.items[i].id);
         const check = { id, changed, activeItems: ranked.items.filter(p => p.rankingModel === 'local-ranknet').length,
           baselineNdcg: ndcg([labels], i => baselineScore(i.features)),
-          ranknetNdcg: ndcg([labels], i => baselineScore(i.features) + rankAdjustment(model, i.features)),
+          ranknetNdcg: ndcg([labels], i => baselineScore(i.features) + (model?.blend ?? 0) * rankAdjustment(model, i.features)),
           pipelineBaselineNdcg: orderNdcg(control.items, labels), pipelineNdcg: orderNdcg(ranked.items, labels) };
         checks.push(check);
         if (changed && !fixtures.some(f => f.persona === persona.id)) fixtures.push({ provenance: 'synthetic-test', persona: persona.id, at: now,

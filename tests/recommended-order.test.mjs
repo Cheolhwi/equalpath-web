@@ -27,7 +27,9 @@ test('saving a lower result changes the next full-page order; comparing matters 
   const position = rows => rows.findIndex(p => p.id === target.id);
   assert.equal(position(baseline), 8);
   assert.ok(position(favourite) < position(compared));
-  assert.ok(position(compared) < position(viewed));
+  assert.ok(position(compared) <= position(viewed));
+  assert.ok(compared.find(p => p.id === target.id).rerankScore > viewed.find(p => p.id === target.id).rerankScore,
+    'a weak comparison can increase the score without forcing a position change');
   assert.ok(position(favourite) < 3);
   assert.equal(favourite.find(p => p.id === target.id).personalisedReason, 'A centre you saved');
   assert.deepEqual(favourite.map(p => p.id).sort(), items.map(p => p.id).sort());

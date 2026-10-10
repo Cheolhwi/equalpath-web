@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
-import { cleanSlates, rankAdjustment } from '../shared/recommendation-learning.mjs';
+import { cleanSlates, rankAdjustment, validReward, REWARDS } from '../shared/recommendation-learning.mjs';
 import { FEATURE_VERSION, trainRankNet, ndcg, baselineScore } from '../shared/learning-to-rank.mjs';
 import { trainItemCF, trainImplicitALS, cfScore, matrixScores } from '../shared/collaborative.mjs';
 
@@ -13,13 +13,14 @@ function validate(data) {
   const unique = new Set();
   for (const s of data.sessions) {
     if (!/^u_[A-Za-z0-9_-]{8,100}$/.test(s.actor ?? '') || cleanSlates([s]).length !== 1 || s.items.length < 2 ||
-        cleanSlates([s])[0].items.length !== s.items.length || s.items.some(i => ![-1, 0, 1, 2, 3].includes(i.reward))) throw Error('Invalid or expired slate');
+        cleanSlates([s])[0].items.length !== s.items.length || s.items.some(i => !validReward(i.reward))) throw Error('Invalid or expired slate');
     const key = `${s.actor}:${s.id}`; if (unique.has(key)) throw Error('Duplicate actor/slate; do not import overlapping exports twice.'); unique.add(key);
   }
 }
 function update(users, s) {
   const user = users[s.actor] ??= {};
-  for (const item of s.items) if (item.reward > 0) user[item.id] = Math.max(user[item.id] ?? 0, [0, .5, 2, 4][item.reward]);
+  for (const item of s.items) if (item.reward > 0) user[item.id] = Math.max(user[item.id] ?? 0,
+    item.reward === REWARDS.save ? 4 : item.reward === REWARDS.compare ? .4 : .2);
 }
 export function trainRecommendationBundle(data, type = 'short_term') {
   validate(data);

@@ -1,11 +1,11 @@
 {
   "schema": "ep-ranknet-bootstrap-v1",
-  "featureVersion": "ep-ranking-v2-hours",
+  "featureVersion": "ep-ranking-v3-preferences",
   "provenance": "synthetic-bootstrap",
   "status": "rejected",
   "careType": "short_term",
   "trainedAt": "2026-10-09T04:00:00.000Z",
-  "version": "synthetic-bootstrap-synthetic-local-ranknet-v2-hours",
+  "version": "synthetic-bootstrap-synthetic-local-ranknet-v3-preferences",
   "features": [
     "distance",
     "known",
@@ -27,7 +27,7 @@
     0
   ],
   "training": {
-    "datasetSha256": "065a1d4fdbaa2435d9fafe49eb7a4cf6aab58f1b122be8d6751a80f2bd922365",
+    "datasetSha256": "f57f4793015d2471a62f41e86c6ff221b1c03847b2d7372f07398a3bc4c292d3",
     "generator": "scripts/simulate-local-ranknet.mjs",
     "seed": 20261009,
     "personas": 6,
@@ -39,36 +39,36 @@
   },
   "ranker": {
     "algorithm": "linear-ranknet",
-    "featureVersion": "ep-ranking-v2-hours",
+    "featureVersion": "ep-ranking-v3-preferences",
     "weights": [
-      1.840480658083,
-      0.995812691418,
-      1.240304687674,
-      1.095523214286,
-      0.993308057939,
-      1.601140229917,
+      1.728047593871,
+      0.989265160886,
+      1.430433335657,
+      1.035477237841,
+      0.997158785005,
+      1.251616532608,
       0,
       0
     ],
-    "pairs": 5466,
+    "pairs": 5296,
     "groups": 288
   },
   "validation": {
     "groups": 72,
-    "baselineNdcg": 0.8227643386562975,
-    "ndcg": 0.819417022652718,
+    "baselineNdcg": 0.8327394985820882,
+    "ndcg": 0.8329173294649267,
     "passed": false
   },
   "test": {
     "groups": 120,
-    "baselineNdcg": 0.8188267563665368,
-    "ndcg": 0.8211413855671682,
-    "delta": 0.002314629200631413
+    "baselineNdcg": 0.7959472964020033,
+    "ndcg": 0.7954155030715968,
+    "delta": -0.0005317933304065381
   },
   "limitations": [
     "Synthetic behaviour, not observed parents. No real-user quality claim.",
     "Validation did not beat the baseline. These weights are inactive; retain content and preference ranking.",
-    "Final-test improvement does not override the validation gate.",
+    "Final test did not improve on the heuristic baseline.",
     "No user IDs, saved centres, CF neighbours or matrix factors are shipped in this prior."
   ]
 }

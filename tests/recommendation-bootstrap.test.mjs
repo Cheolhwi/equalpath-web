@@ -8,7 +8,7 @@ import { FEATURE_VERSION, trainRankNet } from '../shared/learning-to-rank.mjs';
 
 // A deliberately approved unit fixture exercises the activation path separately
 // from the rejected release candidate. It is never shipped to users.
-const approved = { ...bootstrap, status: 'approved',
+const approved = { ...bootstrap, featureVersion: FEATURE_VERSION, ranker: { ...bootstrap.ranker, featureVersion: FEATURE_VERSION, weights: [1.840480658083,0.995812691418,1.240304687674,1.095523214286,0.993308057939,1.601140229917,0,0] }, status: 'approved',
   validation: { baselineNdcg: .8, ndcg: .82, passed: true } };
 
 test('qualified initial weights affect all ten first-search candidates without fabricated browser history', () => {
@@ -50,23 +50,23 @@ test('personal training starts at an approved prior and replaces it only after i
   const ranking = Array.from({ length: 15 }, (_, i) => ({ version: FEATURE_VERSION, id: `feedback_${i}`, careType: 'short_term', at: now - (20 - i) * 1000,
     items: [{ id: 'near', features: other, reward: 0, position: 1 }, { id: 'known', features, reward: 3, position: 2 }] }));
   const h = { ...emptyInterests(), ranking };
-  const model = localRanker(h, 'short_term', now, bootstrap.ranker);
+  const model = localRanker(h, 'short_term', now, approved.ranker);
   assert.ok(model);
-  assert.deepEqual(model.weights, trainRankNet(ranking.slice(0, 12), { initialWeights: bootstrap.ranker.weights }).weights);
+  assert.deepEqual(model.weights, trainRankNet(ranking.slice(0, 12), { initialWeights: approved.ranker.weights }).weights);
   const result = createMLScorer({ history: h, seeds: [], careType: 'short_term', now, bootstrapModel: approved })('known', { known: .4 });
   assert.equal(result.source, 'local-ranknet');
-  assert.ok(Math.abs(result.delta - rankAdjustment(model, features)) < 1e-12, 'prior is not counted twice');
+  assert.ok(Math.abs(result.delta - (rankAdjustment(approved.ranker, features) + model.blend * (rankAdjustment(model, features) - rankAdjustment(approved.ranker, features)))) < 1e-12, 'prior is not counted twice');
   const insufficient = createMLScorer({ history: { ...h, ranking: ranking.slice(0, 1) }, seeds: [], careType: 'short_term', now, bootstrapModel: approved });
   assert.equal(insufficient('known', { known: .4 }).source, 'bootstrap-ranknet');
 });
 
 
-test('hours-rule migration rejects old slates and priors without erasing preferences or saved centres', () => {
+test('preference-rule migration rejects old slates and priors without erasing preferences or saved centres', () => {
   assert.equal(bootstrap.status, 'rejected');
   assert.equal(validBootstrap(bootstrap, 'short_term'), false);
   assert.equal(validBootstrap({ ...approved, featureVersion: 'ep-ranking-v1' }, 'short_term'), false);
   const now = Date.now(), h = { ...emptyInterests(), preferences: ['caring_teachers'], preferenceSetup: 'complete',
-    ranking: [{ version: 'ep-ranking-v1', id: 'legacy', careType: 'short_term', at: now, items: [
+    ranking: [{ version: 'ep-ranking-v2-hours', id: 'legacy', careType: 'short_term', at: now, items: [
       { id: 'saved', position: 1, reward: 3, features: [0, .4, 0, 0, 0, 0, 0, 0] }] }] };
   const library = { ...emptyLibrary(), favourites: [{ id: 'saved', careType: 'short_term' }] };
   const before = JSON.stringify({ h, library });

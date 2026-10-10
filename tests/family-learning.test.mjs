@@ -38,10 +38,10 @@ test('Details, actual comparison and successful save use the displayed child con
   assert.equal(reward(h, 'a', 'later'), 0);
   assert.equal(reward(h, 'b', 'later'), 1);
   h = recordInterest(h, [provider('later'), provider('first')], 'compare', new Date(now).toISOString(), familyLearningSlateIds(results));
-  assert.deepEqual(['a', 'b'].map(k => reward(h, k, 'later')), [2, 2]);
+  assert.deepEqual(['a', 'b'].map(k => reward(h, k, 'later')), [1.25, 1.25]);
   assert.equal(reward(h, 'a', 'first'), undefined, 'comparison cannot invent a missing impression');
   h = recordRankingFeedback(h, [provider('later')], 'save', now, familyLearningSlateIds(results, 'a'));
-  assert.deepEqual(['a', 'b'].map(k => reward(h, k, 'later')), [3, 2]);
+  assert.deepEqual(['a', 'b'].map(k => reward(h, k, 'later')), [3, 1.25]);
   assert.equal(recordRankingFeedback(h, [provider('later')], 'view', now, familyLearningSlateIds(results)), h, 'repeated weaker actions do not inflate rewards');
   const older = ranked(responses(), personal(), 1);
   h = expose(h, older, { providerId: 'later', familyRole: 'ab' });

@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { FEATURE_VERSION, FEATURES, INITIAL_WEIGHTS, validFeatures, trainRankNet, baselineScore, ndcg } from '../shared/learning-to-rank.mjs';
-import { rankAdjustment } from '../shared/recommendation-learning.mjs';
+import { rankAdjustment, validReward } from '../shared/recommendation-learning.mjs';
 
 export function trainBootstrap(bytes) {
   const data = JSON.parse(bytes);
@@ -11,7 +11,7 @@ export function trainBootstrap(bytes) {
   const seen = new Set();
   for (const s of data.sessions) {
     if (!['train', 'validation', 'test'].includes(s.stage) || s.careType !== 'short_term' || !Number.isFinite(s.at) || !s.actor ||
-      !s.items?.length || s.items.some(i => !validFeatures(i.features) || ![-1, 0, 1, 2, 3].includes(i.reward)) || seen.has(s.id)) throw Error('Invalid synthetic slate');
+      !s.items?.length || s.items.some(i => !validFeatures(i.features) || !validReward(i.reward)) || seen.has(s.id)) throw Error('Invalid synthetic slate');
     seen.add(s.id);
   }
   for (const actor of new Set(data.sessions.map(s => s.actor))) {

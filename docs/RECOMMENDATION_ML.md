@@ -3,7 +3,50 @@
 Implementation: 9 October 2026. This is a local implementation record, not a
 production deployment or evidence of improved real-user satisfaction.
 
-## Hours correction — 10 October 2026 (current)
+## Preference-first ranking — 10 October 2026 (current)
+
+Single-child and both child candidate lists use the same policy. Onboarding
+choices work immediately; browsing, Compare and Save affect only the next
+search. Eligibility, complete opening hours, age, radius, page membership,
+explicit factual sorts, contact groups and deterministic diversity stay intact.
+
+- Explicit review preference contribution is `(0.5 - 0.1 * confidence) * fit`,
+  up from `0.22 * fit`. Unknown reviews remain neutral.
+- Fresh Compare seed weight is 0.4 (previously 2), Details 0.2 (previously 0.5),
+  Save remains 4. Their direct familiarity contributions are 0.024, 0.012 and
+  0.24 respectively. Repeat/age decay remains bounded. Compare means considering
+  an option, not endorsing it.
+- Inferred-interest confidence is `evidence / (8 + evidence)`. Weak evidence is
+  capped per action kind and KL day, so comparing three branches does not count
+  as three endorsements. Saved branches each contribute one confidence unit.
+  A locally hidden branch retains a small negative evidence unit (0.5).
+  This is a conservative tuning factor, not a calibrated probability.
+- Local training labels are Details 1, Compare 1.25, Save 3 and Hide -1. A
+  qualified personal RankNet blends in by `n / (n + 8)`, where `n` counts distinct
+  feedback search timestamps, with sibling slates counted together. Two searches
+  give 0.2 influence. The same blend is used during held-out validation and
+  inference; there is still no fixed three-search activation gate.
+- A reason describes the largest positive personal contribution. Accepted model
+  adjustments are attributed additively (integrated gradients of the linear
+  score through tanh); the components sum to the actual model adjustment.
+  Preference wording names the strongest supported chosen topic. Negative or
+  unknown evidence cannot justify it. Saved/Compare no longer win by fixed
+  precedence. Pair cards select the stronger explanation across both children.
+  **No scores, weights, percentages or contribution values are shown in the UI.**
+
+Feature version is now `ep-ranking-v3-preferences`: v1/v2 slates and priors are
+incompatible. Preferences, saved centres and activity remain; only old training
+snapshots are discarded, and new feedback can train a qualified personal model.
+The synthetic bootstrap was regenerated under v3 with the same six personas,
+480 queries and fixed hyperparameters. Validation NDCG@10 is 0.832917 versus
+0.832739 (margin below the required +0.001); test is 0.795416 versus 0.795947.
+It remains rejected/inactive. These inspected synthetic holdouts are diagnostic,
+not fresh evidence of generalisation. No activation threshold was relaxed.
+Global collaborative learning remains untrained. Everything runs locally without extra server reads,
+telemetry, cron jobs or Functions. This policy is regression-tested, not evidence
+of improved real-user satisfaction. See `tests/preference-first.test.mjs`.
+
+## Hours correction — 10 October 2026 (retained; v2 metrics are historical)
 
 Known opening-time and midday-gap conflicts are filtered before ranking, in
 addition to age and care-end constraints. The prior version checked only the
@@ -159,7 +202,7 @@ times; the personal model does not learn a separate travel-plan network.
 Current results stay frozen. These changes add no API calls or server writes.
 
 The first observed feature vector and position are frozen before feedback.
-Detail/plan view gives relevance 1, actual comparison 2, successful save 3; a
+Detail/plan view gives relevance 1, actual comparison 1.25, successful save 3; a
 hidden recommendation can give -1 when linked to an exposed slate.
 Feedback uses the exact displayed search ID and branch, with no time-window
 guessing. Other-page activity without that context can update the interest

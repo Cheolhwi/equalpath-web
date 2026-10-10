@@ -6,7 +6,8 @@ import { cfScore, matrixScores } from './collaborative.mjs';
 const DAY = 86400000;
 const safeId = x => typeof x === 'string' && /^[A-Za-z0-9_-]{1,160}$/.test(x) && !['__proto__', 'constructor', 'prototype'].includes(x);
 const careType = x => ['short_term', 'regular'].includes(x);
-export const REWARDS = { view: 1, compare: 2, save: 3, hide: -1 };
+export const REWARDS = { view: 1, compare: 1.25, save: 3, hide: -1 };
+export const validReward = reward => reward === 0 || Object.values(REWARDS).includes(reward);
 export function cleanSlates(input, now = Date.now()) {
   if (!Array.isArray(input)) return [];
   const seen = new Set();
@@ -17,7 +18,7 @@ export function cleanSlates(input, now = Date.now()) {
       return { version: FEATURE_VERSION, id: s.id, at: s.at, careType: s.careType,
         items: s.items.filter(i => safeId(i?.id) && validFeatures(i.features) && Number.isInteger(i.position) && i.position >= 1 && i.position <= 20)
           .filter(i => !ids.has(i.id) && ids.add(i.id)).slice(0, 20).map(i => ({ id: i.id, features: [...i.features], position: i.position,
-            reward: [-1, 0, 1, 2, 3].includes(i.reward) ? i.reward : 0 })) };
+            reward: validReward(i.reward) ? i.reward : 0 })) };
     });
 }
 export function recordExposure(history, { id, at, careType: type, items }, now = Date.now()) {
@@ -67,11 +68,16 @@ export function localRanker(history, type, now = Date.now(), prior = null) {
   let value = null;
   const boundary = slates[Math.floor(slates.length * .8)]?.at;
   const train = slates.filter(s => s.at < boundary), test = slates.filter(s => s.at >= boundary);
+  const groups = new Set(slates.map(s => s.at)).size;
+  const blend = groups / (groups + 8);
   if (train.length && test.length) {
     const ranker = trainRankNet(train.map(s => ({ ...s, items: s.items.map(i => ({ ...i, features: [...i.features.slice(0, 6), 0, 0] })) })), { initialWeights });
     const baseline = ndcg(test, i => baselineScore(i.features) + rankAdjustment(prior, [...i.features.slice(0, 6), 0, 0]));
-    const metric = ranker && ndcg(test, i => baselineScore(i.features) + rankAdjustment(ranker, [...i.features.slice(0, 6), 0, 0]));
-    if (metric > baseline + .001) value = { ...ranker, validation: { groups: test.length, baselineNdcg: baseline, ndcg: metric } };
+    const metric = ranker && ndcg(test, i => {
+      const features = [...i.features.slice(0, 6), 0, 0], priorDelta = rankAdjustment(prior, features);
+      return baselineScore(features) + priorDelta + blend * (rankAdjustment(ranker, features) - priorDelta);
+    });
+    if (metric > baseline + .001) value = { ...ranker, blend, validation: { groups: test.length, baselineNdcg: baseline, ndcg: metric } };
   }
   localCache.set(history.ranking, { key, value });
   return value;
@@ -88,6 +94,14 @@ export function validModel(model, type, now = Date.now()) {
     model.validation?.passed === true;
 }
 export const rankAdjustment = (ranker, features) => ranker ? .12 * Math.tanh(dot(ranker.weights.map((w, i) => w - INITIAL_WEIGHTS[i]), features)) : 0;
+// Integrated-gradient allocation for tanh of an additive linear score. It
+// sums exactly to the model adjustment, even when signed inputs cancel out.
+function adjustmentMultipliers(ranker, features) {
+  if (!ranker) return FEATURES.map(() => 0);
+  const weights = ranker.weights.map((w,i) => w - INITIAL_WEIGHTS[i]);
+  const z = dot(weights, features), scale = Math.abs(z) < 1e-12 ? .12 : .12 * Math.tanh(z) / z;
+  return weights.map(w => w * scale);
+}
 // This explicitly authorised synthetic prior is separate from a consented
 // collaborative model. It supplies weights, never fake users or user history.
 export function validBootstrap(model, type) {
@@ -112,8 +126,14 @@ export function createMLScorer({ history, seeds, careType: type, now = Date.now(
     const globalDelta = rankAdjustment(prior, features);
     // A personal model replaces the initial weights; do not count the prior twice.
     const localFeatures = [...features.slice(0, 6), 0, 0];
-    const localDelta = local ? rankAdjustment(local, localFeatures) - rankAdjustment(prior, localFeatures) : 0;
-    return { features, delta: Math.max(-.18, Math.min(.18, globalDelta + localDelta)),
+    const localDelta = local ? local.blend * (rankAdjustment(local, localFeatures) - rankAdjustment(prior, localFeatures)) : 0;
+    const raw = globalDelta + localDelta, delta = Math.max(-.18, Math.min(.18, raw));
+    const scale = raw ? delta / raw : 1;
+    const globalParts = adjustmentMultipliers(prior, features), localParts = adjustmentMultipliers(local, localFeatures), priorParts = adjustmentMultipliers(prior, localFeatures);
+    const multipliers = Object.fromEntries(FEATURES.map((key,i) => [key, (i < 6 ? 1 : 0) + scale *
+      (globalParts[i] + (local && i < 6 ? local.blend * (localParts[i] - priorParts[i]) : 0))]));
+    const contributions = Object.fromEntries(FEATURES.map((key,i) => [key, features[i] * (multipliers[key] - (i < 6 ? 1 : 0))]));
+    return { features, delta, contributions, multipliers,
       source: local ? 'local-ranknet' : accepted ? 'collaborative-ranknet' : bootstrap ? 'bootstrap-ranknet' : 'cold-start', cf, mf };
   };
 }

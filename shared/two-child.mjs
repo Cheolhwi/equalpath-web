@@ -199,7 +199,8 @@ export function buildOptions(results, { preference = "prefer", legs = new Map(),
   const { a: poolA, b: poolB } = pools(results);
   const pairs = preference === "same" ? [] : poolA.flatMap((x) => poolB.filter((y) => y.id !== x.id).map((y) => ({ kind: "pair", a: x, b: y })));
   let options = [...same, ...pairs].map((o) => ({ ...o, id: `${o.a.id}|${o.b.id}`, status: optionStatus(o.a, o.b), dropOff: dropOffMinutes(o, legs),
-    reason: shortReason(o.a.personalisedReason ?? o.b.personalisedReason) }))
+    reason: shortReason([o.a, o.b].filter(p => p.personalisedReason)
+      .sort((a,b) => (b.personalisedReasonContribution ?? 0) - (a.personalisedReasonContribution ?? 0))[0]?.personalisedReason) }))
     .map((o) => ({ ...o, score: optionScore(o, listA, listB, preference) }));
   if (keep) options = options.filter((o) => o[keep.child].id === keep.id);
   const rank = (o) => [o.dropOff === null ? 1 : 0, -o.score, (o.a.distanceKm ?? 0) + (o.b.distanceKm ?? 0)];

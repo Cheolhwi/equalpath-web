@@ -61,9 +61,10 @@ export function interestSeeds(library, history, careType, now = Date.now()) {
   for (const v of history.enabled ? history.visits : []) {
     if (v.careType !== careType) continue;
     const decay = at => validDate(at) ? 2 ** (-Math.max(0, now - Date.parse(at)) / (30 * DAY)) : 0;
-    const weight = 2 * Math.min(2, 1 + Math.log2(v.compareCount || 1) / 3) * decay(v.compareAt)
-      + .5 * Math.min(2, 1 + Math.log2(v.viewCount || 1) / 3) * decay(v.viewAt);
-    if (weight >= .1) seeds.set(v.id, { id: v.id, weight, compared: !!v.compareAt, saved: false });
+    const compareWeight = .4 * Math.min(2, 1 + Math.log2(v.compareCount || 1) / 3) * decay(v.compareAt);
+    const viewWeight = .2 * Math.min(2, 1 + Math.log2(v.viewCount || 1) / 3) * decay(v.viewAt);
+    const weight = compareWeight + viewWeight;
+    if (weight >= .1) seeds.set(v.id, { id: v.id, weight, compareWeight, viewWeight, compared: compareWeight > viewWeight, saved: false });
   }
   for (const f of library.favourites) {
     if ((f.careType ?? 'short_term') === careType) seeds.set(f.id, { ...seeds.get(f.id), id: f.id, weight: 4, saved: true });
@@ -167,7 +168,22 @@ export function learnedPreferenceWeights({ seeds, library, history, careType, no
       weights[id] -= Math.max(0, e.score - .5) * (e.confidence ?? 0);
     }
   }
-  return { weights: Object.fromEntries(Object.entries(weights).map(([id,w]) => [id, w / Math.max(1,total)])), confidence: Math.min(1,total/8) };
+  // Comparing three branches is one act of considering options, not three
+  // independent endorsements. Cap weak evidence per kind and KL day; counts
+  // still reflect repeat visits on different days, with diminishing returns.
+  const days = new Map();
+  for (const visit of history.enabled ? history.visits : []) {
+    if (visit.careType !== careType || !weighted.some(s => s.id === visit.id)) continue;
+    const seed = weighted.find(s => s.id === visit.id);
+    for (const kind of ['compare', 'view']) {
+      if (!validDate(visit[`${kind}At`])) continue;
+      const key = `${kind}:${Math.floor((Date.parse(visit[`${kind}At`]) + 8 * 3600000) / DAY)}`;
+      days.set(key, Math.max(days.get(key) ?? 0, seed[`${kind}Weight`] ?? 0));
+    }
+  }
+  const negativeEvidence = history.enabled ? .5 * history.hidden.filter(h => h.careType === careType && fresh.has(h.id)).length : 0;
+  const evidence = weighted.filter(s => s.saved).length + [...days.values()].reduce((a,b) => a+b, 0) + negativeEvidence;
+  return { weights: Object.fromEntries(Object.entries(weights).map(([id,w]) => [id, w / Math.max(1,total)])), confidence: evidence / (8 + evidence) };
 }
 export function rankCentres({ candidates, seeds: currentSeeds = [], request, library, history, preferences = history.preferences, now = Date.now(), excludeSaved = false, excludeHidden = true, model, bootstrapModel }) {
   const interests = interestSeeds(library, history, request.careType, now);
@@ -195,29 +211,45 @@ export function rankCentres({ candidates, seeds: currentSeeds = [], request, lib
     const explicit = matches.reduce((n,e) => n+(e.score-.5)*2,0)/Math.max(1,matches.length);
     const learnedTotal = Object.values(learned.weights).reduce((s,w)=>s+Math.abs(w),0);
     const learnedFit = topics.reduce((sum,t)=>sum+learned.weights[t.id]*(t.evidence.score-.5)*2,0)/Math.max(.01,learnedTotal);
-    // Distance stays useful in cold start, but a few extra kilometres must not
-    // drown out an explicit save. Learning other traits remains confidence-limited.
-    // Current saves contribute .24; one fresh compare .12; one view only .03.
+    // Start with the visitor's choices. Weak consideration signals may break
+    // close ties, while a deliberate save remains stronger. These are internal
+    // contributions, never percentages or scores shown in product copy.
     const scoreParts = {
       distance: (.45 - .1 * learned.confidence) * near,
       known: .4 * known,
-      preferences: .22 * explicit,
+      preferences: (.5 - .1 * learned.confidence) * explicit,
       learned: .2 * learned.confidence * learnedFit,
       similarity: .12 * learned.confidence * similarity,
       familiarity: own ? .24 * Math.min(1, own.weight / 4) : 0,
     };
     const ml = scoreML(p.id, scoreParts);
     const score = Object.values(scoreParts).reduce((sum, value) => sum + value, 0) + ml.delta;
-    const supported = matches.filter(e => e.state==='supported' && e.score>.5).sort((a,b)=>b.score-a.score);
-    const learnedTopic = topics.map(t=>({...t,value:learned.weights[t.id]*(t.evidence.score-.5)})).sort((a,b)=>b.value-a.value)[0];
     const anchor = similarities.filter(s=>s.meaningful&&s.id!==p.id).sort((a,b)=>b.value*b.weight-a.value*a.weight)[0];
-    const label = DISCOVERY_PREFERENCES.find(t=>t.id===supported[0]?.id)?.label;
-    const reason = own?.saved ? 'A centre you saved' : own?.compared ? 'You compared this centre before' : label ? `Matches your choices: ${label}` : learnedTopic?.value>.01 ? `Parents mention: ${learnedTopic.label}` : anchor ? `Similar to ${anchor.saved ? 'a centre you saved' : 'a centre you viewed'}` : own ? 'You viewed this centre before' : 'Near your chosen location';
+    const effective = key => scoreParts[key] + (ml.contributions[key] ?? 0);
+    // Explain the largest positive personal contribution, including the
+    // accepted model adjustment. Unknown/negative themes cannot justify copy.
+    // Distance/known facts remain visible separately on the card.
+    const reasons = [];
+    const match = matches.filter(e => e.state === 'supported' && e.score > .5).sort((a,b) => b.score-a.score)[0];
+    if (match) reasons.push({ text: `Matches your choices: ${DISCOVERY_PREFERENCES.find(t => t.id === match.id).label}`,
+      contribution: effective('preferences') });
+    const learnedTopic = topics.filter(t => t.evidence.state === 'supported' && t.evidence.score > .5 && learned.weights[t.id] > 0)
+      .sort((a,b) => learned.weights[b.id]*(b.evidence.score-.5) - learned.weights[a.id]*(a.evidence.score-.5))[0];
+    if (learnedTopic) reasons.push({ text: `Parents mention: ${learnedTopic.label}`, contribution: effective('learned') });
+    if (own?.saved) reasons.push({ text: 'A centre you saved', contribution: effective('familiarity') });
+    else if (own) {
+      reasons.push({ text: 'You compared this centre before', contribution: effective('familiarity') * (own.compareWeight ?? 0) / own.weight });
+      reasons.push({ text: 'You viewed this centre before', contribution: effective('familiarity') * (own.viewWeight ?? 0) / own.weight });
+    }
+    if (anchor) reasons.push({ text: `Similar to a centre you ${anchor.saved ? 'saved' : anchor.compared ? 'compared' : 'viewed'}`,
+      contribution: .12 * learned.confidence * anchor.value * anchor.weight / totalWeight * ml.multipliers.similarity });
+    const explanation = reasons.filter(r => r.contribution > 0).sort((a,b) => b.contribution-a.contribution)[0];
+    const reason = explanation?.text ?? 'Near your chosen location';
     // Only well-supported positive review themes can add diversity. Missing or
     // stale reviews never manufacture a strength, and different branch IDs alone
     // do not imply different care. Keep the two strongest themes per centre.
     const strengths = strongestReviewTopics(topics).map(t => t.id);
-    return { p, score, scoreParts, ml, strengths, reason, hidden: hidden.has(p.id), basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
+    return { p, score, scoreParts, ml, strengths, reason, reasonContribution: explanation?.contribution ?? 0, hidden: hidden.has(p.id), basedOn: anchor ? fresh.get(anchor.id).name : null, preferenceMatches: matches };
   });
   const priority = (a,b) => {
     const contact = Number(hasContact(b.p))-Number(hasContact(a.p)); if(contact) return contact;
@@ -268,6 +300,7 @@ export function personaliseSearchItems({ items, seeds = [], request, library, hi
     const personal = recommended && match && !match.hidden && match.reason !== 'Near your chosen location';
     return { ...p, suggested: suggested.has(p.id), personalised: !!personal && suggested.has(p.id),
       personalisedReason: personal ? match.reason : null,
+      personalisedReasonContribution: personal ? match.reasonContribution : 0,
       personalisedRank: match ? (recommended ? match.index : index) + 1 : null,
       rerankScore: match?.score ?? null,
       learningFeatures: recommended ? match?.ml.features ?? null : null,
