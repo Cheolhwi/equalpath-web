@@ -182,7 +182,9 @@ test('mobile search stays expanded for no results, failures and edits made while
     await route.fulfill({json:{ok:true,...await api(b)}});
   });
   await page.getByRole('button',{name:'Retry search',exact:true}).click();
-  await expect(page.locator('.dock-feedback')).toContainText('No centres found');
+  // No match within 5 km: first the offer to look up to 10 km, then the websites (11 Oct 2026).
+  await expect(page.locator('.widen-search')).toContainText('No match within 5 km');
+  await page.getByRole('button',{name:'No thanks',exact:true}).click();
   await expect(page.locator('.short-care-map-alternatives')).toBeVisible();
   await expect(page.locator('.short-care-map-links a')).toHaveCount(2);
   await page.locator('.map-quick-actions button').first().click();

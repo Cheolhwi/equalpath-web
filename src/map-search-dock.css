@@ -223,3 +223,10 @@
   .dock-options > .search-chip > svg { width: 18px; height: 18px; }
   .dock-options > .search-chip { align-content: center; }
 }
+/* No match nearby: ask before searching up to 10 km (11 Oct 2026). */
+.widen-search-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.widen-search-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 16px; border-radius: 999px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.widen-search-yes { border: 1px solid transparent; background: var(--nav-selected); color: var(--nav-selected-text); }
+.widen-search-yes:hover { background: color-mix(in srgb, var(--nav-selected) 88%, var(--ink)); }
+.widen-search-no { border: 1px solid var(--rule); background: var(--paper); color: var(--ink); }
+.widen-search-no:hover { border-color: var(--accent); }

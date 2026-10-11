@@ -1,4 +1,4 @@
-import { ArrowUpRight, Clock3, Info } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Clock3, Info, MapPin } from "lucide-react";
 
 // These are deliberately external leads, not part of the EqualPath catalogue.
 // Keep the copy about what a site does, never about a child's same-day vacancy.
@@ -39,6 +39,26 @@ export function ShortCareMapAlternatives() {
         ))}
       </div>
       <small>Check the date, age and place on their website.</small>
+    </aside>
+  );
+}
+
+// No match nearby (11 Oct 2026): first offer the wider 10 km search. Only when
+// the parent says no, or 10 km has nothing either, do the websites appear.
+export function WidenSearchPrompt({ radius, who = null, onWider, onDecline }) {
+  return (
+    <aside className="short-care-map-alternatives widen-search" aria-labelledby="widen-search-title">
+      <div className="short-care-map-heading">
+        <span className="short-care-map-icon" aria-hidden="true"><MapPin size={18} /></span>
+        <div>
+          <strong id="widen-search-title">No match within {radius} km{who ? ` for ${who}` : ""}</strong>
+          <span>Look further away, up to 10 km from your starting point?</span>
+        </div>
+      </div>
+      <div className="widen-search-actions">
+        <button type="button" className="widen-search-yes" onClick={onWider}>Search within 10 km<ArrowRight size={15} aria-hidden="true" /></button>
+        <button type="button" className="widen-search-no" onClick={onDecline}>No thanks</button>
+      </div>
     </aside>
   );
 }

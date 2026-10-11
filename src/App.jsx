@@ -56,7 +56,7 @@ import useFamily, { familyKey, secondChildErrors } from "./useFamily.js";
 import { childRequest, childName, leavePlan } from "../shared/two-child.mjs";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import GettingStarted from "./GettingStarted.jsx";
-import ShortCareAlternatives, { ShortCareMapAlternatives, hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
+import ShortCareAlternatives, { ShortCareMapAlternatives, WidenSearchPrompt, hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
 import { saveTour, tourSeen } from "../shared/tour.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { displayName, placeLine, shortDateLabel } from "../shared/display.mjs";
@@ -195,6 +195,7 @@ export default function App({
   const [onePanel, setOnePanel] = useState(initialOnePanel);
   // Centres that replied "no place" for this exact visit (no other time offered).
   const [declined, setDeclined] = useState([]), [declineNote, setDeclineNote] = useState(null);
+  const [widenDeclined, setWidenDeclined] = useState(null); // the no-match search the parent said "No thanks" to
   const declinedApplied = useRef(new WeakMap());
   const family = useFamily(mode);
   // First visit: offer the tour once, without starting it on its own.
@@ -538,7 +539,15 @@ export default function App({
   const familyReady = familyMode && family.state?.status === "ready" && !familyDirty;
   const familyNoMatch = familyReady && !!family.built?.missing.length;
   const familyCards = familyReady && !familyNoMatch;
-  const familyOpen = familyMode && !!family.state && !family.state.collapsed;
+  // No match (11 Oct 2026): within 5 km, first ask to look up to 10 km; the
+  // childcare websites show only after "No thanks" or when 10 km has nothing.
+  // With two children the empty left panel is not shown at all.
+  const oneNoMatch = !familyMode && isShortCare(results?.request) && !busy && !dirty && !!results &&
+    (Number.isFinite(results.explicitMatchCount) ? results.explicitMatchCount === 0 : !hasExplicitShortCareMatch(items));
+  const noMatchFor = familyNoMatch ? family.state?.results ?? family.state : oneNoMatch ? results : null;
+  const noMatchRadius = familyNoMatch ? Number(family.state?.plan?.radius) : Number(results?.request?.radius);
+  const askWider = !!noMatchFor && noMatchRadius < 10 && widenDeclined !== noMatchFor;
+  const familyOpen = familyMode && !!family.state && !family.state.collapsed && !familyNoMatch;
   // One child: the same left panel as two children, over the current page of
   // results (suggested centres, then a plan). A new search starts it again.
   useEffect(() => { setOnePanel(initialOnePanel); setDeclineNote(null); }, [results]);
@@ -1504,19 +1513,19 @@ export default function App({
             onMap={() => { setChoosing(true); setMobilePane("map"); }} submitRef={submitRef}
             focusRequest={searchFocus} onHeight={setDockHeight}
             collapsed={searchCollapsed} onCollapsedChange={setSearchCollapsed}
-            notice={reopening ? `Choose a new date for ${reopening.name}.` : results?.total === 0 ? "No centres found. Try another address or change the filters." : browseSelection && !results ? `Add your search details for ${browseSelection.name}.` : mode === "demo" ? "Demo · fictional centres" : ""}
+            notice={reopening ? `Choose a new date for ${reopening.name}.` : results?.total === 0 && !noMatchFor ? "No centres found. Try another address or change the filters." : browseSelection && !results ? `Add your search details for ${browseSelection.name}.` : mode === "demo" ? "Demo · fictional centres" : ""}
             failure={familyMode ? (family.state?.status === "error" ? family.state.error : null) : failure} onRetry={() => search(null)} addressStatus={pickupAddress} onRetryAddress={() => setAddressRetry(n => n + 1)} />
           {!oneShown && listButton}
-          {(familyNoMatch || (!familyMode && isShortCare(results?.request) && !busy && !dirty &&
-            (Number.isFinite(results?.explicitMatchCount)
-              ? results.explicitMatchCount === 0
-              : results && !hasExplicitShortCareMatch(items)))) && (
-            <ShortCareMapAlternatives />
-          )}
+          {askWider
+            ? <WidenSearchPrompt radius={noMatchRadius}
+                who={familyNoMatch ? (family.built.missing.length > 1 ? "either child" : childName(family.built.missing[0])) : null}
+                onWider={() => { const next = { ...draft, radius: 10 }; setDraft(next); if (familyMode) searchFamily(next); else search(null, 0, next); }}
+                onDecline={() => setWidenDeclined(noMatchFor)} />
+            : noMatchFor && <ShortCareMapAlternatives />}
           {nearbyError && !failure && <p className="map-search-status" role="status">Centres could not load<button onClick={() => setNearbyReload(v => v + 1)}>Retry</button></p>}
         </div>}
 
-        {familyMode && family.state && !choosing && mobilePane === "map" && (
+        {familyMode && family.state && !choosing && mobilePane === "map" && !familyNoMatch && (
           <FamilyPanel family={family} mode={mode} top={dockHeight + 12}
             onFix={applyFamilyFix}
             onWider={() => { const next = { ...draft, radius: 10 }; setDraft(next); searchFamily(next); }}
