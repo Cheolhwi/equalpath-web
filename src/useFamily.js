@@ -243,12 +243,12 @@ export default function useFamily(mode) {
       if (picked) ensure(picked);
     },
     back: () => setF((x) => ({ ...x, view: "options" })),
-    decline: (kids, centre) => setF((x) => {
+    decline: (kids, centre, why = "centre") => setF((x) => {
       if (!x?.results || !kids.length) return x;
       const declined = [...new Set([...(x.declined ?? []), ...kids.map((k) => `${k}:${centre.id}`)])];
       const [sa, sb] = (x.selected ?? "").split("|");
       const hit = x.view === "plan" && kids.some((k) => (k === "a" ? sa : sb) === centre.id);
-      return { ...x, declined, declineNote: { id: centre.id, name: centre.name, kids }, ...(hit ? { view: "options", selected: null } : {}) };
+      return { ...x, declined, declineNote: { id: centre.id, name: centre.name, kids, why }, ...(hit ? { view: "options", selected: null } : {}) };
     }),
     undecline: (id) => setF((x) => x && { ...x, declined: (x.declined ?? []).filter((k) => !k.endsWith(`:${id}`)), declineNote: null }),
     dismissDecline: () => setF((x) => x && { ...x, declineNote: null }),

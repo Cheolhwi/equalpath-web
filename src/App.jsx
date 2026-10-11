@@ -195,6 +195,7 @@ export default function App({
   const [onePanel, setOnePanel] = useState(initialOnePanel);
   // Centres that replied "no place" for this exact visit (no other time offered).
   const [declined, setDeclined] = useState([]), [declineNote, setDeclineNote] = useState(null);
+  const declinedApplied = useRef(new WeakMap());
   const family = useFamily(mode);
   // First visit: offer the tour once, without starting it on its own.
   const [tourInvite, setTourInvite] = useState(() => { try { return !tourSeen(window.localStorage); } catch { return false; } });
@@ -947,27 +948,40 @@ export default function App({
     contact: (p, request) => { if (p) prepare(p, request ?? activeRequest); },
     // The centre has no place and offered no other time: take that plan off
     // the options on the left, with a note and Undo (10 Oct 2026).
-    declined: (t, result) => {
-      const kids = result.children.map((c, i) => ({ c, k: c.label === "Child 2" ? "b" : c.label === "Child 1" || i === 0 ? "a" : "b" }))
-        // Two children: a plan is for fixed times, so another day or a later
-        // start also takes it off the list (11 Oct 2026).
-        .filter(({ c }) => enquiryChildDeclined(c, t.family)).map(({ k }) => k);
-      if (!kids.length || !t.centre?.id) return;
+    // Called whenever a chat's conclusion means the plan won't go ahead
+    // (`planOff` in VirtualEnquiry): once per reply and search, so Undo sticks.
+    declined: (t, off) => {
+      const stamp = familyMode ? family.state?.results : results;
+      if (!stamp || !t.centre?.id || !t.job?.id) return;
+      const seen = declinedApplied.current.get(stamp) ?? new Set(), mark = `${t.job.id}:${off.why}:${off.labels.join(",")}`;
+      if (seen.has(mark)) return;
+      seen.add(mark); declinedApplied.current.set(stamp, seen);
       if (t.family && familyMode && family.state?.plan) {
-        const matching = result.children.filter(c => enquiryChildDeclined(c, true)).filter(c => {
+        const matching = t.payload.children.filter(c => off.labels.includes(c.label)).filter(c => {
           const k = c.label === "Child 2" ? "b" : "a", r = childRequest(family.state.plan, k);
-          const child = t.payload.children.find(x => x.label === c.label);
-          return child && enquiryVisitsMatch([{ ...t.payload, children: [child] }], [{ branchId: t.payload.branchId, date: r.date, children: [{ age: r.age, start: r.deadline, end: r.end }] }]);
+          return enquiryVisitsMatch([{ ...t.payload, children: [c] }], [{ branchId: t.payload.branchId, date: r.date, children: [{ age: r.age, start: r.deadline, end: r.end }] }]);
         }).map(c => c.label === "Child 2" ? "b" : "a");
-        if (matching.length) family.decline([...new Set(matching)], t.centre);
+        if (matching.length) family.decline([...new Set(matching)], t.centre, off.why);
         return;
       }
       if (t.family || !t.request) return;
       const key = scenario(t.request);
+      if (!activeRequest || scenario(activeRequest) !== key) return;
       setDeclined((d) => d.some((x) => x.id === t.centre.id && x.scenario === key) ? d : [...d, { id: t.centre.id, scenario: key }]);
-      setDeclineNote({ id: t.centre.id, name: t.centre.name });
+      setDeclineNote({ id: t.centre.id, name: t.centre.name, why: off.why });
       setOnePanel((s) => (s.view === "plan" && s.selected === t.centre.id ? { ...s, view: "options", selected: null } : s));
       setSelected((id) => (id === t.centre.id ? null : id));
+    },
+    // The parent took the centre's later start or other day: the search
+    // follows, so the plan on the left matches what is asked next.
+    acceptStart: (label, start) => {
+      if (familyMode) applyFamilyFix([{ child: label === "Child 2" ? "b" : "a", field: "start", value: start }]);
+      else { const next = { ...draft, deadline: start }; setDraft(next); notify(`Changed the start to ${start}. Checking again…`); search(null, 0, next); }
+    },
+    tryDate: (date) => {
+      const next = { ...draft, date }; setDraft(next);
+      notify(`Changed the day to ${new Date(`${date}T12:00:00+08:00`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "Asia/Kuala_Lumpur" })}. Checking again…`);
+      if (familyMode) searchFamily(next, { keep: true }); else search(null, 0, next);
     },
     options: () => {
       setDialog(null); setMobilePane("map");
@@ -976,7 +990,7 @@ export default function App({
     },
   };
   return (
-    <EnquiryProvider actions={enquiryActions} onChatChange={setChatOpen}>
+    <EnquiryProvider actions={enquiryActions} onChatChange={setChatOpen} syncKey={(familyMode ? family.state?.results : results) ?? null}>
     <main
       className={`equalpath map-first ${theme} mobile-${mobilePane}${navCollapsed ? " nav-collapsed" : ""}`}
       tabIndex={-1}

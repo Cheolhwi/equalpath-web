@@ -64,10 +64,10 @@ export function PlanActions({ centres, date, onChecklist, onDownload, askAll = n
 
 // A centre that replied it has no place (and offered no other time) is taken
 // off the options, with a short note and Undo (10 Oct 2026).
-export function DeclinedNote({ name: centre, two = false, onUndo, onClose }) {
+export function DeclinedNote({ name: centre, two = false, why = "centre", onUndo, onClose }) {
   return <div className="family-declined" role="status">
     <Info size={17} aria-hidden="true" />
-    <p><strong>{name({ name: centre })}</strong> {two ? "can’t take the times in this plan" : "has no place for this visit"}, so we’ve taken it off your options. <button className="text-link" onClick={onUndo}>Undo</button></p>
+    <p><strong>{name({ name: centre })}</strong> {why === "you" ? "is off your options — you turned its offer down" : two ? "can’t take the times in this plan, so we’ve taken it off your options" : "has no place for this visit, so we’ve taken it off your options"}. <button className="text-link" onClick={onUndo}>Undo</button></p>
     <button className="family-declined-close" onClick={onClose} aria-label="Dismiss"><X size={16} /></button>
   </div>;
 }
@@ -99,7 +99,7 @@ export default function OneChildPanel({ items, request, state, onChange, top = 3
     {chosen
       ? <Plan p={chosen} pin={items.indexOf(chosen) + 1} request={request} questionIds={questionIds} onBack={() => { set({ view: "options", selected: null }); onSelectCentre?.(null); }}
           onContact={onContact} onChecklist={onChecklist} onDetails={onDetails} />
-      : <Options items={items} hidden={hidden} note={note && <DeclinedNote name={note.name} onUndo={() => onUndo?.(note.id)} onClose={onCloseNote} />} request={request} showAll={state.showAll} onShowAll={() => set({ showAll: true })}
+      : <Options items={items} hidden={hidden} note={note && <DeclinedNote name={note.name} why={note.why} onUndo={() => onUndo?.(note.id)} onClose={onCloseNote} />} request={request} showAll={state.showAll} onShowAll={() => set({ showAll: true })}
           onSee={(p) => { set({ view: "plan", selected: p.id }); onSelectCentre?.(p.id); }} />}
   </section></>;
 }

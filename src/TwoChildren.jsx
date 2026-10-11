@@ -121,7 +121,7 @@ function Options({ family, onWider, compareIds, onCompare, onViewOption }) {
       <h3>Suggested for your two children</h3>
       <p>{visitDate(plan.date)} · {KIDS.map((k) => childWithAge(k, plan)).join(" and ")}</p>
     </header>
-    {s.declineNote && <DeclinedNote name={s.declineNote.name} two onUndo={() => family.undecline(s.declineNote.id)} onClose={family.dismissDecline} />}
+    {s.declineNote && <DeclinedNote name={s.declineNote.name} why={s.declineNote.why} two onUndo={() => family.undecline(s.declineNote.id)} onClose={family.dismissDecline} />}
     {!options.length && <p className="family-note">None of the suggested plans has a place left. Try other times or another date.</p>}
     {options.some((o) => o.dropOff === null) && <p className="family-note">Some drive times didn’t load. <button className="text-link" onClick={family.retry}>Try again</button></p>}
     <ol className="family-options">

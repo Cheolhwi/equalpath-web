@@ -24,11 +24,12 @@ export function pendingGroupDecisions(threads) {
   return threads.filter(t => !t.job?.confirmation).map(t => ({ key: t.key, decision: decisions[0] ?? null }));
 }
 
-// Family plans require the exact requested times for both children. An offer
-// on another day or at a later start does not make that original plan workable.
-export function enquiryChildDeclined(child, family = false) {
-  return family ? ['unavailable', 'conditional'].includes(child.state)
-    : child.state === 'unavailable' && !child.offer;
+// Only a plain "no place" (no other day or time offered) ends a plan by
+// itself. An offered change is the parent's call, for one child or two: taking
+// it keeps the plan (its time changes), turning it down removes it
+// (11 Oct 2026, user: "用户是可以选择是否接受机构说的晚点…一孩里也得有").
+export function enquiryChildDeclined(child, family = false) { // eslint-disable-line no-unused-vars
+  return child.state === 'unavailable' && !child.offer;
 }
 
 export function enquiryGroupFor(threads, payloads) {

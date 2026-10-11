@@ -128,12 +128,13 @@ test('a new plan can reuse one enquiry without moving it out of the previous gro
 });
 
 
-test('a different-day or later-time offer excludes only the original family plan', () => {
+test('an offered change is the parent\u2019s call for one child or two; only a plain no removes a plan', () => {
   for (const child of [{ state: 'unavailable', offer: { date: '2026-10-16' } },
     { state: 'conditional', offer: { start: '16:00' } }]) {
-    assert.equal(enquiryChildDeclined(child, true), true);
+    assert.equal(enquiryChildDeclined(child, true), false);
     assert.equal(enquiryChildDeclined(child, false), false);
   }
+  assert.equal(enquiryChildDeclined({ state: 'unavailable' }, true), true);
   assert.equal(enquiryChildDeclined({ state: 'unavailable' }), true);
   for (const state of ['available', 'more_info']) assert.equal(enquiryChildDeclined({ state }, true), false);
 });
