@@ -24,6 +24,29 @@ export function pendingGroupDecisions(threads) {
   return threads.filter(t => !t.job?.confirmation).map(t => ({ key: t.key, decision: decisions[0] ?? null }));
 }
 
+// Family plans require the exact requested times for both children. An offer
+// on another day or at a later start does not make that original plan workable.
+export function enquiryChildDeclined(child, family = false) {
+  return family ? ['unavailable', 'conditional'].includes(child.state)
+    : child.state === 'unavailable' && !child.offer;
+}
+
+export function enquiryGroupFor(threads, payloads) {
+  const wanted = payloads.map(p => JSON.stringify(p)).sort();
+  const groups = [...new Set(threads.map(t => t.group).filter(Boolean))];
+  return groups.find(g => JSON.stringify(threads.filter(t => t.group === g).map(t => JSON.stringify(t.payload)).sort()) === JSON.stringify(wanted)) ?? null;
+}
+
+export function addEnquiryGroup(threads, items, group) {
+  if (threads.some(t => t.group === group)) return threads;
+  const added = items.map((item, i) => {
+    const old = threads.findLast(t => JSON.stringify(t.payload) === JSON.stringify(item.payload));
+    return { key: `${group}:${i}`, ...item, family: true, group, job: old?.job ?? null,
+      error: '', busy: false, paused: false, retry: 0, unread: false };
+  });
+  return keepEnquiryConversations([...threads, ...added]);
+}
+
 // A reply belongs to the whole visit, not just the branch and date. Preserve
 // multiplicity: two children with identical ages/times still need two places.
 export function enquiryStatus(threads, branchId, requests = []) {

@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { ArrowRight, CalendarDays, Check, ChevronDown, ClipboardList, Clock3, Info, List, LoaderCircle, MessageCircle, Square, TriangleAlert, Volume2, VolumeX, X } from 'lucide-react';
 import { displayName } from '../shared/display.mjs';
 import { contactQuestions } from '../shared/contact-message.mjs';
-import { enquiryStatus, openEnquiryReferences, restoredEnquiryPayload, keepEnquiryConversations, pendingGroupDecisions } from '../shared/enquiry-session.mjs';
+import { enquiryStatus, openEnquiryReferences, restoredEnquiryPayload, keepEnquiryConversations, pendingGroupDecisions, enquiryGroupFor, addEnquiryGroup, enquiryChildDeclined } from '../shared/enquiry-session.mjs';
 import './virtual-enquiry.css';
 import cloudConfig from './enquiry-config.json';
 import Dialog from './Dialog.jsx';
@@ -48,12 +48,16 @@ const centreName = (t) => displayName(t.centre?.name || t.job?.branch?.listedNam
 const isGroup = (key) => typeof key === 'string' && /^group:[a-f0-9]{16}$/.test(key);
 const newGroup = () => `group:${[...crypto.getRandomValues(new Uint8Array(8))].map(x => x.toString(16).padStart(2, '0')).join('')}`;
 // The group that already holds exactly these requests, if any.
-const groupFor = (threads, keys) => { const ts = keys.map(k => threads.find(t => t.key === k)); const g = ts[0]?.group; return g && ts.every(t => t?.group === g) && threads.filter(t => t.group === g).length === keys.length ? g : null; };
+const groupFor = (threads, keys) => enquiryGroupFor(threads, keys.map(k => JSON.parse(k)));
 const inView = (t, key) => t.key === key || (!!t.group && t.group === key);
 const groupName = (ts) => ts.map(centreName).join(' + ');
 const finished = (t) => !!t.job && !following(t.job) && (!!t.job.result || ENDED.includes(t.job.state));
-// A centre that has no place for a child and offered no other time.
-const noPlace = (r) => !!r && r.children?.some(c => c.state === 'unavailable' && !c.offer);
+// Two children (11 Oct 2026, user: "右侧显示不可行了…为什么左侧这个方案还在"): a plan is
+// for fixed times, so a centre that can't take a child at those times — no
+// place, or only another day or a later start — takes the plan off the list.
+const cantTake = (c) => enquiryChildDeclined(c, true);
+const familyNo = (r) => !!r && r.children?.some(cantTake);
+const offerText = (o) => !o ? '' : o.start ? ` (it offered from ${o.start})` : o.date ? ` (it offered ${visitDay(o.date)})` : '';
 export function unitsOf(threads) {
   const seen = new Set(), out = [];
   for (const t of threads) {
@@ -303,7 +307,12 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
   const modal = useTopModal();
   const threadsRef = useRef(threads), viewRef = useRef(view), modalRef = useRef(modal), actionsRef = useRef(actions), locks = useRef(new Set());
   threadsRef.current = threads; viewRef.current = view; modalRef.current = modal; actionsRef.current = actions;
-  const patch = useCallback((key, change) => setThreads(list => list.map(t => t.key === key ? { ...t, ...(typeof change === 'function' ? change(t) : change) } : t)), []);
+  const patch = useCallback((key, change) => setThreads(list => {
+    const target = list.find(t => t.key === key);
+    if (!target) return list;
+    const delta = typeof change === 'function' ? change(target) : change;
+    return list.map(t => t.key === key ? { ...t, ...delta } : delta.job && t.job?.id === delta.job.id ? { ...t, job: delta.job } : t);
+  }), []);
   // A page refresh keeps the conversations (11 Oct 2026): only the request IDs
   // (and the centre's public ID and name) stay in this tab's session; ages
   // and times are read back from the enquiry itself.
@@ -313,14 +322,15 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     let saved = []; try { saved = JSON.parse(sessionStorage.getItem(openKey) || '[]'); } catch { /* nothing saved */ }
     if (!virtualEnquiryEnabled || !Array.isArray(saved) || !saved.length) { restoring.current = false; return; }
     (async () => {
-      const back = [];
+      const back = [], jobs = new Map();
       for (const s of keepEnquiryConversations(saved).slice(-10)) {
         try {
           if (!/^[a-f0-9]{24}$/.test(s.id || '')) continue;
-          const job = await query({ action: 'get', id: s.id });
+          if (!jobs.has(s.id)) jobs.set(s.id, query({ action: 'get', id: s.id }));
+          const job = await jobs.get(s.id);
           const payload = restoredEnquiryPayload(job, s);
           if (!payload) continue;
-          const key = JSON.stringify(payload);
+          const key = isGroup(s.group) ? `${s.group}:${s.id}` : JSON.stringify(payload);
           // Already-read words stay as they were; nothing types out again.
           wordingCache.set(`ask:${key}`, null); shownReplies.add(job.id);
           back.push({ key, payload, centre: s.centre, request: null, family: !!s.family, group: isGroup(s.group) ? s.group : undefined, job, error: '', busy: false, paused: false, retry: 0, unread: false, settled: !following(job), restored: true });
@@ -372,8 +382,9 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
   const setSound = useCallback((on) => { setSoundState(on); try { localStorage.setItem(soundKey, on ? 'on' : 'off'); } catch { /* per-browser preference */ } }, []);
   const settledRef = useRef(new Set());
   const settle = useCallback((key, job) => {
-    settledRef.current.add(key);
-    const me = threadsRef.current.find(x => x.key === key);
+    const related = threadsRef.current.filter(x => x.key === key || x.job?.id === job?.id);
+    related.forEach(t => settledRef.current.add(t.key));
+    const me = related.find(x => inView(x, viewRef.current.key)) ?? related.at(-1);
     // In a group, the notice waits until every centre has answered.
     const group = me?.group, members = group ? threadsRef.current.filter(x => x.group === group) : [];
     const groupDone = !group || members.every(x => x.key === key || settledRef.current.has(x.key) || finished(x));
@@ -393,7 +404,7 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     if (job?.result) void naturalReply(job.result, thread ? centreName({ ...thread, job }) : 'The centre', job.id);
     const v = viewRef.current;
     if (v.open && (v.key === key || (group && v.key === group)) && !modalRef.current && !document.hidden) return;
-    patch(key, { unread: true });
+    related.forEach(t => patch(t.key, { unread: true }));
     if (groupDone) setNotice(group ?? key);
   }, [patch]);
   const ask = useCallback(({ payload, centre, request, family }) => {
@@ -407,19 +418,15 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     actionsRef.current?.closeDialogs?.();
     start(key, payload);
   }, [start]);
-  const askGroup = useCallback((items, family = true) => {
+  const askGroup = useCallback((items) => {
     prepareAlerts();
     const keys = items.map(x => JSON.stringify(x.payload));
     const group = groupFor(threadsRef.current, keys) ?? newGroup();
-    setThreads(list => {
-      const kept = list.filter(t => !keys.includes(t.key));
-      const reused = list.filter(t => keys.includes(t.key)).map(t => ({ ...t, group, family }));
-      const added = items.filter((x, i) => !reused.some(t => t.key === keys[i])).map(x => ({ key: JSON.stringify(x.payload), payload: x.payload, centre: x.centre, request: x.request, family, group, job: null, error: '', busy: false, paused: false, retry: 0, unread: false }));
-      return keepEnquiryConversations([...kept, ...reused, ...added]);
-    });
+    const next = addEnquiryGroup(threadsRef.current, items, group);
+    setThreads(list => addEnquiryGroup(list, items, group));
     setView({ key: group, open: true }); setNotice(n => n === group ? null : n);
     actionsRef.current?.closeDialogs?.();
-    items.forEach((x, i) => { settledRef.current.delete(keys[i]); start(keys[i], x.payload); });
+    next.filter(t => t.group === group && (!t.job || ENDED.includes(t.job.state))).forEach(t => { settledRef.current.delete(t.key); start(t.key, t.payload); });
     return group;
   }, [start]);
   const show = useCallback((target) => { const key = threadsRef.current.find(x => x.key === target)?.group ?? target; actionsRef.current?.closeDialogs?.(); setView({ key, open: true }); setNotice(null); setThreads(list => list.map(t => inView(t, key) && t.unread ? { ...t, unread: false } : t)); }, []);
@@ -459,7 +466,9 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     for (const t of threadsRef.current.filter(x => x.group === group)) if (t.job?.result && summary(t.job.result).good && !t.job.confirmation) decide(t.key, decision);
   }, [decide]);
   const value = { threads, view, notice, modal, ask, askGroup, decideGroup, show, minimise, remove, start, patch, settle, decide, restored, dismissRestored: () => setRestored(0), sound, setSound, dismissNotice: () => setNotice(null), actions: actionsRef };
-  return <EnquiryContext.Provider value={value}>{children}{threads.map(t => <ThreadFollower key={t.key} thread={t} />)}</EnquiryContext.Provider>;
+  // A reused request can appear in two plans, but needs only one status poll.
+  const followers = threads.filter((t, i) => !t.job?.id || threads.findIndex(x => x.job?.id === t.job.id) === i);
+  return <EnquiryContext.Provider value={value}>{children}{followers.map(t => <ThreadFollower key={t.key} thread={t} />)}</EnquiryContext.Provider>;
 }
 
 // Follows one request's durable events without holding anything open on the server.
@@ -529,7 +538,7 @@ export default function VirtualEnquiry(props) {
   const children = (props.requests || []).map((r, i) => ({ label: r.label || `Child ${i + 1}`, age: String(r.age ?? ''), start: r.deadline, end: r.end }));
   const payload = { branchId: props.providerId, date: props.requests?.[0]?.date, children,
     questions: [...(props.questionIds ?? ['visit', 'fees'])].sort(), scenario: props.scenario || 'rules' };
-  const thread = ctx.threads.find(t => t.key === JSON.stringify(payload));
+  const thread = ctx.threads.findLast(t => JSON.stringify(t.payload) === JSON.stringify(payload));
   const disabled = !payload.date || !children.length || children.some(c => !c.start || !c.end) || !payload.questions.length;
   const label = thread?.job?.state === 'replied' ? 'View reply' : active(thread?.job) ? 'View chat' : 'Ask for me';
   return <button className="secondary virtual-enquiry-toggle" disabled={disabled}
@@ -565,7 +574,7 @@ export function VirtualEnquiryGroup({ items }) {
 function groupSteps(ts, act, decide, decideGroup) {
   if (!ts.length || !ts.every(finished)) return [];
   const group = ts[0].group, good = ts.filter(t => t.job.result && summary(t.job.result).good);
-  const removed = ts.some(t => noPlace(t.job.result));
+  const removed = ts.some(t => familyNo(t.job.result));
   const options = { label: removed ? 'See other plans' : 'Back to your plan', icon: List, run: () => act.current?.options?.(true) };
   if (ts.length !== 2) return [options];
   if (good.length === ts.length) {
@@ -597,12 +606,12 @@ function groupSummary(ts) {
     if (c.some(x => x)) return { good: false, title: 'The centres have different answers', note: 'Check both replies before making plans.' };
     return { good: true, title: 'Both centres have a place', note: 'Keep both places to tell the centres. Your other questions still need an answer.' };
   }
-  const removed = bad.filter(t => noPlace(t.job.result));
+  const removed = bad.filter(t => familyNo(t.job.result));
   const names = bad.map(centreName).join(' and ');
-  return { good: false, title: 'This plan won’t work',
-    note: removed.length
-      ? `${removed.map(centreName).join(' and ')} has no place for ${removed.flatMap(t => t.job.result.children.filter(c => c.state === 'unavailable' && !c.offer).map(c => c.label)).join(' and ')}, so this plan is off your options for this search.`
-      : ENDED.includes(bad[0].job.state) ? `No reply from ${names}. No place has been confirmed.` : `${names} can’t take both times as asked. Check the reply for another time.` };
+  if (removed.length) return { good: false, title: 'This plan won’t work',
+    note: `${removed.map(t => `${centreName(t)} can’t take ${t.job.result.children.filter(cantTake).map(c => `${c.label}${offerText(c.offer)}`).join(' or ')} at the times asked`).join(', and ')}, so this plan is off your options for this search.` };
+  if (ENDED.includes(bad[0].job.state)) return { good: false, title: 'No reply yet', note: `No reply from ${names}. No place has been confirmed.` };
+  return { good: false, title: `${names} needs more details`, note: `Answer ${names} before keeping either place. Your plan is still on the list.` };
 }
 
 // A chat brought back after a page refresh has no search behind it, so it
@@ -614,7 +623,7 @@ function nextSteps(t, act, ask, decide) {
 function stepsFor(t, act, ask, decide) {
   const r = t.job?.result;
   // A "no place" took that plan off the list, so the way back is to the others.
-  const declined = t.job?.result?.children?.some(c => c.state === 'unavailable' && !c.offer);
+  const declined = t.family ? familyNo(t.job?.result) : t.job?.result?.children?.some(c => c.state === 'unavailable' && !c.offer);
   const options = { label: t.family ? (declined ? 'See other plans' : 'Back to your plan') : 'See other options', icon: List, run: () => act.current?.options?.(t.family) };
   const prepare = { label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepare?.(t.centre, t.request), needsSearch: true };
   const contact = { label: 'Contact the centre', icon: MessageCircle, run: () => act.current?.contact?.(t.centre, t.request), needsSearch: true };

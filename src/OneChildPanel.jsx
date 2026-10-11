@@ -67,7 +67,7 @@ export function PlanActions({ centres, date, onChecklist, onDownload, askAll = n
 export function DeclinedNote({ name: centre, two = false, onUndo, onClose }) {
   return <div className="family-declined" role="status">
     <Info size={17} aria-hidden="true" />
-    <p><strong>{name({ name: centre })}</strong> has no place for {two ? "this plan" : "this visit"}, so we’ve taken it off your options. <button className="text-link" onClick={onUndo}>Undo</button></p>
+    <p><strong>{name({ name: centre })}</strong> {two ? "can’t take the times in this plan" : "has no place for this visit"}, so we’ve taken it off your options. <button className="text-link" onClick={onUndo}>Undo</button></p>
     <button className="family-declined-close" onClick={onClose} aria-label="Dismiss"><X size={16} /></button>
   </div>;
 }

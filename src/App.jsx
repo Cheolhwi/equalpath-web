@@ -49,7 +49,7 @@ import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory
 import Checklist from "./Checklist.jsx";
 import Enquiry from "./Enquiry.jsx";
 import { EnquiryProvider, EnquiryDock, RefreshGuard } from "./VirtualEnquiry.jsx";
-import { enquiryVisitsMatch } from "../shared/enquiry-session.mjs";
+import { enquiryVisitsMatch, enquiryChildDeclined } from "../shared/enquiry-session.mjs";
 import FamilyPanel, { familyMapItems, familyChecklistEntry, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
 import OneChildPanel, { initialOnePanel } from "./OneChildPanel.jsx";
 import useFamily, { familyKey, secondChildErrors } from "./useFamily.js";
@@ -949,10 +949,12 @@ export default function App({
     // the options on the left, with a note and Undo (10 Oct 2026).
     declined: (t, result) => {
       const kids = result.children.map((c, i) => ({ c, k: c.label === "Child 2" ? "b" : c.label === "Child 1" || i === 0 ? "a" : "b" }))
-        .filter(({ c }) => c.state === "unavailable" && !c.offer).map(({ k }) => k);
+        // Two children: a plan is for fixed times, so another day or a later
+        // start also takes it off the list (11 Oct 2026).
+        .filter(({ c }) => enquiryChildDeclined(c, t.family)).map(({ k }) => k);
       if (!kids.length || !t.centre?.id) return;
       if (t.family && familyMode && family.state?.plan) {
-        const matching = result.children.filter(c => c.state === "unavailable" && !c.offer).filter(c => {
+        const matching = result.children.filter(c => enquiryChildDeclined(c, true)).filter(c => {
           const k = c.label === "Child 2" ? "b" : "a", r = childRequest(family.state.plan, k);
           const child = t.payload.children.find(x => x.label === c.label);
           return child && enquiryVisitsMatch([{ ...t.payload, children: [child] }], [{ branchId: t.payload.branchId, date: r.date, children: [{ age: r.age, start: r.deadline, end: r.end }] }]);

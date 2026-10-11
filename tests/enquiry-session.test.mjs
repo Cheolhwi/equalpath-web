@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { enquiryStatus, openEnquiryReferences, restoredEnquiryPayload, keepEnquiryConversations, enquiryVisitsMatch, pendingGroupDecisions } from '../shared/enquiry-session.mjs';
+import { enquiryStatus, openEnquiryReferences, restoredEnquiryPayload, keepEnquiryConversations, enquiryVisitsMatch, pendingGroupDecisions, enquiryGroupFor, addEnquiryGroup, enquiryChildDeclined } from '../shared/enquiry-session.mjs';
 
 const request = { date: '2026-10-12', age: '2', deadline: '09:00', end: '15:00' };
 const child = { label: 'Child 1', age: '2', start: '09:00', end: '15:00' };
@@ -105,4 +105,35 @@ test('a partially delivered group decision can continue without re-confirming th
   pair[0].job.confirmation.state = 'failed';
   assert.deepEqual(pendingGroupDecisions(pair), []);
   assert.deepEqual(pendingGroupDecisions([pair[1]]), []);
+});
+
+test('a new plan can reuse one enquiry without moving it out of the previous group', () => {
+  const first = { payload: thread().payload }, second = { payload: { ...thread().payload, branchId: 'branch-b' } };
+  const oldId = 'group:0123456789abcdef', newId = 'group:1123456789abcdef';
+  const old = addEnquiryGroup([], [first, second], oldId);
+  old[1].job = { id: 'b'.repeat(24), state: 'replied', confirmation: { state: 'acknowledged', decision: 'accept' } };
+  const changed = { payload: { ...first.payload, children: [{ ...child, start: '11:00', end: '12:00' }] } };
+  const next = addEnquiryGroup(old, [changed, second], newId);
+  assert.equal(next.length, 4);
+  assert.equal(next.filter(t => t.group === oldId).length, 2);
+  assert.equal(next.filter(t => t.group === newId).length, 2);
+  assert.equal(next[3].job, old[1].job);
+  assert.notEqual(next[3].key, old[1].key);
+  assert.equal(enquiryGroupFor(next, [second.payload, first.payload]), oldId);
+  assert.equal(enquiryGroupFor(next, [changed.payload, second.payload]), newId);
+  assert.equal(addEnquiryGroup(next, [changed, second], newId), next);
+  const refs = openEnquiryReferences(next);
+  assert.equal(refs.length, 2);
+  assert.notEqual(refs[0].group, refs[1].group);
+});
+
+
+test('a different-day or later-time offer excludes only the original family plan', () => {
+  for (const child of [{ state: 'unavailable', offer: { date: '2026-10-16' } },
+    { state: 'conditional', offer: { start: '16:00' } }]) {
+    assert.equal(enquiryChildDeclined(child, true), true);
+    assert.equal(enquiryChildDeclined(child, false), false);
+  }
+  assert.equal(enquiryChildDeclined({ state: 'unavailable' }), true);
+  for (const state of ['available', 'more_info']) assert.equal(enquiryChildDeclined({ state }, true), false);
 });
