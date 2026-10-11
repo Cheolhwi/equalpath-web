@@ -43,6 +43,7 @@ import {
   OrderingNote,
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
+import { decodeChecklist } from "../shared/checklist-share.mjs";
 import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM, searchRadius, isShortCare, careTypeLabel, canonicalRequest } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
@@ -812,10 +813,46 @@ export default function App({
   };
   // Saving the same plan again (same centre(s) and day) updates it and keeps the ticks.
   const saveChecklist = (entry) => setChecklists(cs => {
-    const old = cs.find(e => e.id === entry.id), next = { ...entry, checked: old?.checked ?? [] };
+    const old = cs.find(e => e.id === entry.id), next = { ...entry, checked: old?.checked ?? entry.checked ?? [] };
     return old ? cs.map(e => e.id === entry.id ? next : e) : [...cs, next];
   });
   const showChecklist = (id = null) => { setOpenChecklist(id); setDialogError(null); setDialog("preparation"); };
+  // A shared Checklist link (#checklist=…, see shared/checklist-share.mjs):
+  // read once, then the address goes back to the map so a refresh or a
+  // forwarded screenshot doesn't carry it further.
+  const sharedCode = useRef(location.hash.startsWith("#checklist=") ? location.hash.slice(11) : null);
+  const [sharedTick, setSharedTick] = useState(0);
+  useEffect(() => {
+    const changed = () => { if (location.hash.startsWith("#checklist=")) { sharedCode.current = location.hash.slice(11); setSharedTick((n) => n + 1); } };
+    window.addEventListener("hashchange", changed);
+    return () => window.removeEventListener("hashchange", changed);
+  }, []);
+  useEffect(() => {
+    const code = sharedCode.current;
+    if (!code) return;
+    sharedCode.current = null;
+    history.replaceState(null, "", `${location.pathname}${location.search}#discover`);
+    const data = decodeChecklist(code);
+    if (!data || data.mode !== mode) { notify("This checklist link is incomplete. Ask for it to be shared again."); return; }
+    (async () => {
+      try {
+        const loaded = await Promise.all(data.items.map(async (it) => {
+          const r = await requestAPI({ action: "details", mode, id: it.id, request: { ...initial(), careType: "short_term", kids: 1, pickup: data.pickup, date: data.date, deadline: it.start, end: it.end, age: it.age, transport: data.transport } });
+          return { p: r.items[0], request: r.request };
+        }));
+        let entry;
+        if (loaded.length === 1) entry = { id: `one:${loaded[0].p.id}:${data.date}`, kind: "one", p: loaded[0].p, request: loaded[0].request };
+        else {
+          const items = loaded.map((x, i) => ({ key: i ? "b" : "a", p: x.p, request: x.request }));
+          const names = [...new Set(items.map((x) => displayName(x.p.name)))];
+          entry = { id: `family:shared:${items.map((x) => x.p.id).join("|")}:${data.date}`, kind: "family", date: data.date, items, steps: [],
+            title: names.join(" + "), text: items.map((x) => `${x.key === "a" ? "Child 1" : "Child 2"}: ${displayName(x.p.name)}, ${x.request.deadline}–${x.request.end}`).join("\n") };
+        }
+        saveChecklist({ ...entry, checked: data.checked, shared: true });
+        showChecklist(entry.id);
+      } catch { notify("This shared checklist couldn’t be opened right now. Please try the link again."); }
+    })();
+  }, [sharedTick]); // eslint-disable-line react-hooks/exhaustive-deps
   const savedToast = (id) => notify("Saved to your Checklist.", { label: "Open", run: () => { close(); showChecklist(id); } });
   const startPreparation = (p, request = activeRequest, open = true) => {
     if (!p || !request) return;
@@ -936,14 +973,27 @@ export default function App({
     // Both places confirmed for two children: the family Checklist, the same
     // kind as one child's (11 Oct 2026). Falls back to the plan list when
     // that plan is no longer in this search.
-    prepareFamily: (payloads) => {
+    prepareFamily: (list) => {
+      const payloads = list.map((x) => x.payload ?? x);
       const plan = family.state?.plan, all = family.built?.all ?? [];
       const matches = (x) => x && enquiryVisitsMatch(payloads, ["a", "b"].map(k => {
         const r = childRequest(plan, k);
         return { branchId: x[k].id, date: r.date, children: [{ age: r.age, start: r.deadline, end: r.end }] };
       }));
       const o = plan ? (matches(family.option) ? family.option : all.find(matches)) : null;
-      if (!o) { enquiryActions.options(true); return; }
+      if (!o) {
+        // The search has moved on (or hasn't caught up with an accepted later
+        // start): build the Checklist from the confirmed requests themselves,
+        // so "Get ready" always opens it (11 Oct 2026, user: it only closed the chat).
+        const items = list.flatMap((x) => (x.payload ?? x).children.map((c) => ({ c, x }))).filter(({ x }) => x.centre).map(({ c, x }) => ({
+          key: c.label === "Child 2" ? "b" : "a", p: x.centre,
+          request: { careType: "short_term", pickup: plan?.start ?? x.request?.pickup, date: x.payload.date, deadline: c.start, end: c.end, age: c.age, transport: x.request?.transport ?? "" } }));
+        if (items.length !== 2) { enquiryActions.options(true); return; }
+        const names = [...new Set(items.map((it) => displayName(it.p.name)))];
+        const entry = { id: `family:confirmed:${items.map((it) => it.p.id).join("|")}:${items[0].request.date}`, kind: "family", date: items[0].request.date, items, steps: [],
+          title: names.join(" + "), text: items.map((it) => `${it.key === "a" ? "Child 1" : "Child 2"}: ${displayName(it.p.name)}, ${it.request.deadline}–${it.request.end}`).join("\n") };
+        saveChecklist(entry); showChecklist(entry.id); return;
+      }
       const lp = o === family.option && family.lp ? family.lp : family.plans.get(o.id) ?? leavePlan(o, plan, family.legs);
       const entry = familyChecklistEntry(o, plan, lp);
       saveChecklist(entry); showChecklist(entry.id);
@@ -977,6 +1027,11 @@ export default function App({
     },
     // The parent took the centre's later start or other day: the search
     // follows, so the plan on the left matches what is asked next.
+    // Every later start the parent took, in one change (both children can move).
+    acceptChanges: (changes) => {
+      if (familyMode) applyFamilyFix(changes.map((c) => ({ child: c.label === "Child 2" ? "b" : "a", field: "start", value: c.start })));
+      else if (changes[0]) enquiryActions.acceptStart(changes[0].label, changes[0].start);
+    },
     acceptStart: (label, start) => {
       if (familyMode) applyFamilyFix([{ child: label === "Child 2" ? "b" : "a", field: "start", value: start }]);
       else { const next = { ...draft, deadline: start }; setDraft(next); notify(`Changed the start to ${start}. Checking again…`); search(null, 0, next); }

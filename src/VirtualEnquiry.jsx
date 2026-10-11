@@ -88,11 +88,17 @@ function accepted(t) {
 }
 function changeSteps(bad, act, decide, others = [], family = false) {
   const offers = bad.flatMap(t => offersIn(t).map(c => ({ t, c })));
-  const what = [...new Set(offers.map(({ c }) => c.offer.start ? (family ? `${c.offer.start} for ${c.label}` : c.offer.start) : visitDay(c.offer.date)))].join(' and ');
+  const starts = [...new Set(offers.map(({ c }) => c.offer.start ?? visitDay(c.offer.date)))];
+  const what = family && offers.length > 1 && starts.length === 1 ? `${starts[0]} for both`
+    : [...new Set(offers.map(({ c }) => c.offer.start ? (family ? `${c.offer.start} for ${c.label}` : c.offer.start) : visitDay(c.offer.date)))].join(' and ');
   return [
     { label: others.length ? `Accept ${what} and keep both places` : `Yes, ${what} works`, icon: Check, stay: true,
       run: () => {
-        for (const { c } of offers) c.offer.start ? act.current?.acceptStart?.(c.label, c.offer.start) : act.current?.tryDate?.(c.offer.date);
+        // All later starts in one change: both children at one centre move together.
+        const starts = offers.filter(({ c }) => c.offer.start).map(({ c }) => ({ label: c.label, start: c.offer.start }));
+        if (starts.length) act.current?.acceptChanges?.(starts);
+        const day = offers.find(({ c }) => c.offer.date);
+        if (day) act.current?.tryDate?.(day.c.offer.date);
         for (const t of bad) decide(t.key, 'accept', { accepted: accepted(t) });
         for (const t of others) decide(t.key, 'accept');
       } },
@@ -670,7 +676,7 @@ function groupSteps(ts, act, decide, decideGroup, askGroup) {
     if (pending.length && pending.every(t => t.decision)) return pending.map(t => ({ label: `Send your answer to ${centreName(good.find(x => x.key === t.key))}`, icon: MessageCircle, run: () => decide(t.key, t.decision), stay: true }));
     if (good.some(t => t.job.confirmation?.state === 'sending')) return [];
     if (good.every(t => t.job.confirmation?.decision === 'accept' && t.job.confirmation.state === 'acknowledged') && ts.every(t => t.request))
-      return [{ label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepareFamily?.(ts.map(t => t.payload)) }, options];
+      return [{ label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepareFamily?.(ts.map(t => ({ payload: t.payload, centre: t.centre, request: t.request }))) }, options];
     return [options];
   }
   // One centre said yes but the plan can't work: let that centre know.
@@ -729,7 +735,7 @@ function stepsFor(t, act, ask, decide) {
       { label: 'Yes, keep the place', icon: Check, run: () => decide(t.key, 'accept'), stay: true },
       { label: 'No, thanks', icon: X, run: () => decide(t.key, 'decline'), stay: true }];
     // Two children get the family Checklist, the same kind as one child's.
-    const prepareFamily = { label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepareFamily?.([t.payload]), needsSearch: true };
+    const prepareFamily = { label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepareFamily?.([{ payload: t.payload, centre: t.centre, request: t.request }]), needsSearch: true };
     if (c?.state === 'acknowledged') return c.decision === 'accept' ? (t.family ? [prepareFamily, { ...options, label: 'Back to your plan' }] : !t.centre ? [options] : [prepare]) : [options];
     if (c?.state === 'failed') return [contact];
     if (c) return [];

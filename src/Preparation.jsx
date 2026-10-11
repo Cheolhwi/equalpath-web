@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { dateLabel, displayName } from "../shared/display.mjs";
 import { plainReason } from "../shared/plain-copy.mjs";
-import { Download, Printer, ArrowRight, CalendarDays, ChevronDown, AlertTriangle, MapPin, Building2, Backpack, Shirt, Phone, Apple, BedDouble, Baby, Moon, CarFront, NotebookTabs, ClipboardCheck, MessageCircle, Milk, FileText, NotebookPen, Footprints, Palette, Users, Receipt } from "lucide-react";
+import { Download, Printer, Link2, ArrowRight, CalendarDays, ChevronDown, AlertTriangle, MapPin, Building2, Backpack, Shirt, Phone, Apple, BedDouble, Baby, Moon, CarFront, NotebookTabs, ClipboardCheck, MessageCircle, Milk, FileText, NotebookPen, Footprints, Palette, Users, Receipt } from "lucide-react";
 import Surroundings, { surroundingImages } from "./Surroundings.jsx";
-import { preparationFor, preparationHTML } from "../shared/preparation.mjs";
+import { preparationFor, preparationHTML, preparationCSS } from "../shared/preparation.mjs";
+import { encodeChecklist } from "../shared/checklist-share.mjs";
 import { requestErrors } from "../shared/request.mjs";
 import { PublishedContacts, SourceLink } from "./ProviderViews.jsx";
 import TimeInput from "./TimeInput.jsx";
@@ -66,6 +67,46 @@ export const STATUS = {
 export function StatusChip({ status }) {
   const [tone, text] = STATUS[status ?? null] ?? STATUS.null;
   return <span className={`checklist-status ${tone}`}>{text}</span>;
+}
+
+// Print any prepared sheet through a hidden frame (same-origin, no scripts).
+function printHTML(html) {
+  const returnFocus = document.activeElement, frame = document.createElement("iframe");
+  frame.title = "Printable preparation sheet"; frame.className = "preparation-print-frame";
+  frame.onload = () => {
+    frame.contentWindow.addEventListener("afterprint", () => { frame.remove(); returnFocus?.focus(); }, { once: true });
+    frame.contentWindow.focus(); frame.contentWindow.print();
+  };
+  frame.srcdoc = html; document.body.appendChild(frame);
+  setTimeout(() => frame.remove(), 120000);
+}
+// Share link + Print / Save PDF (11 Oct 2026, user: "print/save和download重合了…直接短链接sharing").
+// The plan rides in the link's #fragment (see shared/checklist-share.mjs).
+export function checklistLink(data) {
+  const code = encodeChecklist(data);
+  if (!code) return null;
+  return `${location.origin}${location.pathname}${data.mode === "demo" ? "?mode=demo" : ""}#checklist=${code}`;
+}
+function ShareActions({ data, onPrint, note }) {
+  const [state, setState] = useState("");
+  const link = useMemo(() => checklistLink(data), [JSON.stringify(data)]); // eslint-disable-line react-hooks/exhaustive-deps
+  const share = async () => {
+    if (!link) return;
+    try {
+      if (navigator.share && window.matchMedia?.("(pointer: coarse)").matches) { await navigator.share({ title: "EqualPath checklist", url: link }); return; }
+      await navigator.clipboard.writeText(link); setState("copied");
+    } catch (e) { if (e?.name !== "AbortError") setState("manual"); }
+  };
+  return <section className="preparation-takeaway">
+    <div className="saved-actions">
+      <button className="primary" onClick={share} disabled={!link}><Link2 size={16} aria-hidden="true" />{state === "copied" ? "Link copied" : "Share link"}</button>
+      <button className="secondary" onClick={onPrint}><Printer size={16} aria-hidden="true" />Print / Save PDF</button>
+    </div>
+    {state === "manual" && <input className="share-link-field" readOnly value={link} aria-label="Checklist link" onFocus={(e) => e.target.select()} />}
+    <p className="preparation-private">{state === "copied"
+      ? "Paste it into WhatsApp or a message. The link itself carries the day, times, age and starting point — nothing is stored on our side."
+      : note}</p>
+  </section>;
 }
 
 export default function Preparation({
@@ -225,13 +266,9 @@ export default function Preparation({
           </section>
         </div>
         <aside className="preparation-tools" aria-label="Centre contact and checklist tools">
-          <section className="preparation-takeaway">
-            <div className="saved-actions">
-              <button className="primary" onClick={() => exportSheet(true)}><Printer size={16} />Print / Save PDF</button>
-              <button className="secondary" onClick={() => exportSheet(false)}><Download size={16} />Download checklist</button>
-            </div>
-            <p className="preparation-private">Your ticks stay while this page is open. Print or download to keep a copy.</p>
-          </section>
+          <ShareActions onPrint={() => exportSheet(true)} note="Your ticks stay while this page is open. Share the link or print to keep a copy."
+            data={{ mode: p.mode, pickup: request.pickup, date: request.date, transport: request.transport, checked,
+              items: [{ id: p.id, start: request.deadline, end: request.end, age: request.age }] }} />
           <details className="ready-support"><summary><MessageCircle size={20} aria-hidden="true" /><span>Questions & contacts</span><ChevronDown size={18} aria-hidden="true" /></summary>
             <section className="preparation-contact"><PublishedContacts p={p} compact /><button className="text-link" onClick={onEnquiry}>Contact the centre<ArrowRight size={15} /></button></section>
             <div className="preparation-parties">
@@ -296,17 +333,23 @@ function familyDay(entry) {
   };
   return [...group("deadline", "drop"), ...group("end", "collect")].sort((x, y) => x.time.localeCompare(y.time));
 }
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+function familyHTML(entry, day, cards, checked) {
+  const ticks = (c) => c.ticks.map((t) => `${checked.includes(t.id) ? "☑" : "☐"}${t.kid ? ` ${kidName(t.kid)}` : ""}`).join("  ");
+  const centres = [...new Map(entry.items.map((it) => [it.p.id, it.p])).values()];
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>EqualPath checklist — ${esc(entry.title)}</title><style>${preparationCSS}</style></head><body><main>
+  <p class="brand">EQUALPATH / YOUR VISIT</p><h1>Get ready for childcare</h1>
+  <div class="visit"><div><small>CARE AT</small><strong>${esc(entry.title)}</strong></div><div><strong>${esc(entry.date)}</strong><small>Malaysia time</small></div></div>
+  <h2>Your day</h2><ul>${day.map((st) => `<li><strong>${esc(st.time)}</strong> ${esc(st.label)}</li>`).join("")}</ul>
+  <h2>Before you go</h2><ul class="checklist">${cards.map((c) => `<li>${esc(c.item.label ?? c.item.text)} — ${esc(c.item.text)}${c.item.centre ? ` ${esc(c.item.centre.text)}` : ""}<small>${esc(ticks(c))}</small></li>`).join("")}</ul>
+  <h2>Contact the centres</h2>${centres.map((p) => `<p><strong>${esc(displayName(p.name))}</strong>${p.phone?.display ? ` · ${esc(p.phone.display)}` : ""}${p.address ? `<small>${esc(p.address)}</small>` : ""}</p>`).join("")}
+  <p class="notice">Each centre still needs to confirm a place. Share health details privately with the centre.</p></main></body></html>`;
+}
 export function FamilyPreparation({ entry, checked = [], onToggle, statusFor, onContact }) {
   const { sheets, oneCentre, cards, all } = useMemo(() => familyPacking(entry), [entry]);
   const day = useMemo(() => familyDay(entry), [entry]);
   const done = all.filter((id) => checked.includes(id)).length;
   const centres = [...new Map(entry.items.map((it) => [it.p.id, it])).values()];
-  const [copied, setCopied] = useState(false);
-  const download = () => {
-    const url = URL.createObjectURL(new Blob([entry.text], { type: "text/plain" }));
-    const a = document.createElement("a"); a.href = url; a.download = `equalpath-family-plan-${entry.date}.txt`; a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
   const card = ({ key, item, ticks }) => {
     const ready = ticks.every((t) => checked.includes(t.id)), single = ticks.length === 1 && !ticks[0].kid;
     const body = <ItemBody item={item} />;
@@ -354,11 +397,9 @@ export function FamilyPreparation({ entry, checked = [], onToggle, statusFor, on
         <div className="contact-buttons"><PublishedContacts p={it.p} compact showSources={false} /></div>
         {onContact && statusFor?.(it.p.id, entry.date) !== "confirmed" && <button className="text-link" onClick={() => onContact(it.p, it.request)}>Contact the centre<ArrowRight size={15} aria-hidden="true" /></button>}
       </div>)}</div>
-      <div className="saved-actions">
-        <button className="secondary" onClick={async () => { try { await navigator.clipboard.writeText(entry.text); setCopied(true); } catch { setCopied(false); } }}><ClipboardCheck size={16} />{copied ? "Copied" : "Copy plan"}</button>
-        <button className="secondary" onClick={download}><Download size={16} />Download plan</button>
-      </div>
-      <p className="preparation-private">Your ticks stay while this page is open. Each centre still needs to confirm a place.</p>
+      <ShareActions onPrint={() => printHTML(familyHTML(entry, day, cards, checked))} note="Your ticks stay while this page is open. Each centre still needs to confirm a place."
+        data={{ mode: entry.items[0].p.mode, pickup: entry.items[0].request.pickup, date: entry.date, transport: entry.items[0].request.transport, checked,
+          items: entry.items.map((it) => ({ id: it.p.id, start: it.request.deadline, end: it.request.end, age: it.request.age })) }} />
     </section>
   </div>;
 }

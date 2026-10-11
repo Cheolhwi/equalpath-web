@@ -118,3 +118,8 @@
 }
 /* The centre's note is one short line, not a box, so cards stay compact. */
 .equalpath .ready-item-centre { padding: 0; background: none; color: var(--accent); font-size: 12.5px; font-weight: 650; }
+
+/* Share link (11 Oct 2026): shown only when the browser couldn't copy it. */
+.equalpath .share-link-field { width: 100%; margin-top: 8px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); color: var(--ink); font: inherit; font-size: 13px; }
+.equalpath .checklist-shared { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--soft); font-size: 13.5px; line-height: 1.45; }
+.equalpath .checklist-shared > svg { flex-shrink: 0; margin-top: 2px; color: var(--accent); }

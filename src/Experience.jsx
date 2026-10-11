@@ -28,6 +28,8 @@ const readLivePreferences = () => {
 };
 const shouldShowPreferences = () => liveMode() && readLivePreferences().preferenceSetup === "new";
 const initialExperiencePhase = () => {
+  // A shared Checklist link opens straight onto the app (App reads the link).
+  if (location.hash.startsWith("#checklist=")) return "ready";
   if (location.hash === "#preferences") return shouldShowPreferences() ? "preferences" : "ready";
   if (mapHash.includes(location.hash)) return shouldShowPreferences() ? "preferences" : "ready";
   return "welcome";
@@ -175,7 +177,8 @@ export default function Experience() {
     };
     window.addEventListener("keydown", keyboard);
     const hashChanged = () => {
-      if (location.hash === "#discover" || location.hash === "#preferences") openMapOrPreferences();
+      if (location.hash.startsWith("#checklist=")) finish();
+      else if (location.hash === "#discover" || location.hash === "#preferences") openMapOrPreferences();
       else if (!location.hash) home();
     };
     window.addEventListener("hashchange", hashChanged);
@@ -183,7 +186,7 @@ export default function Experience() {
       window.removeEventListener("keydown", keyboard);
       window.removeEventListener("hashchange", hashChanged);
     };
-  }, [moving, phase, openMapOrPreferences, home]);
+  }, [moving, phase, openMapOrPreferences, home, finish]);
 
   const savePreferences = (topics, status) => {
     try {
