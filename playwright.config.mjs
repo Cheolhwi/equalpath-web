@@ -23,6 +23,10 @@ export default defineConfig({
   use: {
     baseURL,
     viewport: { width: 1440, height: 1000 },
+    // The map also renders through CPU OpenGL on hosted CI. Preserve CSS
+    // geometry, motion and assertions while bounding the raster workload.
+    // Local visual QA remains at full pixel density; landing overrides to .25.
+    deviceScaleFactor: process.env.CI ? 0.5 : 1,
     reducedMotion: "reduce",
     // Use the full browser; Linux CI uses Mesa OpenGL on a virtual display.
     channel: process.env.PW_CHANNEL || "chromium",
