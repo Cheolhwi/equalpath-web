@@ -107,5 +107,5 @@ export function enquiryView(p, request) {
 }
 export function enquiryMessage(p, request, selected) {
   if (!isShortCare(request)) return `Hello ${p.name}, I’m looking for long-term childcare.\n\nLocation: ${request.pickup.label}\n${childAge(request.age)} · ${pickupPreference(request.transport)}\n\n${selected.map((q, i) => `${i + 1}. ${q.text}`).join("\n\n")}\n\nThank you!`;
-  return `Hello ${p.name}, I need childcare for a few hours.\n\nDate: ${visitDate(request.date)}\nPickup address: ${request.pickup.label}\nLeave pickup address by: ${request.deadline}\nPick up from childcare at: ${request.end}\n${childAge(request.age)} · ${pickupPreference(request.transport)}\n\n${selected.map((q, i) => `${i + 1}. ${q.text}`).join("\n\n")}\n\nThank you!`;
+  return `Hello ${p.name}, I need childcare for a few hours.\n\nDate: ${visitDate(request.date)}\nPickup address: ${request.pickup.label}\nCare starts: ${request.deadline}\nPick up from childcare at: ${request.end}\n${childAge(request.age)} · ${pickupPreference(request.transport)}\n\n${selected.map((q, i) => `${i + 1}. ${q.text}`).join("\n\n")}\n\nThank you!`;
 }

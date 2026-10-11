@@ -44,7 +44,7 @@ const REASONS = [
   [/^You haven’t chosen who will handle pickup\.$/, "You haven’t said who takes your child to the centre."],
   [/^You’ll handle pickup\. The centre does not need to pick up your child\.$/, "You’ll bring your child, so the centre doesn’t need to pick them up."],
   [/^You’ll handle pickup, so the centre’s pickup area does not matter\.$/, "You’ll bring your child, so the pickup area doesn’t matter."],
-  [/^You’ll handle pickup by (\d{2}:\d{2})\.$/, "You’ll leave with your child by $1."],
+  [/^You’ll handle pickup by (\d{2}:\d{2})\.$/, "You’ll bring your child by $1, when care starts."],
   [/^You’ll handle pickup\.$/, "You’ll bring your child yourself."],
   [/^Published pickup: /, "Listed pickup times: "],
   [/^No care hours are published for this date\.$/, "No care hours are listed for this date."],

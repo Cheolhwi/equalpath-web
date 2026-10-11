@@ -25,7 +25,7 @@ export function comparisonFact(p, id, request) {
       value = request.transport === 'self' ? 'You’ll bring your child' : known ? 'Covers your starting point' : conflict ? 'Doesn’t cover your starting point' : 'Ask about your starting point';
       break;
     case 'pickup':
-      value = request.transport === 'self' ? `You’ll leave by ${request.deadline}` : known ? `By ${request.deadline}` : conflict ? `Later than ${request.deadline}` : `Ask about ${request.deadline}`;
+      value = request.transport === 'self' ? `You’ll drop off by ${request.deadline}` : known ? `By ${request.deadline}` : conflict ? `Later than ${request.deadline}` : `Ask about ${request.deadline}`;
       break;
     case 'transfer': value = 'Ask when to arrive'; break;
     default: value = c?.label ?? 'Not needed';

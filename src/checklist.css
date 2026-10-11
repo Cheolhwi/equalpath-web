@@ -123,3 +123,7 @@
 .equalpath .share-link-field { width: 100%; margin-top: 8px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); color: var(--ink); font: inherit; font-size: 13px; }
 .equalpath .checklist-shared { display: flex; gap: 8px; align-items: flex-start; margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--soft); font-size: 13.5px; line-height: 1.45; }
 .equalpath .checklist-shared > svg { flex-shrink: 0; margin-top: 2px; color: var(--accent); }
+
+/* Journey: "Leave by" / "Care starts" before the time (11 Oct 2026). */
+.equalpath .preparation-visual .preparation-step-time { align-items: center; gap: 8px; }
+.equalpath .preparation-visual .preparation-step-note { color: var(--muted); font-size: 12.5px; font-weight: 650; white-space: nowrap; }

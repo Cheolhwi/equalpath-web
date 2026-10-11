@@ -74,7 +74,7 @@ export function contactQuestions(p, request, now = Date.now()) {
 export function contactIntro(p, request) {
   const age = request.age === '' ? '' : `\nMy child is ${childAge(request.age).toLowerCase()}${request.age === '0' ? ' old' : ''}.`;
   return isShortCare(request)
-    ? `Hello, I’m looking for childcare for a few hours.${age}\nDate: ${visitDate(request.date)}\nMy child will come from: ${request.pickup.label}, leaving at ${request.deadline}\nI’ll collect my child at: ${request.end}`
+    ? `Hello, I’m looking for childcare for a few hours.${age}\nDate: ${visitDate(request.date)}\nMy child will come from: ${request.pickup.label}\nCare starts: ${request.deadline}\nI’ll collect my child at: ${request.end}`
     : `Hello, I’m looking for regular childcare.${age}\nArea: ${request.pickup.label}`;
 }
 export function contactMessage(p, request, selected) {

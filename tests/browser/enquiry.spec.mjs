@@ -105,7 +105,7 @@ test("combined questions retain warnings and all their source checks without cop
   await copyButton(dialog).click();
   const message = await page.evaluate(() => window.copiedQuestions);
   expect(message).not.toContain("Published care hours");
-  expect(message).toContain("leaving at 13:00\nI’ll collect my child at: 18:00");
+  expect(message).toContain("Care starts: 13:00\nI’ll collect my child at: 18:00");
   expect(message).toContain("Can you pick up my child from KL Sentral by 13:00?");
   await expect(dialog.getByRole("link", { name: `Open WhatsApp for ${name}` })).toHaveAttribute("href", "https://wa.me/60312345678");
 });

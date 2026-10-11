@@ -40,7 +40,7 @@ test("copied message follows selected order and keeps visit context, without int
   const message = enquiryMessage(p, request, selected);
   assert.match(message, /Mon, 14 Sept 2026/);
   assert.ok(message.includes(p.name)); assert.ok(message.includes(demoPickup.label));
-  assert.ok(message.includes("Leave pickup address by: 13:00\nPick up from childcare at: 18:00"));
+  assert.ok(message.includes("Care starts: 13:00\nPick up from childcare at: 18:00"));
   assert.ok(message.indexOf(selected[0].text) < message.indexOf(selected[1].text));
   assert.ok(!message.includes(rows.find(q => q.id === "capacity").text));
   assert.ok(!message.includes(selected[1].check.reason));

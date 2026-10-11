@@ -396,7 +396,7 @@ function checkValue(c, p, request) {
     case "admission": return p.admission?.value === true ? "Care for a few hours listed" : p.admission?.value === false ? "Care for a few hours not offered" : "Ask if they can take your child on this date";
     case "transport": return request.transport === "self" ? "You’ll bring your child" : p.transport?.exists === true ? "Pickup service listed" : p.transport?.exists === false ? "Centre pickup not offered" : "Pickup service not listed";
     case "coverage": return request.transport === "self" ? "Centre pickup not needed" : c.state === "supported" ? "Pickup from your starting point is listed" : c.state === "conflict" ? "Outside the listed pickup area" : "Ask if they can pick up from your starting point";
-    case "pickup": return request.transport === "self" ? `You’ll leave with your child by ${request.deadline}` : `Leave your starting point by ${request.deadline}`;
+    case "pickup": return request.transport === "self" ? `You’ll drop off your child by ${request.deadline}` : `The centre picks up your child by ${request.deadline}`;
     case "transfer": return p.driving?.state === "available" ? `About ${p.driving.minutes} min driving, plus time to drop off your child` : "Ask about driving and drop-off time";
     default: return c.label;
   }

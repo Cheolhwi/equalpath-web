@@ -192,7 +192,9 @@
 .family-panel .plan-centre-buttons > .family-secondary:only-child { background: var(--nav-selected, var(--ink)); color: var(--nav-selected-text, var(--paper)); border-color: transparent; }
 .family-panel .plan-centre .enquiry-manual-message { width: 100%; height: 160px; padding: 10px; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); color: var(--ink); font: inherit; font-size: 13px; }
 /* Save / Download: small tools under a rule. */
-.family-panel .plan-more { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 2px -8px 0; padding-top: 6px; border-top: 1px solid var(--rule); }
+/* The divider spans the card width; the first tool's icon lines up with the card edge (11 Oct 2026). */
+.family-panel .plan-more { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 2px 0 0; padding-top: 6px; border-top: 1px solid var(--rule); }
+.family-panel .plan-more > .plan-tool:first-child { margin-left: -10px; }
 .family-panel .plan-tool { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 10px; border: 0; border-radius: 10px; background: transparent; color: var(--ink); font-size: 14px; font-weight: 600; }
 .family-panel .plan-tool:hover { background: var(--soft); }
 .family-panel .plan-tool > svg { color: var(--accent); }

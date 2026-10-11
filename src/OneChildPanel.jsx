@@ -130,7 +130,7 @@ function Option({ p, pin, request, onSee }) {
       <p className="family-option-centre"><Pin n={pin} /><strong>{name(p)}</strong></p>
       {p.personalised && p.personalisedReason && <p className="family-reason" title={p.personalisedReason}><Heart size={13} aria-hidden="true" /><span>{shortReason(p.personalisedReason)}</span></p>}
       <p className="family-meta"><Car size={15} aria-hidden="true" />{loading ? "Checking drive time…" : plan.drive !== null
-        ? plan.centrePickup ? `About ${plan.drive} min by car · centre pickup` : `About ${plan.drive} min by car · arrive about ${timeLabel(plan.arrive)}`
+        ? plan.centrePickup ? `About ${plan.drive} min by car · centre pickup` : `About ${plan.drive} min by car · leave by ${timeLabel(plan.leaveBy)} for drop-off`
         : "Drive time not available"}</p>
       {plan.leaveForPickup !== null
         ? <p className="family-leave"><Clock3 size={15} aria-hidden="true" />Leave for pickup by <strong>{timeLabel(plan.leaveForPickup)}</strong></p>
@@ -147,6 +147,7 @@ function Option({ p, pin, request, onSee }) {
 const safeQuestionIds = (p, request) => { try { return contactQuestions(p, request).map((q) => q.id); } catch { return undefined; } };
 function Plan({ p, pin, request, onBack, onContact, onChecklist, onDetails, questionIds }) {
   const { plan, steps } = oneChildSteps(p, request, name);
+  const confirmed = useEnquiryStatus()(p.id, [request]) === "confirmed";
   const asks = [...new Set(askChecks(p, request).map((c) => c.label.toLowerCase()))];
   const download = () => {
     const url = URL.createObjectURL(new Blob([oneChildPlanText(p, request, name)], { type: "text/plain" }));
@@ -175,6 +176,6 @@ function Plan({ p, pin, request, onBack, onContact, onChecklist, onDetails, ques
     <PlanActions date={request.date} onChecklist={() => onChecklist(p)} onDownload={download} centres={[{ key: p.id, p, pin, requests: [request], onDetails: () => onDetails(p),
       message: <button className="family-secondary" onClick={() => onContact(p)}><Phone size={16} aria-hidden="true" />Contact</button>,
       ask: <VirtualEnquiry providerId={p.id} centre={p} requests={[request]} questionIds={questionIds?.(p) ?? safeQuestionIds(p, request)} /> }]} />
-    <p className="family-note">Drive times don’t include traffic. The centre still needs to confirm a place.</p>
+    <p className="family-note">Drive times don’t include traffic.{confirmed ? "" : " The centre still needs to confirm a place."}</p>
   </>;
 }

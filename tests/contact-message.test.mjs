@@ -25,7 +25,7 @@ test('the short message copies only checked questions and preserves actual depar
   const p = hydrate(fixtureProviders[1]), groups = contactQuestions(p, request);
   const selected = groups.filter(q => q.id !== 'fees'), message = contactMessage(p, request, selected);
   assert.ok(message.startsWith(contactIntro(p, request)));
-  assert.match(message, /leaving at 13:00\nI’ll collect my child at: 18:00/);
+  assert.match(message, /Care starts: 13:00\nI’ll collect my child at: 18:00/);
   assert.match(message, /4 years old/);
   assert.ok(!message.includes(groups.find(q => q.id === 'fees').text));
   assert.ok(!message.includes('Published care hours'));

@@ -421,7 +421,7 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   await page.locator(".ready-plan-note").getByRole("button", { name: "Contact the centre", exact: true }).click();
   await page.getByRole("button", { name: "Copy message", exact: true }).click();
   const copied = await page.evaluate(() => window.checklistMessage);
-  expect(copied).toContain("leaving at 14:27");
+  expect(copied).toContain("Care starts: 14:27");
   expect(copied).toContain("I’ll collect my child at: 18:05");
   await page.getByRole("button", { name: "Get ready for childcare", exact: true }).click();
   await expect(leave).toContainText("14:27"); await expect(pickup).toContainText("18:05");

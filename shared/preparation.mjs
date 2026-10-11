@@ -1,6 +1,7 @@
-import { minutes, requestCaption, todayKL, isShortCare, ageBounds } from "./request.mjs";
+import { minutes, requestCaption, todayKL, isShortCare, ageBounds, timeLabel } from "./request.mjs";
 import { dateLabel } from "./display.mjs";
 import { plainReason, plainSource } from "./plain-copy.mjs";
+import { oneChildPlan } from "./one-child-plan.mjs";
 export const DRAFT_NOTICE =
   "This is a draft plan. It doesn’t give anyone permission to collect your child. Agree the care and who collects your child with the centre.";
 const prompt = (id, text) => ({
@@ -104,6 +105,10 @@ export function preparationFor(
 ) {
   const shortCare = isShortCare(request);
   const span = shortCare ? minutes(request.end) - minutes(request.deadline) : 0;
+  // Start is the care start; the child leaves the starting point earlier.
+  const centrePickup = request.transport === "institution";
+  const day = shortCare ? oneChildPlan(p, request) : null;
+  const readyBy = !shortCare ? null : centrePickup ? request.deadline : day.leaveBy === null ? null : timeLabel(day.leaveBy);
   const transport =
     request.transport === "institution"
       ? "The centre picks up your child"
@@ -119,7 +124,7 @@ export function preparationFor(
       questions: [
         prompt(
           "release",
-          shortCare ? `Can my child be ready to leave by ${request.deadline}?` : "How does pickup work each day?",
+          shortCare ? readyBy ? `Can my child be ready to leave by ${readyBy}?` : `Can my child be ready to leave in time to reach the centre by ${request.deadline}?` : "How does pickup work each day?",
         ),
         prompt(
           "identity",
@@ -187,24 +192,33 @@ export function preparationFor(
       basis: "Provider-sourced requirement",
     }))
     .concat(extras);
+  // Start is when care starts (the drop-off); the leave time works back from
+  // the drive, as in the one-child plan. With centre pickup, Start is when the
+  // centre collects the child.
   const sequence = [
     {
       title: "Leave the starting point",
-      time: shortCare ? request.deadline : null,
-      timeLabel: "By",
+      time: !shortCare ? null : centrePickup ? request.deadline : day.leaveBy === null ? null : timeLabel(day.leaveBy),
+      timeLabel: centrePickup ? "Centre picks up at" : "By",
+      field: shortCare && centrePickup ? "deadline" : null,
       place: request.pickup.label,
-      text: shortCare ? `${request.pickup.label} · leave by ${request.deadline}` : `Arrange pickup from ${request.pickup.label}`,
+      text: !shortCare ? `Arrange pickup from ${request.pickup.label}`
+        : centrePickup ? `${request.pickup.label} · the centre picks up your child at ${request.deadline}`
+        : `${request.pickup.label} · leave by ${day.leaveBy === null ? "the time the drive needs" : timeLabel(day.leaveBy)}`,
       basis: "Your request",
       detail: request.transport === "institution"
         ? "The centre picks up your child here. Agree the time and what to bring."
-        : request.transport === "self"
-          ? "You take your child to the centre."
-          : "Decide who takes your child to the centre.",
+        : shortCare && day.drive !== null
+          ? `About ${day.drive} min by car, plus 5 minutes to hand over. Traffic isn’t included.`
+          : request.transport === "self"
+            ? "You take your child to the centre."
+            : "Decide who takes your child to the centre.",
     },
     {
       title: "At the centre",
-      time: null,
-      timeLabel: "Arrival time",
+      time: shortCare && !centrePickup ? request.deadline : null,
+      timeLabel: "Care starts",
+      field: shortCare && !centrePickup ? "deadline" : null,
       place: p.name,
       address: p.address,
       text: `To ${p.name}${p.address ? " · " + p.address : ""}`,
@@ -212,12 +226,13 @@ export function preparationFor(
         ? "Centre address"
         : "Address to confirm",
       source: p.addressSource,
-      detail: "Agree the arrival time with the centre. Leave time for the drive.",
+      detail: shortCare && !centrePickup ? `Drop off your child by ${request.deadline}, when care starts.` : "Agree the arrival time with the centre.",
     },
     {
       title: "Collect your child",
       time: shortCare ? request.end : null,
       timeLabel: "At",
+      field: shortCare ? "end" : null,
       place: p.name,
       text: shortCare ? `Collect your child from ${p.name} at ${request.end}` : `Agree when to collect your child from ${p.name}`,
       basis: "Your request",
@@ -237,7 +252,7 @@ export function preparationFor(
       timeZone: "Asia/Kuala_Lumpur",
     }).format(new Date(`${request.date}T12:00:00+08:00`)) : "Regular care",
     request: requestCaption(request),
-    interval: shortCare ? `Leave by ${request.deadline} · Collect your child at ${request.end}` : "Your regular care plan",
+    interval: shortCare ? `Care ${request.deadline}–${request.end}` : "Your regular care plan",
     transport,
     groups,
     packing,

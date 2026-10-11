@@ -233,11 +233,13 @@ export default function Preparation({
                 <span className="ready-journey-picture" aria-hidden="true"><Picture size={48} strokeWidth={1.5} /></span>
                 {i < 2 && <ArrowRight className="ready-journey-arrow" size={24} aria-hidden="true" />}
                 <h4>{journeyLabels[i]}</h4>
-                {i === 1 ? <p className="ready-centre-name">{displayName(step.place)}</p> : <div className={`preparation-step-time${step.time ? "" : " needs-time"}`}>
-                  {step.time && onTimesChange ? <TimeInput variant="button" allowClear={false} label={journeyLabels[i]} pickerLabel={i === 0 ? "Start" : "End"}
-                    value={step.time} onChange={value => changeTime(i === 0 ? "deadline" : "end", value)}
+                {i === 1 && <p className="ready-centre-name">{displayName(step.place)}</p>}
+                {(i !== 1 || step.time) && <div className={`preparation-step-time${step.time ? "" : " needs-time"}`}>
+                  {step.time && (i === 1 || !step.field) && <small className="preparation-step-note">{i === 1 ? "Care starts" : "Leave by"}</small>}
+                  {step.time && step.field && onTimesChange ? <TimeInput variant="button" allowClear={false} label={`${journeyLabels[i]}: ${step.timeLabel}`} pickerLabel={step.field === "deadline" ? "Start" : "End"}
+                    value={step.time} onChange={value => changeTime(step.field, value)}
                     describedBy={timeError ? "preparation-time-error" : undefined} />
-                    : step.time ? <><span className="sr-only">{step.timeLabel} </span><strong>{step.time}</strong></> : <strong>Ask the centre</strong>}
+                    : step.time ? <strong>{step.time}</strong> : <strong>{i === 0 && sheet.date ? "Drive time didn’t load" : "Ask the centre"}</strong>}
                 </div>}
               </li>;
             })}
