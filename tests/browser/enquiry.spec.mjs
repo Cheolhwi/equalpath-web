@@ -41,7 +41,7 @@ async function openQuestions(page, { missing = false, clipboard = true, transpor
 // Contact opens from the centre's column in Compare, as its own window (10 Oct 2026).
 const contactWindow = page => page.locator(".contact-panel");
 async function openContact(page) {
-  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /Compare/ }).click();
+  await page.locator('.compare-tray-open').click();
   await page.getByRole("button", { name: `Contact ${name}`, exact: true }).click();
   await expect(contactWindow(page)).toBeVisible();
 }

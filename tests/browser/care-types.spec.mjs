@@ -34,7 +34,7 @@ for(const mobile of [false,true])test(`${mobile?'mobile':'desktop'}: only short-
   await expect(page.getByRole('button',{name:/View details for Regular Care/})).toHaveCount(0);
   expect(calls.filter(x=>x.action==='search').every(x=>x.request.careType==='short_term')).toBe(true);
   for(const name of ['Short Stay 1','Short Stay 2'])await page.getByRole('button',{name:`Compare ${name}`,exact:true}).click();
-  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();
+  await page.locator('.compare-tray-open').click();
   await expect(page.locator('.comparison-scroll table')).toContainText('Short Stay 1');
   await expect(page.locator('.comparison-scroll table')).not.toContainText('Regular Care');
   await expect(page.getByRole('dialog')).not.toContainText('Invalid Date');

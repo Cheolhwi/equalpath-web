@@ -108,7 +108,7 @@ test("sorting stays on small screens and Escape closes the menu without closing 
   await trigger.press("Escape");
   await page.setViewportSize({ width: 390, height: 844 });
   for (const name of ["A", "B"]) await page.getByRole("button", { name: `Compare Test Centre ${name}`, exact: true }).click();
-  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /Compare/ }).click();
+  await page.locator('.compare-tray-open').click();
   const priority = page.getByRole("combobox", { name: "Comparison priority", exact: true });
   await priority.click();
   await expect(menu).toBeVisible();

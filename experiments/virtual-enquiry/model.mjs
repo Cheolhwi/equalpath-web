@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { applicableWindows, assess, careEndScheduleFor, costFor } from '../../shared/conditions.mjs';
 
-export const SCENARIOS = ['rules', 'available', 'full', 'conditional', 'more_info', 'no_reply'];
+export const SCENARIOS = ['rules', 'available', 'full', 'conditional', 'later', 'more_info', 'no_reply'];
 export const QUESTION_TEXT = {
   visit: 'Can you take the children for this visit?',
   fees: 'What is the total fee, including extras?',
@@ -169,6 +169,11 @@ export function decide(request, branch) {
         state = 'unavailable'; reason = 'We have no place left for this age and time.';
       } else if (request.scenario === 'conditional') {
         state = 'conditional'; reason = 'Please confirm the drop-off arrangements with us before we accept.';
+      } else if (request.scenario === 'later' && minute(c.start) + 120 <= minute(c.end)) {
+        // Test scenario: a place an hour later, as the "rules" replies offer.
+        const later = clock(minute(c.start) + 60);
+        state = 'conditional'; offer = { start: later };
+        reason = `We’re full at ${c.start}, but a place opens at ${later}. We can take your child from ${later} until ${c.end}.`;
       } else if (request.scenario === 'more_info') {
         state = 'more_info'; reason = 'Please tell us your child’s exact age and arrival time.';
       } else if (request.scenario === 'rules') {
@@ -227,16 +232,23 @@ export function decide(request, branch) {
 export const DECISIONS = ['accept', 'decline'];
 export function confirmationFor(request, result, decision) {
   if (!DECISIONS.includes(decision)) throw new EnquiryError('Choose whether to keep the place.');
-  const kids = (result?.children ?? []).filter(c => c.state === 'available');
+  // A place, or a place on the centre's terms: its later start or other day
+  // (11 Oct 2026). Taking the offer is answered in the same conversation.
+  const all = result?.children ?? [];
+  const kids = all.filter(c => c.state === 'available' || c.offer?.start || c.offer?.date)
+    .map(c => ({ ...c, start: c.offer?.start ?? c.start }));
   if (!kids.length) throw new EnquiryError('There is no place to keep for this request.');
-  const day = shortDay(request.date), one = request.children.length === 1;
+  if (decision === 'accept' && kids.length < all.length) throw new EnquiryError('There is no place for every child.');
+  const date = all.find(c => c.offer?.date)?.offer.date ?? request.date;
+  const changes = [...new Set(all.filter(c => c.offer).map(c => c.offer.date ? shortDay(c.offer.date) : c.offer.start))];
+  const day = shortDay(date), one = request.children.length === 1;
   const who = one ? 'my child' : kids.length === request.children.length ? (kids.length === 2 ? 'both children' : 'the children') : kids.map(c => c.label).join(' and ');
   const times = [...new Set(kids.map(c => `${c.start}–${c.end}`))].join(' and ');
   const first = kids.map(c => c.start).sort()[0];
   return decision === 'accept'
-    ? { decision, message: `Yes, please keep the place for ${who} on ${day}, ${times}. We’ll see you then.`,
+    ? { decision, message: `${changes.length ? `Yes, ${changes.join(' and ')} works for us. Please` : 'Yes, please'} keep the place for ${who} on ${day}, ${times}. We’ll see you then.`,
       reply: `Thank you, that’s confirmed: ${who === 'my child' ? 'your child' : who} on ${day}, ${times}. Please come by ${first}, and call us if anything changes.` }
-    : { decision, message: `Thank you, but we won’t need the place on ${day} after all.`,
+    : { decision, message: changes.length ? `Thank you, but ${changes.join(' and ')} doesn’t work for us, so we won’t need the place.` : `Thank you, but we won’t need the place on ${day} after all.`,
       reply: 'No problem, thank you for letting us know. We hope to see you another time.' };
 }
 // The virtual staff member answers a decision after 4–10 seconds.

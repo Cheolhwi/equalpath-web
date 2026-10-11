@@ -77,17 +77,30 @@ const withDate = (t, date) => ({ payload: { ...t.payload, date }, centre: t.cent
 // Steps for a reply that suggests a change — one child, two children at one
 // centre, or two centres: take it (the search's time or day changes and the
 // centre is asked again) or turn it down (the plan leaves the options).
-function changeSteps(bad, act, decide, again, family) {
-  const steps = [], seen = new Set();
-  for (const t of bad) for (const c of offersIn(t)) {
-    if (c.offer.start) steps.push({ label: family ? `Accept ${c.offer.start} for ${c.label}` : `Accept ${c.offer.start} instead`, icon: Clock3, stay: true,
-      run: () => { act.current?.acceptStart?.(c.label, c.offer.start); again.start(t, withStart(t, c.label, c.offer.start)); } });
-    else if (!seen.has(c.offer.date)) { seen.add(c.offer.date); steps.push({ label: `Accept ${visitDay(c.offer.date)} instead`, icon: CalendarDays, stay: true,
-      run: () => { act.current?.tryDate?.(c.offer.date); again.date(c.offer.date); } }); }
-  }
-  steps.push({ label: family ? 'No, see other plans' : 'No, see other options', icon: List, run: () => { bad.forEach(t => decide(t.key, 'pass')); act.current?.options?.(family); } });
-  return steps;
+// The answer goes to the centre in the same conversation (11 Oct 2026, user:
+// "店家能让改时间之后你居然是完全重发了一条新的消息…不合理"): "Yes, 14:00 works for us…" keeps
+// the place on its terms and the search follows; "No" thanks the centre and
+// the plan leaves the options.
+function accepted(t) {
+  let next = { payload: t.payload, request: t.request };
+  for (const c of offersIn(t)) next = c.offer.start ? withStart({ ...t, ...next }, c.label, c.offer.start) : withDate({ ...t, ...next }, c.offer.date);
+  return next;
 }
+function changeSteps(bad, act, decide, others = [], family = false) {
+  const offers = bad.flatMap(t => offersIn(t).map(c => ({ t, c })));
+  const what = [...new Set(offers.map(({ c }) => c.offer.start ? (family ? `${c.offer.start} for ${c.label}` : c.offer.start) : visitDay(c.offer.date)))].join(' and ');
+  return [
+    { label: others.length ? `Accept ${what} and keep both places` : `Yes, ${what} works`, icon: Check, stay: true,
+      run: () => {
+        for (const { c } of offers) c.offer.start ? act.current?.acceptStart?.(c.label, c.offer.start) : act.current?.tryDate?.(c.offer.date);
+        for (const t of bad) decide(t.key, 'accept', { accepted: accepted(t) });
+        for (const t of others) decide(t.key, 'accept');
+      } },
+    { label: family ? 'No, see other plans' : 'No, see other options', icon: X, run: () => { bad.forEach(t => decide(t.key, 'decline')); act.current?.options?.(family); } },
+  ];
+}
+// A reply that holds a place: as asked, or on the centre's terms once taken.
+const holds = (t) => !!t.job?.result && (summary(t.job.result).good || (t.job.confirmation?.decision === 'accept' && offersIn(t).length > 0));
 // When a chat has made it clear a plan won't go ahead, it leaves this search's
 // options (11 Oct 2026, user: "显示明确这个plan won't work了…就应该从左侧的本次option里移除").
 // Worked out from the chat itself, so older and restored chats count too:
@@ -477,6 +490,17 @@ export function EnquiryProvider({ children, actions, onChatChange, syncKey = nul
   const show = useCallback((target) => { const key = threadsRef.current.find(x => x.key === target)?.group ?? target; actionsRef.current?.closeDialogs?.(); setView({ key, open: true }); setNotice(null); setThreads(list => list.map(t => inView(t, key) && t.unread ? { ...t, unread: false } : t)); }, []);
   const showRef = useRef(show); showRef.current = show;
   const minimise = useCallback(() => setView(v => ({ ...v, open: false })), []);
+  // "Clear data" (11 Oct 2026, user: clearing data left the Ask for me chat for
+  // the next person): stop and forget every conversation in this tab at once.
+  useEffect(() => {
+    const clear = () => {
+      for (const t of threadsRef.current) if (active(t.job)) query({ action: 'cancel', id: t.job.id }).catch(() => {});
+      locks.current.clear(); settledRef.current.clear(); wordingCache.clear(); shownReplies.clear();
+      setThreads([]); setView({ key: null, open: false }); setNotice(null); setRestored(0);
+    };
+    window.addEventListener('equalpath-clear-enquiries', clear);
+    return () => window.removeEventListener('equalpath-clear-enquiries', clear);
+  }, []);
   const remove = useCallback((key) => { setThreads(list => list.filter(t => !inView(t, key))); setView(v => v.key === key ? { key: null, open: false } : v); setNotice(n => n === key ? null : n); }, []);
   const chatShown = view.open && !modal && threads.some(t => inView(t, view.key));
   useEffect(() => { onChatChange?.(chatShown); }, [chatShown, onChatChange]);
@@ -498,7 +522,7 @@ export function EnquiryProvider({ children, actions, onChatChange, syncKey = nul
     return () => document.removeEventListener('visibilitychange', back);
   }, []);
   // The parent keeps or lets go of an offered place; the centre answers it.
-  const decide = useCallback(async (key, decision, { release = false } = {}) => {
+  const decide = useCallback(async (key, decision, { release = false, accepted = null } = {}) => {
     // Turning down the centre's other time: nothing to send, the plan just goes.
     if (decision === 'pass') { patch(key, { letGo: true }); return; }
     // The parent took the suggested change: this reply is kept as history,
@@ -507,6 +531,9 @@ export function EnquiryProvider({ children, actions, onChatChange, syncKey = nul
     // A two-centre chat replaced by a new pair (a change was accepted).
     if (decision === 'retire') { const g = threadsRef.current.find(x => x.key === key)?.group; if (g) setThreads(list => list.filter(t => t.group !== g)); return; }
     if (release) patch(key, { released: true });
+    // Keeping a place on the centre's terms: this conversation now stands for
+    // the new time (the Checklist and the plan follow it).
+    if (accepted) patch(key, { payload: accepted.payload, ...(accepted.request ? { request: accepted.request } : {}) });
     const t = threadsRef.current.find(x => x.key === key);
     if (!t?.job?.id || t.job.confirmation || t.deciding) return;
     patch(key, { deciding: true, error: '' }); settledRef.current.delete(key);
@@ -630,7 +657,7 @@ export function VirtualEnquiryGroup({ items }) {
 // no place — back to the other plans (that plan is already off the list).
 function groupSteps(ts, act, decide, decideGroup, askGroup) {
   if (!ts.length || !ts.every(finished)) return [];
-  const group = ts[0].group, good = ts.filter(t => t.job.result && summary(t.job.result).good);
+  const group = ts[0].group, good = ts.filter(holds);
   const removed = ts.some(t => planOff(t));
   const options = { label: removed ? 'See other plans' : 'Back to your plan', icon: List, run: () => act.current?.options?.(true) };
   if (ts.length !== 2) return [options];
@@ -653,23 +680,19 @@ function groupSteps(ts, act, decide, decideGroup, askGroup) {
   // A suggested change: take it (the plan's time changes and that centre is
   // asked again, in the same chat) or turn it down (the plan goes).
   const bad = ts.filter(t => !good.includes(t));
-  if (bad.some(t => offersIn(t).length) && askGroup) return changeSteps(bad, act, decide, {
-    // The new pair replaces this chat; the other centre's reply carries over.
-    start: (old, next) => { askGroup(ts.map(x => x.key === old.key ? next : { payload: x.payload, centre: x.centre, request: x.request })); decide(old.key, 'retire'); },
-    // Another day moves the whole plan: both centres are asked for it.
-    date: (date) => { askGroup(ts.map(x => withDate(x, date))); decide(ts[0].key, 'retire'); },
-  }, true);
+  if (bad.every(t => offersIn(t).length && !t.job.confirmation) && !good.some(t => t.job.confirmation)) return changeSteps(bad, act, decide, good, true);
   return [{ ...options, label: 'Back to your plan' }];
 }
 function groupSummary(ts) {
   if (!ts.length || !ts.every(finished)) return null;
   if (ts.length !== 2) return { good: false, title: 'One enquiry is missing', note: 'We could not restore both centres. Check the missing reply before making plans.' };
-  const good = ts.filter(t => t.job.result && summary(t.job.result).good), bad = ts.filter(t => !(t.job.result && summary(t.job.result).good));
+  const good = ts.filter(holds), bad = ts.filter(t => !holds(t));
   if (!bad.length) {
     const c = good.map(t => t.job.confirmation);
     if (c.every(x => x?.state === 'acknowledged' && x.decision === 'accept')) return { good: true, title: 'Both places are confirmed', note: 'Both centres have noted your visit.' };
     if (c.every(x => x?.state === 'acknowledged' && x.decision === 'decline')) return { good: false, title: 'You let both places go', note: 'Both centres know you won’t need them, and this plan is off your options for this search.' };
     if (c.some(x => x?.state === 'failed')) return { good: false, title: 'Your answer couldn’t reach a centre', note: 'Please call or message that centre yourself.' };
+    if (c.some(x => x?.state === 'sending') || good.some(t => t.deciding)) return null;
     if (c.some(x => x) && c.some(x => !x)) return { good: false, title: 'One answer still needs sending', note: 'Your answer reached one centre. Send it to the other centre to finish.' };
     if (c.some(x => x)) return { good: false, title: 'The centres have different answers', note: 'Check both replies before making plans.' };
     return { good: true, title: 'Both centres have a place', note: 'Keep both places to tell the centres. Your other questions still need an answer.' };
@@ -680,7 +703,7 @@ function groupSummary(ts) {
     note: `${off.map(t => planOff(t).why === 'you' ? `You turned down ${centreName(t)}’s offer` : `${centreName(t)} has no place for ${planOff(t).labels.join(' and ')}`).join(', and ')}, so this plan is off your options for this search.` };
   const offers = bad.flatMap(t => offersIn(t).map(c => `${centreName(t)} can take ${c.label} ${c.offer.start ? `from ${c.offer.start}` : `on ${visitDay(c.offer.date)}`}`));
   if (offers.length) return { good: false, title: offers.length > 1 ? 'The centres suggested changes' : `${names} suggested a change`,
-    note: `${offers.join('. ')}. Take it to keep this plan, or see other plans — this one then comes off your options.` };
+    note: `${offers.join('. ')}. Accept it to keep this plan — both centres hear from you here — or see other plans, and this one comes off your options.` };
   if (ENDED.includes(bad[0].job.state)) return { good: false, title: 'No reply yet', note: `No reply from ${names}. No place has been confirmed.` };
   return { good: false, title: `${names} needs more details`, note: `Answer ${names} before keeping either place. Your plan is still on the list.` };
 }
@@ -700,7 +723,7 @@ function stepsFor(t, act, ask, decide) {
   const contact = { label: 'Contact the centre', icon: MessageCircle, run: () => act.current?.contact?.(t.centre, t.request), needsSearch: true };
   if (!r) return [];
   // A place for every child: the parent decides first, and the centre is told.
-  if (summary(r).good) {
+  if (summary(r).good || (t.job.confirmation && offersIn(t).length)) {
     const c = t.job.confirmation;
     if (!c && decide) return [
       { label: 'Yes, keep the place', icon: Check, run: () => decide(t.key, 'accept'), stay: true },
@@ -712,10 +735,8 @@ function stepsFor(t, act, ask, decide) {
     if (c) return [];
   }
   // The centre suggested another time or day: take it, or turn it down.
-  if (!declined && offersIn(t).length && ask && (t.family || t.centre)) return changeSteps([t], act, decide, {
-    start: (old, next) => { decide(old.key, 'detach'); ask({ ...next, family: !!t.family }); },
-    date: (date) => { decide(t.key, 'detach'); ask({ ...withDate(t, date), family: !!t.family }); },
-  }, !!t.family);
+  if (!declined && offersIn(t).length && decide && (t.family || t.centre)
+    && (t.job.result.children ?? []).every(c => c.state === 'available' || c.offer)) return changeSteps([t], act, decide, [], !!t.family);
   if (t.family || !t.centre) return [options];
   if (r.outcome === 'unavailable') return [options, contact];
   return [contact, options];

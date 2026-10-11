@@ -210,3 +210,16 @@
   .map-first .has-point-cards .map-controls { display: none; }
   .map-tools-overlay > .map-quick-actions button { white-space: nowrap; flex: initial; }
 }
+
+/* Narrow dock (11 Oct 2026, user: "自适应缩放的时候，纵向排列明显图标没对齐"): Start and
+   End use the same stacked layout as Date, Children, More and Getting there —
+   icon and label on one line, the value under it — so the icons line up. */
+@media (max-width: 760px) {
+  .dock-options .time-input .search-chip { display: grid; grid-template-columns: 18px 1fr; align-content: center; gap: 3px; padding-inline: 3px; }
+  .dock-options .time-input .search-chip > svg { width: 18px; height: 18px; }
+  .dock-options .time-input .search-chip > span { display: contents; }
+  .dock-options .time-input .search-chip strong { grid-column: 1 / -1; }
+  .dock-options .time-input .search-chip small { font-size: 11px; }
+  .dock-options > .search-chip > svg { width: 18px; height: 18px; }
+  .dock-options > .search-chip { align-content: center; }
+}

@@ -48,7 +48,9 @@ function packingFor(p, request) {
   const { source, parts } = centreExtras(p), find = (k) => parts.find((x) => x.kind === k);
   const centre = (part, text) => part && { text, source };
   const item = (id, label, text, why = [], extra = {}) => ({ id, label, text, why: why.filter(Boolean), basis: "General preparation prompt", ...extra });
-  const lunch = overlap(start, end, 690, 810) >= 45, napTime = overlap(start, end, 750, 900) >= 60;
+  // Only when the visit really covers it (11 Oct 2026, user: items that don't apply
+  // shouldn't show): most of the 12:00–13:00 lunch hour, 90 min of 13:00–15:00 rest.
+  const lunch = overlap(start, end, 720, 780) >= 45, napTime = overlap(start, end, 780, 900) >= 90;
   const late = end >= 1140;
   const packing = [
     item("bag", "Bag with name", stage === "baby" ? "Pack a nappy bag labelled with your child’s name." : "Pack a bag labelled with your child’s name."),
@@ -67,10 +69,10 @@ function packingFor(p, request) {
   if (stage !== "baby" && (lunch || span >= 120))
     packing.push(item("meal", lunch ? "Lunch & snack" : "Snack",
       lunch ? meals ? "Pack lunch and a snack — or pay for the centre’s meal." : "Pack lunch and a snack in a labelled box." : "Pack a snack in a labelled box.",
-      [lunch ? "Over lunchtime" : `${hoursText(span)} of care`, meals && "Centre listing"],
+      [lunch ? "Care covers lunch" : `${hoursText(span)} of care`, meals && "Centre listing"],
       { centre: centre(meals, `Centre meal: ${rm(meals?.amount)}/day`) }));
   if (years != null && years < 6 && (napTime || (stage === "baby" && span >= 120)))
-    packing.push(item("rest", "Nap things", stage === "baby" ? "Pack a sleeping bag or swaddle and a comfort item for naps." : "Pack a comfort item (a small blanket or toy) for nap time.", [stage === "baby" ? age : "Over nap time"]));
+    packing.push(item("rest", "Nap things", stage === "baby" ? "Pack a sleeping bag or swaddle and a comfort item for naps." : "Pack a comfort item (a small blanket or toy) for nap time.", [stage === "baby" ? age : "Care covers nap time"]));
   else if (late && years != null && years < 4)
     packing.push(item("rest", "Sleep things", "Pack pyjamas or a comfort item in case your child falls asleep.", ["Evening pickup"]));
   if (late) packing.push(item("evening", "Dinner", "Agree on dinner and the evening pickup with the centre.", ["Pickup after 7 pm"]));

@@ -37,7 +37,7 @@ for (const width of [390, 1440]) test(`${width}px: centre, compare, contact and 
   await capture(page, `centre-${width}`);
   await expect(page.locator('.centre-metrics > div')).toHaveCount(4);
   await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('button', { name: /Compare/ }).click();
+  await page.locator('.compare-tray-open').click();
   await capture(page, `compare-${width}`);
   await expect(page.locator('.comparison-scroll thead h3')).toHaveCount(2);
   await page.getByRole('button', { name: 'More details', exact: true }).click();
@@ -72,7 +72,8 @@ test('empty windows fit their content and dark settings retain keyboard closing'
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await start(page);
   const nav = page.getByRole('navigation', { name: 'Main navigation' });
-  await nav.getByRole('button', { name: /Compare/ }).click();
+  // Compare is no longer in the navigation; the empty Checklist is the empty window here.
+  await nav.getByRole('button', { name: /Checklist/ }).click();
   await expect(page.getByRole('dialog')).toHaveCSS('animation-name', 'care-surface-appear');
   await expect(page.getByRole('dialog')).toHaveCSS('opacity', '1');
   expect((await page.getByRole('dialog').boundingBox()).width).toBeLessThanOrEqual(640);

@@ -21,7 +21,7 @@ test('restored map points gain a street address and priority highlights switch, 
   await chooseAge(page); await submitSearch(page);
   await openResults(page);
   for(const id of ['near','late','tied'])await page.locator('.provider-row').getByRole('button',{name:`Compare Test ${id}`,exact:true}).click();
-  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();
+  await page.locator('.compare-tray-open').click();
   const highlighted=page.locator('th.comparison-best');
   await page.locator('.compare-address summary').click(); await expect(page.locator('.compare-address')).toContainText('Jalan Stesen Sentral');
   await expect(highlighted).toHaveCount(1);await expect(highlighted).toHaveAttribute('data-provider-id','near');

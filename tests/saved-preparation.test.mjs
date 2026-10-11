@@ -275,7 +275,7 @@ test("checklist follows the child's age, the hours of care and the centre's list
   const toddler = preparationFor(p, req("2", "12:00", "17:00"));
   const diapers = toddler.packing.find((x) => x.id === "young");
   assert.match(diapers.centre.text, /RM5\/day/);
-  assert.ok(toddler.packing.find((x) => x.id === "meal").why.includes("Over lunchtime"));
+  assert.ok(toddler.packing.find((x) => x.id === "meal").why.includes("Care covers lunch"));
   assert.ok(ids(toddler).includes("rest"));
   const older = preparationFor(p, req("5", "16:00", "18:00"));
   assert.ok(!ids(older).includes("young") && !ids(older).includes("rest"));

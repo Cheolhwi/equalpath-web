@@ -33,7 +33,7 @@ test('comparison only records after viewing; suggestions explain history, save, 
   await cards.nth(1).getByRole('button',{name:/^Compare /}).click();
   // Searches keep a ranking record (9 Oct 2026); choosing Compare alone records no visit.
   expect(await page.evaluate(k=>JSON.parse(localStorage.getItem(k)??'{}').visits??[],key)).toEqual([]);
-  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();
+  await page.locator('.compare-tray-open').click();
   await expect(page.locator('.compare-view')).toBeVisible();
   await expect.poll(()=>page.evaluate(k=>JSON.parse(localStorage.getItem(k)||'{}').visits?.length,key)).toBe(2);
   await page.getByRole('button',{name:'Close dialog',exact:true}).click();

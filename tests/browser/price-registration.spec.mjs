@@ -46,7 +46,7 @@ test('short-stay price changes result/map/comparison priority and registration i
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.keyboard.press('Escape');
   for(const id of ['higher','budget','lowest'])await page.getByRole('button',{name:`Compare Test ${id}`,exact:true}).click();
-  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();
+  await page.locator('.compare-tray-open').click();
   await expect(page.getByRole('combobox',{name:'Comparison priority'})).toHaveText('Nearest first');
   await expect(page.getByRole('dialog')).not.toContainText(/straight.line/i);
   await page.getByRole('button',{name:'More details',exact:true}).click();

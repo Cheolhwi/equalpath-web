@@ -43,7 +43,7 @@ test("contact priority stays consistent across results, map and comparison, with
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.screenshot({ path: `${out}/contacts-search-desktop.png` });
   for (const i of [1, 8, 9]) await page.getByRole("button", { name: `Compare Test centre ${i}`, exact: true }).click();
-  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /Compare/ }).click();
+  await page.locator(".compare-tray-open").click();
   await expect(page.locator("th.comparison-best")).toHaveAttribute("data-provider-id", "p-8");
   await expect(page.locator(".comparison-priority-message")).not.toContainText(/phone|WhatsApp|contact details/i);
   await page.getByRole("combobox", { name: "Comparison priority", exact: true }).click();

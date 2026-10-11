@@ -244,6 +244,8 @@ export default function App({
   };
   const clearLocalCache = async () => {
     try {
+      // Ask for me first: it stops its requests while it can still sign them.
+      window.dispatchEvent(new Event("equalpath-clear-enquiries"));
       await clearSurroundingsCache();
       clearSearchRouteCache();
       Object.keys(window.localStorage)
@@ -257,6 +259,7 @@ export default function App({
       setDraft(initial());
       setResults(null); setNearby(null); setSelected(null); setCompareIds([]); setComparison(null);
       setProfile(null); setEnquiry(null); setChecklists([]); setOpenChecklist(null); setSavedCheck(null);
+      family.clear(); setDeclined([]); setDeclineNote(null); setOnePanel(initialOnePanel); setQuestionSelection({}); setToast("");
       setErrors({}); setFailure(null); setFormOpen(true); setSearchCollapsed(false); setMobilePane("map");
       setMapTarget(DEFAULT_MAP); setBrowseCenter(DEFAULT_MAP.center); setMapRestored(false);
       mapView.current = DEFAULT_MAP; rememberedPickup.current = null;
@@ -1036,13 +1039,8 @@ export default function App({
           >
             <Search size={18} aria-hidden="true" />Find care
           </button>
-          <button
-            data-tour="compare"
-            className={dialog === "compare" ? "active" : ""}
-            onClick={() => loadComparison()}
-          >
-            <Scale size={18} aria-hidden="true" />Compare {compareIds.length > 0 && <em>{compareIds.length}</em>}
-          </button>
+          {/* Compare left the main navigation (11 Oct 2026, user request): the
+              shortlist opens from the compare tray once a centre is added. */}
           <button
             className={dialog === "saved" ? "active" : ""}
             onClick={() => {

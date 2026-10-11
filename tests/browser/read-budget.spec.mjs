@@ -41,7 +41,7 @@ for (const width of [1440, 390]) test(`published catalogue works without TablesD
   await expect(page.locator(".centre-metrics")).toBeVisible();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   for (const index of [0, 1]) await page.locator(".provider-row").nth(index).getByRole("button", { name: /^Compare / }).click();
-  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();
+  await page.locator('.compare-tray-open').click();
   await expect(page.locator(".comparison-scroll table")).toBeVisible();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

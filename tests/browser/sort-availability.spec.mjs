@@ -49,7 +49,7 @@ for(const width of [1440,390])test(`${width}px: changing to an area without quot
 test('removing the last quoted comparison centre resets its priority and gives a comparison-specific reason',async({page})=>{
   await setup(page,[provider('quoted',0,true),provider('unquoted-a',1),provider('unquoted-b',2)]);
   for(const id of ['quoted','unquoted-a','unquoted-b'])await page.getByRole('button',{name:`Compare Test ${id}`,exact:true}).click();
-  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();
+  await page.locator('.compare-tray-open').click();
   const priority=page.getByRole('combobox',{name:'Comparison priority',exact:true});await choosePrice(page,priority);
   await page.getByRole('button',{name:'Remove Test quoted from comparison',exact:true}).click();
   await expect(priority).toHaveText('Nearest first');await priority.click();
