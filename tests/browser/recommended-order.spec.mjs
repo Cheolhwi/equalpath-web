@@ -24,7 +24,9 @@ async function search(page, date = '2026-10-01') {
 }
 
 for (const width of [1440, 390, 320]) test(`${width}px save a lower result, search again, switch factual order and reload`, async ({ page }) => {
-  test.setTimeout(90000);
+  // Five searches, full-motion panels and screenshots on software OpenGL can
+  // exhaust 90 s before the final reload. Keep each assertion's deadline.
+  test.setTimeout(width === 1440 ? 180000 : 90000);
   await page.setViewportSize({ width, height: width < 760 ? 844 : 1000 });
   await page.emulateMedia({ reducedMotion: width < 760 ? 'reduce' : 'no-preference' });
   await page.clock.setFixedTime(new Date('2026-10-01T04:00:00Z'));
