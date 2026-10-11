@@ -12,7 +12,12 @@
     "preview": "vite preview --host 127.0.0.1 --port 4179",
     "test": "node --test tests/*.test.mjs",
     "release": "npm test && node scripts/deploy-api.mjs && node scripts/package-enquiry.mjs && npm run build && node scripts/check-build.mjs",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "local:setup": "python3 database/postgres/scripts/local.py start && python3 database/postgres/scripts/load.py",
+    "local:start": "python3 database/postgres/scripts/local.py start && python3 database/postgres/scripts/local.py app",
+    "local:stop": "python3 database/postgres/scripts/local.py stop",
+    "local:verify": "python3 database/postgres/scripts/verify.py",
+    "local:test": "npm run local:verify && python3 database/postgres/scripts/local.py test"
   },
   "dependencies": {
     "@vitejs/plugin-react": "5.0.4",

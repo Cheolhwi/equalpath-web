@@ -8,7 +8,7 @@ import './virtual-enquiry.css';
 import cloudConfig from './enquiry-config.json';
 import Dialog from './Dialog.jsx';
 
-const cloud = cloudConfig.enabled && /^https:\/\/[a-z0-9.-]+\.appwrite\.(run|network)$/.test(cloudConfig.endpoint);
+const cloud = import.meta.env.VITE_LOCAL_POSTGRES !== '1' && cloudConfig.enabled && /^https:\/\/[a-z0-9.-]+\.appwrite\.(run|network)$/.test(cloudConfig.endpoint);
 export const virtualEnquiryEnabled = cloud || (import.meta.env.DEV && import.meta.env.VITE_VIRTUAL_ENQUIRY === '1');
 const OUTCOMES = { available: 'A place is available', unavailable: 'This request cannot be accepted', partial: 'Only one child can be accepted', conditional: 'The centre suggests a change', more_info: 'Some details still need checking' };
 const CHILD_STATES = { available: 'Place available', unavailable: 'Cannot accept', conditional: 'Offered with a change', more_info: 'Needs checking' };
