@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { createAPI, errorResponse } from '../../server/api.mjs';
 import { centreHighlights, emptyInterests } from '../../shared/recommendations.mjs';
-import { openSearch, openResults } from './ui-helpers.mjs';
+import { chooseAge, hideOptionsPanel, openResults, openSearch, setDate, setTime, submitSearch } from './ui-helpers.mjs';
 
 const out = process.env.QA_EVIDENCE_DIR || '.build/recommended-order';
 mkdirSync(out, { recursive: true });
@@ -14,12 +14,11 @@ const highlights = page => page.locator('.provider-row').evaluateAll(rows => Obj
 const menu = page => page.getByRole('combobox', { name: 'Order search results', exact: true });
 async function search(page, date = '2026-10-01') {
   await openSearch(page);
-  await page.locator('#service-date').fill(date);
-  await page.getByRole('radio', { name: '1–3 years', exact: true }).check();
-  await page.locator('#deadline').fill('12:50');
-  await page.locator('#care-end').fill('17:50');
-  await page.locator('#care-end').press('Tab');
-  await page.getByRole('button', { name: /^(Find childcare|Update results)$/, exact: true }).click();
+  await setDate(page, date);
+  await chooseAge(page, '2');
+  await setTime(page, 'deadline', '12:50');
+  await setTime(page, 'care-end', '17:50');
+  await submitSearch(page);
   await openResults(page);
   await expect(page.locator('.provider-row').first()).toBeVisible();
 }
@@ -59,22 +58,23 @@ for (const width of [1440, 390, 320]) test(`${width}px save a lower result, sear
   // the client's reranked first three are the suggested set.
   const expectedTags = order => Object.fromEntries(order.map((id, index) => [id, index < 3 ? [] : branchTags[id]]));
   expect(await highlights(page)).toEqual(expectedTags(await ids(page)));
-  expect(before.length).toBeGreaterThanOrEqual(8);
+  // Enough results for a saved centre to start below the three suggestions.
+  expect(before.length).toBeGreaterThanOrEqual(5);
+  // Save acts immediately, with no dialog (9 Oct 2026).
   await page.locator(`.provider-row[data-provider-id="${target}"]`).getByRole('button', { name: /^Save / }).click();
-  await page.getByRole('dialog').getByRole('button', { name: 'Save centre', exact: true }).click();
-  await expect(page.getByRole('dialog')).toBeHidden();
-  await expect.poll(async () => (await ids(page)).indexOf(target)).toBeLessThan(3);
-  // Unchanged conditions already rerank immediately; make a real date edit,
-  // then return to the original request to exercise a fresh same-conditions query.
+  await expect(page.locator(`.provider-row[data-provider-id="${target}"]`).getByRole('button', { name: /^Save / })).toHaveAttribute('aria-pressed', 'true');
+  // Save, Compare and browsing affect only the next search (10 Oct 2026,
+  // docs/RECOMMENDATION_ML.md): the current order stays as it was.
+  expect(await ids(page)).toEqual(before);
+  // Make a real date edit, then return to the original request for a fresh
+  // same-conditions query that carries the saved centre as a seed.
   await search(page, '2026-10-02');
   await search(page);
   await expect(menu(page)).toHaveText('Recommended');
-  await expect.poll(async () => (await ids(page)).indexOf(target)).toBeLessThan(3);
+  expect(calls.at(-1).body.seedIds).toContain(target);
+  await expect.poll(async () => (await ids(page)).indexOf(target)).toBeLessThan(before.indexOf(target));
   const after = await ids(page);
   expect([...after].sort()).toEqual([...before].sort());
-  expect(calls.at(-1).body.seedIds).toContain(target);
-  await expect(page.locator(`.provider-row[data-provider-id="${target}"] .personalised-tag`)).toHaveText('A centre you saved');
-  await expect(page.locator(`.provider-row[data-provider-id="${target}"] .centre-highlight`)).toHaveCount(0);
   expect(await highlights(page)).toEqual(expectedTags(await ids(page)));
   await menu(page).scrollIntoViewIfNeeded();
   await expect(page.locator('.provider-row').first()).toHaveCSS('opacity', '1');
@@ -100,9 +100,9 @@ for (const width of [1440, 390, 320]) test(`${width}px save a lower result, sear
   await expect.poll(() => ids(page)).toEqual(after);
 
   await page.getByRole('button', { name: 'Close search panel', exact: true }).click();
+  await hideOptionsPanel(page);
   const mapCards = page.locator('.map-centre-card:not(.leaving)');
   await expect.poll(() => mapCards.evaluateAll(rows => rows.map(row => row.dataset.providerId).sort())).toEqual(after.slice(0, 3).sort());
-  await expect(page.locator(`.map-centre-card[data-provider-id="${target}"] .map-card-personalised`)).toHaveText('A centre you saved');
   await expect(mapCards.first()).toHaveCSS('opacity', '1');
   if (width < 760) await page.locator(`.map-centre-card[data-provider-id="${target}"]`).scrollIntoViewIfNeeded();
   const cardTags = await mapCards.evaluateAll(cards => cards.map(card => {
@@ -124,6 +124,7 @@ for (const width of [1440, 390, 320]) test(`${width}px save a lower result, sear
   await openResults(page);
   await page.locator(`.provider-row[data-provider-id="${ordinary}"] .provider-select`).click();
   await page.getByRole('button', { name: 'Close search panel', exact: true }).click();
+  await hideOptionsPanel(page);
   const ordinaryCard = page.locator(`.map-centre-card.selected[data-provider-id="${ordinary}"]`);
   await expect(ordinaryCard).toBeVisible();
   await expect(ordinaryCard.locator('.centre-highlight')).toHaveText(branchTags[ordinary]);

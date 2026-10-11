@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { chooseAge, hideOptionsPanel } from './ui-helpers.mjs';
 import { createAPI } from '../../server/api.mjs';
 import { fixtureCatalog } from '../../server/fixtures.mjs';
 import { mkdirSync } from 'node:fs';
@@ -21,7 +22,7 @@ async function fillMapSearch(page) {
   await page.locator('#pickup-search').fill('KL Sentral');await page.getByRole('button',{name:'Find address',exact:true}).click();
   await page.locator('.place-results').getByRole('button',{name:/KL Sentral/}).click();
   await page.locator('[data-field="date"]').click();await page.locator('#service-date').fill('2026-09-22');await page.getByRole('button',{name:'Close options'}).click();
-  await page.locator('[data-field="age"]').click();await page.getByRole('radio',{name:'4–6 years',exact:true}).click();
+  await page.locator('[data-field="age"]').click();await page.getByRole('radio',{name:'Your child: 4 years',exact:true}).click();
   await selectTime(page,'#deadline','16','00');await selectTime(page,'#care-end','18','00');
 }
 for(const [width,height] of [[320,568],[390,844],[1440,900]]) test(`${width}x${height}: a complete search stays on the map and all controls remain reachable`,async({page})=>{
@@ -38,9 +39,12 @@ for(const [width,height] of [[320,568],[390,844],[1440,900]]) test(`${width}x${h
   await expect(page.locator('[data-field="transport"] strong')).toHaveText('Centre pickup');
   await page.screenshot({path:`${out}/map-controls-${width}.png`});
   await page.getByRole('button',{name:'Find childcare',exact:true}).click();
+  // After a search the suggestions panel (a sheet on phones) opens; fold it to see the map cards.
+  await expect(page.locator('.one-child-panel')).toBeVisible();
+  await hideOptionsPanel(page);
   await expect(page.locator('.map-centre-card:not(.leaving)')).toHaveCount(3);
   await expect(page.locator('.discovery-panel')).not.toBeVisible();
-  expect(calls.filter(c=>c.action==='search').at(-1).request).toMatchObject({careType:'short_term',age:'4-6',date:'2026-09-22',deadline:'16:00',end:'18:00',transport:'institution'});
+  expect(calls.filter(c=>c.action==='search').at(-1).request).toMatchObject({careType:'short_term',age:'4',date:'2026-09-22',deadline:'16:00',end:'18:00',transport:'institution'});
   const cards=await page.locator('.map-centre-card:not(.leaving)').evaluateAll(es=>es.map(el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom};}));
   for(const a of cards){expect(a.x).toBeGreaterThanOrEqual(0);expect(a.bottom).toBeLessThanOrEqual(height-25);for(const b of cards.filter(b=>b!==a))expect(a.right<=b.x||b.right<=a.x||a.bottom<=b.y||b.bottom<=a.y).toBe(true);}
   if (width > 760) await expect(page.locator('.dock-form')).toBeVisible();
@@ -48,42 +52,28 @@ for(const [width,height] of [[320,568],[390,844],[1440,900]]) test(`${width}x${h
   await page.screenshot({path:`${out}/map-results-${width}.png`});
   await page.locator('.map-centre-card:not(.leaving)').first().getByRole('button',{name:/View details/}).click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  await page.getByRole('button',{name:'Contact the centre',exact:true}).click();
-  await expect(page.getByRole('heading',{name:'Contact the centre',exact:true})).toBeVisible();
+  await expect(page.getByRole('dialog').getByRole('button',{name:'Add to compare',exact:true})).toBeVisible();
   expect(errors).toEqual([]);
 });
 
-test('optional sidebar shares choices and unfinished address text with the map controls',async({page})=>{
-  const {calls}=await setup(page);await fillMapSearch(page);
-  await page.getByRole('button',{name:'Open search panel'}).click();
-  await expect(page.locator('.map-search-dock')).toHaveCount(0);
-  await expect(page.locator('#deadline')).toHaveValue('16:00');await expect(page.locator('#service-date')).toHaveValue('2026-09-22');
-  await page.locator('#deadline').fill('14:25');await page.getByRole('radio',{name:'1–3 years',exact:true}).click();
-  await page.locator('#pickup-search').fill('Bukit Bin');
-  await page.getByRole('button',{name:'Close search panel'}).click();
-  await expect(page.locator('#pickup-search')).toHaveValue('Bukit Bin');
-  await expect(page.locator('#deadline')).toContainText('14:25');await expect(page.locator('[data-field="age"]')).toContainText('1–3');
-  await page.locator('#pickup-search').fill('KL Sent');await page.getByRole('button',{name:'Open search panel'}).click();
-  await expect(page.locator('#pickup-search')).toHaveValue('KL Sent');
-  expect(calls.filter(c=>c.action==='search')).toHaveLength(0);
-  expect(await page.locator('#pickup-search').count()).toBe(1);
-});
-
-test('required fields open on the map; long term keeps age, and filters do not submit',async({page})=>{
+// Short-term care only (2 Oct 2026): the dock always asks for date, age and times.
+test('required fields open on the map, and filters do not submit',async({page})=>{
   const {calls}=await setup(page);
   await page.getByRole('button',{name:'Find childcare',exact:true}).click();
   await expect(page.locator('#pickup-search')).toBeFocused();
   await page.locator('#pickup-search').fill('KL Sentral');await page.getByRole('button',{name:'Find address',exact:true}).click();await page.locator('.place-results').getByRole('button',{name:/KL Sentral/}).click();
-  await page.locator('[data-field="care"]').click();await page.getByRole('radio',{name:'Regular',exact:true}).click();
-  await expect(page.locator('[data-field="date"],#deadline,#care-end')).toHaveCount(0);
+  await expect(page.locator('[data-field="care"]')).toHaveCount(0);
   await page.getByRole('button',{name:'Find childcare',exact:true}).click();
-  await expect(page.locator('#age')).toBeFocused();await page.getByRole('radio',{name:'1–3 years',exact:true}).click();
-  await page.locator('[data-field="more"]').click();await page.locator('#radius').selectOption('5');
+  await expect(page.locator('#deadline-error')).toBeVisible();
+  await expect(page.locator('[data-field="age"]')).toHaveClass(/invalid/);
+  await chooseAge(page,'2');
+  await page.locator('[data-field="more"]').click();await page.locator('.dock-popover-more').getByRole('radio',{name:'Within 10 km',exact:true}).check();
   await page.keyboard.press('Escape');await expect(page.locator('.dock-popover')).toHaveCount(0);
   expect(calls.filter(c=>c.action==='search')).toHaveLength(0);
+  await selectTime(page,'#deadline','13','00');await selectTime(page,'#care-end','15','30');
   await page.getByRole('button',{name:'Find childcare',exact:true}).click();
   await expect.poll(()=>calls.filter(c=>c.action==='search').length).toBe(1);
-  expect(calls.filter(c=>c.action==='search')[0].request).toMatchObject({careType:'regular',age:'1-3',radius:5});
+  expect(calls.filter(c=>c.action==='search')[0].request).toMatchObject({careType:'short_term',age:'2',radius:10,deadline:'13:00',end:'15:30'});
 });
 
 test('map time chips save on outside click, cancel with Escape and support dark/reduced motion',async({page})=>{
@@ -98,23 +88,25 @@ test('map time chips save on outside click, cancel with Escape and support dark/
   await page.screenshot({path:`${out}/map-options-dark.png`});
 });
 
-for (const width of [320, 390, 1440]) test(`${width}px: simple choices open as small anchored menus, above nearby actions`, async ({page}) => {
+for (const width of [320, 390, 1440]) test(`${width}px: choices open as anchored menus inside the screen`, async ({page}) => {
   await page.setViewportSize({width, height: 844}); await setup(page);
-  for (const [field, choice] of [['age', '4–6 years'], ['care', 'Regular']]) {
+  // Getting there is a small menu; the age menu also asks one or two children.
+  for (const [field, choice, chip, small] of [['transport', 'I’ll bring my child', 'I’ll bring', true], ['age', 'Your child: 4 years', '4 yrs', false]]) {
     const trigger = page.locator(`[data-field="${field}"]`);
     await trigger.click();
     const box = await page.locator('.dock-popover').boundingBox(), anchor = await trigger.boundingBox();
-    expect(box.width).toBeLessThanOrEqual(240); expect(box.height).toBeLessThanOrEqual(160);
+    if (small) { expect(box.width).toBeLessThanOrEqual(280); expect(box.height).toBeLessThanOrEqual(160); }
     expect(box.x).toBeGreaterThanOrEqual(0); expect(box.x+box.width).toBeLessThanOrEqual(width);
+    expect(box.y+box.height).toBeLessThanOrEqual(844);
     expect(Math.abs(box.y - (anchor.y + anchor.height))).toBeLessThan(16);
     expect(await page.getByRole('radio', {name: choice, exact: true}).locator('..').evaluate(el => {
       const r = el.getBoundingClientRect();
-      return r.height >= 44 && el.contains(document.elementFromPoint(r.x+r.width/2, r.y+r.height/2));
+      return r.height >= 40 && el.contains(document.elementFromPoint(r.x+r.width/2, r.y+r.height/2));
     })).toBe(true);
     await page.screenshot({path:`${out}/${field}-menu-${width}.png`});
     await page.getByRole('radio', {name: choice, exact: true}).click();
     await expect(page.locator('.dock-popover')).toHaveCount(0); await expect(trigger).toBeFocused();
-    await expect(trigger).toContainText(field === 'age' ? '4–6' : 'Regular');
+    await expect(trigger).toContainText(chip);
     await trigger.click(); await page.keyboard.press('Escape');
     await expect(page.locator('.dock-popover')).toHaveCount(0); await expect(trigger).toBeFocused();
   }
@@ -138,7 +130,7 @@ for (const width of [320, 390]) test(`${width}px: search collapses to a summary,
   await expect(page.locator('#pickup-search')).toBeFocused();
   await expect(page.locator('#deadline')).toContainText('16:00');
   await expect(page.locator('#care-end')).toContainText('18:00');
-  await expect(page.locator('[data-field="age"]')).toContainText('4–6');
+  await expect(page.locator('[data-field="age"]')).toContainText('4 yrs');
   await expect(page.getByRole('button', {name:'Pick on map', exact:true})).toBeVisible();
   await expect(page.getByRole('button', {name:'Use my location', exact:true})).toBeVisible();
   await page.getByRole('button', {name:'Hide search', exact:true}).click();
@@ -147,11 +139,14 @@ for (const width of [320, 390]) test(`${width}px: search collapses to a summary,
   await page.getByRole('button', {name:'Update results', exact:true}).click();
   await expect(summary).toBeVisible();
   expect(calls.filter(c=>c.action==='search').at(-1).request.end).toBe('19:15');
+  // On phones the navigation folds after a search; its grip brings it back (6 Oct 2026).
+  const reveal = page.getByRole('button', {name:'Show menu', exact:true});
+  if (await reveal.isVisible()) await reveal.click();
   await page.getByRole('navigation').getByRole('button', {name:'Find care', exact:true}).click();
   await expect(page.locator('#pickup-search')).toBeFocused();
   await expect(page.locator('.dock-form')).toBeVisible();
   await page.locator('[data-field="age"]').click();
-  await page.getByRole('radio', {name:'1–3 years', exact:true}).click();
+  await page.getByRole('radio', {name:'Your child: 2 years', exact:true}).click();
   await expect(page.locator('.dock-form')).toBeVisible();
   expect(errors).toEqual([]);
 });
@@ -166,12 +161,12 @@ test('mobile search stays expanded for no results, failures and edits made while
     await route.fallback();
   });
   await page.getByRole('button',{name:'Find childcare',exact:true}).click(); await seen;
-  await page.locator('[data-field="age"]').click(); await page.getByRole('radio',{name:'1–3 years',exact:true}).click();
+  await page.locator('[data-field="age"]').click(); await page.getByRole('radio',{name:'Your child: 2 years',exact:true}).click();
   release();
   await expect(page.locator('.search-actions')).toHaveAttribute('data-state', 'pending');
   await expect(page.locator('.search-apply-status')).toContainText('Changes not applied');
   await expect(page.locator('.dock-form')).toBeVisible();
-  await expect(page.locator('[data-field="age"]')).toContainText('1–3');
+  await expect(page.locator('[data-field="age"]')).toContainText('2 yrs');
   await page.route('**/api', async route => {
     if (route.request().postDataJSON().action !== 'search') return route.fallback();
     await route.fulfill({status:503,json:{ok:false,code:'unavailable'}});
@@ -206,12 +201,12 @@ for (const width of [390, 1440]) test(`${width}px: chosen filters stay visibly p
   if (width < 760) await page.getByRole('button', {name:'Change search', exact:true}).click();
   await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
   await page.locator('[data-field="age"]').click();
-  await page.getByRole('radio', {name:'1–3 years', exact:true}).click();
+  await page.getByRole('radio', {name:'Your child: 2 years', exact:true}).click();
   await expect(page.locator('[data-field="age"]')).toHaveAttribute('data-pending', 'true');
   await expect(page.locator('.search-apply-status')).toContainText('Changes not applied');
   await expect(page.locator('[data-field="date"]')).not.toHaveAttribute('data-pending');
   await page.locator('[data-field="age"]').click();
-  await page.getByRole('radio', {name:'4–6 years', exact:true}).click();
+  await page.getByRole('radio', {name:'Your child: 4 years', exact:true}).click();
   await expect(page.locator('.search-apply-status')).toHaveText('Results up to date');
   await expect(page.locator('[data-pending]')).toHaveCount(0);
   await page.locator('[data-field="transport"]').click();

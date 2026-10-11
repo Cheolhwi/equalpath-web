@@ -1,4 +1,4 @@
-import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
+import { chooseAge, hideOptionsPanel, includeConflicts, openNearby, openResults, openSearch, setDate, setRadius, setTime, setTransport, submitSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog } from "../../server/fixtures.mjs";
@@ -11,7 +11,7 @@ async function setup(page, calls, routing=true, coLocated=false, extraItems=[]){
   await page.route("**/api",async route=>{const b=route.request().postDataJSON();calls.push(b);await route.fulfill({json:{ok:true,...await api(b)}});});
 }
 test("zooming and repeated dragging never query; reopening loads the saved neighbourhood once",async({page})=>{
-  const calls=[];await setup(page,calls);await page.goto("/#discover");await openSearch(page);await expect(page.locator(".nearby-card").first()).toBeVisible();
+  const calls=[];await setup(page,calls);await page.goto("/#discover");await openNearby(page);await expect(page.locator(".nearby-card").first()).toBeVisible();
   const before=calls.filter(c=>c.action==="nearby").length;
   for(let i=0;i<4;i++)await page.getByRole("button",{name:"Zoom out",exact:true}).click();
   await expect.poll(async()=>Number(await page.locator(".map-region").getAttribute("data-map-zoom"))).toBeLessThan(12);
@@ -30,40 +30,44 @@ test("zooming and repeated dragging never query; reopening loads the saved neigh
   await expect(page.getByRole("button",{name:"Search this area",exact:true})).toHaveCount(0);
   expect(calls.filter(c=>c.action==="nearby").length).toBe(before+1);
 });
-async function search(page,regular=false){
+async function search(page,regular=false,{conflicts=false}={}){
   await page.addInitScript(()=>localStorage.setItem("equalpath:map:v1:live",JSON.stringify({version:1,center:{lat:3.139,lng:101.6869},zoom:13,pickup:{id:"demo-pickup",label:"KL Sentral",lat:3.139,lng:101.6869}})));
   await page.goto(regular?"/?care=regular#discover":"/?care=short_term#discover");await openSearch(page);
-  if(!regular){await page.locator("#service-date").fill("2026-09-22");await page.locator("#deadline").fill("16:00");await page.locator("#care-end").fill("18:00");}
-  await revealPreferences(page); await chooseAge(page, "4");await revealPreferences(page); await page.locator("#transport").selectOption("institution");await chooseAge(page); await page.getByRole("button",{name:"Find childcare",exact:true}).click();await openResults(page);
+  if(!regular){await setDate(page, "2026-09-22");await setTime(page, 'deadline', "16:00");await setTime(page, 'care-end', "18:00");}
+  await chooseAge(page, "4");await setTransport(page, "institution");await chooseAge(page); if(conflicts)await includeConflicts(page); await submitSearch(page);await openResults(page);
   await expect(page.locator(".provider-row").first()).toBeVisible();
 }
+// Short-term care only (2 Oct 2026): 5 km by default, 10 km from More filters.
 test("search offers only 5 or 10 km and the map and count exclude distant or unlocated centres",async({page})=>{
   const base=fixtureCatalog.items[0];
   const at=(id,km)=>({...base,id,name:id,location:{lat:3.139+km/6371*180/Math.PI,lng:101.6869}});
-  const calls=[];await setup(page,calls,true,false,[at("Inside radius",9.99),at("Outside radius",10.01)]);await search(page,true);
-  expect(calls.find(c=>c.action==="search").request.radius).toBe(10);
-  await expect(page.locator(".results-toolbar strong")).toHaveText("10");
-  await expect(page.locator(".results-toolbar > div > span")).toHaveText("centres within 10 km");
-  await expect(page.locator(".provider-row")).toHaveCount(10);
-  await expect(page.locator(".provider-pin")).toHaveCount(10);
-  await expect(page.locator(".provider-row").filter({hasText:"Outside radius"})).toHaveCount(0);
+  const responses=[];
+  page.on("response",async r=>{if(r.url().endsWith("/api")&&r.request().postDataJSON()?.action==="search")responses.push(await r.json());});
+  const calls=[];await setup(page,calls,true,false,[at("Inside radius",9.99),at("Outside radius",10.01)]);await search(page,false,{conflicts:true});
+  expect(calls.find(c=>c.action==="search").request.radius).toBe(5);
+  await expect(page.locator(".results-toolbar > div > span")).toHaveText("centres within 5 km");
+  await expect.poll(()=>responses.length).toBe(1);
+  const near=responses[0];
+  expect(near.items.every(p=>p.distanceKm<=5)).toBe(true);
+  await expect(page.locator(".results-toolbar strong")).toHaveText(String(near.total));
+  await expect(page.locator(".provider-row")).toHaveCount(near.items.length);
+  await expect(page.locator(".provider-row").filter({hasText:"Inside radius"})).toHaveCount(0);
   await expect(page.locator(".provider-row").filter({hasText:"Cloud Care"})).toHaveCount(0);
   await page.screenshot({path:dir+"/radius-desktop.png"});
+  await setRadius(page,10);await submitSearch(page);await openResults(page);
+  await expect(page.locator(".results-toolbar > div > span")).toHaveText("centres within 10 km");
+  await expect.poll(()=>responses.length).toBe(2);
+  const far=responses[1];
+  expect(calls.filter(c=>c.action==="search").at(-1).request.radius).toBe(10);
+  expect(far.total).toBe(near.total+1);
+  expect(far.items.every(p=>p.distanceKm<=10)).toBe(true);
+  expect(far.items.some(p=>p.id==="Outside radius")).toBe(false);
+  await expect(page.locator(".results-toolbar strong")).toHaveText(String(far.total));
   await page.setViewportSize({width:390,height:844});await page.locator(".results-toolbar").scrollIntoViewIfNeeded();
   await page.screenshot({path:dir+"/radius-mobile.png"});
-  await page.getByRole("button",{name:/Change search/}).click();
-  await page.locator(".search-refinements summary").click();
-  await expect(page.locator("#radius option")).toHaveText(["Within 5 km","Within 10 km"]);
-  await page.locator("#radius").selectOption("5");
-  await page.getByRole("button",{name:/Update results/}).click();await openResults(page);
-  await expect(page.locator(".results-toolbar strong")).toHaveText("9");
-  await expect(page.locator(".results-toolbar > div > span")).toHaveText("centres within 5 km");
-  await expect(page.locator(".provider-row")).toHaveCount(9);
-  await expect(page.locator(".provider-pin")).toHaveCount(9);
-  await expect(page.locator(".provider-row").filter({hasText:"Inside radius"})).toHaveCount(0);
 });
 test("result cards show drive time and fee basis, while conflicts stay below other results on desktop and mobile",async({page})=>{
-  const calls=[];await setup(page,calls);await search(page);
+  const calls=[];await setup(page,calls);await search(page,false,{conflicts:true});
   const row=page.locator(".provider-row").first();await expect(row).toContainText("About 8 min by car");await expect(row).toContainText("estimated total");
   await expect(row.locator(".row-facts > span")).toHaveText(["Age","Drive","Fee"]);
   await expect(row).not.toContainText("5.5 km by road");
@@ -88,7 +92,10 @@ test("result cards show drive time and fee basis, while conflicts stay below oth
   await page.screenshot({path:dir+"/results-mobile.png"});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.getByRole('button',{name:'Close search panel'}).click();
-  await page.getByRole("button",{name:"Show all results on the map",exact:true}).click();
+  await hideOptionsPanel(page);
+  // Phones hide the map's fit button (6 Oct 2026); the map already frames the suggestions.
+  const fit=page.getByRole("button",{name:"Show all results on the map",exact:true});
+  if(await fit.isVisible())await fit.click();
   await expect.poll(async()=>page.locator(".provider-pin.suggested").evaluateAll(pins=>pins.every(pin=>{const r=pin.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=105&&r.bottom<innerHeight-65;}))).toBe(true);
   await page.screenshot({path:dir+"/suggestions-mobile.png"});
   await openResults(page);
@@ -116,6 +123,9 @@ test("mobile map previews leave room for the map and open the selected centre", 
   const searches = calls.filter(c=>["nearby","search"].includes(c.action)).length;
   for (const width of [393, 320]) {
     await page.setViewportSize({width,height:740});
+    // On phones the suggestions sheet replaces the preview until it is folded away.
+    await hideOptionsPanel(page);
+    if (!await compact.isVisible()) await pin.click();
     await expect(compact).toBeVisible();
     await expect(compact).toHaveAccessibleName(`View details for ${provider.name}`);
     await expect(preview).toContainText("About 8 min by car");

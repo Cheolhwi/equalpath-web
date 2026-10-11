@@ -1,4 +1,4 @@
-import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
+import { chooseAge, openResults, openSearch, setDate, setTime, setTransport, submitSearch } from "./ui-helpers.mjs";
 import {test,expect} from '@playwright/test';
 import {createAPI,errorResponse} from '../../server/api.mjs';
 import {fixtureCatalog,demoPickup} from '../../server/fixtures.mjs';
@@ -11,8 +11,8 @@ async function setup(page,items){
   const api=createAPI({store:{catalog:async()=>({...fixtureCatalog,items})},placeSearch:async()=>({items:[other]}),drivingRoutes:async(_,rows)=>rows});
   await page.route('**/api',async route=>{const body=route.request().postDataJSON();calls.push(body);try{await route.fulfill({json:{ok:true,...await api(body)}});}catch(e){const r=errorResponse(e);await route.fulfill({status:r.status,json:r.body});}});
   await page.addInitScript(pickup=>{localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,center:pickup,pickup,zoom:13}));},origin);
-  await page.goto('/?care=short_term#discover');await openSearch(page);await page.locator('#service-date').fill('2026-09-21');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');await revealPreferences(page); await page.locator('#transport').selectOption('self');
-  await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);await expect(page.locator('.provider-row').first()).toBeVisible();return calls;
+  await page.goto('/?care=short_term#discover');await openSearch(page);await setDate(page, '2026-09-21');await setTime(page, 'deadline', '13:00');await setTime(page, 'care-end', '17:00');await setTransport(page, 'self');
+  await chooseAge(page); await submitSearch(page);await openResults(page);await expect(page.locator('.provider-row').first()).toBeVisible();return calls;
 }
 const sortMenu=page=>page.getByRole('combobox',{name:'Order search results',exact:true});
 const price=page=>page.getByRole('option',{name:/^Lowest fee/});
@@ -25,18 +25,23 @@ for(const width of [1440,390])test(`${width}px: changing to an area without quot
   await page.getByRole('button',{name:'Change search',exact:true}).click();
   await page.locator('#pickup-search').fill('New pickup');await page.locator('#pickup-search').press('Enter');
   await page.locator('.place-results').getByRole('button',{name:/New pickup/}).click();
-  await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);
+  await chooseAge(page); await submitSearch(page);await openResults(page);
   await expect(sortMenu(page)).toHaveText('Nearest first');
   await expect(page.locator('.provider-row')).toHaveCount(2);await expect(page.locator('.provider-row').filter({hasText:'Ask the centre'})).toHaveCount(2);
   await sortMenu(page).click();
   await expect(price(page)).toBeDisabled();await expect(price(page)).toHaveAttribute('aria-selected','false');
-  await expect(price(page)).toContainText('No fees listed nearby.');
+  await expect(price(page)).toContainText('No fees for these results.');
   await expect(price(page)).not.toContainText('Unavailable');
   const before=calls.filter(c=>c.action==='search').length;await price(page).click({force:true});
   await expect(sortMenu(page)).toHaveText('Nearest first');expect(calls.filter(c=>c.action==='search')).toHaveLength(before);
   const box=await page.getByRole('listbox').boundingBox();expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(width);expect(box.y+box.height).toBeLessThanOrEqual(900);
   await page.screenshot({path:`${out}/missing-fee-${width}.png`});await page.keyboard.press('Escape');
-  await page.getByRole('button',{name:'Change search',exact:true}).click();await page.getByRole('button',{name:'Update results',exact:true}).click();
+  // An unchanged search offers no update; the next real change must carry the
+  // fallback order rather than the unavailable price order.
+  await page.getByRole('button',{name:'Change search',exact:true}).click();
+  await expect(page.locator('#search-apply-status')).toHaveText('Results up to date');
+  await setTime(page, 'care-end', '16:30');
+  await page.getByRole('button',{name:'Update results',exact:true}).click();
   await expect(page.locator('.map-search-dock')).toBeVisible();await openResults(page);
   await expect(sortMenu(page)).toHaveText('Nearest first');expect(calls.filter(c=>c.action==='search').at(-1).request.sort).toBe('distance');
 });

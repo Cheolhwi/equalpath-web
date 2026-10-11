@@ -3,13 +3,22 @@ import {mkdirSync} from 'node:fs';
 import {ENTRANCE_COVER_MS,ENTRANCE_DURATION_MS} from '../../src/entrance.js';
 const out=process.env.QA_EVIDENCE_DIR || '.build/landing-qa';mkdirSync(out,{recursive:true});
 
+// Pause the fake clock just ahead of the page's time. On a slow CI runner more
+// than the margin can pass between reading and pausing, so retry if it does.
+async function pauseSoon(page){
+  for(let attempt=0;;attempt++){
+    try{await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));return;}
+    catch(error){if(attempt>=2||!/to the past/.test(error.message))throw error;}
+  }
+}
+
 async function captureEntry(page, artwork = 'play', suffix = '') {
   const print = page.locator('.entrance-art:not([hidden])');
   await expect(print).toHaveAttribute('data-ready','true');
   const originalImage = await print.locator('img').elementHandle();
   // Pause JS completion while sampling the actual CSS animations at their key stages.
   await page.clock.install();
-  await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
+  await pauseSoon(page);
   await page.getByRole('button',{name:/^(FIND CHILDCARE|BACK TO YOUR OPTIONS)$/}).click();
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','entering');
   await expect(page.locator('.equalpath')).toHaveAttribute('inert','');
@@ -161,7 +170,7 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   await page.goto('/');
   await expect(page.locator('.landing')).toHaveAttribute('data-load-state','ready',{timeout:60000});
   await expect(page.locator('.entrance-art:not([hidden])')).toHaveAttribute('data-ready','true');
-  await page.clock.install();await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
+  await page.clock.install();await pauseSoon(page);
   await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','entering');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -172,7 +181,7 @@ test('Escape finishes entry on mobile and returning home preserves the current r
   await page.getByRole('button',{name:'EqualPath home',exact:true}).click();
   await page.clock.resume();
   await expect(page.locator('.landing')).toHaveAttribute('data-load-state','ready',{timeout:60000});
-  await page.clock.pauseAt(await page.evaluate(()=>Date.now()+1000));
+  await pauseSoon(page);
   await page.getByRole('button',{name:'BACK TO YOUR OPTIONS',exact:true}).click();
   await page.clock.fastForward(ENTRANCE_DURATION_MS+32);
   await expect(page.locator('#pickup-search')).toHaveValue('Petaling Jaya');
@@ -214,7 +223,8 @@ test('a cold landing prepares artwork before entry and needs no image request du
   });
   entering=true;
   await page.getByRole('button',{name:'FIND CHILDCARE',exact:true}).click();
-  await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready');
+  // CI renders the scene on the CPU, which stretches the 1.2 s entrance timer.
+  await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase','ready',{timeout:20000});
   const frames=await page.evaluate(()=>window.entryImageFrames);
   // Assert every frame the browser actually presents, not a minimum GPU FPS.
   expect(frames.length).toBeGreaterThan(0);

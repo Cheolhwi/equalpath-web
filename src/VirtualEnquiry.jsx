@@ -5,6 +5,7 @@ import { displayName } from '../shared/display.mjs';
 import { contactQuestions } from '../shared/contact-message.mjs';
 import './virtual-enquiry.css';
 import cloudConfig from './enquiry-config.json';
+import Dialog from './Dialog.jsx';
 
 const cloud = cloudConfig.enabled && /^https:\/\/[a-z0-9.-]+\.appwrite\.(run|network)$/.test(cloudConfig.endpoint);
 export const virtualEnquiryEnabled = cloud || (import.meta.env.DEV && import.meta.env.VITE_VIRTUAL_ENQUIRY === '1');
@@ -18,7 +19,7 @@ const summary = r => r.outcome !== 'available' && r.children?.length && r.childr
 const active = j => j && ['queued', 'waiting'].includes(j.state);
 // Still something to wait for: the reply, or the centre's answer to the parent's decision.
 const following = j => active(j) || j?.confirmation?.state === 'sending';
-const sessionKey = 'equalpath:virtual-enquiry:session', jobsKey = 'equalpath:virtual-enquiry:jobs';
+const sessionKey = 'equalpath:virtual-enquiry:session', jobsKey = 'equalpath:virtual-enquiry:jobs', openKey = 'equalpath:virtual-enquiry:open';
 function session() {
   let token = sessionStorage.getItem(sessionKey);
   if (!/^[a-f0-9]{64}$/.test(token ?? '')) {
@@ -80,6 +81,10 @@ const SYSTEM = {
 };
 const lmBases = {};
 const wordingCache = new Map();
+// Whatever a bubble shows first is final: a reply or message shown with the
+// rules' wording never switches to a model's wording that finishes later
+// (for example after reopening the chat).
+const lock = (key, text) => { if (!wordingCache.has(key)) wordingCache.set(key, text ?? null); return wordingCache.get(key); };
 async function languageModel({ allowDownload = false, voice = 'centre' } = {}) {
   const LM = globalThis.LanguageModel;
   if (!LM?.availability || !LM?.create) return null;
@@ -225,13 +230,13 @@ function AskBubble({ thread: t, onReady }) {
   useEffect(() => {
     if (worded !== undefined) return;
     let live = true;
-    const settle = text => { if (live) setWorded(w => w === undefined ? text : w); };
+    const settle = text => { if (live) { const final = lock(key, text); setWorded(w => w === undefined ? final : w); } };
     // No model ready on this device: show the rules' wording straight away.
     (async () => {
       const LM = globalThis.LanguageModel;
       const ready = LM?.availability && await LM.availability(LM_OPTIONS).catch(() => 'unavailable') === 'available';
       if (!ready) { if (!wordingCache.has(key)) wordingCache.set(key, null); return settle(null); }
-      naturalAsk(t, template, key).then(settle);
+      naturalAsk(t, template, key).then(settle, () => settle(null));
     })();
     const fallback = setTimeout(() => { if (!wordingCache.has(key)) { wordingCache.set(key, null); debug('Your message', 'the model took longer than 12 s'); } settle(null); }, 12000);
     return () => { live = false; clearTimeout(fallback); };
@@ -273,6 +278,35 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
   const threadsRef = useRef(threads), viewRef = useRef(view), modalRef = useRef(modal), actionsRef = useRef(actions), locks = useRef(new Set());
   threadsRef.current = threads; viewRef.current = view; modalRef.current = modal; actionsRef.current = actions;
   const patch = useCallback((key, change) => setThreads(list => list.map(t => t.key === key ? { ...t, ...(typeof change === 'function' ? change(t) : change) } : t)), []);
+  // A page refresh keeps the conversations (11 Oct 2026): only the request IDs
+  // (and the centre's public ID and name) stay in this tab's session; ages
+  // and times are read back from the enquiry itself.
+  const restoring = useRef(true);
+  const [restored, setRestored] = useState(0);
+  useEffect(() => {
+    let saved = []; try { saved = JSON.parse(sessionStorage.getItem(openKey) || '[]'); } catch { /* nothing saved */ }
+    if (!virtualEnquiryEnabled || !Array.isArray(saved) || !saved.length) { restoring.current = false; return; }
+    (async () => {
+      const back = [];
+      for (const s of saved.slice(-5)) {
+        try {
+          if (!/^[a-f0-9]{24}$/.test(s.id || '')) continue;
+          const job = await query({ action: 'get', id: s.id });
+          // Already-read words stay as they were; nothing types out again.
+          wordingCache.set(`ask:${s.key}`, null); shownReplies.add(job.id);
+          back.push({ key: s.key, payload: JSON.parse(s.key), centre: s.centre, request: null, family: !!s.family, job, error: '', busy: false, paused: false, retry: 0, unread: false, settled: !following(job), restored: true });
+        } catch { /* expired: nothing to bring back */ }
+      }
+      restoring.current = false;
+      if (!back.length) { try { sessionStorage.removeItem(openKey); } catch { /* optional */ } return; }
+      setThreads(list => [...back.filter(b => !list.some(t => t.key === b.key)), ...list].slice(-5));
+      setRestored(back.length);
+    })();
+  }, []);
+  useEffect(() => {
+    if (restoring.current) return;
+    try { sessionStorage.setItem(openKey, JSON.stringify(threads.filter(t => t.job?.id).map(t => ({ key: t.key, id: t.job.id, family: !!t.family, centre: t.centre?.id ? { id: t.centre.id, name: t.centre.name } : null })))); } catch { /* optional */ }
+  }, [threads]);
   const start = useCallback(async (key, payload) => {
     const current = threadsRef.current.find(t => t.key === key);
     if (locks.current.has(key) || (current?.job && !ENDED.includes(current.job.state))) return;
@@ -371,7 +405,7 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     catch (e) { patch(key, { error: e.message }); }
     finally { patch(key, { deciding: false }); }
   }, [patch]);
-  const value = { threads, view, notice, modal, ask, show, minimise, remove, start, patch, settle, decide, sound, setSound, dismissNotice: () => setNotice(null), actions: actionsRef };
+  const value = { threads, view, notice, modal, ask, show, minimise, remove, start, patch, settle, decide, restored, dismissRestored: () => setRestored(0), sound, setSound, dismissNotice: () => setNotice(null), actions: actionsRef };
   return <EnquiryContext.Provider value={value}>{children}{threads.map(t => <ThreadFollower key={t.key} thread={t} />)}</EnquiryContext.Provider>;
 }
 
@@ -427,6 +461,20 @@ function ThreadFollower({ thread }) {
   return null;
 }
 
+// Where an enquiry with a centre stands for a date, for the Checklist:
+// confirmed, offered (waiting for the parent's decision), replied, asked, or none.
+export function useEnquiryStatus() {
+  const ctx = useContext(EnquiryContext);
+  return (id, date) => {
+    const ts = (ctx?.threads ?? []).filter(t => t.payload.branchId === id && t.payload.date === date);
+    if (!ts.length) return null;
+    if (ts.some(t => t.job?.confirmation?.state === 'acknowledged' && t.job.confirmation.decision === 'accept')) return 'confirmed';
+    if (ts.some(t => t.job?.result && summary(t.job.result).good && !t.job.confirmation)) return 'available';
+    if (ts.some(t => t.job?.result)) return 'replied';
+    return 'asked';
+  };
+}
+
 /* The button beside Copy message. It only starts (or reopens) the chat. */
 export default function VirtualEnquiry(props) {
   const ctx = useContext(EnquiryContext);
@@ -445,13 +493,19 @@ export default function VirtualEnquiry(props) {
   </button>;
 }
 
+// A chat brought back after a page refresh has no search behind it, so it
+// can't open the checklist or the Contact panel for that search.
 function nextSteps(t, act, ask, decide) {
+  const steps = stepsFor(t, act, ask, decide);
+  return t.request ? steps : steps.filter(s => !s.needsSearch);
+}
+function stepsFor(t, act, ask, decide) {
   const r = t.job?.result;
   // A "no place" took that plan off the list, so the way back is to the others.
   const declined = t.job?.result?.children?.some(c => c.state === 'unavailable' && !c.offer);
   const options = { label: t.family ? (declined ? 'See other plans' : 'Back to your plan') : 'See other options', icon: List, run: () => act.current?.options?.(t.family) };
-  const prepare = { label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepare?.(t.centre, t.request) };
-  const contact = { label: 'Contact the centre', icon: MessageCircle, run: () => act.current?.contact?.(t.centre, t.request) };
+  const prepare = { label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepare?.(t.centre, t.request), needsSearch: true };
+  const contact = { label: 'Contact the centre', icon: MessageCircle, run: () => act.current?.contact?.(t.centre, t.request), needsSearch: true };
   if (!r) return [];
   // A place for every child: the parent decides first, and the centre is told.
   if (summary(r).good) {
@@ -487,7 +541,56 @@ export function EnquiryDock() {
     {!modal && view.open && current && <ChatWindow key={current.key} thread={current} />}
     {!modal && !(view.open && current) && <ChatPill />}
     <ReplyNotice />
+    {!modal && !ctx.notice && ctx.restored > 0 && <RestoredNotice />}
   </>;
+}
+
+// After a refresh: the conversations are back, said in the same notice style.
+function RestoredNotice() {
+  const ctx = useContext(EnquiryContext);
+  const n = ctx.restored, latest = ctx.threads.at(-1);
+  useEffect(() => { const t = setTimeout(ctx.dismissRestored, 9000); return () => clearTimeout(t); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return <div className="enquiry-notice" role="status" aria-live="polite">
+    <span className="enquiry-notice-icon good" aria-hidden="true"><Check size={18} /></span>
+    <div className="enquiry-notice-main">
+      <strong>Your {n === 1 ? 'enquiry is' : 'enquiries are'} still here</strong>
+      <p>The page was refreshed. We’re still following {n === 1 ? 'your enquiry' : `your ${n} enquiries`} with the {n === 1 ? 'centre' : 'centres'}. Search again to see your plan.</p>
+      {latest && <div className="enquiry-notice-actions"><button className="primary" onClick={() => { ctx.dismissRestored(); ctx.show(latest.key); }}>View chat<ArrowRight size={15} aria-hidden="true" /></button></div>}
+    </div>
+    <button className="enquiry-notice-close" aria-label="Dismiss" onClick={ctx.dismissRestored}><X size={17} /></button>
+  </div>;
+}
+
+/* Refreshing (11 Oct 2026): the keyboard refresh asks first, in the app's own
+   window, when there is something on screen that a refresh would clear. The
+   browser's own refresh button can't show a custom window, so nothing is lost
+   there either: the conversations come back by themselves. */
+export function RefreshGuard({ hasWork, checklists = 0 }) {
+  const ctx = useContext(EnquiryContext);
+  const [open, setOpen] = useState(false);
+  const chats = ctx?.threads.length ?? 0;
+  const workRef = useRef(false); workRef.current = hasWork || checklists > 0 || chats > 0;
+  useEffect(() => {
+    const key = (e) => {
+      const reload = e.key === 'F5' || ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === 'r');
+      if (!reload || !workRef.current || document.querySelector('dialog.refresh-dialog[open]')) return;
+      e.preventDefault(); setOpen(true);
+    };
+    window.addEventListener('keydown', key, true);
+    return () => window.removeEventListener('keydown', key, true);
+  }, []);
+  if (!open) return null;
+  return <Dialog title="Refresh the page?" kicker="" className="refresh-dialog" onClose={() => setOpen(false)}>
+    <div className="refresh-body">
+      {hasWork && <p>Your search and plan will be cleared, so you’ll need to search again.</p>}
+      {checklists > 0 && <p>Your Checklist and its ticks will be cleared too. Download a plan first if you want to keep it.</p>}
+      {chats > 0 && <p>Your {chats === 1 ? 'enquiry carries' : 'enquiries carry'} on and will be back after the refresh.</p>}
+      <div className="refresh-actions">
+        <button className="primary" autoFocus onClick={() => setOpen(false)}>Stay on this page</button>
+        <button className="secondary" onClick={() => window.location.reload()}>Refresh anyway</button>
+      </div>
+    </div>
+  </Dialog>;
 }
 
 function ChatPill() {
@@ -609,14 +712,14 @@ function Decision({ c, name, steps, onStep, scroll }) {
 function Reply({ id, name, result, scroll, animate, onComplete, steps, onStep }) {
   const still = !animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // undefined: still asking the on-device model; null: use the template.
-  const [worded, setWorded] = useState(() => wordingCache.has(id) ? wordingCache.get(id) : animate ? undefined : null);
+  const [worded, setWorded] = useState(() => wordingCache.has(id) ? wordingCache.get(id) : animate ? undefined : lock(id, null));
   const [original, setOriginal] = useState(false);
   useEffect(() => {
     if (worded !== undefined) return;
     let live = true;
     // The receptionist "types" for up to 25 s while the on-device model works.
     const fallback = setTimeout(() => { if (!wordingCache.has(id)) { wordingCache.set(id, null); debug('Reply', 'the model took longer than 25 s'); } if (live) setWorded(w => w === undefined ? null : w); }, 25000);
-    naturalReply(result, name, id).then(text => { if (live) setWorded(w => w === undefined ? text : w); });
+    naturalReply(result, name, id).then(text => { if (live) { const final = lock(id, text); setWorded(w => w === undefined ? final : w); } }, () => { if (live) { const final = lock(id, null); setWorded(w => w === undefined ? final : w); } });
     return () => { live = false; clearTimeout(fallback); };
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
   const text = worded && !original ? worded : cleanReply(result.rawReply);

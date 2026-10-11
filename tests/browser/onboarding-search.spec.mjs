@@ -4,7 +4,7 @@ import { createAPI } from '../../server/api.mjs';
 import { demoPickup } from '../../server/fixtures.mjs';
 import { emptyInterests, personaliseSearchItems } from '../../shared/recommendations.mjs';
 import { emptyLibrary } from '../../shared/saved.mjs';
-import { openResults } from './ui-helpers.mjs';
+import { chooseAge, hideOptionsPanel, openResults, setDate, setTime, submitSearch } from './ui-helpers.mjs';
 
 const out = process.env.QA_EVIDENCE_DIR || '.build/onboarding-search';
 mkdirSync(out, { recursive: true });
@@ -32,16 +32,14 @@ for (const width of [1440, 390]) test(`${width}px first-use choices reach both f
   await page.getByRole('button', { name: /Kind teachers Patient, caring staff/ }).click();
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await expect(page.locator('.experience')).toHaveAttribute('data-intro-phase', 'ready');
-  await page.getByRole('button', { name: 'Open search panel' }).click();
   await page.locator('#pickup-search').fill('KL Sentral');
   await page.getByRole('button', { name: 'Find address', exact: true }).click();
   await page.locator('.place-results').getByRole('button', { name: /KL Sentral/ }).click();
-  await page.locator('#service-date').fill('2026-09-30');
-  await page.getByRole('radio', { name: '1–3 years', exact: true }).check();
-  await page.locator('#deadline').fill('10:00');
-  await page.locator('#care-end').fill('12:00');
-  await page.locator('#care-end').press('Tab');
-  await page.getByRole('button', { name: 'Find childcare', exact: true }).click();
+  await setDate(page, '2026-09-30');
+  await chooseAge(page, '2');
+  await setTime(page, 'deadline', '10:00');
+  await setTime(page, 'care-end', '12:00');
+  await submitSearch(page);
 
   for (const index of [0, 1]) {
     await expect.poll(() => responses.length).toBe(index + 1);
@@ -60,17 +58,13 @@ for (const width of [1440, 390]) test(`${width}px first-use choices reach both f
     expect(stored).toMatchObject({ preferences: ['caring_teachers'], visits: [], hidden: [], preferenceSetup: 'complete' });
     await page.getByRole('button', { name: 'Close search panel' }).click();
     await expect(page.locator('.discovery-panel')).toBeHidden();
+    await hideOptionsPanel(page);
     await expect(page.locator('.map-card-personalised').first()).toBeVisible();
     await expect(page.locator('.map-centre-card:not(.leaving)').first()).toHaveCSS('opacity', '1');
     await page.screenshot({ path: `${out}/first-use-${width}-search-${index + 1}.png` });
     if (index === 0) {
-      if (await page.locator('.mobile-search-summary').isVisible()) await page.locator('.mobile-search-summary').click();
-      await page.getByRole('button', { name: 'Open search panel' }).click();
-      const change = page.getByRole('button', { name: 'Change search', exact: true });
-      if (await change.isVisible()) await change.click();
-      await page.locator('#care-end').fill('13:00');
-      await page.locator('#care-end').press('Tab');
-      await page.getByRole('button', { name: 'Update results', exact: true }).click();
+      await setTime(page, 'care-end', '13:00');
+      await submitSearch(page);
     }
   }
   expect(errors).toEqual([]);

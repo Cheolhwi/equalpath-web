@@ -238,9 +238,9 @@ test("5.6 standalone export preserves dates, contacts, draft, blank offline spac
   p.phone = { display: "03 1234 5678", source: p.sources[0] };
   const sheet = preparationFor(p, r, "2026-09-13T10:00:00Z");
   const html = preparationHTML(sheet, ["bag", "water"]);
-  assert.ok(html.includes("☑ Pack a bag with your child’s name."));
-  assert.ok(html.includes("☑ Pack a water bottle."));
-  assert.ok(html.includes("☐ Pack spare clothes."));
+  assert.ok(html.includes("☑ Pack a bag labelled with your child’s name."));
+  assert.ok(html.includes("☑ Pack a labelled water bottle."));
+  assert.ok(html.includes("☐ Pack a spare set of clothes."));
   for (const value of [
     "03 1234 5678",
     "2026-09-14",
@@ -265,4 +265,23 @@ test("Q2/Q6 exports escape hostile markup, reject active URL schemes, and exclud
   const html = preparationHTML(preparationFor(p, r));
   assert.doesNotMatch(html, /<img|<script|href="javascript:|PRIVATE REASON/);
   assert.match(html, /&lt;img/);
+});
+test("checklist follows the child's age, the hours of care and the centre's listed extras", () => {
+  const p = { id: "x", name: "T", address: "a", fees: [{ conditions: "Minimum booking: 4 hours. Registration fee: MYR 250. Deposit: MYR 0. Extra charges: meals RM8/day for drop-in; diapers & wipes provided by parent or RM5/day; grip socks RM8.", source: { label: "Fee sheet" } }] };
+  const req = (age, deadline, end) => ({ careType: "short_term", pickup: { label: "KL" }, date: "2026-10-12", deadline, end, age, transport: "" });
+  const ids = (s) => [...s.packing, ...s.published].map((x) => x.id);
+  const baby = preparationFor(p, req("0", "09:00", "15:00"));
+  assert.ok(ids(baby).includes("milk") && ids(baby).includes("young") && !ids(baby).includes("meal"));
+  const toddler = preparationFor(p, req("2", "12:00", "17:00"));
+  const diapers = toddler.packing.find((x) => x.id === "young");
+  assert.match(diapers.centre.text, /RM5\/day/);
+  assert.ok(toddler.packing.find((x) => x.id === "meal").why.includes("Over lunchtime"));
+  assert.ok(ids(toddler).includes("rest"));
+  const older = preparationFor(p, req("5", "16:00", "18:00"));
+  assert.ok(!ids(older).includes("young") && !ids(older).includes("rest"));
+  assert.equal(older.packing.find((x) => x.id === "meal").label, "Snack");
+  assert.ok(!older.packing.find((x) => x.id === "meal").centre, "a centre lunch isn't offered for an afternoon snack");
+  assert.ok(ids(older).includes("socks") && ids(older).includes("registration"));
+  assert.ok(older.published.every((x) => x.source?.label === "Fee sheet"));
+  assert.equal(older.basisLine, "For a 5-year-old · 2 h of care");
 });

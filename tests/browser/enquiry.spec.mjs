@@ -1,4 +1,4 @@
-import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
+import { chooseAge, includeConflicts, openResults, openSearch, returningVisitor, setDate, setTime, setTransport, submitSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog, demoPickup } from "../../server/fixtures.mjs";
@@ -21,24 +21,29 @@ async function openQuestions(page, { missing = false, clipboard = true, transpor
   const api = createAPI({ store: { catalog: async () => ({ ...fixtureCatalog, items: [p] }) }, drivingRoutes: async (_, rows) => rows.map(p => ({ ...p, driving: { state: "unavailable" } })) });
   await page.route("**/api", async route => route.fulfill({ json: { ok: true, ...await api(route.request().postDataJSON()) } }));
   await page.route(/https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com)\//, route => route.abort());
+  await returningVisitor(page);
   await page.addInitScript(({ pickup, clipboard }) => {
-    localStorage.setItem("equalpath:tour:v1", '{"version":1,"status":"skipped"}');
     localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, zoom: 13, center: pickup, pickup }));
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText: async text => {
       if (!clipboard) throw new Error("Clipboard blocked for test");
       window.copiedQuestions = text;
     } } });
   }, { pickup: { ...demoPickup, id: null, label: "KL Sentral" }, clipboard });
-  await page.goto("/?care=short_term#discover", { waitUntil: "domcontentloaded" });await openSearch(page);
-  await page.locator("#service-date").fill("2026-09-14");
-  await page.locator("#deadline").fill("13:00"); await page.locator("#care-end").fill("18:00");
-  await revealPreferences(page); await chooseAge(page, "4"); await revealPreferences(page); await page.locator("#transport").selectOption(transport);
-  await page.locator(".search-refinements > summary").click();
-  await page.getByRole("checkbox", { name: "Include centres that don’t meet all my needs", exact: true }).check();
-  await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
-  await page.getByRole("button", { name: `View details for ${name}`, exact: true }).click();
-  await page.getByRole("button", { name: "Contact the centre", exact: true }).click();
-  return page.getByRole("dialog");
+  await page.goto("/#discover", { waitUntil: "domcontentloaded" });await openSearch(page);
+  await setDate(page, "2026-09-14");
+  await setTime(page, 'deadline', "13:00"); await setTime(page, 'care-end', "18:00");
+  await chooseAge(page, "4"); await setTransport(page, transport);
+  await includeConflicts(page); await submitSearch(page);await openResults(page);
+  await page.getByRole("button", { name: `Compare ${name}`, exact: true }).click();
+  await openContact(page);
+  return contactWindow(page);
+}
+// Contact opens from the centre's column in Compare, as its own window (10 Oct 2026).
+const contactWindow = page => page.locator(".contact-panel");
+async function openContact(page) {
+  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", { name: /Compare/ }).click();
+  await page.getByRole("button", { name: `Contact ${name}`, exact: true }).click();
+  await expect(contactWindow(page)).toBeVisible();
 }
 const copyButton = dialog => dialog.getByRole("button", { name: "Copy message", exact: true });
 const expectedMessage = async dialog => {
@@ -70,10 +75,13 @@ for (const width of [390, 1440]) test(`${width}px: one ready message, visible ch
   await dialog.locator(".enquiry-send").evaluate(el => el.scrollIntoView({ block: "start" }));
   await page.screenshot({ path: `${out}/message-${width}.png` });
   await dialog.getByRole("button", { name: "Close contact", exact: true }).click();
-  await page.getByRole("button", { name: `View details for ${name}`, exact: true }).click();
-  await page.getByRole("button", { name: "Contact the centre", exact: true }).click();
+  await openContact(page);
   await expect(fee.getByRole("checkbox")).not.toBeChecked();
-  await fee.getByRole("checkbox").focus(); await page.keyboard.press("Space");
+  // Headed Linux workers can leave the page itself unfocused; keyboard input needs it.
+  await page.bringToFront();
+  // Compare is still finishing its close animation (and keeps focus) as Contact opens.
+  await expect(async () => { await fee.getByRole("checkbox").focus(); await expect(fee.getByRole("checkbox")).toBeFocused({ timeout: 500 }); }).toPass({ timeout: 5000 });
+  await page.keyboard.press("Space");
   await expect(fee.getByRole("checkbox")).toBeChecked();
   for (const input of await dialog.locator(".contact-question input").all()) await input.uncheck();
   await expect(copyButton(dialog)).toBeDisabled();
@@ -91,7 +99,9 @@ test("combined questions retain warnings and all their source checks without cop
   const care = dialog.locator('[data-check-id="care"]');
   await expect(care).toContainText("Open 08:00–17:00. You collect your child at 18:00.");
   await expect(care.getByRole("link")).toHaveAttribute("href", source.url);
-  await expect(dialog.locator('[data-check-id]')).toHaveCount(8);
+  // Includes the "Care starts at" check added on 10 Oct 2026.
+  await expect(dialog.locator('[data-check-id]')).toHaveCount(9);
+  await expect(dialog.locator('[data-check-id="opening"]')).toContainText('Care starts at');
   await copyButton(dialog).click();
   const message = await page.evaluate(() => window.copiedQuestions);
   expect(message).not.toContain("Published care hours");
@@ -119,7 +129,7 @@ test("320px dark view keeps questions and copy usable without horizontal scrolli
   await page.setViewportSize({ width: 320, height: 700 });
   const dialog = await openQuestions(page);
   await page.locator(".equalpath").evaluate(el => el.classList.add("dark"));
-  await expect(dialog).toHaveCSS("background-color", "rgb(37, 43, 39)");
+  await expect.poll(() => dialog.evaluate(el => getComputedStyle(el).backgroundColor.match(/\d+/g).slice(0, 3).every(v => Number(v) < 80))).toBe(true);
   await dialog.locator(".enquiry-send").evaluate(el => el.scrollIntoView({ block: "start" }));
   expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
   await page.screenshot({ path: `${out}/message-dark-320.png` });

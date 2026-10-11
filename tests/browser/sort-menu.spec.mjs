@@ -1,4 +1,4 @@
-import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
+import { chooseAge, openResults, openSearch, setDate, setTime, setTransport, submitSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import { createAPI } from "../../server/api.mjs";
@@ -32,11 +32,11 @@ async function start(page) {
     }));
   });
   await page.goto("/?care=short_term#discover");await openSearch(page);
-  await page.locator("#service-date").fill("2026-09-14");
-  await page.locator("#deadline").fill("13:00");
-  await page.locator("#care-end").fill("17:00");
-  await revealPreferences(page); await page.locator("#transport").selectOption("self");
-  await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
+  await setDate(page, "2026-09-14");
+  await setTime(page, 'deadline', "13:00");
+  await setTime(page, 'care-end', "17:00");
+  await setTransport(page, "self");
+  await chooseAge(page); await submitSearch(page);await openResults(page);
   await expect(page.locator(".provider-row")).toHaveCount(3);
   return searches;
 }
@@ -46,10 +46,12 @@ test("styled sorting previews without queries, skips unavailable options and sup
   const searches = await start(page);
   const trigger = page.getByRole("combobox", { name: "Order search results", exact: true });
   await trigger.click();
-  await expect(page.getByRole("option", { selected: true })).toHaveText("Nearest first");
+  await expect(page.getByRole("option", { selected: true })).toHaveText("Recommended");
   await expect(page.getByRole("option", { name: "By name", exact: true })).toHaveCount(0);
   await expect(page.getByRole("option", { name: /Open latest/ })).toBeDisabled();
   await page.screenshot({ path: `${out}/sort-desktop.png` });
+  await trigger.press("ArrowDown");
+  await expect(await activeOption(page, trigger)).toHaveText("Nearest first");
   await trigger.press("ArrowDown");
   await expect(await activeOption(page, trigger)).toHaveText("Lowest fee");
   await trigger.press("ArrowDown");
@@ -89,9 +91,19 @@ test("sorting stays on small screens and Escape closes the menu without closing 
   expect(box.y).toBeGreaterThanOrEqual(0);
   expect(box.y + box.height).toBeLessThanOrEqual(844);
   await page.screenshot({ path: `${out}/sort-mobile.png` });
-  // Less space below the trigger must flip the open popup above it.
-  await page.setViewportSize({ width: 390, height: 600 });
-  await expect.poll(async () => (await menu.boundingBox()).y).toBeLessThan((await trigger.boundingBox()).y);
+  // Less space below the trigger than the popup needs must flip it above.
+  // Shrink until that is true rather than assuming where the trigger sits.
+  const menuHeight = box.height;
+  let flipped = false;
+  for (const height of [600, 540, 480, 420]) {
+    await page.setViewportSize({ width: 390, height });
+    const t = await trigger.boundingBox();
+    if (height - (t.y + t.height) >= menuHeight + 16) continue;
+    await expect.poll(async () => (await menu.boundingBox()).y).toBeLessThan((await trigger.boundingBox()).y);
+    flipped = true;
+    break;
+  }
+  expect(flipped).toBe(true);
   await page.screenshot({ path: `${out}/sort-upward.png` });
   await trigger.press("Escape");
   await page.setViewportSize({ width: 390, height: 844 });

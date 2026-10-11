@@ -1,10 +1,12 @@
-import { chooseAge, openResults, openSearch } from "./ui-helpers.mjs";
+import { chooseAge, openNearby, openResults, openSearch, returningVisitor, setDate, setTimes, submitSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { mkdirSync } from "node:fs";
 
 const out = process.env.QA_EVIDENCE_DIR || ".build/read-budget";
 mkdirSync(out, { recursive: true });
+// The bundled published catalogue answers nearby, search, details and compare
+// with no TablesDB reads. EqualPath is short-term care only since 2 Oct 2026.
 for (const width of [1440, 390]) test(`published catalogue works without TablesDB on ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 950 });
   const errors = [], responses = [];
@@ -16,18 +18,25 @@ for (const width of [1440, 390]) test(`published catalogue works without TablesD
     responses.push({ action: body.action, result });
     await route.fulfill({ json: { ok: true, ...result } });
   });
+  await returningVisitor(page);
   await page.addInitScript(() => {
-    localStorage.setItem("equalpath:tour:v1", JSON.stringify({ version: 1, status: "skipped" }));
     const pickup = { lat: 3.134, lng: 101.6863, label: "KL Sentral" };
     localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, zoom: 13, center: pickup, pickup }));
   });
-  await page.goto("/?care=regular#discover");await openSearch(page);
-  await expect(page.locator(".nearby-card")).toHaveCount(20);
-  await chooseAge(page);
-  await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
-  await expect(page.locator(".provider-row")).toHaveCount(20);
-  const regular = responses.filter(x => x.action === "search").at(-1).result;
-  expect(regular.collection.total).toBe(3036);
+  await page.goto("/#discover");
+  await openNearby(page);
+  await expect(page.locator(".nearby-card")).toHaveCount(10);
+  const nearby = responses.filter(x => x.action === "nearby").at(-1).result;
+  expect(nearby.items.every(p => p.distanceKm <= 5)).toBe(true);
+  await openSearch(page);
+  await setDate(page, "2026-09-21"); await chooseAge(page); await setTimes(page, "13:00", "17:00");
+  await submitSearch(page); await openResults(page);
+  const short = responses.filter(x => x.action === "search").at(-1).result;
+  expect(short.collection.total).toBe(101);
+  expect(short.items.length).toBeGreaterThan(0);
+  expect(short.items.every(p => p.distanceKm <= 5)).toBe(true);
+  await expect(page.locator(".provider-row")).toHaveCount(short.items.length);
+  await expect(page.locator(".results-toolbar")).toContainText("within 5 km");
   await page.locator(".provider-row").first().getByRole("button", { name: /^View details for/ }).click();
   await expect(page.locator(".centre-metrics")).toBeVisible();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
@@ -35,17 +44,6 @@ for (const width of [1440, 390]) test(`published catalogue works without TablesD
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();
   await expect(page.locator(".comparison-scroll table")).toBeVisible();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
-  await page.getByRole("button", { name: "Change search", exact: true }).click();
-  await page.getByRole("radio", { name: "A few hours" }).check();
-  await page.locator("#service-date").fill("2026-09-21");
-  await page.locator("#deadline").fill("13:00");
-  await page.locator("#care-end").fill("17:00");
-  await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
-  await expect(page.locator(".provider-row")).toHaveCount(10);
-  const short = responses.filter(x => x.action === "search").at(-1).result;
-  expect(short.collection.total).toBe(101);
-  expect(short.items.every(p => p.distanceKm <= 5 && !regular.items.some(r => r.id === p.id))).toBe(true);
-  await expect(page.locator(".results-toolbar")).toContainText("within 5 km");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: `${out}/published-catalogue-${width}.png` });
   expect(errors).toEqual([]);

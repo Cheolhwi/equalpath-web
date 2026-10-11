@@ -1,4 +1,4 @@
-import { openSearch } from './ui-helpers.mjs';
+import { chooseAge, hideOptionsPanel, navButton, openResults, openSearch, returningVisitor, setDate, setTime, setTransport, submitSearch } from './ui-helpers.mjs';
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog } from "../../server/fixtures.mjs";
@@ -7,6 +7,7 @@ const out = process.env.QA_EVIDENCE_DIR || ".build/map-cards";
 mkdirSync(out, { recursive: true });
 
 async function setup(page, calls, coLocated = false, contacts = false) {
+  await returningVisitor(page);
   const catalog = { ...fixtureCatalog, items: fixtureCatalog.items.map(p => ({ ...p,
     ...(coLocated ? { location: p.location ? { lat: 3.139, lng: 101.6869 } : null } : {}),
     ...(contacts ? { name: `${p.name} — A long branch name (Kuala Lumpur)`, phone: { display: "03-1234 5678", source: { label: "Test contact", url: "https://example.com/contact" } } } : {}),
@@ -18,14 +19,16 @@ async function setup(page, calls, coLocated = false, contacts = false) {
 }
 async function search(page) {
   await openSearch(page);
-  await page.locator("#service-date").fill("2026-09-22");
-  await page.locator("#deadline").fill("16:00");
-  await page.locator("#care-end").fill("18:00");
-  await page.getByRole("radio", { name: "4–6 years", exact: true }).check();
-  await page.locator(".optional-preferences > summary").click();
-  await page.locator("#transport").selectOption("institution");
-  await page.getByRole("button", { name: "Find childcare", exact: true }).click();
+  await setDate(page, "2026-09-22");
+  await setTime(page, 'deadline', "16:00");
+  await setTime(page, 'care-end', "18:00");
+  await chooseAge(page, "4");
+  await setTransport(page, "institution");
+  await submitSearch(page);
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
+  // The suggestions panel opens after a search; fold it to look at the map cards.
+  await expect(page.locator(".one-child-panel")).toBeVisible();
+  await hideOptionsPanel(page);
 }
 const visibleCards = page => page.locator(".map-centre-card:not(.leaving)");
 
@@ -33,9 +36,9 @@ test('before a search, a map card can be saved and comparison asks for the missi
   const calls = []; await setup(page, calls);
   await page.locator('.provider-pin').first().click();
   const card = visibleCards(page), name = await card.getAttribute('aria-label');
+  // Save acts immediately, with no dialog (9 Oct 2026).
   await card.getByRole('button', { name: `Save: ${name}`, exact: true }).click();
-  await page.getByRole('button', { name: 'Save centre', exact: true }).click();
-  await expect(card.getByRole('button', { name: `Edit saved centre: ${name}`, exact: true })).toBeVisible();
+  await expect(card.getByRole('button', { name: `Remove from Saved: ${name}`, exact: true })).toHaveAttribute('aria-pressed', 'true');
   await card.getByRole('button', { name: `Compare ${name}`, exact: true }).click();
   await expect(page.locator('.map-search-dock')).toBeVisible();
   await expect(page.locator('.dock-feedback')).toContainText(`Add your search details for ${name}`);
@@ -75,7 +78,7 @@ for (const width of [320, 390, 1280, 1440]) test(`${width}px: map first, search 
   await page.setViewportSize({ width, height: width === 1280 ? 720 : 900 });
   const calls = []; await setup(page, calls);
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
-  await expect(page.locator(".map-search-launch")).toBeVisible();
+  await expect(page.locator(".map-search-dock")).toBeVisible();
   await expect(page.locator(".provider-pin").first()).toBeVisible();
   await search(page); await checkCards(page);
   if (width >= 1280) await expect(page.locator('.map-card-rail')).toHaveCount(0);
@@ -110,8 +113,11 @@ for (const width of [320, 390, 1280, 1440]) test(`${width}px: map first, search 
   await visibleCards(page).getByRole("button", { name: /View details/ }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
   await expect(page.locator(".provider-pin.selected")).toHaveAttribute("data-provider-id", id);
-  await page.getByRole("button", { name: "Zoom in", exact: true }).click();
+  // Phones hide the zoom and fit buttons (6 Oct 2026); pinch zoom remains.
+  const zoomIn = page.getByRole("button", { name: "Zoom in", exact: true });
+  if (await zoomIn.isVisible()) await zoomIn.click();
   await expect(page.locator(".provider-pin.selected")).toHaveAttribute("data-provider-id", id);
   const blank = await page.locator(".map-canvas canvas").evaluate(canvas => {
     const r = canvas.getBoundingClientRect();
@@ -126,26 +132,28 @@ for (const width of [320, 390, 1280, 1440]) test(`${width}px: map first, search 
   await expect(page.locator(".provider-pin[aria-pressed='true']")).toHaveCount(0);
   await expect(page.locator(".map-centre-card.selected:not(.leaving)")).toHaveCount(0);
   expect(calls.filter(c => ["nearby", "search"].includes(c.action)).length).toBe(count);
-  await page.getByRole("button", { name: "Show all results on the map", exact: true }).click();
-  await checkCards(page);
+  const fit = page.getByRole("button", { name: "Show all results on the map", exact: true });
+  if (await fit.isVisible()) { await fit.click(); await checkCards(page); }
   await page.locator(".map-quick-actions").getByRole("button", { name: /^All/ }).click();
   await expect(page.locator(".provider-row").first()).toBeVisible();
   await page.getByRole("button", { name: "Close search panel", exact: true }).click();
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
-  await expect(page.locator(width <= 760 ? ".mobile-search-summary" : ".map-search-launch")).toBeFocused();
+  // Focus must not stay inside the hidden list panel.
+  expect(await page.evaluate(() => !!document.activeElement?.closest(".discovery-panel"))).toBe(false);
+  if (width <= 760) await expect(page.locator(".mobile-search-summary")).toBeFocused();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
 test("coincident recommendations remain separate; keyboard and reduced motion work", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
+  await returningVisitor(page, { motion: "reduce" });
   const calls = []; await setup(page, calls, true); await search(page); await checkCards(page);
   await page.screenshot({ path: `${out}/coincident-mobile.png` });
   await openSearch(page);
-  await page.locator("#deadline").fill("15:45");
+  await setTime(page, 'deadline', "15:45");
   await page.keyboard.press("Escape");
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
-  await openSearch(page); await expect(page.locator("#deadline")).toHaveValue("15:45");
-  await page.getByRole("button", { name: "Close search panel", exact: true }).click();
+  await openSearch(page); await expect(page.locator(".map-search-dock #deadline strong")).toHaveText("15:45");
   await expect(page.locator(".map-first")).toHaveAttribute("data-reduced", "true");
 });
 
@@ -157,7 +165,7 @@ test("cards and drawer fade out without leaving invisible interactive controls",
   await expect(page.locator(".map-centre-card.leaving").first()).toHaveAttribute("inert", "");
   await expect(page.locator(".map-centre-card.leaving")).toHaveCount(0);
   await expect(visibleCards(page)).toHaveCount(1);
-  await openSearch(page);
+  await openResults(page);
   await page.getByRole("button", { name: "Close search panel" }).click();
   await expect(page.locator(".discovery-panel")).toHaveAttribute("inert", "");
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
@@ -222,13 +230,12 @@ for (const width of [320, 927, 1440]) test(`${width}px: map card save and compar
   for (const button of await card.locator('.map-card-actions button').all()) {
     expect(await button.evaluate(el => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)); })).toBe(true);
   }
+  // Save acts immediately with no dialog (9 Oct 2026); Saved lives in the top navigation.
   await card.getByRole('button', { name: `Save: ${name}`, exact: true }).click();
-  await expect(page.getByRole('dialog')).toContainText(name);
-  await page.getByRole('button', { name: 'Save centre', exact: true }).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   const savedCard = page.locator(`.map-centre-card[data-provider-id="${id}"]:not(.leaving)`);
-  await expect(savedCard.getByRole('button', { name: `Edit saved centre: ${name}`, exact: true })).toHaveText('Saved');
-  await expect(page.locator('.map-saved-shortcut').first()).toContainText(name);
+  await expect(savedCard.getByRole('button', { name: `Remove from Saved: ${name}`, exact: true })).toHaveText('Saved');
+  await expect(await navButton(page, /^Saved/)).toHaveText('Saved 1');
   await savedCard.getByRole('button', { name: `Compare ${name}`, exact: true }).click();
   await expect(page.locator('.compare-tray')).toHaveCount(0);
   expect(calls.filter(c => c.action === 'search').length).toBe(count);
@@ -252,21 +259,26 @@ for (const width of [320, 390, 927, 1440]) test(`${width}px: scrolled results an
     const style = getComputedStyle(el), a = luminance(style.color), b = luminance(style.backgroundColor);
     return (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
   })).toBeGreaterThanOrEqual(4.5);
-  await page.locator('.provider-row').first().getByRole('button', { name: /View details/ }).click();
-  await page.getByRole('button', { name: 'Contact the centre', exact: true }).click();
-  const dialog = page.getByRole('dialog'), body = dialog.locator('.dialog-body'), top = dialog.locator('.dialog-top');
-  await expect(dialog.getByRole('heading', { name: 'Contact the centre', exact: true })).toBeVisible();
-  const phone = dialog.getByRole('link', { name: /^Call / });
+  // Contact opens from the centre's column in Compare, as its own window (10 Oct 2026).
+  const first = page.locator('.provider-row').first();
+  await first.getByRole('button', { name: /^Compare / }).click();
+  await (await navButton(page, /Compare/)).click();
+  // With one centre, Compare asks for another option and offers that centre's Contact directly.
+  await page.getByRole('dialog', { name: 'Compare childcare' }).getByRole('button', { name: /^Contact / }).click();
+  const contact = page.locator('.contact-panel'), contactBody = contact.locator('.contact-panel-body'), contactTop = contact.locator('.contact-panel-top');
+  await expect(contact).toContainText('Contact the centre');
+  const phone = contact.getByRole('link', { name: /^Call / });
   await expect(phone).toHaveAttribute('href', 'tel:0312345678');
   await expect(phone).toHaveCSS('border-radius', '999px');
   await phone.scrollIntoViewIfNeeded();
   expect(await phone.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
-  const before = await top.boundingBox();
-  await body.evaluate(el => { el.scrollTop = el.scrollHeight; });
-  expect((await top.boundingBox()).y).toBe(before.y);
-  expect((await top.boundingBox()).y).toBeGreaterThanOrEqual((await dialog.boundingBox()).y);
+  const before = await contactTop.boundingBox();
+  await contactBody.evaluate(el => { el.scrollTop = el.scrollHeight; });
+  expect((await contactTop.boundingBox()).y).toBe(before.y);
+  expect((await contactTop.boundingBox()).y).toBeGreaterThanOrEqual((await contact.boundingBox()).y);
   await page.screenshot({ path: `${out}/contact-scroll-${width}.png` });
-  await page.getByRole('button', { name: 'Get ready for childcare', exact: true }).click();
+  await contact.getByRole('button', { name: 'Get ready for childcare', exact: true }).click();
+  const dialog = page.locator('dialog[open]:not([data-closing])'), body = dialog.locator('.dialog-body');
   await expect(dialog.getByRole('heading', { level: 2 })).toHaveText('Get ready for childcare');
   await expect.poll(() => body.evaluate(el => el.scrollTop)).toBe(0);
   expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
@@ -276,8 +288,7 @@ for (const width of [320, 390, 927, 1440]) test(`${width}px: scrolled results an
 test("changed requests hide previous recommendations and empty searches keep the form available", async ({ page }) => {
   const calls = []; await setup(page, calls); await search(page); await checkCards(page);
   await openSearch(page);
-  await page.locator("#deadline").fill("15:45");
-  await page.getByRole("button", { name: "Close search panel" }).click();
+  await setTime(page, 'deadline', "15:45");
   await expect(visibleCards(page)).toHaveCount(0);
   await expect(page.locator(".search-apply-status")).toContainText("Changes not applied");
   // Serve the empty result from the same validated search shape, without a live request.

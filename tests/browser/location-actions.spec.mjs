@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { returningVisitor } from './ui-helpers.mjs';
 import { createAPI } from '../../server/api.mjs';
 import { fixtureCatalog } from '../../server/fixtures.mjs';
 import { mkdirSync } from 'node:fs';
@@ -6,6 +7,7 @@ import { mkdirSync } from 'node:fs';
 const out = process.env.QA_EVIDENCE_DIR || '.build/location-actions';
 mkdirSync(out, { recursive: true });
 async function setup(page, geo = 'success') {
+  await returningVisitor(page, { motion: 'reduce' });
   await page.addInitScript(mode => {
     localStorage.setItem('equalpath:tour:v1', '{"version":1,"status":"skipped"}');
     window.geoRequests = 0;

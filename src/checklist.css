@@ -1,0 +1,120 @@
+/* Checklist (11 Oct 2026): saved plans as a list; each opens its own page. */
+.equalpath .checklist-status { display: inline-flex; align-items: center; min-height: 26px; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; line-height: 1.3; white-space: nowrap; }
+.equalpath .checklist-status.good { background: var(--green-bg); color: var(--green); }
+.equalpath .checklist-status.warn { background: var(--amber-bg); color: var(--amber); }
+.equalpath .checklist-status.neutral { background: var(--soft); color: var(--muted); border: 1px solid var(--rule); }
+
+.equalpath .checklist-empty { display: grid; justify-items: center; gap: 8px; padding: 28px 12px 12px; text-align: center; }
+.equalpath .checklist-empty > svg { color: var(--accent); }
+.equalpath .checklist-empty p { max-width: 420px; margin: 0 0 8px; color: var(--muted); }
+
+.equalpath .checklist-list .checklist-intro, .equalpath .checklist-list .checklist-note { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+.equalpath .checklist-list .checklist-note { margin: 14px 0 0; font-size: 13px; }
+.equalpath .checklist-list ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.equalpath .checklist-card { display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px 18px; border: 1px solid var(--rule); border-radius: 18px; background: var(--paper); color: var(--ink); text-align: left; }
+.equalpath .checklist-card:hover { border-color: var(--accent); }
+.equalpath .checklist-card-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--soft); color: var(--accent); flex-shrink: 0; }
+.equalpath .checklist-card-main { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.equalpath .checklist-card-main strong { font-size: 16px; line-height: 1.35; overflow-wrap: anywhere; }
+.equalpath .checklist-card-main small { color: var(--muted); font-size: 13px; }
+.equalpath .checklist-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 4px; }
+.equalpath .checklist-card-progress { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+.equalpath .checklist-card-progress progress { width: 64px; height: 6px; accent-color: var(--accent); }
+.equalpath .checklist-card-go { color: var(--muted); flex-shrink: 0; }
+
+.equalpath .checklist-detail-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -4px 0 12px; }
+.equalpath .checklist-detail-bar .family-back { display: inline-flex; align-items: center; gap: 4px; min-height: 36px; padding: 0 10px 0 4px; border-radius: 999px; background: transparent; color: var(--ink); font-size: 14px; font-weight: 600; }
+.equalpath .checklist-detail-bar .family-back:hover { background: var(--soft); }
+.equalpath .checklist-remove { min-height: 36px; font-size: 13px; color: var(--muted); }
+
+/* Two children */
+.equalpath .family-prep-status { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 12px 0 18px; }
+.equalpath .family-prep-status > span { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; }
+.equalpath .family-prep-day { padding: 16px 20px; border-radius: 18px; background: var(--soft); }
+.equalpath .family-prep-day h3, .equalpath .family-preparation .ready-packing-heading h3 { margin: 0 0 10px; font-size: 18px; }
+.equalpath .family-prep-day ol { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.equalpath .family-prep-day li { display: grid; grid-template-columns: 64px 1fr; align-items: baseline; gap: 12px; font-size: 15px; }
+.equalpath .family-prep-day li time { font-size: 18px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.equalpath .family-prep-day li.leave span { color: var(--muted); }
+.equalpath .family-preparation .preparation-section { margin-top: 20px; }
+.equalpath .family-prep-tools { display: grid; gap: 14px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.equalpath .family-prep-contacts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.equalpath .family-prep-contact { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--rule); border-radius: 16px; background: var(--paper); }
+.equalpath .family-prep-contact .text-link { justify-self: start; display: inline-flex; align-items: center; gap: 6px; min-height: 32px; font-size: 13px; }
+.equalpath .family-prep-tools .saved-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.equalpath .family-prep-tools .saved-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border-radius: 999px; }
+@media (max-width: 600px) {
+  .equalpath .checklist-card { padding: 14px; gap: 12px; }
+  .equalpath .family-prep-tools .saved-actions { grid-template-columns: 1fr; }
+}
+
+/* "Saved to your Checklist." toast: a quiet Open link next to the text. */
+.equalpath .toast > button.toast-action { width: auto; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); font-size: 14px; font-weight: 650; white-space: nowrap; }
+.equalpath .toast > button.toast-action:hover { background: var(--soft); }
+
+/* Two children: one card per item, a tick for each child that needs it. */
+.equalpath .family-prep-status > span small { color: var(--muted); font-size: 13px; }
+.equalpath .family-packing .ready-item-body { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 12px 6px; }
+.equalpath .family-ticks { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 6px 10px 12px; }
+.equalpath .family-ticks > label { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px 0 8px; border: 1px solid var(--rule); border-radius: 999px; background: var(--bg); font-size: 13px; font-weight: 600; cursor: pointer; }
+.equalpath .family-ticks > label.is-ticked { border-color: var(--accent); background: var(--paper); color: var(--accent); }
+.equalpath .family-ticks > label:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.equalpath .family-ticks input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.equalpath .family-packing .ready-item:has(.family-ticks):focus-within { outline: none; }
+@media (max-width: 760px) {
+  /* Phones: one row per item, so both children's ticks sit side by side. */
+  .equalpath .preparation-visual .packing-list.family-packing { grid-template-columns: 1fr; gap: 8px; }
+  .equalpath .family-packing .ready-item > label,
+  .equalpath .family-packing .ready-item-body { display: grid; grid-template-columns: 44px 1fr; align-items: center; column-gap: 12px; row-gap: 2px; min-height: 0; padding: 12px 44px 8px 14px; }
+  .equalpath .family-packing .ready-item > label { padding-bottom: 12px; }
+  .equalpath .family-packing .ready-item-picture { grid-row: span 2; height: auto; }
+  .equalpath .family-packing .ready-item-picture > svg { width: 32px; height: 32px; }
+  .equalpath .family-packing .ready-item-label, .equalpath .family-packing .ready-item-text { text-align: left; }
+  .equalpath .family-packing .ready-item-label { font-size: 15px; }
+  .equalpath .family-packing .ready-item > label > input { top: 50%; transform: translateY(-50%); }
+  .equalpath .family-ticks { justify-content: flex-start; flex-wrap: nowrap; padding: 0 12px 12px 70px; }
+}
+
+/* What each item is based on (11 Oct 2026): age, hours, the centre's listing. */
+.equalpath .ready-basis { margin: -2px 0 12px; color: var(--muted); font-size: 14px; }
+.equalpath .ready-group + .ready-group { margin-top: 18px; }
+.equalpath .ready-group > h4 { margin: 0; font-size: 15px; font-weight: 650; color: var(--ink); }
+.equalpath .ready-group > .packing-list { margin-top: 10px; }
+.equalpath .ready-item-why { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 2px; }
+.equalpath .ready-item-why > span { padding: 2px 8px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 11.5px; font-weight: 600; line-height: 1.5; }
+.equalpath .ready-item.is-ready .ready-item-why > span { background: var(--paper); }
+.equalpath .ready-item-centre { display: block; padding: 4px 8px; border-radius: 8px; background: color-mix(in srgb, var(--accent) 9%, var(--paper)); color: var(--ink); font-size: 12.5px; line-height: 1.4; text-align: center; }
+.equalpath .preparation-visual .ready-item > label { padding-bottom: 12px; }
+
+/* Finding the centre: the Street View photo next to the address. */
+.equalpath .ready-find > h3 { margin: 0 0 10px; font-size: 18px; }
+.equalpath .ready-find-list { display: grid; gap: 14px; }
+.equalpath .ready-find-row { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 16px; align-items: start; padding: 12px; border: 1px solid var(--rule); border-radius: 18px; background: var(--paper); }
+.equalpath .ready-find-row .centre-surroundings > figcaption { font-size: 11.5px; }
+.equalpath .ready-find-row .surroundings-missing { grid-column: 1 / -1; }
+.equalpath .ready-find-text { display: grid; gap: 4px; align-content: start; min-width: 0; padding-top: 2px; }
+.equalpath .ready-find-text strong { font-size: 16px; }
+.equalpath .ready-find-text p { margin: 0; font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.equalpath .ready-find-note { color: var(--muted); font-size: 13px !important; }
+@media (max-width: 760px) {
+  .equalpath .ready-find-row { grid-template-columns: 1fr; gap: 10px; }
+  .equalpath .family-packing .ready-item-why, .equalpath .family-packing .ready-item-centre { grid-column: 2; justify-content: flex-start; text-align: left; justify-self: start; }
+}
+.equalpath .family-preparation .ready-find { margin-top: 22px; }
+
+/* Same-size cards (11 Oct 2026, user: "方块为啥大小不统一"): every card in a
+   group takes the height of the tallest one; the reason chips, the centre's
+   source and the per-child ticks sit along the bottom edge. */
+.equalpath .preparation-visual .ready-group > .packing-list { grid-auto-rows: 1fr; align-items: stretch; }
+.equalpath .preparation-visual .ready-group .ready-item { align-self: stretch; display: flex; flex-direction: column; }
+.equalpath .preparation-visual .ready-group .ready-item > label,
+.equalpath .preparation-visual .ready-group .ready-item-body { flex: 1 1 auto; }
+.equalpath .preparation-visual .ready-group .ready-item-why { margin-top: auto; padding-top: 4px; }
+.equalpath .preparation-visual .ready-group .ready-item-source { margin-top: auto; }
+@media (max-width: 760px) {
+  /* Phones list two-children items as rows: each row keeps its own height. */
+  .equalpath .preparation-visual .ready-group > .packing-list.family-packing { grid-auto-rows: auto; }
+  .equalpath .family-packing .ready-item-why { margin-top: 0; padding-top: 0; }
+}
+/* The centre's note is one short line, not a box, so cards stay compact. */
+.equalpath .ready-item-centre { padding: 0; background: none; color: var(--accent); font-size: 12.5px; font-weight: 650; }

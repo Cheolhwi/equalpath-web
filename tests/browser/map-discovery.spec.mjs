@@ -1,4 +1,4 @@
-import { chooseAge, openSearch } from "./ui-helpers.mjs";
+import { chooseAge, openNearby, openSearch, returningVisitor, setDate, setTime, submitSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI, errorResponse } from "../../server/api.mjs";
 import { fixtureCatalog } from "../../server/fixtures.mjs";
@@ -6,6 +6,7 @@ import { mkdirSync } from "node:fs";
 const evidence = process.env.QA_EVIDENCE_DIR || ".build/map-qa";
 mkdirSync(evidence, { recursive: true });
 test.beforeEach(async ({ page }) => {
+  await returningVisitor(page);
   await page.addInitScript(() => localStorage.setItem("equalpath:tour:v1", JSON.stringify({ version: 1, status: "skipped" })));
 });
 const place = { id: "osm:N:1", label: "KL Sentral", address: "Jalan Stesen Sentral, Kuala Lumpur", region: "Kuala Lumpur", lat: 3.1341, lng: 101.6865 };
@@ -21,10 +22,12 @@ test("first visit shows nearby childcare without a request; partial place search
   const calls = []; await mockAPI(page,calls);
   await page.goto("/#discover");
   await openSearch(page);
-  await expect(page.locator(".nearby-card").first()).toBeVisible();
+  await expect(page.locator(".map-search-dock #deadline strong")).toHaveText("Set time");
   await expect(page.locator(".provider-pin").first()).toBeVisible();
+  await openNearby(page);
+  await expect(page.locator(".nearby-card").first()).toBeVisible();
   expect(calls.some((c)=>c.action === "search")).toBe(false);
-  await expect(page.locator("#deadline")).toHaveValue("");
+  await openSearch(page);
   await expect(page.locator(".map-region")).toHaveAttribute("data-map-lat",/^3\.139/);
   await page.locator("#pickup-search").fill("KL sentrl");
   expect(calls.some((c)=>c.action === "places")).toBe(false);
@@ -35,8 +38,10 @@ test("first visit shows nearby childcare without a request; partial place search
   await page.reload();
   await expect(page.locator("#pickup-search")).toHaveValue("KL Sentral");
   await openSearch(page);
-  await expect(page.locator("#deadline")).toHaveValue("");
+  await expect(page.locator(".map-search-dock #deadline strong")).toHaveText("Set time");
+  await openNearby(page);
   await expect(page.locator(".nearby-card").first()).toBeVisible();
+  await openSearch(page);
   await expect(page.locator(".pickup-pin")).toBeVisible();
   await expect.poll(async()=>Number(await page.locator(".map-region").getAttribute("data-map-lat"))).toBeCloseTo(3.1341,4);
   await page.screenshot({path:`${evidence}/map-return.png`});
@@ -119,8 +124,8 @@ test("a nearby marker can lead to a dated condition check without pretending dis
   await expect(page.locator(".provider-pin").first()).toBeVisible();await page.locator(".provider-pin").first().click();
   await page.locator(".map-centre-card").getByRole("button",{name:/View details/}).click();
   await openSearch(page);
-  await page.locator("#service-date").fill("2026-09-22"); await page.locator("#deadline").fill("13:00");await page.locator("#care-end").fill("17:00");
-  await chooseAge(page); await page.getByRole("button",{name:"Find childcare",exact:true}).click();
+  await setDate(page, "2026-09-22"); await setTime(page, 'deadline', "13:00");await setTime(page, 'care-end', "17:00");
+  await chooseAge(page); await submitSearch(page);
   await expect(page.getByRole("dialog")).toBeVisible();
   expect(calls.filter(c=>c.action==="details").at(-1).request.end).toBe("17:00");
 });

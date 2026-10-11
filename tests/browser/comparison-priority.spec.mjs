@@ -1,4 +1,4 @@
-import { chooseAge, openSearch, openResults } from "./ui-helpers.mjs";
+import { chooseAge, openResults, openSearch, setDate, setTime, setTransport, submitSearch } from "./ui-helpers.mjs";
 import { revealPreferences } from "./ui-helpers.mjs";
 import {test,expect} from '@playwright/test';
 import {createAPI} from '../../server/api.mjs';
@@ -17,8 +17,8 @@ test('restored map points gain a street address and priority highlights switch, 
   });
   await page.goto('/?care=short_term#discover');await expect(page.locator('#pickup-search')).toHaveValue('Jalan Stesen Sentral, Kuala Lumpur');
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('equalpath:map:v1:live')).pickup.label)).toBe('Jalan Stesen Sentral, Kuala Lumpur');
-  await openSearch(page); await page.locator('#service-date').fill('2026-09-15');await page.locator('#deadline').fill('13:00');await page.locator('#care-end').fill('17:00');await revealPreferences(page); await page.locator('#transport').selectOption('self');
-  await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();
+  await openSearch(page); await setDate(page, '2026-09-15');await setTime(page, 'deadline', '13:00');await setTime(page, 'care-end', '17:00');await setTransport(page, 'self');
+  await chooseAge(page); await submitSearch(page);
   await openResults(page);
   for(const id of ['near','late','tied'])await page.locator('.provider-row').getByRole('button',{name:`Compare Test ${id}`,exact:true}).click();
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:/Compare/}).click();

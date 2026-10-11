@@ -1,4 +1,4 @@
-import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
+import { chooseAge, includeConflicts, openResults, openSearch, setDate, setTime, setTransport, submitSearch } from "./ui-helpers.mjs";
 import {test,expect} from '@playwright/test';
 import {createAPI} from '../../server/api.mjs';
 import {fixtureCatalog} from '../../server/fixtures.mjs';
@@ -15,7 +15,7 @@ test('short-stay price changes result/map/comparison priority and registration i
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/?care=short_term#discover');await openSearch(page);await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await revealPreferences(page); await page.locator('#transport').selectOption('self');await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);
+  await page.goto('/?care=short_term#discover');await openSearch(page);await setDate(page, '2026-09-14');await setTime(page, 'deadline', '16:00');await setTime(page, 'care-end', '17:00');await setTransport(page, 'self');await chooseAge(page); await includeConflicts(page); await submitSearch(page);await openResults(page);
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','higher');
   await page.getByRole('combobox',{name:'Order search results',exact:true}).click();await page.getByRole('option',{name:'Lowest fee',exact:true}).click();
   await expect(page.locator('.provider-row').first()).toHaveAttribute('data-provider-id','lowest');
@@ -63,7 +63,7 @@ test('short-stay price changes result/map/comparison priority and registration i
   await expect(page.locator('.metric-fee')).toContainText('Ask the centre');
   await expect(page.locator('.metric-fee')).not.toContainText('Area budget');
   await expect(page.locator('.centre-fees')).not.toContainText('/ month');
-  await expect(page.locator('.centre-fees')).toContainText('Ask the centre for a quote');
+  await expect(page.locator('.centre-fees')).toContainText('Ask the centre for the price');
 });
 
 test('nearby conflicts stay in a full 10-centre page and remain selectable on the map',async({page})=>{
@@ -74,7 +74,7 @@ test('nearby conflicts stay in a full 10-centre page and remain selectable on th
     localStorage.setItem('equalpath:tour:v1','{"version":1,"status":"skipped"}');
     localStorage.setItem('equalpath:map:v1:live',JSON.stringify({version:1,zoom:13,center:{lat:3.139,lng:101.6869},pickup:{id:null,label:'KL centre',lat:3.139,lng:101.6869}}));
   });
-  await page.goto('/?care=short_term#discover');await openSearch(page);await page.locator('#service-date').fill('2026-09-14');await page.locator('#deadline').fill('16:00');await page.locator('#care-end').fill('17:00');await revealPreferences(page); await page.locator('#transport').selectOption('self');await chooseAge(page); await page.getByRole('button',{name:'Find childcare',exact:true}).click();await openResults(page);
+  await page.goto('/?care=short_term#discover');await openSearch(page);await setDate(page, '2026-09-14');await setTime(page, 'deadline', '16:00');await setTime(page, 'care-end', '17:00');await setTransport(page, 'self');await chooseAge(page); await includeConflicts(page); await submitSearch(page);await openResults(page);
   await expect(page.locator('.provider-row')).toHaveCount(10);
   await expect(page.locator('.provider-row').last()).toHaveAttribute('data-provider-id','near-0');
   const firstIds=await page.locator('.provider-row').evaluateAll(xs=>xs.map(x=>x.dataset.providerId).sort());

@@ -46,10 +46,10 @@ import { requestAPI, errorMessage } from "./api.js";
 import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM, searchRadius, isShortCare, careTypeLabel, canonicalRequest } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
-import Preparation from "./Preparation.jsx";
+import Checklist from "./Checklist.jsx";
 import Enquiry from "./Enquiry.jsx";
-import { EnquiryProvider, EnquiryDock } from "./VirtualEnquiry.jsx";
-import FamilyPanel, { FamilyPlanCard, familyMapItems, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
+import { EnquiryProvider, EnquiryDock, RefreshGuard } from "./VirtualEnquiry.jsx";
+import FamilyPanel, { familyMapItems, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
 import OneChildPanel, { initialOnePanel } from "./OneChildPanel.jsx";
 import useFamily, { familyKey, secondChildErrors } from "./useFamily.js";
 import { childRequest, childName } from "../shared/two-child.mjs";
@@ -184,12 +184,13 @@ export default function App({
     [saveEditor, setSaveEditor] = useState(null),
     [reopening, setReopening] = useState(null),
     [savedCheck, setSavedCheck] = useState(null),
-    [preparation, setPreparation] = useState(null);
+    // Checklist: the plans the parent saved, one child or two. In memory only.
+    [checklists, setChecklists] = useState([]),
+    [openChecklist, setOpenChecklist] = useState(null),
+    [toastAction, setToastAction] = useState(null);
   const [tourOpen, setTourOpen] = useState(false);
   // Contact the centre is a panel beside the map, not a window over it.
   const modalDialog = dialog && dialog !== "enquiry";
-  // Epic 8 family plan in the Checklist: in memory only, cleared with the mode.
-  const [familyPlan, setFamilyPlan] = useState(null);
   const [onePanel, setOnePanel] = useState(initialOnePanel);
   // Centres that replied "no place" for this exact visit (no other time offered).
   const [declined, setDeclined] = useState([]), [declineNote, setDeclineNote] = useState(null);
@@ -234,10 +235,10 @@ export default function App({
   const draftRef = useRef(draft);
   useEffect(() => () => searchController.current?.abort(), [mode]);
   draftRef.current = draft;
-  const notify = (text) => {
-    setToast(text);
+  const notify = (text, action = null) => {
+    setToast(text); setToastAction(action);
     clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(""), 4200);
+    toastTimer.current = setTimeout(() => setToast(""), action ? 6500 : 4200);
   };
   const clearLocalCache = async () => {
     try {
@@ -253,7 +254,7 @@ export default function App({
       setLibrary(emptyLibrary());
       setDraft(initial());
       setResults(null); setNearby(null); setSelected(null); setCompareIds([]); setComparison(null);
-      setProfile(null); setEnquiry(null); setPreparation(null); setSavedCheck(null);
+      setProfile(null); setEnquiry(null); setChecklists([]); setOpenChecklist(null); setSavedCheck(null);
       setErrors({}); setFailure(null); setFormOpen(true); setSearchCollapsed(false); setMobilePane("map");
       setMapTarget(DEFAULT_MAP); setBrowseCenter(DEFAULT_MAP.center); setMapRestored(false);
       mapView.current = DEFAULT_MAP; rememberedPickup.current = null;
@@ -279,7 +280,7 @@ export default function App({
       const same=p=>needsPickupAddress(p) && p.lat===point.lat && p.lng===point.lng;
       const rename=value=>value?.request && same(value.request.pickup) ? {...value,request:{...value.request,pickup:r.pickup}} : value;
       setDraft(d=>same(d.pickup) ? {...d,pickup:r.pickup} : d);
-      setResults(rename);setComparison(rename);setEnquiry(rename);setPreparation(rename);
+      setResults(rename);setComparison(rename);setEnquiry(rename);setChecklists(cs=>cs.map(e=>e.kind==="family"?{...e,items:e.items.map(rename)}:rename(e)));
       if (same(rememberedPickup.current)) rememberMap(mapView.current,r.pickup);
       setPickupAddress(null);
     }).catch(()=>{if(alive)setPickupAddress("unavailable");});
@@ -384,7 +385,7 @@ export default function App({
       return;
     }
     setDraft((x) => ({ ...x, careType, date: "" }));
-    setResults(null); setNearby(null); setSelected(null); setCompareIds([]); setComparison(null); setCompareSort("distance"); setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({});
+    setResults(null); setNearby(null); setSelected(null); setCompareIds([]); setComparison(null); setCompareSort("distance"); setProfile(null); setEnquiry(null); setQuestionSelection({});
     setErrors(isShortCare({ careType }) ? { date: "Choose a new date to check this centre." } : {});
     setFailure(null);
     setFormOpen(true);
@@ -486,7 +487,7 @@ export default function App({
       setBusy(false); setDialogBusy(false); setReopening(null);
       setResults(null); setNearby(null); setBrowseSelection(null); setSelected(null);
       setCompareIds([]); setComparison(null); setCompareSort("distance");
-      setProfile(null); setEnquiry(null); setPreparation(null); setQuestionSelection({}); setDialog(null);
+      setProfile(null); setEnquiry(null); setQuestionSelection({}); setDialog(null);
       setErrors({}); setFailure(null); setFormOpen(true); family.clear();
       setDraft(x => ({ ...x, careType: value, radius: searchRadius(undefined, value), date: value === "short_term" ? todayKL() : "", deadline: "", end: "", sort: "recommended" }));
       return;
@@ -562,7 +563,7 @@ export default function App({
       const driving = items.find(p => p.id === current.p.id)?.driving;
       return driving && driving !== current.p.driving ? { ...current, p: { ...current.p, driving } } : current;
     };
-    setProfile(refresh); setEnquiry(refresh); setPreparation(refresh);
+    setProfile(refresh); setEnquiry(refresh); setChecklists(cs => cs.map(e => e.kind === "family" ? e : refresh(e)));
   }, [items, results]);
   const switchMode = (next) => {
     setPickupQueryReset(null);
@@ -570,9 +571,8 @@ export default function App({
     dialogSeq.current++;
 
     setReopening(null);
-    setPreparation(null);
+    setChecklists([]); setOpenChecklist(null);
     family.clear();
-    setFamilyPlan(null);
     setMode(next);
     setDraft(initial());
     setResults(null);
@@ -805,44 +805,32 @@ export default function App({
     setDialogError(null);
     setDialog("enquiry");
   };
-  const startPreparation = (p, request = activeRequest) => {
-    setPreparation(previous => ({ p, request, sourceRequest:
-      previous?.p.id === p.id && scenario(previous.request) === scenario(request)
-        ? previous.sourceRequest ?? previous.request : request }));
-    setDialogError(null);
-    setDialog("preparation");
+  // Saving the same plan again (same centre(s) and day) updates it and keeps the ticks.
+  const saveChecklist = (entry) => setChecklists(cs => {
+    const old = cs.find(e => e.id === entry.id), next = { ...entry, checked: old?.checked ?? [] };
+    return old ? cs.map(e => e.id === entry.id ? next : e) : [...cs, next];
+  });
+  const showChecklist = (id = null) => { setOpenChecklist(id); setDialogError(null); setDialog("preparation"); };
+  const savedToast = (id) => notify("Saved to your Checklist.", { label: "Open", run: () => { close(); showChecklist(id); } });
+  const startPreparation = (p, request = activeRequest, open = true) => {
+    if (!p || !request) return;
+    const id = `one:${p.id}:${request.date ?? ""}`;
+    saveChecklist({ id, kind: "one", p, request });
+    if (open) showChecklist(id); else savedToast(id);
   };
-  const changePreparationTimes = ({ deadline, end }) => {
-    setPreparation(current => {
-      if (!current || !isShortCare(current.request)) return current;
+  const changePreparationTimes = (id, { deadline, end }) => {
+    setChecklists(cs => cs.map(current => {
+      if (current.id !== id || current.kind !== "one" || !isShortCare(current.request)) return current;
       const request = { ...current.request, deadline, end };
       if (Object.keys(requestErrors(request)).length) return current;
       // Only times change: reuse the centre's loaded facts and assess the new plan.
       const fit = assess(current.p, request);
-      const p = { ...current.p, fit, cost: costFor(current.p, request), enquiries: enquiries(current.p, request, fit) };
-      return { ...current, p, request, sourceRequest: current.sourceRequest ?? current.request };
-    });
+      return { ...current, request, p: { ...current.p, fit, cost: costFor(current.p, request), enquiries: enquiries(current.p, request, fit) } };
+    }));
   };
-  const refreshPreparation = async () => {
-    if (!activeRequest || !preparation) return;
-    const seq = ++dialogSeq.current;
-    setDialogBusy(true);
-    setDialogError(null);
-    try {
-      const r = await requestAPI({
-        action: "details",
-        mode,
-        id: preparation.p.id,
-        request: activeRequest,
-      });
-      if (seq === dialogSeq.current)
-        setPreparation({ p: r.items[0], request: r.request, sourceRequest: r.request });
-    } catch (e) {
-      if (seq === dialogSeq.current) setDialogError(e);
-    } finally {
-      if (seq === dialogSeq.current) setDialogBusy(false);
-    }
-  };
+  const toggleChecklistItem = (id, item) => setChecklists(cs => cs.map(e => e.id !== id ? e
+    : { ...e, checked: e.checked.includes(item) ? e.checked.filter(x => x !== item) : [...e.checked, item] }));
+  const removeChecklist = (id) => { setChecklists(cs => cs.filter(e => e.id !== id)); setOpenChecklist(null); };
   const close = () => {
     dialogSeq.current++;
     setDialogBusy(false);
@@ -937,9 +925,6 @@ export default function App({
     const timer = setTimeout(() => window.dispatchEvent(new Event("resize")), reduced ? 0 : 300);
     return () => clearTimeout(timer);
   }, [navCollapsed, reduced]);
-  const checklistChoices = results && !dirty
-    ? items.filter((p) => compareIds.includes(p.id) || library.favourites.some((f) => f.id === p.id)).slice(0, 4)
-    : [];
   const enquiryActions = {
     closeDialogs: () => setDialog(null),
     prepare: (p, request) => { if (p) startPreparation(p, request ?? activeRequest); },
@@ -1036,10 +1021,10 @@ export default function App({
             className={dialog === "preparation" ? "active" : ""}
             onClick={() => {
               close();
-              setDialog("preparation");
+              showChecklist(null);
             }}
           >
-            <ClipboardList size={18} aria-hidden="true" />Checklist
+            <ClipboardList size={18} aria-hidden="true" />Checklist {checklists.length > 0 && <em>{checklists.length}</em>}
           </button>
         </nav>
         <div className="header-end">
@@ -1483,7 +1468,7 @@ export default function App({
             onFix={applyFamilyFix}
             onWider={() => { const next = { ...draft, radius: 10 }; setDraft(next); searchFamily(next); }}
             onRetrySearch={() => searchFamily(draft)}
-            onChecklist={(plan) => { setFamilyPlan(plan); notify("Saved to your Checklist."); }}
+            onChecklist={(entry) => { saveChecklist(entry); savedToast(entry.id); }}
             compareIds={compareIds} onCompare={toggleCompareMany}
             onViewOption={(option) => interests.update(h => recordFamilyOptionView(h, family.state?.results, option))}
             onToast={notify} />
@@ -1492,7 +1477,7 @@ export default function App({
           <OneChildPanel items={items} request={activeRequest} state={onePanel} onChange={setOnePanel} top={dockHeight + 12}
             onSelectCentre={(id) => setSelected(id)}
             onContact={(p) => prepare(p, activeRequest)}
-            onChecklist={(p) => startPreparation(p, activeRequest)}
+            onChecklist={(p) => startPreparation(p, activeRequest, false)}
             onDetails={(p) => openDetails(p)} extra={listButton}
             hidden={declinedHere} note={declineNote && declinedHere.includes(declineNote.id) ? declineNote : null}
             onUndo={(id) => { setDeclined((d) => d.filter((x) => !(x.id === id && x.scenario === scenario(activeRequest)))); setDeclineNote(null); }}
@@ -1583,6 +1568,7 @@ export default function App({
         <div className="toast" role="status">
           <Info size={23} aria-hidden="true" />
           <span>{toast}</span>
+          {toastAction && <button className="toast-action" onClick={() => { const run = toastAction.run; setToast(""); setToastAction(null); run(); }}>{toastAction.label}</button>}
           <button aria-label="Close message" onClick={() => setToast("")}><X size={18} /></button>
         </div>
       )}
@@ -1598,7 +1584,7 @@ export default function App({
               : dialog === "save-favourite"
                 ? "Note for this centre"
                   : dialog === "preparation"
-                    ? "Get ready for childcare"
+                    ? (checklists.some(e => e.id === openChecklist) || checklists.length === 1 ? "Get ready for childcare" : "Checklist")
                     : dialog === "details"
                       ? displayName(profile?.p.name ?? "")
                       : dialog === "compare"
@@ -1612,12 +1598,9 @@ export default function App({
                               : "About our information"
           }
           kicker={dialog === "details" ? "CENTRE DETAILS" : ""}
-          wide={["details", "saved", "enquiry"].includes(dialog) || (dialog === "compare" && compareIds.length >= 2) || (dialog === "preparation" && !!preparation)}
+          wide={["details", "saved", "enquiry"].includes(dialog) || (dialog === "compare" && compareIds.length >= 2) || (dialog === "preparation" && checklists.length > 0)}
           onClose={close}
         >
-          {dialog === "preparation" && familyPlan && (
-            <FamilyPlanCard plan={familyPlan} onOpen={family.state ? () => setDialog(null) : null} onRemove={() => setFamilyPlan(null)} />
-          )}
           {dialog === "saved" && (
             <SavedLibrary
               tab={savedTab}
@@ -1657,52 +1640,14 @@ export default function App({
               onCancel={() => setDialog(saveEditor.from)}
             />
           )}
-          {dialog === "preparation" &&
-            (preparation ? (
-              <>
-                {dialogBusy && (
-                  <p role="status">Checking the latest details…</p>
-                )}
-                {dialogError && (
-                  <div className="error-box" role="alert">
-                    {errorMessage(dialogError)} Your earlier checklist is still here.
-                    <button onClick={refreshPreparation}>Try again</button>
-                  </div>
-                )}
-                <div inert={dialogBusy || undefined}>
-                  <Preparation
-                    key={preparation.p.id + scenario(preparation.sourceRequest ?? preparation.request)}
-                    p={preparation.p}
-                    request={preparation.request}
-                    currentRequest={activeRequest}
-                    sourceRequest={preparation.sourceRequest ?? preparation.request}
-                    onTimesChange={changePreparationTimes}
-                    onEnquiry={() =>
-                      prepare(preparation.p, preparation.request)
-                    }
-                    onRefresh={refreshPreparation}
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="empty-state">
-                <h3>Choose a centre first</h3>
-                {checklistChoices.length ? <>
-                  <p>Pick a centre from your shortlist to make a checklist for your visit.</p>
-                  <div className="checklist-choices">
-                    {checklistChoices.map((p) => <button key={p.id} className="secondary" onClick={() => startPreparation(p, results.request)}>
-                      <span>{displayName(p.name)}</span><ArrowRight size={16} aria-hidden="true" />
-                    </button>)}
-                  </div>
-                  <button className="text-link" onClick={close}>Find another centre</button>
-                </> : <>
-                  <p>Open a centre and select “Get ready for childcare” to make a checklist for your visit.</p>
-                  <button className="primary" onClick={close}>
-                    Find childcare <ArrowRight size={16} />
-                  </button>
-                </>}
-              </div>
-            ))}
+          {dialog === "preparation" && (
+            <Checklist entries={checklists} openId={openChecklist}
+              onOpen={setOpenChecklist} onBack={() => setOpenChecklist(null)}
+              onRemove={removeChecklist} onToggle={toggleChecklistItem}
+              onTimesChange={changePreparationTimes}
+              onContact={(p, request) => prepare(p, request)}
+              onFind={close} />
+          )}
           {dialog === "details" && profile && (
             <>
               {profile.saved && (
@@ -2001,6 +1946,7 @@ export default function App({
       )}
       {tourOpen && <GettingStarted onClose={finishTour} onStep={showTourStep} reduced={reduced || introReduced} />}
       {!tourOpen && <EnquiryDock />}
+      <RefreshGuard hasWork={!!results || !!family.state?.results} checklists={checklists.length} />
     </main>
     </EnquiryProvider>
   );

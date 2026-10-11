@@ -1,4 +1,4 @@
-import { revealPreferences, chooseAge, openSearch, openResults } from "./ui-helpers.mjs";
+import { chooseAge, includeConflicts, navButton, openResults, openSearch, returningVisitor, setDate, setTime, setTransport, submitSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { readFileSync, mkdirSync } from "node:fs";
 const evidenceDir = process.env.QA_EVIDENCE_DIR || "evidence/phase4-5";
@@ -11,27 +11,36 @@ test.beforeEach(async ({ page }) => {
 });
 const institution = "Demo · Garden Learning House";
 const key = "equalpath:saved:v1:demo";
+// Demo search on a fixed weekday. The demo draft asks for centre pickup, which
+// the demo centres don't offer, so known mismatches are included to keep them listed.
 const start = async (page) => {
+  await returningVisitor(page);
   await page.goto("/?mode=demo#discover", { waitUntil: "domcontentloaded" });
   await openSearch(page);
-  await chooseAge(page); await page
-    .getByRole("button", { name: "Find childcare", exact: true })
-    .click();
+  await setDate(page, "2026-09-22"); await chooseAge(page); await includeConflicts(page);
+  await submitSearch(page);
   await openResults(page);
   await expect(
     page.getByRole("button", { name: `Select ${institution}`, exact: true }),
   ).toBeVisible();
 };
+const close = async (page) =>
+  page.getByRole("button", { name: "Close dialog", exact: true }).click();
+const saved = async (page) => {
+  await (await navButton(page, /^Saved(?: \d+)?$/)).click();
+  await page.getByRole("button", { name: /^Childcare / }).click();
+};
+// Save acts immediately (9 Oct 2026); the note is added from the Saved page.
 const save = async (page) => {
   await page
     .getByRole("button", { name: `Save ${institution}`, exact: true })
     .click();
-  await page
-    .getByPlaceholder("For example: near work")
-    .fill("Convenient public pickup");
-  await page
-    .getByRole("button", { name: "Save centre", exact: true })
-    .click();
+  await saved(page);
+  await page.getByRole("button", { name: `Edit ${institution}`, exact: true }).click();
+  await page.getByPlaceholder("For example: near work").fill("Convenient public pickup");
+  await page.getByRole("button", { name: "Save note", exact: true }).click();
+  await expect(page.getByText("Convenient public pickup", { exact: true })).toBeVisible();
+  await close(page);
 };
 const details = async (page) =>
   page
@@ -40,42 +49,42 @@ const details = async (page) =>
       exact: true,
     })
     .click();
-const close = async (page) =>
-  page.getByRole("button", { name: "Close dialog", exact: true }).click();
-const saved = async (page) => {
-  await page.getByRole("button", { name: /^Saved(?: \d+)?$/ }).click();
-  await page.getByRole("button", { name: /^Childcare / }).click();
+// Contact opens from Compare as its own window (10 Oct 2026); with one centre
+// compared, Compare offers that centre's Contact directly.
+const contact = async (page, { add = true } = {}) => {
+  if (add) await page.getByRole("button", { name: `Compare ${institution}`, exact: true }).click();
+  await (await navButton(page, /Compare/)).click();
+  await page.getByRole("dialog", { name: "Compare childcare" }).getByRole("button", { name: `Contact ${institution}`, exact: true }).click();
+  await expect(page.locator(".contact-panel")).toBeVisible();
 };
 const preparation = async (page) => {
-  await details(page);
-  await page
-    .getByRole("button", { name: "Get ready for childcare", exact: true })
-    .click();
+  await contact(page);
+  await page.locator(".contact-panel").getByRole("button", { name: "Get ready for childcare", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Get ready for childcare", exact: true })).toBeVisible();
 };
 
 test("questions belong to a selected centre and never appear in main navigation", async ({ page }) => {
+  await returningVisitor(page);
   await page.goto("/?mode=demo#discover", { waitUntil: "domcontentloaded" });
   await openSearch(page);
   const nav = page.getByRole("navigation", { name: "Main navigation" });
   await expect(nav.getByRole("button")).toHaveCount(4);
   await expect(nav.getByRole("button", { name: /enquir|questions/i })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Find childcare", exact: true })).toBeVisible();
+  await expect(page.getByRole("form", { name: "Find childcare" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Contact the centre", exact: true })).toHaveCount(0);
   await page.screenshot({ path: `${evidenceDir}/discovery-copy.png` });
-  await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();
+  await setDate(page, "2026-09-22"); await chooseAge(page); await includeConflicts(page); await submitSearch(page);
   await openResults(page);
-  await details(page);
-  await page.getByRole("button", { name: "Contact the centre", exact: true }).first().click();
-  await expect(page.getByRole("heading", { name: "Contact the centre", exact: true })).toBeVisible();
-  await expect(page.locator(".request-context")).toContainText(institution);
-  const question = page.locator(".question-list input").first();
+  await contact(page);
+  const panel = page.locator(".contact-panel");
+  await expect(panel.getByRole("heading", { level: 2 })).toContainText(institution.replace(/^Demo · /, ""));
+  const question = panel.locator(".question-list input").first();
   await question.uncheck();
   await page.screenshot({ path: `${evidenceDir}/centre-questions-copy.png` });
-  await close(page);
-  await details(page);
-  await page.getByRole("button", { name: "Contact the centre", exact: true }).first().click();
-  await expect(page.locator(".question-list input:not(:checked)")).toHaveCount(1);
-  await close(page);
+  await panel.getByRole("button", { name: "Close contact", exact: true }).click();
+  await contact(page, { add: false });
+  await expect(page.locator(".contact-panel .question-list input:not(:checked)")).toHaveCount(1);
+  await page.locator(".contact-panel").getByRole("button", { name: "Close contact", exact: true }).click();
   await expect(nav.getByRole("button", { name: /enquir|questions/i })).toHaveCount(0);
 });
 
@@ -110,11 +119,10 @@ test("save a centre, reload, edit its note, recheck, download preparation, and r
     .getByRole("button", { name: "Check this centre", exact: true })
     .click();
   await openSearch(page);
-  await expect(page.locator("#service-date")).toHaveValue("");
-  await page.locator("#service-date").fill("2026-09-19");
-  await page
-    .getByRole("button", { name: "Check saved centre", exact: true })
-    .click();
+  await expect(page.locator(".map-search-dock .dock-feedback")).toContainText(`Choose a new date for ${institution}`);
+  await setDate(page, "2026-09-19");
+  // The map dock submits a saved-centre check with its usual action.
+  await submitSearch(page);
   await expect(
     page.getByRole("heading", {
       name: "The details we checked haven’t changed",
@@ -124,9 +132,10 @@ test("save a centre, reload, edit its note, recheck, download preparation, and r
   await page
     .getByRole("button", { name: "Update saved details", exact: true })
     .click();
-  await page
-    .getByRole("button", { name: "Get ready for childcare", exact: true })
-    .click();
+  // The check ran a search for the new date; the checklist opens from Contact.
+  await close(page);
+  await openResults(page);
+  await preparation(page);
   await page.locator(".ready-addresses > summary").click();
   await expect(
     page.getByText(/Agree the arrival time with the centre\. Leave time for the drive/),
@@ -153,7 +162,7 @@ test("save a centre, reload, edit its note, recheck, download preparation, and r
   await page.screenshot({ path: `${evidenceDir}/preparation-desktop.png` });
   await page
     .getByRole("checkbox", {
-      name: "Pack a bag with your child’s name.",
+      name: "Pack a bag labelled with your child’s name.",
       exact: true,
     })
     .check();
@@ -166,7 +175,7 @@ test("save a centre, reload, edit its note, recheck, download preparation, and r
   const download = await downloadPromise;
   await download.saveAs(`${evidenceDir}/preparation-demo.html`);
   const html = readFileSync(`${evidenceDir}/preparation-demo.html`, "utf8");
-  expect(html).toContain("☑ Pack a bag with your child’s name.");
+  expect(html).toContain("☑ Pack a bag labelled with your child’s name.");
   expect(html).toContain("2026-09-19");
   expect(html).not.toContain("Near the usual centre");
   expect(html).not.toContain("<input");
@@ -239,7 +248,7 @@ test("an unselected address and conflicting times require correction", async ({ 
   await page.locator("#pickup-search").fill("Demo usual");
   await page.getByRole("button", { name: "Find address", exact: true }).click();
   await page.getByRole("button", { name: /Demo usual centre/ }).click();
-  await page.locator("#care-end").fill("15:00");
+  await setTime(page, 'care-end', "15:00");
   await chooseAge(page); await page
     .getByRole("button", { name: "Find childcare", exact: true })
     .click();
@@ -271,10 +280,9 @@ test("reopened favourite reports changed source facts and preserves snapshot aft
     .getByRole("button", { name: "Check this centre", exact: true })
     .click();
   await openSearch(page);
-  await page.locator("#service-date").fill("2026-09-18");
-  await page
-    .getByRole("button", { name: "Check saved centre", exact: true })
-    .click();
+  await setDate(page, "2026-09-18");
+  // The map dock submits a saved-centre check with its usual action.
+  await submitSearch(page);
   await expect(
     page.getByRole("heading", { name: /detail.*changed/ }),
   ).toBeVisible();
@@ -289,11 +297,13 @@ test("reopened favourite reports changed source facts and preserves snapshot aft
     .getByRole("button", { name: "Check this centre", exact: true })
     .click();
   await openSearch(page);
-  await page.locator("#service-date").fill("2026-09-20");
+  await setDate(page, "2026-09-20");
   await page.route("**/api", (route) => route.abort());
-  await page
-    .getByRole("button", { name: "Check saved centre", exact: true })
-    .click();
+  // The map dock submits a saved-centre check with its usual action; the
+  // saved-centre notice with the failure is in the list panel.
+  await submitSearch(page);
+  await expect(page.locator(".map-search-dock [role='alert']")).toContainText("We couldn’t load centres");
+  await page.locator(".map-quick-actions button").first().click();
   await expect(
     page.getByText("We couldn’t check the latest details", { exact: true }),
   ).toBeVisible();
@@ -313,18 +323,15 @@ test("preparation remains dated until explicitly regenerated for new times and t
   await start(page);
   await preparation(page);
   await close(page);
-  await page.getByRole("button", { name: "Change search", exact: true }).click();
-  await page.locator("#care-end").fill("21:00");
-  await revealPreferences(page); await page.locator("#transport").selectOption("self");
-  await page
-    .getByRole("button", { name: "Update results", exact: true })
-    .click();
+  await setTime(page, 'care-end', "21:00");
+  await setTransport(page, "self");
+  await submitSearch(page);
   await expect(page.locator(".discovery-panel")).not.toBeVisible();
   await openResults(page);
   await expect(
     page.getByRole("button", { name: "Change search", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: /Checklist/ }).click();
+  await (await navButton(page, /Checklist/)).click();
   await expect(
     page.getByText(/This checklist still uses your earlier date and times/),
   ).toBeVisible();
@@ -359,7 +366,7 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   const searchCount = searches.length;
   const leave = page.getByRole("button", { name: /^Change leave for the centre time:/ });
   const pickup = page.getByRole("button", { name: /^Change collect your child time:/ });
-  const bag = page.getByRole("checkbox", { name: "Pack a bag with your child’s name.", exact: true });
+  const bag = page.getByRole("checkbox", { name: "Pack a bag labelled with your child’s name.", exact: true });
   await bag.check();
   await leave.click();
   const popup = page.locator(".time-picker");
@@ -393,7 +400,7 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   await download.saveAs(path);
   const html = readFileSync(path, "utf8");
   expect(html).toContain("By 14:27"); expect(html).toContain("At 21:15");
-  expect(html).toContain("☑ Pack a bag with your child’s name.");
+  expect(html).toContain("☑ Pack a bag labelled with your child’s name.");
 
   await pickup.click(); await chooseTime("13", "00");
   await popup.getByRole("button", { name: "Done", exact: true }).click();
@@ -431,21 +438,18 @@ test("mobile navigation, modal layout, checkboxes and keyboard close remain usab
   await saved(page);
   await page.screenshot({ path: `${evidenceDir}/saved-mobile.png` });
   await page.keyboard.press("Escape");
-  await details(page);
-  await page
-    .getByRole("button", { name: "Get ready for childcare", exact: true })
-    .click();
+  await preparation(page);
   await page.screenshot({ path: `${evidenceDir}/preparation-mobile.png` });
   const box = await page.locator("dialog").boundingBox();
   expect(box.x).toBeGreaterThanOrEqual(0);
   expect(box.x + box.width).toBeLessThanOrEqual(391);
   const check = page.getByRole("checkbox", {
-    name: "Pack a bag with your child’s name.",
+    name: "Pack a bag labelled with your child’s name.",
     exact: true,
   });
   await check.check();
-  const clothes = page.getByRole("checkbox", { name: "Pack spare clothes.", exact: true });
-  const water = page.getByRole("checkbox", { name: "Pack a water bottle.", exact: true });
+  const clothes = page.getByRole("checkbox", { name: "Pack a spare set of clothes.", exact: true });
+  const water = page.getByRole("checkbox", { name: "Pack a labelled water bottle.", exact: true });
   await clothes.check();
   await expect(water).not.toBeChecked();
   await expect(page.getByRole("progressbar", { name: "Packing checklist progress" })).toHaveAttribute("value", "2");
@@ -512,6 +516,7 @@ test("print action creates the standalone sheet and compact zoom keeps controls 
   });
   await close(page);
   await page.setViewportSize({ width: 320, height: 700 });
+  await navButton(page, /^Saved/);
   const nav = page.getByRole("navigation", { name: "Main navigation" });
   for (const button of await nav.getByRole("button").all()) {
     const b = await button.boundingBox();

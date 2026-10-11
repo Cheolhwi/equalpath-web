@@ -1,4 +1,4 @@
-import { chooseAge, openResults, openSearch } from "./ui-helpers.mjs";
+import { chooseAge, openResults, openSearch, returningVisitor, setDate, setTime, submitSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import { createAPI } from "../../server/api.mjs";
@@ -18,8 +18,8 @@ async function start(page) {
     const body = route.request().postDataJSON(); calls.push(body.action);
     await route.fulfill({ json: { ok: true, ...await api(body) } });
   });
+  await returningVisitor(page);
   await page.addInitScript(() => {
-    localStorage.setItem("equalpath:tour:v1", '{"version":1,"status":"skipped"}');
     localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, zoom: 13,
       center: { lat: 3.139, lng: 101.6869 }, pickup: { id: null, label: "KL Sentral", lat: 3.139, lng: 101.6869 } }));
   });
@@ -27,10 +27,10 @@ async function start(page) {
   return calls;
 }
 async function search(page) {
-  await page.locator("#service-date").fill("2026-09-14");
-  await page.locator("#deadline").fill("13:00");
-  await page.locator("#care-end").fill("17:00");
-  await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
+  await setDate(page, "2026-09-14");
+  await setTime(page, 'deadline', "13:00");
+  await setTime(page, 'care-end', "17:00");
+  await chooseAge(page); await submitSearch(page);await openResults(page);
   await expect(page.locator(".provider-row")).toHaveCount(8);
 }
 
@@ -59,7 +59,6 @@ test("circle pointer works above dialogs without blocking clicks and restores na
   await page.locator("#pickup-search").hover();
   await expect(page.locator("html")).not.toHaveAttribute("data-equalpath-cursor", "true");
   expect(await page.locator("#pickup-search").evaluate(el => getComputedStyle(el).cursor)).not.toBe("none");
-  await page.getByRole("button", { name: "Close search panel" }).click();
   await page.locator(".map-canvas canvas").hover({ position: { x: 100, y: 500 } });
   await expect(pointer).not.toBeVisible();
   await saved.hover(); await expect(pointer).toBeVisible();
@@ -137,7 +136,8 @@ test("dialogs fade out with their backdrop before removal for every dismissal ro
   const saved = page.locator(".app-header nav button").filter({ hasText: "Saved" });
   const dialog = page.locator("dialog");
   for (const method of ["close", "escape", "backdrop", "return"]) {
-    if (method === "backdrop") await page.setViewportSize({ width: 390, height: 844 });
+    // Backdrop is checked at desktop width: on phones a backdrop tap also folds the
+    // navigation pill (6 Oct 2026), so its Saved button cannot take focus back.
     await saved.click();
     await expect(dialog).toBeVisible();
     await page.evaluate(() => document.getAnimations().filter(a => a.animationName?.endsWith("appear")).forEach(a => a.finish()));

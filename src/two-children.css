@@ -179,13 +179,23 @@
 .family-panel .plan-centre-head small { color: var(--muted); font-size: 13px; line-height: 1.4; }
 .family-panel .plan-centre-head .family-pin { position: static; flex-shrink: 0; margin-top: 1px; }
 .family-panel .plan-centre-about { display: inline-flex; align-items: center; gap: 3px; min-height: 28px; padding: 0; font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; }
-.family-panel .plan-centre-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.family-panel .plan-centre-buttons > button,
-.family-panel .plan-more > button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-width: 0; min-height: 46px; margin: 0; padding: 8px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
-.family-panel .plan-centre-buttons > .virtual-enquiry-toggle { border: 1px solid var(--rule); background: var(--paper); color: var(--ink); }
-.family-panel .plan-centre-buttons > .virtual-enquiry-toggle:hover { border-color: var(--accent); }
+/* One main action per centre: Ask for me (dark) first, Contact / Copy quieter. */
+.family-panel .plan-centre-head .checklist-status { justify-self: start; margin-top: 4px; }
+.family-panel .plan-centre-buttons { display: flex; gap: 8px; }
+.family-panel .plan-centre-buttons > button { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; min-height: 44px; margin: 0; padding: 8px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
+.family-panel .plan-centre-buttons > .family-secondary { background: var(--paper); color: var(--ink); border: 1px solid var(--rule); }
+.family-panel .plan-centre-buttons > .family-secondary:hover { border-color: var(--accent); }
+.family-panel .plan-centre-buttons > .virtual-enquiry-toggle { background: var(--nav-selected, var(--ink)); color: var(--nav-selected-text, var(--paper)); border: 1px solid transparent; }
+.family-panel .plan-centre-buttons > .virtual-enquiry-toggle:hover { background: color-mix(in srgb, var(--nav-selected, var(--ink)) 90%, var(--ink)); }
 .family-panel .plan-centre-buttons > .virtual-enquiry-toggle:disabled { opacity: .55; }
+/* Without Ask for me, Contact / Copy is the main action again. */
+.family-panel .plan-centre-buttons > .family-secondary:only-child { background: var(--nav-selected, var(--ink)); color: var(--nav-selected-text, var(--paper)); border-color: transparent; }
 .family-panel .plan-centre .enquiry-manual-message { width: 100%; height: 160px; padding: 10px; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); color: var(--ink); font: inherit; font-size: 13px; }
-.family-panel .plan-more { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.family-panel .plan-more > button { min-height: 44px; font-weight: 500; }
-@media (max-width: 360px) { .family-panel .plan-centre-buttons, .family-panel .plan-more { grid-template-columns: 1fr; } }
+/* Save / Download: small tools under a rule. */
+.family-panel .plan-more { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 2px -8px 0; padding-top: 6px; border-top: 1px solid var(--rule); }
+.family-panel .plan-tool { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 10px; border: 0; border-radius: 10px; background: transparent; color: var(--ink); font-size: 14px; font-weight: 600; }
+.family-panel .plan-tool:hover { background: var(--soft); }
+.family-panel .plan-tool > svg { color: var(--accent); }
+@media (max-width: 360px) { .family-panel .plan-centre-buttons { flex-wrap: wrap; } .family-panel .plan-centre-buttons > button { flex-basis: 100%; } }
+.family-panel .plan-centre-call { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; font-size: 13px; font-weight: 600; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.family-panel .plan-centre-call > svg { color: var(--accent); }

@@ -60,7 +60,8 @@ test("cold artwork stays behind the animated loader until the first drawn frame;
   expect(typography[0].tracking).toBeCloseTo(typography[1].tracking, 3);
   const loadedCanvas = await page.locator(".care-scene canvas").elementHandle();
   await page.getByRole("button", { name: "FIND CHILDCARE", exact: true }).click();
-  await expect(page.locator(".experience")).toHaveAttribute("data-intro-phase", "ready");
+  // CI renders the scene on the CPU, which stretches the 1.2 s entrance timer.
+  await expect(page.locator(".experience")).toHaveAttribute("data-intro-phase", "ready", { timeout: 20000 });
   await expect(page.locator(".care-scene")).toHaveAttribute("data-autoplay", "paused");
   await page.screenshot({ path: `${out}/header-desktop.png` });
   await page.setViewportSize({ width: 390, height: 844 });

@@ -1,4 +1,4 @@
-import { openSearch } from './ui-helpers.mjs';
+import { openNearby, pickTime } from './ui-helpers.mjs';
 import { test, expect } from '@playwright/test';
 import { createAPI } from '../../server/api.mjs';
 import { demoPickup, fixtureProviders } from '../../server/fixtures.mjs';
@@ -11,6 +11,7 @@ async function start(page, favourites = []) {
   await page.route('**/api', async route => route.fulfill({ json: { ok: true, ...await api({ ...route.request().postDataJSON(), mode: 'demo' }) } }));
   await page.addInitScript(({ legacy, favourites, savedKey }) => {
     localStorage.setItem('equalpath:tour:v1', '{"version":1,"status":"skipped"}');
+    localStorage.setItem('equalpath:interests:v1:live', JSON.stringify({ version: 1, enabled: true, visits: [], hidden: [], preferences: [], preferenceSetup: 'skipped' }));
     if (!sessionStorage.getItem('seeded')) {
       localStorage.setItem(savedKey, JSON.stringify({ version: 1, favourites, templates: [legacy] }));
       sessionStorage.setItem('seeded', 'true');
@@ -18,15 +19,16 @@ async function start(page, favourites = []) {
   }, { legacy, favourites, savedKey });
   await page.goto('/?mode=demo#discover');
 }
+// Saved lives in the top navigation; the map has only the list button (8 Oct 2026).
 for (const width of [320, 1440]) test(`${width}px: saved childcare stays visible; legacy searches have no controls or badges`, async ({ page }) => {
   await page.setViewportSize({ width, height: 844 });
   const centre = favourite(fixtureProviders[0]);
   await start(page, [centre]);
-  const shortcuts = page.locator('.map-quick-actions');
-  await expect(shortcuts).toContainText(centre.name);
+  const savedNav = page.getByRole('navigation').getByRole('button', { name: /^Saved/ });
+  await expect(page.locator('.map-quick-actions')).not.toContainText(centre.name);
   await expect(page.getByRole('button', { name: /Saved searches|Save this search/ })).toHaveCount(0);
-  await expect(page.getByRole('navigation').getByRole('button', { name: /^Saved/ })).toHaveText('Saved 1');
-  await shortcuts.getByRole('button', { name: 'Saved centres (1)', exact: true }).click();
+  await expect(savedNav).toHaveText('Saved 1');
+  await savedNav.click();
   const dialog = page.getByRole('dialog', { name: 'Saved for later', exact: true });
   await expect(dialog.getByRole('heading', { name: centre.name, exact: true })).toBeVisible();
   await expect(dialog.locator('.saved-tabs button')).toHaveText(['Childcare 1', 'For you']);
@@ -37,9 +39,9 @@ for (const width of [320, 1440]) test(`${width}px: saved childcare stays visible
   await page.getByRole('button', { name: 'Save note', exact: true }).click();
   await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
   await page.reload();
-  await expect(shortcuts).toContainText(centre.name);
+  await expect(savedNav).toHaveText('Saved 1');
   expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).templates, savedKey)).toEqual([legacy]);
-  await openSearch(page);
+  await openNearby(page);
   await expect(page.locator('.saved-centre-reminder')).toContainText(centre.name);
   await expect(page.locator('.saved-search-reminder')).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Saved searches|Save this search/ })).toHaveCount(0);
@@ -60,9 +62,11 @@ test('one shared care plan checks every saved centre', async ({ page }) => {
   await expect(dialog.getByRole('heading', { name: 'Check all saved centres', exact: true })).toBeVisible();
   await expect(dialog.getByText('Use one date and time for all 2 saved centres.', { exact: true })).toBeVisible();
   await dialog.getByLabel('Date for all saved centres').fill('2026-09-24');
-  await dialog.getByLabel('Child’s age for all saved centres').selectOption('1-3');
-  await dialog.getByLabel('Start time for all saved centres').fill('09:00');
-  await dialog.getByLabel('End time for all saved centres').fill('15:00');
+  // Age and times use the app's own menu and picker (9 Oct 2026), not browser controls.
+  await dialog.getByRole('combobox', { name: 'Child’s age for all saved centres' }).click();
+  await page.getByRole('option', { name: '2 years', exact: true }).click();
+  await pickTime(page, dialog.locator('#saved-check-start'), '09:00');
+  await pickTime(page, dialog.locator('#saved-check-end'), '15:00');
   await dialog.getByRole('button', { name: 'Check all saved centres', exact: true }).click();
   await expect(dialog.getByText('Checked 2 of 2 saved centres', { exact: true })).toBeVisible();
   await expect(dialog.getByRole('button', { name: 'View details', exact: true })).toHaveCount(2);

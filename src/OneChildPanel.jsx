@@ -5,7 +5,8 @@ import { timeLabel } from "../shared/request.mjs";
 import { visitDate, childAge } from "../shared/enquiry-view.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { askChecks, oneChildPlan, oneChildSteps, oneChildPlanText } from "../shared/one-child-plan.mjs";
-import VirtualEnquiry from "./VirtualEnquiry.jsx";
+import VirtualEnquiry, { useEnquiryStatus } from "./VirtualEnquiry.jsx";
+import { StatusChip } from "./Preparation.jsx";
 import { contactQuestions } from "../shared/contact-message.mjs";
 import "./two-children.css";
 import "./one-child-panel.css";
@@ -20,32 +21,39 @@ export const initialOnePanel = { view: "options", selected: null, showAll: false
 
 const Pin = ({ n }) => n ? <span className="map-card-number family-pin" aria-label={`Map point ${n}`}>{String(n).padStart(2, "0")}</span> : null;
 
-function Call({ p }) {
-  const wa = p.whatsapp?.find((c) => c.href);
-  if (p.phone?.display) return <a className="family-call" href={`tel:${p.phone.display.replace(/[^+0-9]/g, "")}`}><Phone size={15} aria-hidden="true" />Call {p.phone.display}</a>;
-  if (wa) return <a className="family-call" href={wa.href} target="_blank" rel="noreferrer"><MessageCircle size={15} aria-hidden="true" />WhatsApp</a>;
-  return null;
-}
-
 /* The end of a plan, the same for one child and two (10 Oct 2026): one block
    per centre with its name, whose care and when, then two equal buttons —
    message the centre and Ask for me — and under all centres two quiet
    buttons for the checklist and the download. */
-export function PlanActions({ centres, onChecklist, onDownload }) {
+// What to do with a plan (11 Oct 2026, user: "下方的按钮还是特别奇怪"): each
+// centre has one main action (Ask for me, or View reply) and a quieter
+// Contact/Copy; where the enquiry stands shows under the centre's name. Saving
+// and downloading the plan are small tools under a rule, not two more big
+// buttons.
+export function PlanActions({ centres, date, onChecklist, onDownload }) {
+  const statusOf = useEnquiryStatus();
+  const [saved, setSaved] = useState(false);
+  const sig = centres.map((c) => `${c.key}:${c.p.id}:${c.who ?? ""}`).join("|") + date;
+  useEffect(() => setSaved(false), [sig]);
   return <div className="plan-actions">
-    <h4 className="plan-actions-title">{centres.length > 1 ? "Ask the centres about a place" : "Ask the centre about a place"}</h4>
-    {centres.map((c) => <div key={c.key} className="plan-centre">
-      <div className="plan-centre-head">
-        <Pin n={c.pin} />
-        <div><strong>{name(c.p)}</strong>{c.who && <small>{c.who}</small>}</div>
-        {c.onDetails && <button className="text-link plan-centre-about" onClick={c.onDetails} aria-label={`About ${name(c.p)}`}>About<ArrowRight size={14} aria-hidden="true" /></button>}
-      </div>
-      <div className="plan-centre-buttons">{c.message}{c.ask}</div>
-      {c.after}
-    </div>)}
+    {centres.map((c) => {
+      const status = date ? statusOf(c.p.id, date) : null;
+      return <div key={c.key} className="plan-centre">
+        <div className="plan-centre-head">
+          <Pin n={c.pin} />
+          <div><strong>{name(c.p)}</strong>{c.who && <small>{c.who}</small>}{status && <StatusChip status={status} />}</div>
+          {c.onDetails && <button className="text-link plan-centre-about" onClick={c.onDetails} aria-label={`About ${name(c.p)}`}>About<ArrowRight size={14} aria-hidden="true" /></button>}
+          {c.call}
+        </div>
+        <div className="plan-centre-buttons">{c.ask}{c.message}</div>
+        {c.after}
+      </div>;
+    })}
     <div className="plan-more">
-      <button className="family-secondary" onClick={onChecklist}><ClipboardList size={16} aria-hidden="true" />Save to Checklist</button>
-      <button className="family-secondary" onClick={onDownload}><Download size={16} aria-hidden="true" />Download plan</button>
+      <button className="plan-tool" onClick={() => { onChecklist(); setSaved(true); }}>
+        {saved ? <Check size={16} aria-hidden="true" /> : <ClipboardList size={16} aria-hidden="true" />}{saved ? "Saved to Checklist" : "Save to Checklist"}
+      </button>
+      <button className="plan-tool" onClick={onDownload}><Download size={16} aria-hidden="true" />Download plan</button>
     </div>
   </div>;
 }
@@ -156,15 +164,13 @@ function Plan({ p, pin, request, onBack, onContact, onChecklist, onDetails, ques
           <strong>{st.label}</strong>
           {st.note && <small>{st.note}</small>}
           {st.kind === "drop" && asks.length > 0 && <small className="family-ask">Ask: {asks.join(", ")}</small>}
-          {st.kind === "drop" && <Call p={p} />}
         </div>
       </li>)}
     </ol>
     {plan.short && <p className="family-note family-warn"><Info size={15} aria-hidden="true" /><span>This is a short visit: you may want to wait nearby instead of going back.</span></p>}
-    <div className="family-pickup-from"><p>Pickup starts from <strong>{request.pickup?.label ?? "your starting point"}</strong>.</p></div>
-    <PlanActions onChecklist={() => onChecklist(p)} onDownload={download} centres={[{ key: p.id, p, pin, who: `Your child · ${request.deadline}–${request.end}`, onDetails: () => onDetails(p),
-      message: <button className="family-primary" onClick={() => onContact(p)}><MessageCircle size={17} aria-hidden="true" />Contact</button>,
+    <PlanActions date={request.date} onChecklist={() => onChecklist(p)} onDownload={download} centres={[{ key: p.id, p, pin, onDetails: () => onDetails(p),
+      message: <button className="family-secondary" onClick={() => onContact(p)}><Phone size={16} aria-hidden="true" />Contact</button>,
       ask: <VirtualEnquiry providerId={p.id} centre={p} requests={[request]} questionIds={questionIds?.(p) ?? safeQuestionIds(p, request)} /> }]} />
-    <p className="family-note">Drive times are road estimates without traffic. The centre still needs to confirm a place and the arrival time.</p>
+    <p className="family-note">Drive times don’t include traffic. The centre still needs to confirm a place.</p>
   </>;
 }

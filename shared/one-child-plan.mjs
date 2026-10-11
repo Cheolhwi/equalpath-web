@@ -32,14 +32,14 @@ export function oneChildPlan(p, request) {
 export function oneChildSteps(p, request, names = (x) => x.name) {
   const plan = oneChildPlan(p, request);
   const from = request?.pickup?.label ?? "your starting point", centre = names(p);
-  const driveNote = plan.drive !== null ? `About ${plan.drive} min drive, no traffic included` : "Drive time didn’t load";
+  const driveNote = plan.drive !== null ? `${plan.drive} min drive` : "Drive time didn’t load";
   const steps = [
     plan.centrePickup
       ? { kind: "leave", time: plan.start, label: `The centre picks up your child from ${from}`, note: "Ask the centre to confirm this pickup" }
       : { kind: "leave", time: plan.start, label: `Leave ${from}`, note: driveNote },
     { kind: "drop", time: plan.arrive, label: plan.centrePickup ? `Your child arrives at ${centre}` : `Drop off your child at ${centre}`,
-      note: plan.arrive !== null ? "Estimated arrival" : plan.centrePickup ? null : "Arrival time depends on the drive" },
-    { kind: "leave", time: plan.leaveForPickup, label: `Leave ${from} for pickup`, note: plan.leaveForPickup !== null ? `Latest time to leave · ${driveNote.toLowerCase()}` : driveNote },
+      note: plan.arrive !== null || plan.centrePickup ? null : "Arrival time depends on the drive" },
+    { kind: "leave", time: plan.leaveForPickup, label: `Leave ${from} for pickup`, note: plan.leaveForPickup !== null ? `Latest time · ${driveNote}` : driveNote },
     { kind: "collect", time: plan.end, label: `Pick up your child at ${centre}` },
   ];
   return { plan, steps };

@@ -1,4 +1,4 @@
-import { chooseAge, openResults, openSearch, revealPreferences } from "./ui-helpers.mjs";
+import { chooseAge, includeConflicts, openResults, openSearch, setDate, setTime, setTransport, submitSearch } from "./ui-helpers.mjs";
 import { test, expect } from "@playwright/test";
 import { createAPI } from "../../server/api.mjs";
 import { fixtureCatalog, demoPickup } from "../../server/fixtures.mjs";
@@ -21,9 +21,9 @@ test("contact priority stays consistent across results, map and comparison, with
     localStorage.setItem("equalpath:map:v1:live", JSON.stringify({ version: 1, center: pickup, zoom: 13, pickup }));
   }, { ...demoPickup, label: "KL Sentral" });
   await page.goto("/?care=short_term#discover", { waitUntil: "domcontentloaded" });await openSearch(page);
-  await page.locator("#service-date").fill("2026-09-14"); await page.locator("#deadline").fill("13:00");
-  await page.locator("#care-end").fill("18:00"); await revealPreferences(page); await page.locator("#transport").selectOption("self");
-  await chooseAge(page); await page.getByRole("button", { name: "Find childcare", exact: true }).click();await openResults(page);
+  await setDate(page, "2026-09-14"); await setTime(page, 'deadline', "13:00");
+  await setTime(page, 'care-end', "18:00"); await setTransport(page, "self");
+  await chooseAge(page); await includeConflicts(page); await submitSearch(page);await openResults(page);
   const suggested = page.locator(".provider-row.suggested");
   await expect(suggested).toHaveCount(2);
   expect(await suggested.evaluateAll(rows => rows.map(p => p.dataset.providerId))).toEqual(["p-8", "p-9"]);
@@ -33,7 +33,11 @@ test("contact priority stays consistent across results, map and comparison, with
   await expect(page.locator(".provider-pin.conflict")).toHaveAttribute("data-provider-id", "p-0");
   await page.getByRole("combobox", { name: "Order search results", exact: true }).click();
   await page.getByRole("option", { name: "Lowest fee", exact: true }).click();
-  await expect(page.locator(".provider-row").first()).toHaveAttribute("data-provider-id", "p-8");
+  await expect(page.getByRole("combobox", { name: "Order search results", exact: true })).toHaveText("Lowest fee");
+  // Explicit sorts follow the chosen fact; contact priority applies only to
+  // Recommended, suggestions and comparison (AGENTS.md, 2026-10-01).
+  await expect(page.locator(".provider-row").first()).toHaveAttribute("data-provider-id", "p-1");
+  await expect(page.locator(".provider-row").last()).toHaveAttribute("data-provider-id", "p-0");
   await page.getByRole("button", { name: "Why this order?", exact: true }).click();
   await expect(page.getByRole("dialog")).not.toContainText(/phone|WhatsApp|contact details/i);
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();

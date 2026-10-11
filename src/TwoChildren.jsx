@@ -157,10 +157,11 @@ function Option({ o, index, pins, lp, onSee, compareIds = [], onCompare }) {
   </article>;
 }
 
+// A quick Call / WhatsApp link beside the centre's name in the plan.
 function Contact({ p }) {
   const wa = p.whatsapp?.find((c) => c.href);
-  if (p.phone?.display) return <a className="family-call" href={`tel:${p.phone.display.replace(/[^+0-9]/g, "")}`}><Phone size={15} aria-hidden="true" />Call {p.phone.display}</a>;
-  if (wa) return <a className="family-call" href={wa.href} target="_blank" rel="noreferrer"><MessageCircle size={15} aria-hidden="true" />WhatsApp</a>;
+  if (p.phone?.display) return <a className="plan-centre-call" href={`tel:${p.phone.display.replace(/[^+0-9]/g, "")}`} aria-label={`Call ${name(p)}, ${p.phone.display}`}><Phone size={14} aria-hidden="true" />Call</a>;
+  if (wa) return <a className="plan-centre-call" href={wa.href} target="_blank" rel="noreferrer" aria-label={`WhatsApp ${name(p)}`}><MessageCircle size={14} aria-hidden="true" />WhatsApp</a>;
   return null;
 }
 
@@ -223,13 +224,12 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
           <time>{timeLabel(st.time)}</time>
           <div className="family-step">
             <strong>{st.label}</strong>
-            {leave && <small>{st.partial ? "Latest time to leave for the first stop" : "Latest time to leave"}{st.drive !== null ? ` · about ${st.drive} min drive, no traffic included` : ""}</small>}
+            {leave && <small>{st.partial ? "Latest time, for the first stop" : "Latest time"}{st.drive !== null ? ` · ${st.drive} min drive` : ""}</small>}
             {!leave && st.same && <small>Same centre</small>}
-            {!leave && !st.same && st.drive !== null && <small>About {st.drive} min from the last stop</small>}
+            {!leave && !st.same && st.drive !== null && <small>{st.drive} min from the last stop</small>}
             {!leave && st.unknownDrive && <small className="family-ask">Drive time from the last stop didn’t load</small>}
             {!leave && st.lateBy > 0 && <small className="family-late"><TriangleAlert size={13} aria-hidden="true" />{st.lateBy} min after {st.key === "ab" ? "the" : `${childName(st.key)}’s`} {st.kind === "drop" ? "start time" : "end time"}</small>}
             {ask.length > 0 && <small className="family-ask">Ask: {[...new Set(ask)].join(", ")}</small>}
-            {st.kind === "drop" && <Contact p={st.centre} />}
           </div>
         </li>;
       })}
@@ -240,12 +240,15 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
             onChange={(p) => { if (p) { family.setCollectPlace(p, o); setEditingPickup(false); } }} />
         : <p>Pickup starts from <strong>{s.plan.run.collectPlace?.label}</strong>. <button className="text-link" onClick={() => setEditingPickup(true)}>Change</button></p>}
     </div>
-    <PlanActions onChecklist={() => onChecklist({ text: planText, date: plan.date, title: o.kind === "same" ? name(o.a) : `${name(o.a)} + ${name(o.b)}` })} onDownload={download}
-      centres={messages.map(([key, p, text]) => ({ key, p, pin: pins.get(p.id), who: who(key),
-        message: <button className="family-primary" onClick={() => copy(key, text)}>{copied === key ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}{copied === key ? "Copied" : "Copy message"}</button>,
+    <PlanActions date={plan.date} onChecklist={() => onChecklist({ id: `family:${o.id}:${plan.date}`, kind: "family", text: planText, date: plan.date,
+      title: o.kind === "same" ? name(o.a) : `${name(o.a)} + ${name(o.b)}`,
+      items: KIDS.map((k) => ({ key: k, p: o[k], request: childRequest(plan, k) })),
+      steps: steps.map((st) => ({ time: timeLabel(st.time), label: st.label, kind: st.kind })) })} onDownload={download}
+      centres={messages.map(([key, p, text]) => ({ key, p, pin: pins.get(p.id), who: who(key), call: <Contact p={p} />,
+        message: <button className="family-secondary" onClick={() => copy(key, text)}>{copied === key ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}{copied === key ? "Copied" : "Copy message"}</button>,
         ask: <VirtualEnquiry providerId={p.id} centre={p} family requests={(key === "ab" ? KIDS : [key]).map((k) => ({ ...childRequest(plan, k), label: childName(k) }))} />,
         after: copied === `manual:${key}` && <textarea readOnly value={text} aria-label="Message to copy" className="enquiry-manual-message" /> }))} />
-    <p className="family-note">Leave times allow 5 minutes for each handover and round to the earlier 5 minutes. Each centre still needs to confirm a place.</p>
+    <p className="family-note">Times allow 5 minutes per handover; drives don’t include traffic. Each centre still needs to confirm a place.</p>
   </>;
 }
 
