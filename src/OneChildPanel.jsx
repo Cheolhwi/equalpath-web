@@ -37,7 +37,7 @@ export function PlanActions({ centres, date, onChecklist, onDownload }) {
   useEffect(() => setSaved(false), [sig]);
   return <div className="plan-actions">
     {centres.map((c) => {
-      const status = date ? statusOf(c.p.id, date) : null;
+      const status = statusOf(c.p.id, c.requests);
       return <div key={c.key} className="plan-centre">
         <div className="plan-centre-head">
           <Pin n={c.pin} />
@@ -168,7 +168,7 @@ function Plan({ p, pin, request, onBack, onContact, onChecklist, onDetails, ques
       </li>)}
     </ol>
     {plan.short && <p className="family-note family-warn"><Info size={15} aria-hidden="true" /><span>This is a short visit: you may want to wait nearby instead of going back.</span></p>}
-    <PlanActions date={request.date} onChecklist={() => onChecklist(p)} onDownload={download} centres={[{ key: p.id, p, pin, onDetails: () => onDetails(p),
+    <PlanActions date={request.date} onChecklist={() => onChecklist(p)} onDownload={download} centres={[{ key: p.id, p, pin, requests: [request], onDetails: () => onDetails(p),
       message: <button className="family-secondary" onClick={() => onContact(p)}><Phone size={16} aria-hidden="true" />Contact</button>,
       ask: <VirtualEnquiry providerId={p.id} centre={p} requests={[request]} questionIds={questionIds?.(p) ?? safeQuestionIds(p, request)} /> }]} />
     <p className="family-note">Drive times don’t include traffic. The centre still needs to confirm a place.</p>

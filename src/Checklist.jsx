@@ -9,6 +9,7 @@ import "./checklist.css";
    or two — each opening the same kind of "get ready" page. Ticks are kept
    with each plan while the page is open. */
 const dayLabel = (date) => { try { return new Date(`${date}T12:00:00+08:00`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "Asia/Kuala_Lumpur" }); } catch { return date; } };
+const requestsFor = (entry, id) => entry.kind === "family" ? entry.items.filter(it => it.p.id === id).map(it => it.request) : [entry.request];
 function progress(entry) {
   const items = entry.kind === "family"
     ? familyPacking(entry).all
@@ -26,14 +27,14 @@ export default function Checklist({ entries, openId, onOpen, onBack, onRemove, o
     <button className="primary" onClick={onFind}>Find childcare <ArrowRight size={16} /></button>
   </div>;
   if (active) {
-    const status = (id) => statusOf(id, active.kind === "family" ? active.date : active.request.date);
+    const status = (id) => statusOf(id, requestsFor(active, id));
     return <div className="checklist-detail">
       <div className="checklist-detail-bar">
         {entries.length > 1 ? <button className="family-back" onClick={onBack}><ChevronLeft size={18} aria-hidden="true" />All checklists · {entries.length}</button> : <span />}
         <button className="text-link checklist-remove" onClick={() => onRemove(active.id)}>Remove from Checklist</button>
       </div>
       {active.kind === "family"
-        ? <FamilyPreparation entry={active} checked={active.checked} onToggle={(id) => onToggle(active.id, id)} statusFor={(id) => statusOf(id, active.date)} onContact={onContact} />
+        ? <FamilyPreparation entry={active} checked={active.checked} onToggle={(id) => onToggle(active.id, id)} statusFor={status} onContact={onContact} />
         : <Preparation key={active.id} p={active.p} request={active.request} checked={active.checked} onToggle={(id) => onToggle(active.id, id)}
             status={status(active.p.id)} onTimesChange={(times) => onTimesChange(active.id, times)} onEnquiry={() => onContact(active.p, active.request)} />}
     </div>;
@@ -43,7 +44,7 @@ export default function Checklist({ entries, openId, onOpen, onBack, onRemove, o
     <ul>{entries.map((e) => {
       const { done, total } = progress(e), date = e.kind === "family" ? e.date : e.request.date;
       const centres = e.kind === "family" ? [...new Map(e.items.map((it) => [it.p.id, it.p])).values()] : [e.p];
-      const statuses = centres.map((p) => statusOf(p.id, date));
+      const statuses = centres.map((p) => statusOf(p.id, requestsFor(e, p.id)));
       const status = statuses.every((x) => x === "confirmed") ? "confirmed" : statuses.find((x) => x && x !== "confirmed") ?? (statuses.includes("confirmed") ? "replied" : null);
       return <li key={e.id}><button className="checklist-card" onClick={() => onOpen(e.id)}>
         <span className="checklist-card-icon" aria-hidden="true">{e.kind === "family" ? <Users size={20} /> : <ClipboardList size={20} />}</span>

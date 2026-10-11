@@ -317,7 +317,7 @@ test("reopened favourite reports changed source facts and preserves snapshot aft
   );
 });
 
-test("preparation remains dated until explicitly regenerated for new times and transport", async ({
+test("a saved checklist keeps its own visit when a search changes, and can be edited independently", async ({
   page,
 }) => {
   await start(page);
@@ -332,26 +332,25 @@ test("preparation remains dated until explicitly regenerated for new times and t
     page.getByRole("button", { name: "Change search", exact: true }),
   ).toBeVisible();
   await (await navButton(page, /Checklist/)).click();
-  await expect(
-    page.getByText(/This checklist still uses your earlier date and times/),
-  ).toBeVisible();
   await expect(page.locator(".preparation-sequence")).toContainText("18:00");
-  await page
-    .getByRole("button", { name: "Update checklist", exact: true })
-    .click();
+  await page.getByRole("button", { name: /^Change collect your child time:/ }).click();
+  const picker = page.locator('.time-picker');
+  await picker.getByRole('listbox', { name: 'Hour', exact: true }).getByRole('option', { name: '21', exact: true }).click();
+  await picker.getByRole('listbox', { name: 'Minute', exact: true }).getByRole('option', { name: '00', exact: true }).click();
+  await picker.getByRole('button', { name: 'Done', exact: true }).click();
   await expect(page.locator(".preparation-sequence")).toContainText("21:00");
   await expect(page.getByRole("heading", { name: "Check before you go", exact: true })).toBeVisible();
   await expect(page.locator(".preparation-conflicts details[open]")).not.toHaveCount(0);
   await expect(
     page.getByRole("checkbox", {
-      name: "Agree on dinner and the evening pickup.",
+      name: "Agree on dinner and the evening pickup with the centre.",
       exact: true,
     }),
   ).toBeVisible();
   await page.locator(".ready-addresses > summary").click();
   await expect(
     page.locator(".preparation-transport"),
-  ).toHaveText("I’ll bring my child");
+  ).not.toHaveText("I’ll bring my child");
 });
 
 for (const width of [390, 1440]) test(`${width}px: checklist times save in place, keep ticks and update checks, messages and downloads`, async ({ page }) => {
@@ -392,7 +391,7 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   await expect(pickup).toContainText("21:15");
   await expect(bag).toBeChecked();
   await expect(page.locator(".preparation-conflicts")).toContainText("21:15");
-  await expect(page.getByRole("checkbox", { name: "Agree on dinner and the evening pickup.", exact: true })).toBeVisible();
+  await expect(page.getByRole("checkbox", { name: "Agree on dinner and the evening pickup with the centre.", exact: true })).toBeVisible();
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download checklist", exact: true }).click();
   const download = await downloadPromise;
@@ -412,7 +411,7 @@ for (const width of [390, 1440]) test(`${width}px: checklist times save in place
   await pickup.click(); await chooseTime("18", "05");
   await page.getByRole("heading", { name: "Get ready for childcare", exact: true }).click();
   await expect(page.locator("#preparation-time-error")).toHaveCount(0);
-  await expect(page.getByRole("checkbox", { name: "Agree on dinner and the evening pickup.", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("checkbox", { name: "Agree on dinner and the evening pickup with the centre.", exact: true })).toHaveCount(0);
   await expect(bag).toBeChecked();
   expect(searches).toHaveLength(searchCount);
   expect(await page.locator(".preparation-sequence").evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);

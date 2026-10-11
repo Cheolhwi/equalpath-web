@@ -245,6 +245,7 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
       items: KIDS.map((k) => ({ key: k, p: o[k], request: childRequest(plan, k) })),
       steps: steps.map((st) => ({ time: timeLabel(st.time), label: st.label, kind: st.kind })) })} onDownload={download}
       centres={messages.map(([key, p, text]) => ({ key, p, pin: pins.get(p.id), who: who(key), call: <Contact p={p} />,
+        requests: (key === "ab" ? KIDS : [key]).map(k => childRequest(plan, k)),
         message: <button className="family-secondary" onClick={() => copy(key, text)}>{copied === key ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}{copied === key ? "Copied" : "Copy message"}</button>,
         ask: <VirtualEnquiry providerId={p.id} centre={p} family requests={(key === "ab" ? KIDS : [key]).map((k) => ({ ...childRequest(plan, k), label: childName(k) }))} />,
         after: copied === `manual:${key}` && <textarea readOnly value={text} aria-label="Message to copy" className="enquiry-manual-message" /> }))} />

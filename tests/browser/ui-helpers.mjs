@@ -120,23 +120,19 @@ export async function searchShortCare(page, { date = '2026-09-22', start = '16:0
 }
 
 export async function openResults(page) {
-  // Submitting switches the mobile view to the map on the next render, so a
-  // list seen right after the click can be stale. Let the page render first,
-  // then retry until the list is open.
+  // Wait for the search to commit: a response observed by a test can precede
+  // React replacing the old result list and switching back to the map.
   const toolbar = page.locator('.discovery-panel .results-toolbar');
+  await expect(page.locator('.map-search-dock .search-actions[data-state="loading"]')).toHaveCount(0);
   // On phones the suggestions sheet covers the list button.
   if ((page.viewportSize()?.width ?? 1440) <= 760 && !await toolbar.isVisible()) await hideOptionsPanel(page);
-  const settledVisible = async () => {
-    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-    return toolbar.isVisible();
-  };
   await expect(async () => {
-    if (!await settledVisible()) {
+    if (await page.locator('.discovery-panel').getAttribute('aria-hidden') === 'true') {
       await expect(page.locator(".map-quick-actions button").first()).toContainText(/^All/, { timeout: 1000 });
       await page.locator(".map-quick-actions button").first().click();
     }
-    await expect(toolbar).toBeVisible({ timeout: 1000 });
-  }).toPass({ timeout: 10000 });
+    await expect(toolbar).toBeVisible();
+  }).toPass({ timeout: 15000 });
 }
 
 // Before a search the map's list button reads "Nearby centres".

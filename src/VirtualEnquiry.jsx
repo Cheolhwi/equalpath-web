@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ArrowRight, CalendarDays, Check, ChevronDown, ClipboardList, Clock3, Info, List, LoaderCircle, MessageCircle, Square, TriangleAlert, Volume2, VolumeX, X } from 'lucide-react';
 import { displayName } from '../shared/display.mjs';
 import { contactQuestions } from '../shared/contact-message.mjs';
+import { enquiryStatus, openEnquiryReferences, restoredEnquiryPayload } from '../shared/enquiry-session.mjs';
 import './virtual-enquiry.css';
 import cloudConfig from './enquiry-config.json';
 import Dialog from './Dialog.jsx';
@@ -292,9 +293,12 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
         try {
           if (!/^[a-f0-9]{24}$/.test(s.id || '')) continue;
           const job = await query({ action: 'get', id: s.id });
+          const payload = restoredEnquiryPayload(job, s);
+          if (!payload) continue;
+          const key = JSON.stringify(payload);
           // Already-read words stay as they were; nothing types out again.
-          wordingCache.set(`ask:${s.key}`, null); shownReplies.add(job.id);
-          back.push({ key: s.key, payload: JSON.parse(s.key), centre: s.centre, request: null, family: !!s.family, job, error: '', busy: false, paused: false, retry: 0, unread: false, settled: !following(job), restored: true });
+          wordingCache.set(`ask:${key}`, null); shownReplies.add(job.id);
+          back.push({ key, payload, centre: s.centre, request: null, family: !!s.family, job, error: '', busy: false, paused: false, retry: 0, unread: false, settled: !following(job), restored: true });
         } catch { /* expired: nothing to bring back */ }
       }
       restoring.current = false;
@@ -305,7 +309,7 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
   }, []);
   useEffect(() => {
     if (restoring.current) return;
-    try { sessionStorage.setItem(openKey, JSON.stringify(threads.filter(t => t.job?.id).map(t => ({ key: t.key, id: t.job.id, family: !!t.family, centre: t.centre?.id ? { id: t.centre.id, name: t.centre.name } : null })))); } catch { /* optional */ }
+    try { sessionStorage.setItem(openKey, JSON.stringify(openEnquiryReferences(threads))); } catch { /* optional */ }
   }, [threads]);
   const start = useCallback(async (key, payload) => {
     const current = threadsRef.current.find(t => t.key === key);
@@ -461,18 +465,11 @@ function ThreadFollower({ thread }) {
   return null;
 }
 
-// Where an enquiry with a centre stands for a date, for the Checklist:
+// Where an enquiry stands for these children's exact visit, for the Checklist:
 // confirmed, offered (waiting for the parent's decision), replied, asked, or none.
 export function useEnquiryStatus() {
   const ctx = useContext(EnquiryContext);
-  return (id, date) => {
-    const ts = (ctx?.threads ?? []).filter(t => t.payload.branchId === id && t.payload.date === date);
-    if (!ts.length) return null;
-    if (ts.some(t => t.job?.confirmation?.state === 'acknowledged' && t.job.confirmation.decision === 'accept')) return 'confirmed';
-    if (ts.some(t => t.job?.result && summary(t.job.result).good && !t.job.confirmation)) return 'available';
-    if (ts.some(t => t.job?.result)) return 'replied';
-    return 'asked';
-  };
+  return (id, requests) => enquiryStatus(ctx?.threads ?? [], id, requests);
 }
 
 /* The button beside Copy message. It only starts (or reopens) the chat. */
@@ -482,7 +479,7 @@ export default function VirtualEnquiry(props) {
   // Different request details can never inherit an earlier acceptance.
   const children = (props.requests || []).map((r, i) => ({ label: r.label || `Child ${i + 1}`, age: String(r.age ?? ''), start: r.deadline, end: r.end }));
   const payload = { branchId: props.providerId, date: props.requests?.[0]?.date, children,
-    questions: props.questionIds ?? ['visit', 'fees'], scenario: props.scenario || 'rules' };
+    questions: [...(props.questionIds ?? ['visit', 'fees'])].sort(), scenario: props.scenario || 'rules' };
   const thread = ctx.threads.find(t => t.key === JSON.stringify(payload));
   const disabled = !payload.date || !children.length || children.some(c => !c.start || !c.end) || !payload.questions.length;
   const label = thread?.job?.state === 'replied' ? 'View reply' : active(thread?.job) ? 'View chat' : 'Ask for me';
