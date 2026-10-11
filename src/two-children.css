@@ -199,3 +199,10 @@
 @media (max-width: 360px) { .family-panel .plan-centre-buttons { flex-wrap: wrap; } .family-panel .plan-centre-buttons > button { flex-basis: 100%; } }
 .family-panel .plan-centre-call { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; font-size: 13px; font-weight: 600; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
 .family-panel .plan-centre-call > svg { color: var(--accent); }
+/* Two centres: one Ask for me for both, under the two centre cards. */
+.family-panel .plan-actions.has-ask-all .plan-centre-buttons > .family-secondary:only-child { background: var(--paper); color: var(--ink); border-color: var(--rule); }
+.family-panel .plan-ask-all { display: grid; gap: 6px; }
+.family-panel .plan-ask-all > button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 46px; margin: 0; padding: 8px 14px; border-radius: 999px; border: 1px solid transparent; background: var(--nav-selected, var(--ink)); color: var(--nav-selected-text, var(--paper)); font-size: 15px; font-weight: 650; }
+.family-panel .plan-ask-all > button:hover { background: color-mix(in srgb, var(--nav-selected, var(--ink)) 90%, var(--ink)); }
+.family-panel .plan-ask-all > button:disabled { opacity: .55; }
+.family-panel .plan-ask-all > p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.45; text-align: center; }

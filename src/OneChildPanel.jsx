@@ -30,12 +30,12 @@ const Pin = ({ n }) => n ? <span className="map-card-number family-pin" aria-lab
 // Contact/Copy; where the enquiry stands shows under the centre's name. Saving
 // and downloading the plan are small tools under a rule, not two more big
 // buttons.
-export function PlanActions({ centres, date, onChecklist, onDownload }) {
+export function PlanActions({ centres, date, onChecklist, onDownload, askAll = null }) {
   const statusOf = useEnquiryStatus();
   const [saved, setSaved] = useState(false);
   const sig = centres.map((c) => `${c.key}:${c.p.id}:${c.who ?? ""}`).join("|") + date;
   useEffect(() => setSaved(false), [sig]);
-  return <div className="plan-actions">
+  return <div className={`plan-actions${askAll ? " has-ask-all" : ""}`}>
     {centres.map((c) => {
       const status = statusOf(c.p.id, c.requests);
       return <div key={c.key} className="plan-centre">
@@ -49,6 +49,10 @@ export function PlanActions({ centres, date, onChecklist, onDownload }) {
         {c.after}
       </div>;
     })}
+    {askAll && <div className="plan-ask-all">
+      {askAll}
+      <p>One message to each centre. If either has no place, this plan comes off your options.</p>
+    </div>}
     <div className="plan-more">
       <button className="plan-tool" onClick={() => { onChecklist(); setSaved(true); }}>
         {saved ? <Check size={16} aria-hidden="true" /> : <ClipboardList size={16} aria-hidden="true" />}{saved ? "Saved to Checklist" : "Save to Checklist"}

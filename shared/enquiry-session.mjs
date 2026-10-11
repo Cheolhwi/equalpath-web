@@ -1,6 +1,29 @@
 const ended = ['failed', 'timed_out', 'cancelled'];
 const childKey = (children) => JSON.stringify(children.map(c => [String(c.age ?? ''), c.start, c.end]).sort());
 
+// Keep whole conversations: a two-centre enquiry must never lose one half
+// merely because a newer single-centre enquiry was opened.
+export function keepEnquiryConversations(items, limit = 5) {
+  const keys = items.map((t, i) => /^group:[a-f0-9]{16}$/.test(t.group ?? '') ? t.group : `single:${i}`);
+  const keep = new Set([...new Set(keys)].slice(-limit));
+  return items.filter((_, i) => keep.has(keys[i]));
+}
+
+// Compare full branch/child visits before opening a confirmed family plan.
+export function enquiryVisitsMatch(payloads, visits) {
+  const rows = xs => xs.flatMap(p => (p.children ?? []).map(c =>
+    [p.branchId, p.date, String(c.age ?? ''), c.start, c.end])).sort();
+  return payloads.length > 0 && JSON.stringify(rows(payloads)) === JSON.stringify(rows(visits));
+}
+
+export function pendingGroupDecisions(threads) {
+  if (threads.length !== 2 || threads.some(t => t.deciding || t.job?.confirmation?.state === 'sending')) return [];
+  const decisions = threads.map(t => t.job?.confirmation?.decision).filter(Boolean);
+  const consistent = !decisions.length || decisions.every(d => d === decisions[0]);
+  if (!consistent || threads.some(t => t.job?.confirmation?.state === 'failed')) return [];
+  return threads.filter(t => !t.job?.confirmation).map(t => ({ key: t.key, decision: decisions[0] ?? null }));
+}
+
 // A reply belongs to the whole visit, not just the branch and date. Preserve
 // multiplicity: two children with identical ages/times still need two places.
 export function enquiryStatus(threads, branchId, requests = []) {
@@ -19,7 +42,9 @@ export function enquiryStatus(threads, branchId, requests = []) {
 
 // Persist references only; visit details come back from the authenticated job.
 export function openEnquiryReferences(threads) {
-  return threads.filter(t => t.job?.id).slice(-5).map(t => ({ id: t.job.id, family: !!t.family,
+  return keepEnquiryConversations(threads.filter(t => t.job?.id)).map(t => ({ id: t.job.id, family: !!t.family,
+    // Two centres asked together share a random group ID (no visit details).
+    ...(/^group:[a-f0-9]{16}$/.test(t.group ?? '') ? { group: t.group } : {}),
     centre: t.centre?.id ? { id: t.centre.id, name: t.centre.name } : null }));
 }
 

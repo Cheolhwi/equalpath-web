@@ -49,10 +49,11 @@ import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory
 import Checklist from "./Checklist.jsx";
 import Enquiry from "./Enquiry.jsx";
 import { EnquiryProvider, EnquiryDock, RefreshGuard } from "./VirtualEnquiry.jsx";
-import FamilyPanel, { familyMapItems, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
+import { enquiryVisitsMatch } from "../shared/enquiry-session.mjs";
+import FamilyPanel, { familyMapItems, familyChecklistEntry, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
 import OneChildPanel, { initialOnePanel } from "./OneChildPanel.jsx";
 import useFamily, { familyKey, secondChildErrors } from "./useFamily.js";
-import { childRequest, childName } from "../shared/two-child.mjs";
+import { childRequest, childName, leavePlan } from "../shared/two-child.mjs";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import GettingStarted from "./GettingStarted.jsx";
 import ShortCareAlternatives, { ShortCareMapAlternatives, hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
@@ -928,6 +929,21 @@ export default function App({
   const enquiryActions = {
     closeDialogs: () => setDialog(null),
     prepare: (p, request) => { if (p) startPreparation(p, request ?? activeRequest); },
+    // Both places confirmed for two children: the family Checklist, the same
+    // kind as one child's (11 Oct 2026). Falls back to the plan list when
+    // that plan is no longer in this search.
+    prepareFamily: (payloads) => {
+      const plan = family.state?.plan, all = family.built?.all ?? [];
+      const matches = (x) => x && enquiryVisitsMatch(payloads, ["a", "b"].map(k => {
+        const r = childRequest(plan, k);
+        return { branchId: x[k].id, date: r.date, children: [{ age: r.age, start: r.deadline, end: r.end }] };
+      }));
+      const o = plan ? (matches(family.option) ? family.option : all.find(matches)) : null;
+      if (!o) { enquiryActions.options(true); return; }
+      const lp = o === family.option && family.lp ? family.lp : family.plans.get(o.id) ?? leavePlan(o, plan, family.legs);
+      const entry = familyChecklistEntry(o, plan, lp);
+      saveChecklist(entry); showChecklist(entry.id);
+    },
     contact: (p, request) => { if (p) prepare(p, request ?? activeRequest); },
     // The centre has no place and offered no other time: take that plan off
     // the options on the left, with a note and Undo (10 Oct 2026).
@@ -936,7 +952,12 @@ export default function App({
         .filter(({ c }) => c.state === "unavailable" && !c.offer).map(({ k }) => k);
       if (!kids.length || !t.centre?.id) return;
       if (t.family && familyMode && family.state?.plan) {
-        if (childRequest(family.state.plan, "a").date === t.payload.date) family.decline([...new Set(kids)], t.centre);
+        const matching = result.children.filter(c => c.state === "unavailable" && !c.offer).filter(c => {
+          const k = c.label === "Child 2" ? "b" : "a", r = childRequest(family.state.plan, k);
+          const child = t.payload.children.find(x => x.label === c.label);
+          return child && enquiryVisitsMatch([{ ...t.payload, children: [child] }], [{ branchId: t.payload.branchId, date: r.date, children: [{ age: r.age, start: r.deadline, end: r.end }] }]);
+        }).map(c => c.label === "Child 2" ? "b" : "a");
+        if (matching.length) family.decline([...new Set(matching)], t.centre);
         return;
       }
       if (t.family || !t.request) return;

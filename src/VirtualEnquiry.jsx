@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { ArrowRight, CalendarDays, Check, ChevronDown, ClipboardList, Clock3, Info, List, LoaderCircle, MessageCircle, Square, TriangleAlert, Volume2, VolumeX, X } from 'lucide-react';
 import { displayName } from '../shared/display.mjs';
 import { contactQuestions } from '../shared/contact-message.mjs';
-import { enquiryStatus, openEnquiryReferences, restoredEnquiryPayload } from '../shared/enquiry-session.mjs';
+import { enquiryStatus, openEnquiryReferences, restoredEnquiryPayload, keepEnquiryConversations, pendingGroupDecisions } from '../shared/enquiry-session.mjs';
 import './virtual-enquiry.css';
 import cloudConfig from './enquiry-config.json';
 import Dialog from './Dialog.jsx';
@@ -40,6 +40,31 @@ async function query(body, signal) {
 }
 const visitDay = (date) => { try { return new Date(`${date}T12:00:00+08:00`).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Kuala_Lumpur' }); } catch { return date; } };
 const centreName = (t) => displayName(t.centre?.name || t.job?.branch?.listedName || t.job?.branch?.name || 'The centre');
+/* Two children at two centres (11 Oct 2026, user request "ask for me应该合并一起问两个"):
+   one Ask for me sends one request to each centre and shows both in one chat
+   (a "group"). Each request is still its own job on the server. */
+// A group's key is a random ID, never the visit details, so it can be kept
+// with the request IDs for a refresh.
+const isGroup = (key) => typeof key === 'string' && /^group:[a-f0-9]{16}$/.test(key);
+const newGroup = () => `group:${[...crypto.getRandomValues(new Uint8Array(8))].map(x => x.toString(16).padStart(2, '0')).join('')}`;
+// The group that already holds exactly these requests, if any.
+const groupFor = (threads, keys) => { const ts = keys.map(k => threads.find(t => t.key === k)); const g = ts[0]?.group; return g && ts.every(t => t?.group === g) && threads.filter(t => t.group === g).length === keys.length ? g : null; };
+const inView = (t, key) => t.key === key || (!!t.group && t.group === key);
+const groupName = (ts) => ts.map(centreName).join(' + ');
+const finished = (t) => !!t.job && !following(t.job) && (!!t.job.result || ENDED.includes(t.job.state));
+// A centre that has no place for a child and offered no other time.
+const noPlace = (r) => !!r && r.children?.some(c => c.state === 'unavailable' && !c.offer);
+export function unitsOf(threads) {
+  const seen = new Set(), out = [];
+  for (const t of threads) {
+    if (!t.group) { out.push({ key: t.key, threads: [t], name: centreName(t) }); continue; }
+    if (seen.has(t.group)) continue;
+    seen.add(t.group);
+    const ts = threads.filter(x => x.group === t.group);
+    out.push({ key: t.group, threads: ts, name: groupName(ts), group: true });
+  }
+  return out;
+}
 
 /* Ask for me (10 Oct 2026): the enquiry runs at page level, so it keeps going
    after the Contact window closes. Its chat is a small window at the bottom
@@ -289,7 +314,7 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     if (!virtualEnquiryEnabled || !Array.isArray(saved) || !saved.length) { restoring.current = false; return; }
     (async () => {
       const back = [];
-      for (const s of saved.slice(-5)) {
+      for (const s of keepEnquiryConversations(saved).slice(-10)) {
         try {
           if (!/^[a-f0-9]{24}$/.test(s.id || '')) continue;
           const job = await query({ action: 'get', id: s.id });
@@ -298,13 +323,13 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
           const key = JSON.stringify(payload);
           // Already-read words stay as they were; nothing types out again.
           wordingCache.set(`ask:${key}`, null); shownReplies.add(job.id);
-          back.push({ key, payload, centre: s.centre, request: null, family: !!s.family, job, error: '', busy: false, paused: false, retry: 0, unread: false, settled: !following(job), restored: true });
+          back.push({ key, payload, centre: s.centre, request: null, family: !!s.family, group: isGroup(s.group) ? s.group : undefined, job, error: '', busy: false, paused: false, retry: 0, unread: false, settled: !following(job), restored: true });
         } catch { /* expired: nothing to bring back */ }
       }
       restoring.current = false;
       if (!back.length) { try { sessionStorage.removeItem(openKey); } catch { /* optional */ } return; }
-      setThreads(list => [...back.filter(b => !list.some(t => t.key === b.key)), ...list].slice(-5));
-      setRestored(back.length);
+      setThreads(list => keepEnquiryConversations([...back.filter(b => !list.some(t => t.key === b.key)), ...list]));
+      setRestored(unitsOf(back).length);
     })();
   }, []);
   useEffect(() => {
@@ -314,7 +339,7 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
   const start = useCallback(async (key, payload) => {
     const current = threadsRef.current.find(t => t.key === key);
     if (locks.current.has(key) || (current?.job && !ENDED.includes(current.job.state))) return;
-    locks.current.add(key); patch(key, { busy: true, error: '' });
+    locks.current.add(key); settledRef.current.delete(key); patch(key, { busy: true, error: '' });
     try {
       const sig = await signature(payload);
       let cached; try { cached = JSON.parse(sessionStorage.getItem(jobsKey) || '{}')[sig]; } catch { /* No saved request. */ }
@@ -345,16 +370,20 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
   const [sound, setSoundState] = useState(readSound);
   const soundRef = useRef(sound); soundRef.current = sound;
   const setSound = useCallback((on) => { setSoundState(on); try { localStorage.setItem(soundKey, on ? 'on' : 'off'); } catch { /* per-browser preference */ } }, []);
+  const settledRef = useRef(new Set());
   const settle = useCallback((key, job) => {
-    // Every reply rings (unless muted); a system notification appears when
-    // the tab is in the background.
-    if (job?.state !== 'cancelled') {
+    settledRef.current.add(key);
+    const me = threadsRef.current.find(x => x.key === key);
+    // In a group, the notice waits until every centre has answered.
+    const group = me?.group, members = group ? threadsRef.current.filter(x => x.group === group) : [];
+    const groupDone = !group || members.every(x => x.key === key || settledRef.current.has(x.key) || finished(x));
+    if (job?.state !== 'cancelled' && groupDone) {
       if (soundRef.current) chime();
       try {
         if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
           const t = threadsRef.current.find(x => x.key === key);
-          const note = new Notification(`${t ? centreName({ ...t, job }) : 'The centre'} replied`, { body: replyHeadline(job), tag: `equalpath-${job?.id ?? key}` });
-          note.onclick = () => { window.focus(); showRef.current?.(key); note.close(); };
+          const note = new Notification(group ? 'Both centres replied' : `${t ? centreName({ ...t, job }) : 'The centre'} replied`, { body: group ? 'Open the chat to see both replies.' : replyHeadline(job), tag: `equalpath-${group ?? job?.id ?? key}` });
+          note.onclick = () => { window.focus(); showRef.current?.(group ?? key); note.close(); };
         }
       } catch { /* optional */ }
     }
@@ -363,24 +392,41 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
     if (job?.result && thread) try { actionsRef.current?.declined?.(thread, job.result); } catch { /* optional */ }
     if (job?.result) void naturalReply(job.result, thread ? centreName({ ...thread, job }) : 'The centre', job.id);
     const v = viewRef.current;
-    if (v.open && v.key === key && !modalRef.current && !document.hidden) return;
-    patch(key, { unread: true }); setNotice(key);
+    if (v.open && (v.key === key || (group && v.key === group)) && !modalRef.current && !document.hidden) return;
+    patch(key, { unread: true });
+    if (groupDone) setNotice(group ?? key);
   }, [patch]);
   const ask = useCallback(({ payload, centre, request, family }) => {
     prepareAlerts();
     const key = JSON.stringify(payload);
-    setThreads(list => list.some(t => t.key === key) ? list : [...list.slice(-4),
-      { key, payload, centre, request, family, job: null, error: '', busy: false, paused: false, retry: 0, unread: false }]);
-    setView({ key, open: true }); setNotice(n => n === key ? null : n);
+    setThreads(list => list.some(t => t.key === key) ? list : keepEnquiryConversations([...list,
+      { key, payload, centre, request, family, job: null, error: '', busy: false, paused: false, retry: 0, unread: false }]));
+    const target = threadsRef.current.find(t => t.key === key)?.group ?? key;
+    setView({ key: target, open: true }); setNotice(n => n === target ? null : n);
     // The chat replaces the window it was started from, so the map stays usable.
     actionsRef.current?.closeDialogs?.();
     start(key, payload);
   }, [start]);
-  const show = useCallback((key) => { actionsRef.current?.closeDialogs?.(); setView({ key, open: true }); setNotice(null); patch(key, { unread: false }); }, [patch]);
+  const askGroup = useCallback((items, family = true) => {
+    prepareAlerts();
+    const keys = items.map(x => JSON.stringify(x.payload));
+    const group = groupFor(threadsRef.current, keys) ?? newGroup();
+    setThreads(list => {
+      const kept = list.filter(t => !keys.includes(t.key));
+      const reused = list.filter(t => keys.includes(t.key)).map(t => ({ ...t, group, family }));
+      const added = items.filter((x, i) => !reused.some(t => t.key === keys[i])).map(x => ({ key: JSON.stringify(x.payload), payload: x.payload, centre: x.centre, request: x.request, family, group, job: null, error: '', busy: false, paused: false, retry: 0, unread: false }));
+      return keepEnquiryConversations([...kept, ...reused, ...added]);
+    });
+    setView({ key: group, open: true }); setNotice(n => n === group ? null : n);
+    actionsRef.current?.closeDialogs?.();
+    items.forEach((x, i) => { settledRef.current.delete(keys[i]); start(keys[i], x.payload); });
+    return group;
+  }, [start]);
+  const show = useCallback((target) => { const key = threadsRef.current.find(x => x.key === target)?.group ?? target; actionsRef.current?.closeDialogs?.(); setView({ key, open: true }); setNotice(null); setThreads(list => list.map(t => inView(t, key) && t.unread ? { ...t, unread: false } : t)); }, []);
   const showRef = useRef(show); showRef.current = show;
   const minimise = useCallback(() => setView(v => ({ ...v, open: false })), []);
-  const remove = useCallback((key) => { setThreads(list => list.filter(t => t.key !== key)); setView(v => v.key === key ? { key: null, open: false } : v); setNotice(n => n === key ? null : n); }, []);
-  const chatShown = view.open && !modal && threads.some(t => t.key === view.key);
+  const remove = useCallback((key) => { setThreads(list => list.filter(t => !inView(t, key))); setView(v => v.key === key ? { key: null, open: false } : v); setNotice(n => n === key ? null : n); }, []);
+  const chatShown = view.open && !modal && threads.some(t => inView(t, view.key));
   useEffect(() => { onChatChange?.(chatShown); }, [chatShown, onChatChange]);
   // A waiting reply shows in the tab title while the parent is elsewhere.
   const unreadCount = threads.filter(t => t.unread).length;
@@ -391,12 +437,11 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
   // Reading the open chat clears its unread mark.
   useEffect(() => {
     if (!view.open || modal) return;
-    const t = threads.find(x => x.key === view.key);
-    if (t?.unread && !document.hidden) patch(t.key, { unread: false });
+    for (const t of threads) if (inView(t, view.key) && t.unread && !document.hidden) patch(t.key, { unread: false });
     if (notice === view.key) setNotice(null);
   }, [view, modal, threads, notice, patch]);
   useEffect(() => {
-    const back = () => { if (!document.hidden && viewRef.current.open && !modalRef.current) { const k = viewRef.current.key; setThreads(list => list.map(t => t.key === k && t.unread ? { ...t, unread: false } : t)); } };
+    const back = () => { if (!document.hidden && viewRef.current.open && !modalRef.current) { const k = viewRef.current.key; setThreads(list => list.map(t => inView(t, k) && t.unread ? { ...t, unread: false } : t)); } };
     document.addEventListener('visibilitychange', back);
     return () => document.removeEventListener('visibilitychange', back);
   }, []);
@@ -404,12 +449,16 @@ export function EnquiryProvider({ children, actions, onChatChange }) {
   const decide = useCallback(async (key, decision) => {
     const t = threadsRef.current.find(x => x.key === key);
     if (!t?.job?.id || t.job.confirmation || t.deciding) return;
-    patch(key, { deciding: true, error: '' });
+    patch(key, { deciding: true, error: '' }); settledRef.current.delete(key);
     try { const job = await query({ action: 'confirm', id: t.job.id, decision }); patch(key, x => ({ job, retry: x.retry + 1 })); }
     catch (e) { patch(key, { error: e.message }); }
     finally { patch(key, { deciding: false }); }
   }, [patch]);
-  const value = { threads, view, notice, modal, ask, show, minimise, remove, start, patch, settle, decide, restored, dismissRestored: () => setRestored(0), sound, setSound, dismissNotice: () => setNotice(null), actions: actionsRef };
+  // Both centres at once: keep (or let go of) every place that was offered.
+  const decideGroup = useCallback((group, decision) => {
+    for (const t of threadsRef.current.filter(x => x.group === group)) if (t.job?.result && summary(t.job.result).good && !t.job.confirmation) decide(t.key, decision);
+  }, [decide]);
+  const value = { threads, view, notice, modal, ask, askGroup, decideGroup, show, minimise, remove, start, patch, settle, decide, restored, dismissRestored: () => setRestored(0), sound, setSound, dismissNotice: () => setNotice(null), actions: actionsRef };
   return <EnquiryContext.Provider value={value}>{children}{threads.map(t => <ThreadFollower key={t.key} thread={t} />)}</EnquiryContext.Provider>;
 }
 
@@ -490,6 +539,72 @@ export default function VirtualEnquiry(props) {
   </button>;
 }
 
+// One button for two centres: asks both, then reopens their shared chat.
+export function VirtualEnquiryGroup({ items }) {
+  const ctx = useContext(EnquiryContext);
+  if (!virtualEnquiryEnabled || !ctx) return null;
+  const built = items.map(x => {
+    const children = (x.requests || []).map((r, i) => ({ label: r.label || `Child ${i + 1}`, age: String(r.age ?? ''), start: r.deadline, end: r.end }));
+    return { payload: { branchId: x.providerId, date: x.requests?.[0]?.date, children, questions: [...(x.questionIds ?? ['visit', 'fees'])].sort(), scenario: x.scenario || 'rules' }, centre: x.centre, request: x.requests?.[0] };
+  });
+  const keys = built.map(x => JSON.stringify(x.payload)), group = groupFor(ctx.threads, keys);
+  const ts = group ? ctx.threads.filter(t => t.group === group) : [];
+  const disabled = built.some(x => !x.payload.date || !x.payload.children.length || x.payload.children.some(c => !c.start || !c.end) || !x.payload.questions.length);
+  const open = ts.length === built.length && ts.every(t => t.job && !ENDED.includes(t.job.state));
+  const waiting = ts.some(t => active(t.job) || t.busy);
+  const label = !open ? 'Ask both centres' : waiting ? 'View chat' : 'View replies';
+  return <button className="secondary virtual-enquiry-toggle virtual-enquiry-group" disabled={disabled}
+    onClick={() => open ? ctx.show(group) : ctx.askGroup(built, true)}>
+    {waiting ? <LoaderCircle size={17} className="spin" aria-hidden="true" /> : <MessageCircle size={17} aria-hidden="true" />}
+    {label}
+  </button>;
+}
+
+// What happens next for a group: keep both places, or — when one centre has
+// no place — back to the other plans (that plan is already off the list).
+function groupSteps(ts, act, decide, decideGroup) {
+  if (!ts.length || !ts.every(finished)) return [];
+  const group = ts[0].group, good = ts.filter(t => t.job.result && summary(t.job.result).good);
+  const removed = ts.some(t => noPlace(t.job.result));
+  const options = { label: removed ? 'See other plans' : 'Back to your plan', icon: List, run: () => act.current?.options?.(true) };
+  if (ts.length !== 2) return [options];
+  if (good.length === ts.length) {
+    if (good.some(t => t.deciding)) return [];
+    if (good.every(t => !t.job.confirmation) && decideGroup) return [
+      { label: 'Yes, keep both places', icon: Check, run: () => decideGroup(group, 'accept'), stay: true },
+      { label: 'No, thanks', icon: X, run: () => decideGroup(group, 'decline'), stay: true }];
+    const pending = pendingGroupDecisions(good);
+    if (pending.length && pending.every(t => t.decision)) return pending.map(t => ({ label: `Send your answer to ${centreName(good.find(x => x.key === t.key))}`, icon: MessageCircle, run: () => decide(t.key, t.decision), stay: true }));
+    if (good.some(t => t.job.confirmation?.state === 'sending')) return [];
+    if (good.every(t => t.job.confirmation?.decision === 'accept' && t.job.confirmation.state === 'acknowledged') && ts.every(t => t.request))
+      return [{ label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepareFamily?.(ts.map(t => t.payload)) }, options];
+    return [options];
+  }
+  // One centre said yes but the plan can't work: let that centre know.
+  const waitingOnYou = good.filter(t => !t.job.confirmation);
+  return [options, ...waitingOnYou.map(t => ({ label: `Tell ${centreName(t)} you won’t need it`, icon: X, run: () => decide(t.key, 'decline'), stay: true }))];
+}
+function groupSummary(ts) {
+  if (!ts.length || !ts.every(finished)) return null;
+  if (ts.length !== 2) return { good: false, title: 'One enquiry is missing', note: 'We could not restore both centres. Check the missing reply before making plans.' };
+  const good = ts.filter(t => t.job.result && summary(t.job.result).good), bad = ts.filter(t => !(t.job.result && summary(t.job.result).good));
+  if (!bad.length) {
+    const c = good.map(t => t.job.confirmation);
+    if (c.every(x => x?.state === 'acknowledged' && x.decision === 'accept')) return { good: true, title: 'Both places are confirmed', note: 'Both centres have noted your visit.' };
+    if (c.every(x => x?.state === 'acknowledged' && x.decision === 'decline')) return { good: false, title: 'You let both places go', note: 'Both centres know you won’t need them.' };
+    if (c.some(x => x?.state === 'failed')) return { good: false, title: 'Your answer couldn’t reach a centre', note: 'Please call or message that centre yourself.' };
+    if (c.some(x => x) && c.some(x => !x)) return { good: false, title: 'One answer still needs sending', note: 'Your answer reached one centre. Send it to the other centre to finish.' };
+    if (c.some(x => x)) return { good: false, title: 'The centres have different answers', note: 'Check both replies before making plans.' };
+    return { good: true, title: 'Both centres have a place', note: 'Keep both places to tell the centres. Your other questions still need an answer.' };
+  }
+  const removed = bad.filter(t => noPlace(t.job.result));
+  const names = bad.map(centreName).join(' and ');
+  return { good: false, title: 'This plan won’t work',
+    note: removed.length
+      ? `${removed.map(centreName).join(' and ')} has no place for ${removed.flatMap(t => t.job.result.children.filter(c => c.state === 'unavailable' && !c.offer).map(c => c.label)).join(' and ')}, so this plan is off your options for this search.`
+      : ENDED.includes(bad[0].job.state) ? `No reply from ${names}. No place has been confirmed.` : `${names} can’t take both times as asked. Check the reply for another time.` };
+}
+
 // A chat brought back after a page refresh has no search behind it, so it
 // can't open the checklist or the Contact panel for that search.
 function nextSteps(t, act, ask, decide) {
@@ -510,7 +625,9 @@ function stepsFor(t, act, ask, decide) {
     if (!c && decide) return [
       { label: 'Yes, keep the place', icon: Check, run: () => decide(t.key, 'accept'), stay: true },
       { label: 'No, thanks', icon: X, run: () => decide(t.key, 'decline'), stay: true }];
-    if (c?.state === 'acknowledged') return c.decision === 'accept' ? [t.family || !t.centre ? options : prepare] : [options];
+    // Two children get the family Checklist, the same kind as one child's.
+    const prepareFamily = { label: 'Get ready for childcare', icon: ClipboardList, run: () => act.current?.prepareFamily?.([t.payload]), needsSearch: true };
+    if (c?.state === 'acknowledged') return c.decision === 'accept' ? (t.family ? [prepareFamily, { ...options, label: 'Back to your plan' }] : !t.centre ? [options] : [prepare]) : [options];
     if (c?.state === 'failed') return [contact];
     if (c) return [];
   }
@@ -533,9 +650,9 @@ export function EnquiryDock() {
   const ctx = useContext(EnquiryContext);
   if (!ctx || !ctx.threads.length) return <ReplyNotice />;
   const { threads, view, modal } = ctx;
-  const current = threads.find(t => t.key === view.key);
+  const current = unitsOf(threads).find(u => u.key === view.key);
   return <>
-    {!modal && view.open && current && <ChatWindow key={current.key} thread={current} />}
+    {!modal && view.open && current && (current.group ? <GroupChat key={current.key} group={current.key} ts={current.threads} /> : <ChatWindow key={current.key} thread={current.threads[0]} />)}
     {!modal && !(view.open && current) && <ChatPill />}
     <ReplyNotice />
     {!modal && !ctx.notice && ctx.restored > 0 && <RestoredNotice />}
@@ -592,12 +709,14 @@ export function RefreshGuard({ hasWork, checklists = 0 }) {
 
 function ChatPill() {
   const { threads, show } = useContext(EnquiryContext);
-  const t = threads.find(x => x.unread) || [...threads].reverse().find(x => active(x.job)) || threads.at(-1);
-  if (!t) return null;
-  const waiting = threads.filter(x => active(x.job)).length;
-  const text = t.unread ? `${centreName(t)} replied` : active(t.job) || t.busy ? `Asking ${centreName(t)}…` : t.job?.state === 'replied' ? `Reply from ${centreName(t)}` : centreName(t);
-  return <button className={`enquiry-pill${t.unread ? ' has-unread' : ''}`} onClick={() => show(t.key)} aria-label={`Open chat: ${text}`}>
-    <span className="enquiry-pill-icon" aria-hidden="true">{active(t.job) || t.busy ? <LoaderCircle size={17} className="spin" /> : <MessageCircle size={17} />}{t.unread && <i />}</span>
+  const units = unitsOf(threads);
+  const busyU = u => u.threads.some(t => active(t.job) || t.busy), unreadU = u => u.threads.some(t => t.unread);
+  const u = units.find(unreadU) || [...units].reverse().find(busyU) || units.at(-1);
+  if (!u) return null;
+  const waiting = units.filter(x => x.threads.some(t => active(t.job))).length;
+  const text = unreadU(u) ? `${u.name} replied` : busyU(u) ? `Asking ${u.name}…` : u.threads.every(t => t.job?.state === 'replied') ? `Reply from ${u.name}` : u.name;
+  return <button className={`enquiry-pill${unreadU(u) ? ' has-unread' : ''}`} onClick={() => show(u.key)} aria-label={`Open chat: ${text}`}>
+    <span className="enquiry-pill-icon" aria-hidden="true">{busyU(u) ? <LoaderCircle size={17} className="spin" /> : <MessageCircle size={17} />}{unreadU(u) && <i />}</span>
     <span className="enquiry-pill-text">{text}</span>
     {waiting > 1 && <small>{waiting} waiting</small>}
   </button>;
@@ -605,18 +724,28 @@ function ChatPill() {
 
 function ReplyNotice() {
   const ctx = useContext(EnquiryContext);
-  const t = ctx?.notice && ctx.threads.find(x => x.key === ctx.notice);
-  if (!t) return null;
-  const r = t.job?.result, failed = !r;
-  const steps = nextSteps(t, ctx.actions, ctx.ask, ctx.decide).slice(0, 1);
+  if (!ctx?.notice) return null;
+  let n;
+  if (isGroup(ctx.notice)) {
+    const ts = ctx.threads.filter(x => x.group === ctx.notice), sum = groupSummary(ts);
+    if (!ts.length) return null;
+    n = { key: ctx.notice, keys: ts.map(t => t.key), good: !!sum?.good, failed: false, title: sum?.title ?? 'Both centres replied', text: sum?.note ?? 'Open the chat to see both replies.',
+      steps: groupSteps(ts, ctx.actions, ctx.decide, ctx.decideGroup).slice(0, 1) };
+  } else {
+    const t = ctx.threads.find(x => x.key === ctx.notice);
+    if (!t) return null;
+    const r = t.job?.result;
+    n = { key: t.key, keys: [t.key], good: !!r && summary(r).good, failed: !r, title: !r ? `No reply from ${centreName(t)}` : `${centreName(t)} replied`,
+      text: !r ? 'No place has been confirmed. You can try again from the chat.' : replyHeadline(t.job), steps: nextSteps(t, ctx.actions, ctx.ask, ctx.decide).slice(0, 1) };
+  }
   const body = <div className={`enquiry-notice${ctx.modal ? ' in-window' : ''}`} role="status" aria-live="polite">
-    <span className={`enquiry-notice-icon ${r && summary(r).good ? 'good' : 'warn'}`} aria-hidden="true">{r && summary(r).good ? <Check size={18} /> : failed ? <Clock3 size={18} /> : <TriangleAlert size={18} />}</span>
+    <span className={`enquiry-notice-icon ${n.good ? 'good' : 'warn'}`} aria-hidden="true">{n.good ? <Check size={18} /> : n.failed ? <Clock3 size={18} /> : <TriangleAlert size={18} />}</span>
     <div className="enquiry-notice-main">
-      <strong>{failed ? `No reply from ${centreName(t)}` : `${centreName(t)} replied`}</strong>
-      <p>{failed ? 'No place has been confirmed. You can try again from the chat.' : replyHeadline(t.job)}</p>
+      <strong>{n.title}</strong>
+      <p>{n.text}</p>
       <div className="enquiry-notice-actions">
-        {steps.map(s => <button key={s.label} className="primary" onClick={() => { ctx.dismissNotice(); ctx.patch(t.key, { unread: false }); if (s.stay) ctx.show(t.key); s.run(); }}>{s.label}<ArrowRight size={15} aria-hidden="true" /></button>)}
-        <button className="text-link enquiry-notice-view" onClick={() => ctx.show(t.key)}>View chat</button>
+        {n.steps.map(s => <button key={s.label} className="primary" onClick={() => { ctx.dismissNotice(); n.keys.forEach(k => ctx.patch(k, { unread: false })); if (s.stay) ctx.show(n.key); s.run(); }}>{s.label}<ArrowRight size={15} aria-hidden="true" /></button>)}
+        <button className="text-link enquiry-notice-view" onClick={() => ctx.show(n.key)}>View chat</button>
       </div>
     </div>
     <button className="enquiry-notice-close" aria-label="Dismiss" onClick={ctx.dismissNotice}><X size={17} /></button>
@@ -628,23 +757,64 @@ function ReplyNotice() {
 
 // Replies already typed out once are shown whole when the chat is reopened.
 const shownReplies = new Set();
-function ChatWindow({ thread: t }) {
-  const ctx = useContext(EnquiryContext);
-  const { threads, show, minimise, remove, start, patch, actions, ask, sound, setSound, decide } = ctx;
+// The list of conversations at the top of a chat (a group counts once).
+function Switcher({ current }) {
+  const { threads, show } = useContext(EnquiryContext);
   const [picking, setPicking] = useState(false);
-  const log = useRef(null), nearEnd = useRef(true);
+  const units = unitsOf(threads);
+  if (units.length < 2) return null;
+  return <div className="enquiry-chat-switch">
+    <button className="enquiry-chat-switch-toggle" aria-expanded={picking} onClick={() => setPicking(x => !x)}>
+      <List size={15} aria-hidden="true" />Your enquiries · {units.length}{units.some(u => u.key !== current && u.threads.some(x => x.unread)) && <i aria-label="New reply" />}<ChevronDown size={15} aria-hidden="true" />
+    </button>
+    {picking && <ul className="enquiry-chat-switch-list" aria-label="Your enquiries">{[...units].reverse().map(u => {
+      const x = u.threads[0], waiting = u.threads.some(t => active(t.job) || t.busy), sum = u.group ? groupSummary(u.threads) : null;
+      const good = u.group ? sum?.good : x.job?.result && summary(x.job.result).good, replied = u.threads.every(t => t.job?.result);
+      const status = waiting ? 'Waiting for reply' : u.group ? (sum?.title ?? 'Replied') : x.job?.result ? replyHeadline(x.job) : ENDED.includes(x.job?.state) ? 'No reply' : 'Sending';
+      return <li key={u.key}><button aria-current={u.key === current ? 'true' : undefined} onClick={() => { setPicking(false); show(u.key); }}>
+        <span className="enquiry-switch-icon" aria-hidden="true">{waiting ? <LoaderCircle size={14} className="spin" /> : good ? <Check size={14} /> : replied ? <TriangleAlert size={14} /> : <MessageCircle size={14} />}</span>
+        <span className="enquiry-switch-text"><strong>{u.name}</strong><small>{visitDay(x.payload.date)} · {u.group ? `${u.threads.length} centres` : `${x.payload.children[0].start}–${x.payload.children[0].end}`} · {status}</small></span>
+        {u.threads.some(t => t.unread) && <i aria-label="New reply" />}
+      </button></li>;
+    })}</ul>}
+  </div>;
+}
+
+// One request's messages: the parent's message, the steps, the reply and the
+// parent's decision.
+function ThreadLog({ t, steps, onStep, scroll, brief = false }) {
   // Steps after the parent's message appear once it is written, one by one.
   const [ready, setReady] = useState(() => wordingCache.has(`ask:${t.key}`));
   const [fresh, setFresh] = useState(false);
   const batch = useRef(0);
   const enter = (i, base) => fresh ? { className: `${base} enter`, style: { animationDelay: `${i <= batch.current ? 120 + i * 140 : 0}ms` } } : { className: base };
-  const { payload, job, busy, error, paused } = t;
+  const { job, busy, error, paused } = t;
+  const ended = job && ENDED.includes(job.state), decided = job?.confirmation;
+  useEffect(() => { scroll?.(); }, [job?.events?.length, job?.state, busy, ready, decided?.state]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <>
+    <AskBubble key={t.key} thread={t} onReady={waited => { batch.current = t.job?.events.length ?? 0; setReady(true); setFresh(waited); }} />
+    {ready && <>
+    {busy && !job && <p className="virtual-chat-event"><LoaderCircle size={14} className="spin" />Sending your request…</p>}
+    {job?.events.map((event, i) => <p key={`${job.id}-${i}`} {...enter(i, 'virtual-chat-event')}><Check size={14} /><span>{event.text}</span></p>)}
+    {active(job) && !paused && <div {...enter(job?.events.length ?? 0, 'virtual-bubble virtual-wait')}><span className="virtual-dots" aria-hidden="true"><i /><i /><i /></span><span>{job.state === 'queued' ? 'In line. It will be sent when it’s your turn.' : 'The centre is replying… Replies usually take under a minute.'}</span></div>}
+    {job?.result && <Reply key={job.id} id={job.id} name={centreName(t)} result={job.result} animate={!shownReplies.has(job.id)} onComplete={() => shownReplies.add(job.id)} steps={decided ? [] : steps} onStep={onStep} scroll={scroll} />}
+    {decided && <Decision c={decided} name={centreName(t)} steps={steps} onStep={onStep} scroll={scroll} brief={brief} />}
+    {ended && <div className="virtual-bubble virtual-unresolved"><Clock3 size={18} /><div><strong>{job.state === 'timed_out' ? 'No reply yet' : job.state === 'cancelled' ? 'Enquiry stopped' : 'Could not send the request'}</strong><p>No place has been confirmed.</p></div></div>}
+    {error && <div className="virtual-chat-error" role="alert"><TriangleAlert size={17} /><p>{error}</p></div>}
+    </>}
+  </>;
+}
+
+function ChatWindow({ thread: t }) {
+  const ctx = useContext(EnquiryContext);
+  const { minimise, remove, start, patch, actions, ask, sound, setSound, decide } = ctx;
+  const log = useRef(null), nearEnd = useRef(true);
+  const { payload, job, busy, paused } = t;
   const ended = job && ENDED.includes(job.state);
+  const scrollEnd = () => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; };
   useEffect(() => { nearEnd.current = true; }, [t.key]);
-  useEffect(() => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; }, [t.key, job?.events?.length, job?.state, busy, ready]);
   const cancel = async () => { patch(t.key, { busy: true }); try { const j = await query({ action: 'cancel', id: job.id }); patch(t.key, { job: j }); } catch (e) { patch(t.key, { error: e.message }); } finally { patch(t.key, { busy: false }); } };
   const steps = nextSteps(t, actions, ask, decide);
-  const decided = job?.confirmation;
   return <section className="enquiry-chat" role="dialog" aria-modal="false" aria-label={`Ask for me: ${centreName(t)}`} onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); minimise(); } }}>
     <header className="enquiry-chat-top">
       <div><p className="enquiry-chat-kicker">Ask for me</p><h2>{centreName(t)}</h2></div>
@@ -652,41 +822,70 @@ function ChatWindow({ thread: t }) {
       <button className="enquiry-chat-icon" onClick={minimise} aria-label="Minimise chat" title="Minimise"><ChevronDown size={19} /></button>
       {!active(job) && !busy && <button className="enquiry-chat-icon" onClick={() => remove(t.key)} aria-label="Close chat" title="Close"><X size={18} /></button>}
     </header>
-    {threads.length > 1 && <div className="enquiry-chat-switch">
-      <button className="enquiry-chat-switch-toggle" aria-expanded={picking} onClick={() => setPicking(x => !x)}>
-        <List size={15} aria-hidden="true" />Your enquiries · {threads.length}{threads.some(x => x.unread && x.key !== t.key) && <i aria-label="New reply" />}<ChevronDown size={15} aria-hidden="true" />
-      </button>
-      {picking && <ul className="enquiry-chat-switch-list" aria-label="Your enquiries">{[...threads].reverse().map(x => <li key={x.key}><button aria-current={x.key === t.key ? 'true' : undefined} onClick={() => { setPicking(false); show(x.key); }}>
-        <span className="enquiry-switch-icon" aria-hidden="true">{active(x.job) || x.busy ? <LoaderCircle size={14} className="spin" /> : x.job?.result && summary(x.job.result).good ? <Check size={14} /> : x.job?.result ? <TriangleAlert size={14} /> : <MessageCircle size={14} />}</span>
-        <span className="enquiry-switch-text"><strong>{centreName(x)}</strong><small>{visitDay(x.payload.date)} · {x.payload.children[0].start}–{x.payload.children[0].end} · {active(x.job) || x.busy ? 'Waiting for reply' : x.job?.result ? replyHeadline(x.job) : ENDED.includes(x.job?.state) ? 'No reply' : 'Sending'}</small></span>
-        {x.unread && <i aria-label="New reply" />}
-      </button></li>)}</ul>}
-    </div>}
+    <Switcher current={t.key} />
     <p className="enquiry-chat-note">Simulated reply. Uses the centre’s listed ages and hours; no real centre is contacted.</p>
     <div className="enquiry-chat-log" ref={log} role="log" aria-label="Enquiry messages" aria-live="polite" aria-relevant="additions" onScroll={() => { const el = log.current; nearEnd.current = el.scrollHeight - el.scrollTop - el.clientHeight < 60; }}>
-      <AskBubble key={t.key} thread={t} onReady={waited => { batch.current = t.job?.events.length ?? 0; setReady(true); setFresh(waited); }} />
-      {ready && <>
-      {busy && !job && <p className="virtual-chat-event"><LoaderCircle size={14} className="spin" />Sending your request…</p>}
-      {job?.events.map((event, i) => <p key={`${job.id}-${i}`} {...enter(i, 'virtual-chat-event')}><Check size={14} /><span>{event.text}</span></p>)}
-      {active(job) && !paused && <div {...enter(job?.events.length ?? 0, 'virtual-bubble virtual-wait')}><span className="virtual-dots" aria-hidden="true"><i /><i /><i /></span><span>{job.state === 'queued' ? 'In line. It will be sent when it’s your turn.' : 'The centre is replying… Replies usually take under a minute.'}</span></div>}
-      {job?.result && <Reply key={job.id} id={job.id} name={centreName(t)} result={job.result} animate={!shownReplies.has(job.id)} onComplete={() => shownReplies.add(job.id)} steps={decided ? [] : steps} onStep={minimise}
-        scroll={() => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; }} />}
-      {decided && <Decision c={decided} name={centreName(t)} steps={steps} onStep={minimise} scroll={() => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; }} />}
-      {ended && <div className="virtual-bubble virtual-unresolved"><Clock3 size={18} /><div><strong>{job.state === 'timed_out' ? 'No reply yet' : job.state === 'cancelled' ? 'Enquiry stopped' : 'Could not send the request'}</strong><p>No place has been confirmed.</p></div></div>}
-      {error && <div className="virtual-chat-error" role="alert"><TriangleAlert size={17} /><p>{error}</p></div>}
-      </>}
+      <ThreadLog t={t} steps={steps} onStep={minimise} scroll={scrollEnd} />
     </div>
     <footer className="enquiry-chat-footer">
       <p>{following(job) ? 'You can keep browsing. We’ll let you know when the centre replies.' : job?.result ? 'This doesn’t make a real booking.' : ' '}</p>
       {active(job) && <button className="secondary" disabled={busy} onClick={cancel}><Square size={13} />Stop</button>}
       {paused && <button className="secondary" onClick={() => patch(t.key, x => ({ error: '', paused: false, retry: x.retry + 1 }))}>Reconnect</button>}
-      {((!job && error && !busy) || ended) && <button className="secondary" disabled={busy} onClick={() => start(t.key, payload)}>Try again</button>}
+      {((!job && t.error && !busy) || ended) && <button className="secondary" disabled={busy} onClick={() => start(t.key, payload)}>Try again</button>}
+    </footer>
+  </section>;
+}
+
+// Two centres in one chat: each centre's messages in turn, then one answer
+// for the plan as a whole.
+function GroupChat({ group, ts }) {
+  const ctx = useContext(EnquiryContext);
+  const { minimise, remove, start, patch, actions, decide, decideGroup, sound, setSound } = ctx;
+  const log = useRef(null), nearEnd = useRef(true);
+  const scrollEnd = () => { if (nearEnd.current && log.current) log.current.scrollTop = log.current.scrollHeight; };
+  const sum = groupSummary(ts), steps = groupSteps(ts, actions, decide, decideGroup);
+  const anyActive = ts.some(t => active(t.job)), anyBusy = ts.some(t => t.busy), anyFollowing = ts.some(t => following(t.job) || t.busy || (!t.job && !t.error));
+  const retry = ts.filter(t => (t.job && ENDED.includes(t.job.state)) || (!t.job && t.error && !t.busy));
+  useEffect(() => { scrollEnd(); }, [sum?.title, steps.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  const cancel = async () => {
+    for (const t of ts.filter(x => active(x.job))) {
+      patch(t.key, { busy: true });
+      try { const j = await query({ action: 'cancel', id: t.job.id }); patch(t.key, { job: j }); } catch (e) { patch(t.key, { error: e.message }); } finally { patch(t.key, { busy: false }); }
+    }
+  };
+  return <section className="enquiry-chat enquiry-chat-group" role="dialog" aria-modal="false" aria-label={`Ask for me: ${groupName(ts)}`} onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); minimise(); } }}>
+    <header className="enquiry-chat-top">
+      <div><p className="enquiry-chat-kicker">Ask for me · {ts.length} centres</p><h2>{groupName(ts)}</h2></div>
+      <button className="enquiry-chat-icon" onClick={() => setSound(!sound)} aria-pressed={sound} aria-label={sound ? 'Mute reply sound' : 'Turn on reply sound'} title={sound ? 'Sound on' : 'Sound off'}>{sound ? <Volume2 size={18} /> : <VolumeX size={18} />}</button>
+      <button className="enquiry-chat-icon" onClick={minimise} aria-label="Minimise chat" title="Minimise"><ChevronDown size={19} /></button>
+      {!anyActive && !anyBusy && <button className="enquiry-chat-icon" onClick={() => remove(group)} aria-label="Close chat" title="Close"><X size={18} /></button>}
+    </header>
+    <Switcher current={group} />
+    <p className="enquiry-chat-note">Simulated replies. Uses each centre’s listed ages and hours; no real centre is contacted.</p>
+    <div className="enquiry-chat-log" ref={log} role="log" aria-label="Enquiry messages" aria-live="polite" aria-relevant="additions" onScroll={() => { const el = log.current; nearEnd.current = el.scrollHeight - el.scrollTop - el.clientHeight < 60; }}>
+      {ts.map((t, i) => <div key={t.key} className="virtual-group-part">
+        <p className="virtual-group-head"><span>{i + 1}</span>{centreName(t)} · {t.payload.children.map(c => c.label).join(' and ')}</p>
+        <ThreadLog t={t} steps={[]} brief onStep={minimise} scroll={scrollEnd} />
+      </div>)}
+      {sum && <section className={`virtual-chat-result virtual-group-result ${sum.good ? 'good' : 'warn'} enter`} aria-label="Both replies">
+        <h3>{sum.good ? <Check size={18} /> : <TriangleAlert size={18} />}{sum.title}</h3>
+        <p className="virtual-result-note">{sum.note}</p>
+        {steps.length > 0 && <div className="virtual-next"><p>Next step</p>
+          {steps.map((s, i) => <button key={s.label} className={i === 0 ? 'primary' : 'secondary'} onClick={() => { if (!s.stay) minimise(); s.run(); }}><s.icon size={16} aria-hidden="true" />{s.label}{i === 0 && !s.stay && <ArrowRight size={15} aria-hidden="true" />}</button>)}
+        </div>}
+      </section>}
+    </div>
+    <footer className="enquiry-chat-footer">
+      <p>{anyFollowing ? 'You can keep browsing. We’ll let you know when both centres reply.' : 'This doesn’t make a real booking.'}</p>
+      {anyActive && <button className="secondary" disabled={anyBusy} onClick={cancel}><Square size={13} />Stop</button>}
+      {ts.some(t => t.paused) && <button className="secondary" onClick={() => ts.filter(t => t.paused).forEach(t => patch(t.key, x => ({ error: '', paused: false, retry: x.retry + 1 })))}>Reconnect</button>}
+      {retry.length > 0 && !anyActive && <button className="secondary" disabled={anyBusy} onClick={() => retry.forEach(t => start(t.key, t.payload))}>Try again</button>}
     </footer>
   </section>;
 }
 
 // The parent's decision and the centre's answer, after the first reply.
-function Decision({ c, name, steps, onStep, scroll }) {
+function Decision({ c, name, steps, onStep, scroll, brief = false }) {
   useEffect(() => { scroll?.(); }, [c.state]); // eslint-disable-line react-hooks/exhaustive-deps
   const yes = c.decision === 'accept';
   return <>
@@ -695,13 +894,13 @@ function Decision({ c, name, steps, onStep, scroll }) {
     {c.state === 'failed' && <div className="virtual-chat-error" role="alert"><TriangleAlert size={17} /><p>Your answer couldn’t be sent. Please call or message the centre yourself.</p></div>}
     {c.state === 'acknowledged' && <>
       <article className="virtual-bubble virtual-bubble-reply enter"><strong>{name}</strong><p className="virtual-reply-text">{c.reply}</p></article>
-      <section className={`virtual-chat-result ${yes ? 'good' : 'warn'} enter`} style={{ animationDelay: '140ms' }} aria-label="Your decision">
+      {!brief && <section className={`virtual-chat-result ${yes ? 'good' : 'warn'} enter`} style={{ animationDelay: '140ms' }} aria-label="Your decision">
         <h3>{yes ? <Check size={18} /> : <Info size={18} />}{yes ? 'Your place is confirmed' : 'You let this place go'}</h3>
         <p className="virtual-result-note">{yes ? 'The centre has noted your visit.' : 'The centre knows you won’t need it.'}</p>
         {steps.length > 0 && <div className="virtual-next"><p>Next step</p>
           {steps.map((s, i) => <button key={s.label} className={i === 0 ? 'primary' : 'secondary'} onClick={() => { if (!s.stay) onStep?.(); s.run(); }}><s.icon size={16} aria-hidden="true" />{s.label}{i === 0 && <ArrowRight size={15} aria-hidden="true" />}</button>)}
         </div>}
-      </section>
+      </section>}
     </>}
   </>;
 }

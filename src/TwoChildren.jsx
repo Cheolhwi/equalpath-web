@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, ClipboardList, Copy, Download, Heart, LoaderCircle, MessageCircle, PanelLeftClose, PanelLeftOpen, Phone, Plus, TriangleAlert, Wallet } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
-import VirtualEnquiry from './VirtualEnquiry.jsx';
+import VirtualEnquiry, { VirtualEnquiryGroup } from './VirtualEnquiry.jsx';
 import { DeclinedNote, PlanActions } from './OneChildPanel.jsx';
 import { displayName } from "../shared/display.mjs";
 import { timeLabel } from "../shared/request.mjs";
@@ -165,6 +165,16 @@ function Contact({ p }) {
   return null;
 }
 
+// The two-children plan as a Checklist entry (saved from the plan, or from
+// the chat once both places are confirmed).
+export function familyChecklistEntry(o, plan, lp) {
+  const steps = planSteps(o, plan, lp, name);
+  return { id: `family:${o.id}:${plan.date}`, kind: "family", text: familyPlanText(o, plan, lp, name), date: plan.date,
+    title: o.kind === "same" ? name(o.a) : `${name(o.a)} + ${name(o.b)}`,
+    items: KIDS.map((k) => ({ key: k, p: o[k], request: childRequest(plan, k) })),
+    steps: steps.map((st) => ({ time: timeLabel(st.time), label: st.label, kind: st.kind })) };
+}
+
 function Plan({ family, mode, onFix, onChecklist, onToast }) {
   const o = family.option, lp = family.lp, s = family.state, plan = s.plan;
   const [editingPickup, setEditingPickup] = useState(false);
@@ -240,14 +250,13 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
             onChange={(p) => { if (p) { family.setCollectPlace(p, o); setEditingPickup(false); } }} />
         : <p>Pickup starts from <strong>{s.plan.run.collectPlace?.label}</strong>. <button className="text-link" onClick={() => setEditingPickup(true)}>Change</button></p>}
     </div>
-    <PlanActions date={plan.date} onChecklist={() => onChecklist({ id: `family:${o.id}:${plan.date}`, kind: "family", text: planText, date: plan.date,
-      title: o.kind === "same" ? name(o.a) : `${name(o.a)} + ${name(o.b)}`,
-      items: KIDS.map((k) => ({ key: k, p: o[k], request: childRequest(plan, k) })),
-      steps: steps.map((st) => ({ time: timeLabel(st.time), label: st.label, kind: st.kind })) })} onDownload={download}
+    <PlanActions date={plan.date}
+      askAll={o.kind === "same" ? null : <VirtualEnquiryGroup items={KIDS.map((k) => ({ providerId: o[k].id, centre: o[k], requests: [{ ...childRequest(plan, k), label: childName(k) }] }))} />}
+      onChecklist={() => onChecklist(familyChecklistEntry(o, plan, lp))} onDownload={download}
       centres={messages.map(([key, p, text]) => ({ key, p, pin: pins.get(p.id), who: who(key), call: <Contact p={p} />,
         requests: (key === "ab" ? KIDS : [key]).map(k => childRequest(plan, k)),
         message: <button className="family-secondary" onClick={() => copy(key, text)}>{copied === key ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}{copied === key ? "Copied" : "Copy message"}</button>,
-        ask: <VirtualEnquiry providerId={p.id} centre={p} family requests={(key === "ab" ? KIDS : [key]).map((k) => ({ ...childRequest(plan, k), label: childName(k) }))} />,
+        ask: o.kind === "same" ? <VirtualEnquiry providerId={p.id} centre={p} family requests={KIDS.map((k) => ({ ...childRequest(plan, k), label: childName(k) }))} /> : null,
         after: copied === `manual:${key}` && <textarea readOnly value={text} aria-label="Message to copy" className="enquiry-manual-message" /> }))} />
     <p className="family-note">Times allow 5 minutes per handover; drives don’t include traffic. Each centre still needs to confirm a place.</p>
   </>;
