@@ -12,6 +12,10 @@ const key = 'equalpath:interests:v1:live';
 const now = Date.parse('2026-09-30T02:00:00Z');
 
 for (const width of [1440, 390]) test(`${width}px first-use choices reach both first searches without reload or viewing a centre`, async ({ page }) => {
+  // Two complete searches with full map/panel motion on the shared CI runner:
+  // the 45 s case budget expired at the final screenshot after all assertions.
+  // Keep the individual assertion deadlines and both first-search checks.
+  if (width === 1440) test.setTimeout(90000);
   await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
   await page.emulateMedia({ reducedMotion: width === 390 ? 'reduce' : 'no-preference' });
   await page.clock.setFixedTime(new Date(now));
