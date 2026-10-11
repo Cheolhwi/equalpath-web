@@ -90,10 +90,10 @@ test("result cards reveal on first view without extra searches or hiding focused
   await page.emulateMedia({ reducedMotion: "no-preference" });
   const calls = await start(page); await search(page);
   const rows = page.locator(".provider-row");
-  await expect(rows.first()).toHaveAttribute("data-reveal", "visible");
-  await expect(rows.last()).toHaveAttribute("data-reveal", "waiting");
+  // Both a completed entrance and its safety fallback must leave cards readable.
+  await expect(rows.first()).toHaveCSS("opacity", "1");
   await rows.last().scrollIntoViewIfNeeded();
-  await expect(rows.last()).toHaveAttribute("data-reveal", "visible");
+  await expect(rows.last()).toHaveCSS("opacity", "1");
   expect(calls.filter(x => x === "search")).toHaveLength(1);
   await rows.first().scrollIntoViewIfNeeded();
   const detail = rows.first().getByRole("button", { name: /^View details/ });
@@ -106,8 +106,10 @@ test("result cards reveal on first view without extra searches or hiding focused
   await page.screenshot({ path: `${out}/details-settled.png` });
   await dialog.getByRole("button", { name: "Close dialog" }).click();
   await expect(detail).toBeFocused();
-  await rows.last().getByRole("button", { name: /^View details/ }).focus();
-  await expect(rows.last()).toHaveAttribute("data-reveal", "visible");
+  const lastDetail = rows.last().getByRole("button", { name: /^View details/ });
+  await lastDetail.focus();
+  await expect(lastDetail).toBeFocused();
+  await expect(rows.last()).toHaveCSS("opacity", "1");
   expect(calls.filter(x => x === "search")).toHaveLength(1);
 });
 
