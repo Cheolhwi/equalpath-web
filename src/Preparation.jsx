@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { dateLabel, displayName } from "../shared/display.mjs";
 import { plainReason } from "../shared/plain-copy.mjs";
 import { Download, Printer, Link2, ArrowRight, CalendarDays, ChevronDown, AlertTriangle, MapPin, Building2, Backpack, Shirt, Phone, Apple, BedDouble, Baby, Moon, CarFront, NotebookTabs, ClipboardCheck, MessageCircle, Milk, FileText, NotebookPen, Footprints, Palette, Users, Receipt } from "lucide-react";
 import Surroundings, { surroundingImages } from "./Surroundings.jsx";
 import { preparationFor, preparationHTML, preparationCSS } from "../shared/preparation.mjs";
-import { encodeChecklist } from "../shared/checklist-share.mjs";
+import { packChecklist } from "../shared/checklist-share.mjs";
 import { requestErrors } from "../shared/request.mjs";
 import { PublishedContacts, SourceLink } from "./ProviderViews.jsx";
 import TimeInput from "./TimeInput.jsx";
@@ -80,20 +80,23 @@ function printHTML(html) {
   frame.srcdoc = html; document.body.appendChild(frame);
   setTimeout(() => frame.remove(), 120000);
 }
-// Share link + Print / Save PDF (11 Oct 2026, user: "print/save和download重合了…直接短链接sharing").
-// The plan rides in the link's #fragment (see shared/checklist-share.mjs).
-export function checklistLink(data) {
-  const code = encodeChecklist(data);
-  if (!code) return null;
-  return `${location.origin}${location.pathname}${data.mode === "demo" ? "?mode=demo" : ""}#checklist=${code}`;
-}
+// Share link + Print / Save PDF (11 Oct 2026, user: "print/save和download重合了…直接短链接sharing";
+// "分享的checklist应该直接是那个html内容…不需要让另一个人进入完整的网站"): the finished
+// checklist is packed into the link's #fragment and opens on its own page,
+// public/checklist.html — no app, no search, no server call.
 function ShareActions({ data, onPrint, note }) {
-  const [state, setState] = useState("");
-  const link = useMemo(() => checklistLink(data), [JSON.stringify(data)]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [state, setState] = useState(""), [link, setLink] = useState(null);
+  const key = JSON.stringify(data);
+  useEffect(() => {
+    let live = true; setLink(null);
+    packChecklist(data).then((code) => { if (live) setLink(`${location.origin}/checklist.html#${code}`); }, () => {});
+    return () => { live = false; };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => setState(""), [key]);
   const share = async () => {
     if (!link) return;
     try {
-      if (navigator.share && window.matchMedia?.("(pointer: coarse)").matches) { await navigator.share({ title: "EqualPath checklist", url: link }); return; }
+      if (navigator.share && window.matchMedia?.("(pointer: coarse)").matches) { await navigator.share({ title: `Childcare checklist · ${data.t}`, url: link }); return; }
       await navigator.clipboard.writeText(link); setState("copied");
     } catch (e) { if (e?.name !== "AbortError") setState("manual"); }
   };
@@ -104,10 +107,12 @@ function ShareActions({ data, onPrint, note }) {
     </div>
     {state === "manual" && <input className="share-link-field" readOnly value={link} aria-label="Checklist link" onFocus={(e) => e.target.select()} />}
     <p className="preparation-private">{state === "copied"
-      ? "Paste it into WhatsApp or a message. The link itself carries the day, times, age and starting point — nothing is stored on our side."
+      ? "Paste it into WhatsApp or a message. It opens this checklist on its own page; the link itself carries it, so nothing is stored on our side."
       : note}</p>
   </section>;
 }
+const shareItem = (it, ticks) => [it.label ?? it.text, it.text, it.why ?? [], it.centre?.text ?? null, ticks];
+const shareCentre = (p) => [displayName(p.name), p.address ?? null, p.phone?.display ?? null, p.whatsapp?.find((w) => w.href)?.href ?? null, surroundingImages(p)[0]?.url ?? null];
 
 export default function Preparation({
   p,
@@ -267,8 +272,11 @@ export default function Preparation({
         </div>
         <aside className="preparation-tools" aria-label="Centre contact and checklist tools">
           <ShareActions onPrint={() => exportSheet(true)} note="Your ticks stay while this page is open. Share the link or print to keep a copy."
-            data={{ mode: p.mode, pickup: request.pickup, date: request.date, transport: request.transport, checked,
-              items: [{ id: p.id, start: request.deadline, end: request.end, age: request.age }] }} />
+            data={{ v: 1, t: displayName(p.name), d: sheet.dateLabel, b: sheet.basisLine ?? "",
+              s: sheet.sequence.map((x) => [x.time ?? "", `${x.title}${x.place ? ` · ${displayName(x.place)}` : ""}`]),
+              c: [shareCentre(p)],
+              g: packingGroups(sheet).map((g) => [g.title, g.items.map((it) => shareItem(it, [[it.id, null, checked.includes(it.id) ? 1 : 0]]))]),
+              n: "The centre still needs to confirm a place." }} />
           <details className="ready-support"><summary><MessageCircle size={20} aria-hidden="true" /><span>Questions & contacts</span><ChevronDown size={18} aria-hidden="true" /></summary>
             <section className="preparation-contact"><PublishedContacts p={p} compact /><button className="text-link" onClick={onEnquiry}>Contact the centre<ArrowRight size={15} /></button></section>
             <div className="preparation-parties">
@@ -398,8 +406,12 @@ export function FamilyPreparation({ entry, checked = [], onToggle, statusFor, on
         {onContact && statusFor?.(it.p.id, entry.date) !== "confirmed" && <button className="text-link" onClick={() => onContact(it.p, it.request)}>Contact the centre<ArrowRight size={15} aria-hidden="true" /></button>}
       </div>)}</div>
       <ShareActions onPrint={() => printHTML(familyHTML(entry, day, cards, checked))} note="Your ticks stay while this page is open. Each centre still needs to confirm a place."
-        data={{ mode: entry.items[0].p.mode, pickup: entry.items[0].request.pickup, date: entry.date, transport: entry.items[0].request.transport, checked,
-          items: entry.items.map((it) => ({ id: it.p.id, start: it.request.deadline, end: it.request.end, age: it.request.age })) }} />
+        data={{ v: 1, t: entry.title, d: sheets[0]?.sheet.dateLabel ?? entry.date, b: familyBasis(sheets),
+          s: day.map((st) => [st.time ?? "", st.label]), c: centres.map((it) => shareCentre(it.p)),
+          g: [["pack", "Pack for the children"], ["bring", "Bring and sort out"], ["centre", "The centre also lists"]]
+            .map(([g, title]) => [title, cards.filter((c) => c.group === g).map((c) => shareItem(c.item, c.ticks.map((t) => [t.id, t.kid ? kidName(t.kid) : null, checked.includes(t.id) ? 1 : 0])))])
+            .filter(([, items]) => items.length),
+          n: "Each centre still needs to confirm a place." }} />
     </section>
   </div>;
 }

@@ -1,24 +1,21 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { encodeChecklist, decodeChecklist } from "../shared/checklist-share.mjs";
+import { packChecklist, unpackChecklist } from "../shared/checklist-share.mjs";
 
-test("a shared checklist link round-trips one child and two children", () => {
-  const one = { mode: "live", date: "2026-10-12", transport: "self", pickup: { label: "KL Sentral", lat: 3.13391, lng: 101.68688 },
-    items: [{ id: "provider_4f0f58b2f50eedf3b38e0c4f5cd", start: "09:00", end: "15:00", age: "3" }], checked: ["bag", "water"] };
-  const link = encodeChecklist(one);
-  assert.ok(link.length < 120, link);
-  const back = decodeChecklist(link);
-  assert.equal(back.items[0].id, one.items[0].id);
-  assert.deepEqual(back.checked, ["bag", "water"]);
-  assert.equal(back.pickup.label, "KL Sentral"); assert.equal(back.transport, "self"); assert.equal(back.date, "2026-10-12");
-  const two = { ...one, mode: "demo", transport: "", pickup: { label: "Office ~ 2.0 * tower", lat: 3.1, lng: 101.6 },
-    items: [{ id: "demo-garden", start: "13:00", end: "18:00", age: "2" }, { id: "demo-meadow", start: "13:00", end: "18:00", age: "3" }], checked: ["a:bag", "family:instructions"] };
-  const b2 = decodeChecklist(encodeChecklist(two));
-  assert.equal(b2.mode, "demo"); assert.equal(b2.items.length, 2); assert.equal(b2.items[1].id, "demo-meadow");
-  assert.equal(b2.pickup.label, "Office ~ 2.0 * tower"); assert.deepEqual(b2.checked, ["a:bag", "family:instructions"]);
+const sample = { v: 1, t: "Tadika Nemo Bestari", d: "Mon, 12 Oct 2026", b: "For a 3-year-old · 3 h of care",
+  s: [["09:47", "Leave KL Sentral"], ["", "At Tadika Nemo Bestari"], ["12:47", "Collect your child"]],
+  c: [["Tadika Nemo Bestari", "12 Jalan Example, Kuala Lumpur", "016-323 4369", null, null]],
+  g: [["Pack for your child", [["Bag with name", "Pack a bag labelled with your child’s name.", [], null, [["bag", null, 1]]],
+    ["Lunch & snack", "Pack lunch and a snack — or pay for the centre’s meal.", ["Care covers lunch", "Centre listing"], "Centre meal: RM8/day", [["meal", null, 0]]]]]],
+  n: "Each centre still needs to confirm a place." };
+
+test("a shared checklist packs into the link and unpacks unchanged", async () => {
+  const code = await packChecklist(sample);
+  assert.match(code, /^[A-Za-z0-9_-]+$/);
+  assert.ok(code.length < 600, String(code.length));
+  assert.deepEqual(await unpackChecklist(code), sample);
 });
 
-test("broken or foreign links open nothing", () => {
-  for (const x of ["", "2~L", "1~L~2026~1,2~x~S~a.0900.1500.3~", "1~L~20261012~x,y~a~S~a.0900.1500.3~", "1~L~20261012~1,2~a~S~~"])
-    assert.equal(decodeChecklist(x), null);
+test("broken links open nothing", async () => {
+  for (const x of ["", "abc", "%%%", (await packChecklist({ v: 2 }))]) assert.equal(await unpackChecklist(x), null);
 });

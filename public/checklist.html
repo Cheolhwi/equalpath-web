@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Childcare checklist · EqualPath</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+/* A shared Checklist (11 Oct 2026): a page of its own, read from the link's
+   #fragment. No app, no search, no server call. */
+:root { --bg: #f5f4ee; --paper: #fcfbf6; --ink: #30382f; --muted: #72776b; --rule: #d4d7cc; --soft: #e9ebe1; --accent: #6b7951; --nav: #3e4d3a; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #171a16; --paper: #20241f; --ink: #e9ece4; --muted: #a9b0a1; --rule: #3a4136; --soft: #2a3027; --accent: #a8b88a; --nav: #a8b88a; }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 "MiSans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 860px; margin: 0 auto; padding: 28px 16px 48px; }
+.brand { margin: 0 0 18px; font-size: 12px; font-weight: 700; letter-spacing: .14em; color: var(--muted); }
+.brand b { color: var(--ink); }
+h1 { margin: 0; font-size: clamp(26px, 5vw, 34px); line-height: 1.15; letter-spacing: -.01em; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 8px 0 0; color: var(--muted); }
+.meta strong { color: var(--ink); }
+.card { margin-top: 18px; padding: 18px; border: 1px solid var(--rule); border-radius: 20px; background: var(--paper); }
+h2 { margin: 0 0 12px; font-size: 18px; }
+h3 { margin: 18px 0 10px; font-size: 15px; }
+.day { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.day li { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: baseline; }
+.day time { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.day time:empty::before { content: "—"; color: var(--muted); }
+.centres { display: grid; gap: 12px; }
+.centre { display: grid; grid-template-columns: minmax(0, 220px) 1fr; gap: 14px; align-items: start; }
+.centre img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px; border: 1px solid var(--rule); background: var(--soft); }
+.centre p { margin: 2px 0; overflow-wrap: anywhere; }
+.centre .muted, .muted { color: var(--muted); font-size: 13px; }
+.centre a { color: var(--ink); font-weight: 600; }
+.centre.no-photo { grid-template-columns: 1fr; }
+.progress { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+.progress span { flex: 1; height: 6px; border-radius: 99px; background: var(--soft); overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.item { display: flex; flex-direction: column; gap: 6px; padding: 14px; border: 1px solid var(--rule); border-radius: 16px; background: var(--bg); }
+.item.done { border-color: var(--accent); background: var(--soft); }
+.item strong { font-size: 15px; }
+.item p { margin: 0; color: var(--muted); font-size: 13.5px; }
+.item .note { color: var(--accent); font-size: 12.5px; font-weight: 650; }
+.why { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
+.why span { padding: 1px 8px; border-radius: 99px; background: var(--soft); color: var(--muted); font-size: 11.5px; font-weight: 600; }
+.ticks { display: flex; flex-wrap: wrap; gap: 6px; }
+.ticks label { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px 0 8px; border: 1px solid var(--rule); border-radius: 99px; background: var(--paper); font-size: 13px; font-weight: 600; cursor: pointer; }
+.ticks input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+button { font: inherit; min-height: 46px; padding: 0 20px; border-radius: 99px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); font-weight: 650; cursor: pointer; }
+button.primary { background: var(--nav); color: var(--paper); border-color: transparent; }
+a.button { display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px; border-radius: 99px; border: 1px solid var(--rule); color: var(--ink); text-decoration: none; font-weight: 650; }
+.footnote { margin-top: 18px; color: var(--muted); font-size: 13px; }
+.empty { text-align: center; padding: 60px 16px; }
+@media (max-width: 600px) { .centre { grid-template-columns: 1fr; } .card { padding: 14px; } }
+@media print {
+  body { background: #fff; color: #000; font-size: 10.5pt; } main { padding: 0; max-width: none; }
+  .actions, .tip { display: none; } .card { border-color: #bbb; break-inside: avoid; }
+  .item { break-inside: avoid; background: #fff; } .ticks label { border-color: #999; }
+}
+</style>
+</head>
+<body>
+<main id="page" aria-live="polite"><p class="brand"><b>EQUALPATH</b> / CHILDCARE CHECKLIST</p><p class="muted">Opening the checklist…</p></main>
+<script type="module">
+// Mirrors shared/checklist-share.mjs (unpackChecklist).
+const fromB64 = (t) => { const s = atob(t.replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(s, (c) => c.charCodeAt(0)); };
+async function unpack(text) {
+  try {
+    const out = new Response(new Blob([fromB64(text)]).stream().pipeThrough(new DecompressionStream("deflate-raw")));
+    const data = JSON.parse(new TextDecoder().decode(await out.arrayBuffer()));
+    return data?.v === 1 && typeof data.t === "string" && Array.isArray(data.g) ? data : null;
+  } catch { return null; }
+}
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const safe = (u, schemes) => { try { const x = new URL(u); return schemes.includes(x.protocol) ? x.href : null; } catch { return null; } };
+const page = document.getElementById("page");
+window.addEventListener("hashchange", () => location.reload());
+const data = await unpack(location.hash.slice(1));
+if (!data) {
+  page.innerHTML = `<p class="brand"><b>EQUALPATH</b> / CHILDCARE CHECKLIST</p><div class="empty"><h1>This link is incomplete</h1><p class="muted">Ask for the checklist to be shared again — the whole link is needed.</p><p><a class="button" href="/">Open EqualPath</a></p></div>`;
+} else {
+  document.title = `${data.t} · Childcare checklist`;
+  const ticks = data.g.flatMap((g) => g[1].flatMap((it) => it[4]));
+  const done = () => ticks.filter((t) => t[2]).length;
+  const day = (data.s ?? []).length ? `<section class="card"><h2>The day</h2><ol class="day">${data.s.map(([time, label]) => `<li><time>${esc(time)}</time><span>${esc(label)}</span></li>`).join("")}</ol></section>` : "";
+  const centres = (data.c ?? []).map(([name, address, phone, wa, photo]) => {
+    const img = safe(photo, ["https:"]), tel = phone ? `tel:${String(phone).replace(/[^+0-9]/g, "")}` : null, whatsapp = safe(wa, ["https:"]);
+    return `<div class="centre${img ? "" : " no-photo"}">${img ? `<img src="${esc(img)}" alt="Street near ${esc(name)}" loading="lazy" referrerpolicy="no-referrer">` : ""}<div>
+      <p><strong>${esc(name)}</strong></p>${address ? `<p>${esc(address)}</p>` : ""}
+      ${tel ? `<p><a href="${esc(tel)}">Call ${esc(phone)}</a></p>` : ""}${whatsapp ? `<p><a href="${esc(whatsapp)}" target="_blank" rel="noreferrer">WhatsApp</a></p>` : ""}
+      ${img ? `<p class="muted">Google Street View near the centre. It isn’t a confirmed view of the entrance.</p>` : ""}</div></div>`;
+  }).join("");
+  const groups = data.g.map(([title, items], gi) => `<h3>${esc(title)}</h3><div class="items">${items.map(([label, text, why, note, ts], ii) => `
+    <div class="item" data-item="${gi}-${ii}"><strong>${esc(label)}</strong>${label !== text ? `<p>${esc(text)}</p>` : ""}${note ? `<span class="note">${esc(note)}</span>` : ""}
+      ${why?.length ? `<div class="why">${why.map((w) => `<span>${esc(w)}</span>`).join("")}</div>` : ""}
+      <div class="ticks">${ts.map((t, ti) => `<label><input type="checkbox" data-tick="${gi}-${ii}-${ti}"${t[2] ? " checked" : ""}>${esc(t[1] ?? "Done")}</label>`).join("")}</div></div>`).join("")}</div>`).join("");
+  page.innerHTML = `<p class="brand"><b>EQUALPATH</b> / CHILDCARE CHECKLIST</p>
+    <h1>${esc(data.t)}</h1><p class="meta"><strong>${esc(data.d)}</strong>${data.b ? `<span>${esc(data.b)}</span>` : ""}</p>
+    ${day}
+    ${centres ? `<section class="card"><h2>Finding the centre${(data.c ?? []).length > 1 ? "s" : ""}</h2><div class="centres">${centres}</div></section>` : ""}
+    <section class="card"><h2>Before you go</h2><div class="progress"><span><i id="bar"></i></span><b id="count"></b></div>${groups}</section>
+    <div class="actions"><button class="primary" id="print" type="button">Print / Save PDF</button><a class="button" href="/">Find childcare on EqualPath</a></div>
+    <p class="footnote">${esc(data.n ?? "")} Shared from EqualPath — ticks here stay on this page only.</p>`;
+  const update = () => {
+    document.getElementById("count").textContent = `${done()} of ${ticks.length} done`;
+    document.getElementById("bar").style.width = `${ticks.length ? (done() / ticks.length) * 100 : 0}%`;
+    for (const el of page.querySelectorAll(".item")) el.classList.toggle("done", [...el.querySelectorAll("input")].every((x) => x.checked));
+  };
+  page.addEventListener("change", (e) => {
+    const [g, i, t] = (e.target.dataset.tick ?? "").split("-").map(Number);
+    if (Number.isInteger(t)) { data.g[g][1][i][4][t][2] = e.target.checked ? 1 : 0; update(); }
+  });
+  document.getElementById("print").addEventListener("click", () => window.print());
+  update();
+}
+</script>
+</body>
+</html>

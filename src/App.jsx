@@ -43,7 +43,6 @@ import {
   OrderingNote,
 } from "./ProviderViews.jsx";
 import { requestAPI, errorMessage } from "./api.js";
-import { decodeChecklist } from "../shared/checklist-share.mjs";
 import { requestErrors, todayKL, requestCaption, needsPickupAddress, MAX_SEARCH_RADIUS_KM, searchRadius, isShortCare, careTypeLabel, canonicalRequest } from "../shared/request.mjs";
 import PlaceInput from "./PlaceInput.jsx";
 import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory.mjs";
@@ -817,42 +816,6 @@ export default function App({
     return old ? cs.map(e => e.id === entry.id ? next : e) : [...cs, next];
   });
   const showChecklist = (id = null) => { setOpenChecklist(id); setDialogError(null); setDialog("preparation"); };
-  // A shared Checklist link (#checklist=…, see shared/checklist-share.mjs):
-  // read once, then the address goes back to the map so a refresh or a
-  // forwarded screenshot doesn't carry it further.
-  const sharedCode = useRef(location.hash.startsWith("#checklist=") ? location.hash.slice(11) : null);
-  const [sharedTick, setSharedTick] = useState(0);
-  useEffect(() => {
-    const changed = () => { if (location.hash.startsWith("#checklist=")) { sharedCode.current = location.hash.slice(11); setSharedTick((n) => n + 1); } };
-    window.addEventListener("hashchange", changed);
-    return () => window.removeEventListener("hashchange", changed);
-  }, []);
-  useEffect(() => {
-    const code = sharedCode.current;
-    if (!code) return;
-    sharedCode.current = null;
-    history.replaceState(null, "", `${location.pathname}${location.search}#discover`);
-    const data = decodeChecklist(code);
-    if (!data || data.mode !== mode) { notify("This checklist link is incomplete. Ask for it to be shared again."); return; }
-    (async () => {
-      try {
-        const loaded = await Promise.all(data.items.map(async (it) => {
-          const r = await requestAPI({ action: "details", mode, id: it.id, request: { ...initial(), careType: "short_term", kids: 1, pickup: data.pickup, date: data.date, deadline: it.start, end: it.end, age: it.age, transport: data.transport } });
-          return { p: r.items[0], request: r.request };
-        }));
-        let entry;
-        if (loaded.length === 1) entry = { id: `one:${loaded[0].p.id}:${data.date}`, kind: "one", p: loaded[0].p, request: loaded[0].request };
-        else {
-          const items = loaded.map((x, i) => ({ key: i ? "b" : "a", p: x.p, request: x.request }));
-          const names = [...new Set(items.map((x) => displayName(x.p.name)))];
-          entry = { id: `family:shared:${items.map((x) => x.p.id).join("|")}:${data.date}`, kind: "family", date: data.date, items, steps: [],
-            title: names.join(" + "), text: items.map((x) => `${x.key === "a" ? "Child 1" : "Child 2"}: ${displayName(x.p.name)}, ${x.request.deadline}–${x.request.end}`).join("\n") };
-        }
-        saveChecklist({ ...entry, checked: data.checked, shared: true });
-        showChecklist(entry.id);
-      } catch { notify("This shared checklist couldn’t be opened right now. Please try the link again."); }
-    })();
-  }, [sharedTick]); // eslint-disable-line react-hooks/exhaustive-deps
   const savedToast = (id) => notify("Saved to your Checklist.", { label: "Open", run: () => { close(); showChecklist(id); } });
   const startPreparation = (p, request = activeRequest, open = true) => {
     if (!p || !request) return;

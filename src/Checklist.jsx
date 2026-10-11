@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronLeft, ClipboardList, Link2, Users } from "lucide-react";
+import { ArrowRight, ChevronLeft, ClipboardList, Users } from "lucide-react";
 import { displayName } from "../shared/display.mjs";
 import { preparationFor } from "../shared/preparation.mjs";
 import Preparation, { FamilyPreparation, StatusChip, familyPacking } from "./Preparation.jsx";
@@ -33,7 +33,6 @@ export default function Checklist({ entries, openId, onOpen, onBack, onRemove, o
         {entries.length > 1 ? <button className="family-back" onClick={onBack}><ChevronLeft size={18} aria-hidden="true" />All checklists · {entries.length}</button> : <span />}
         <button className="text-link checklist-remove" onClick={() => onRemove(active.id)}>Remove from Checklist</button>
       </div>
-      {active.shared && <p className="checklist-shared"><Link2 size={16} aria-hidden="true" /><span>Shared with you. The centre’s details are today’s; ticks you add stay on this device.</span></p>}
       {active.kind === "family"
         ? <FamilyPreparation entry={active} checked={active.checked} onToggle={(id) => onToggle(active.id, id)} statusFor={status} onContact={onContact} />
         : <Preparation key={active.id} p={active.p} request={active.request} checked={active.checked} onToggle={(id) => onToggle(active.id, id)}
