@@ -57,6 +57,7 @@ import { childRequest, childName, leavePlan } from "../shared/two-child.mjs";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import GettingStarted from "./GettingStarted.jsx";
 import ShortCareAlternatives, { ShortCareMapAlternatives, WidenSearchPrompt, hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
+import { PrivacyCard, PrivacyNoticeBody, markPrivacySeen, privacySeen } from "./PrivacyNotice.jsx";
 import { saveTour, tourSeen } from "../shared/tour.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { displayName, placeLine, shortDateLabel } from "../shared/display.mjs";
@@ -200,6 +201,9 @@ export default function App({
   const family = useFamily(mode);
   // First visit: offer the tour once, without starting it on its own.
   const [tourInvite, setTourInvite] = useState(() => { try { return !tourSeen(window.localStorage); } catch { return false; } });
+  // First time on the map: the privacy card comes before the tour offer.
+  const [privacyPending, setPrivacyPending] = useState(() => { try { return !privacySeen(window.localStorage); } catch { return true; } });
+  const privacyDone = (read = false) => { try { markPrivacySeen(window.localStorage); } catch { /* shown again next visit */ } setPrivacyPending(false); if (read) setDialog("privacy"); };
   const interests = useInterests(mode, tourOpen);
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
@@ -267,6 +271,7 @@ export default function App({
       setTheme("light"); setLabels(true); setReduced(false);
       window.dispatchEvent(new CustomEvent("equalpath-motion-change", { detail: { reduced: false } }));
       setClearCacheConfirm(false);
+      setPrivacyPending(true);
       close();
       onHome?.({ fresh: true });
       notify("Data cleared. You can start again.");
@@ -1600,7 +1605,10 @@ export default function App({
           introReduced={introReduced}
         /></Suspense>}
       </div>
-      {tourInvite && introPhase === "ready" && !tourOpen && !results && !draft.pickup && !dialog && !choosing && (
+      {privacyPending && introPhase === "ready" && !tourOpen && !dialog && (
+        <PrivacyCard onDone={() => privacyDone()} onRead={() => privacyDone(true)} />
+      )}
+      {tourInvite && !privacyPending && introPhase === "ready" && !tourOpen && !results && !draft.pickup && !dialog && !choosing && (
         <aside className="tour-invite" aria-label="Quick tour">
           <CircleHelp size={20} aria-hidden="true" />
           <p><strong>New here?</strong> A 1-minute tour shows how to search, compare and contact centres.</p>
@@ -1655,6 +1663,8 @@ export default function App({
                           ? "Contact the centre"
                           : dialog === "settings"
                             ? "Settings"
+                            : dialog === "privacy"
+                              ? "Privacy notice"
                             : dialog === "ordering"
                               ? "Why this order?"
                               : "About our information"
@@ -1842,6 +1852,7 @@ export default function App({
                 )}
               </>
             ))}
+          {dialog === "privacy" && <PrivacyNoticeBody />}
           {dialog === "ordering" && (
             <div className="prose">
               <OrderingNote ordering={results?.ordering} radius={results?.request.radius} />
@@ -1869,6 +1880,7 @@ export default function App({
             <>
               <RecommendationLearning interests={interests} mode={mode} />
               <div className="setting-line"><span>Getting started</span><button className="secondary" onClick={startTour}>Replay quick tour</button></div>
+              <div className="setting-line"><span>Privacy</span><button className="secondary" onClick={() => setDialog("privacy")}>Read privacy notice</button></div>
               <div className="setting-line">
                 <span>Appearance</span>
                 <div className="theme-buttons">

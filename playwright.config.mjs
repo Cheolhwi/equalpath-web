@@ -22,6 +22,9 @@ export default defineConfig({
   ],
   use: {
     baseURL,
+    // Journeys start as visitors who already closed the first-visit privacy
+    // card (12 Oct 2026); privacy.spec starts from an empty browser instead.
+    storageState: { cookies: [], origins: [{ origin: baseURL, localStorage: [{ name: "equalpath:privacy:v1", value: JSON.stringify({ version: 1 }) }] }] },
     viewport: { width: 1440, height: 1000 },
     // The map also renders through CPU OpenGL on hosted CI. Preserve CSS
     // geometry, motion and assertions while bounding the raster workload.
