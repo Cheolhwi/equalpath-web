@@ -60,7 +60,7 @@ test("guided sample uses map controls, cards, checks, comparison and contact, th
   await expect(page.locator("#pickup-search")).toHaveValue("My pickup point");await openSearch(page);await expect(page.locator(".map-search-dock #deadline strong")).toHaveText("Set time");
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:map:v1:live")))).toEqual(memory);
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("equalpath:tour:v1")))).toEqual({version:1,status:"completed"});
-  await page.reload();await openNearby(page);await expect(page.locator(".nearby-card").first()).toBeVisible();
+  await page.reload();await openNearby(page);
   await expect(tour(page)).toHaveCount(0);
 });
 for (const [width,height] of [[320,568],[390,844]]) test(`${width}: mobile walkthrough highlights the current map control and stays on screen`,async({page})=>{

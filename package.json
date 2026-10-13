@@ -15,6 +15,7 @@
     "test:browser": "playwright test"
   },
   "dependencies": {
+    "@mlc-ai/web-llm": "0.2.85",
     "@vitejs/plugin-react": "5.0.4",
     "lucide-react": "^0.468.0",
     "maplibre-gl": "^5.6.1",

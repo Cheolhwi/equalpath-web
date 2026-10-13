@@ -4,8 +4,8 @@ import { ShieldCheck } from "lucide-react";
 // map, and the full notice in a dialog (from the card or Settings). Keep this
 // text true to what the code does: if a data flow changes, change it here and
 // raise PRIVACY_VERSION so returning visitors see the card again.
-export const PRIVACY_VERSION = 1;
-export const PRIVACY_UPDATED = "12 October 2026";
+export const PRIVACY_VERSION = 2;
+export const PRIVACY_UPDATED = "13 October 2026";
 const KEY = "equalpath:privacy:v1";
 
 export function privacySeen(storage) {
@@ -65,9 +65,8 @@ export function PrivacyNoticeBody() {
 
     <h3>Ask for me</h3>
     <ul>
-      <li>Ask for me doesn’t contact real centres. Replies are simulated from the centre’s listed details and pass between two test bots on Telegram.</li>
-      <li>It sends the centre, the date, and each child’s age and times. The request expires after 30 minutes. Expired records are removed from EqualPath’s service during its hourly cleanup. Messages sent through Telegram may remain there.</li>
-      <li>On some computers, Chrome’s built-in AI rewords the chat. It runs on your device and sends nothing.</li>
+      <li>Ask for me answers your questions about a centre from what EqualPath lists. It runs on your device: your questions aren’t sent to EqualPath, to the centre or to anyone else, and nothing is booked.</li>
+      <li>Where this browser has it, Chrome’s built-in AI words English answers. If your device can run it, EqualPath also downloads an open AI model (Qwen, about 0.5–2.5 GB depending on the device) in the background after the map opens, for Chinese answers and as a backup — not on mobile data or with Data Saver on. The files come once from Hugging Face and GitHub and are kept in this browser; your questions still stay on your device. Without a model, the answers come straight from the listing.</li>
     </ul>
 
     <h3>Contacting a centre yourself</h3>
@@ -78,7 +77,8 @@ export function PrivacyNoticeBody() {
       <li><strong>Only when you choose:</strong> saved centres and notes, saved searches (place, times and how you get there — never the date or age), and flags you add to a centre.</li>
       <li><strong>For suggestions:</strong> your choices and the centres you looked at or compared, with counts and dates — never your place, times or child’s age. Suggestions are worked out in this browser. You can turn this off in Settings.</li>
       <li><strong>Settings:</strong> the last map view and starting point, appearance, motion, and whether you have seen the tour and this notice.</li>
-      <li><strong>Only while the page is open:</strong> your plans and checklists. Ask for me keeps its request numbers until you close the tab.</li>
+      <li><strong>Only while the page is open:</strong> your plans, checklists and Ask for me chats.</li>
+      <li>The AI model downloaded for Ask for me, so it doesn’t download again.</li>
       <li>Street photos you opened are kept so they load faster.</li>
     </ul>
     <p>Nothing is copied to another device or to an account.</p>
@@ -88,7 +88,7 @@ export function PrivacyNoticeBody() {
 
     <h3>Your choices</h3>
     <ul>
-      <li><strong>Settings → Clear data on this device</strong> deletes everything EqualPath keeps in this browser and stops any Ask for me request.</li>
+      <li><strong>Settings → Clear data on this device</strong> deletes everything EqualPath keeps in this browser, including a downloaded AI model and your Ask for me chats.</li>
       <li>Location is only used when you tap Use my location. You can block it in your browser’s settings.</li>
     </ul>
 

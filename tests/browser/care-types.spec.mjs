@@ -25,8 +25,8 @@ for(const mobile of [false,true])test(`${mobile?'mobile':'desktop'}: only short-
   const {calls,errors}=await setup(page,'/?care=regular#discover');
   await expect(page.getByRole('radio',{name:'Regular'})).toHaveCount(0);
   await openNearby(page);
-  await expect(page.locator('.nearby-card')).toHaveCount(2);
-  await expect(page.locator('.nearby-card').filter({hasText:'Regular Care'})).toHaveCount(0);
+  await expect(page.locator('.provider-pin')).toHaveCount(2);
+  await expect(page.locator('.provider-pin[title*="Regular Care"]')).toHaveCount(0);
   await page.screenshot({path:`${out}/nearby-${mobile?'mobile':'desktop'}.png`});
   await setDate(page,'2026-09-21');await chooseAge(page,'4');await setTimes(page,'13:00','17:00');
   await submitSearch(page);await openResults(page);

@@ -38,7 +38,7 @@ for (const [width, height] of [[390, 844], [1440, 900]]) test(`${width}px: the p
   await expect(notice).toHaveCount(0);
   await expect(card).toHaveCount(0);
   await expect(page.locator(".tour-invite")).toBeVisible();
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("equalpath:privacy:v1")))).toEqual({ version: 1 });
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("equalpath:privacy:v1")))).toEqual({ version: 2 });
 
   await page.reload();
   await expect(page.locator("#pickup-search")).toBeVisible();

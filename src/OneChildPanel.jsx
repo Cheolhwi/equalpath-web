@@ -51,7 +51,7 @@ export function PlanActions({ centres, date, onChecklist, onDownload, askAll = n
     })}
     {askAll && <div className="plan-ask-all">
       {askAll}
-      <p>One message to each centre. If either has no place, this plan comes off your options.</p>
+      <p>One chat about both centres, answered from their listings.</p>
     </div>}
     <div className="plan-more">
       <button className="plan-tool" onClick={() => { onChecklist(); setSaved(true); }}>

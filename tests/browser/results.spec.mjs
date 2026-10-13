@@ -11,7 +11,7 @@ async function setup(page, calls, routing=true, coLocated=false, extraItems=[]){
   await page.route("**/api",async route=>{const b=route.request().postDataJSON();calls.push(b);await route.fulfill({json:{ok:true,...await api(b)}});});
 }
 test("zooming and repeated dragging never query; reopening loads the saved neighbourhood once",async({page})=>{
-  const calls=[];await setup(page,calls);await page.goto("/#discover");await openNearby(page);await expect(page.locator(".nearby-card").first()).toBeVisible();
+  const calls=[];await setup(page,calls);await page.goto("/#discover");await openNearby(page);
   const before=calls.filter(c=>c.action==="nearby").length;
   for(let i=0;i<4;i++)await page.getByRole("button",{name:"Zoom out",exact:true}).click();
   await expect.poll(async()=>Number(await page.locator(".map-region").getAttribute("data-map-zoom"))).toBeLessThan(12);

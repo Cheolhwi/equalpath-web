@@ -49,6 +49,7 @@ import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory
 import Checklist from "./Checklist.jsx";
 import Enquiry from "./Enquiry.jsx";
 import { EnquiryProvider, EnquiryDock, RefreshGuard } from "./VirtualEnquiry.jsx";
+import { autoStartAi } from "./local-ai.js";
 import { enquiryVisitsMatch, enquiryChildDeclined } from "../shared/enquiry-session.mjs";
 import FamilyPanel, { familyMapItems, familyChecklistEntry, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
 import OneChildPanel, { initialOnePanel } from "./OneChildPanel.jsx";
@@ -202,6 +203,8 @@ export default function App({
   // First visit: offer the tour once, without starting it on its own.
   const [tourInvite, setTourInvite] = useState(() => { try { return !tourSeen(window.localStorage); } catch { return false; } });
   // First time on the map: the privacy card comes before the tour offer.
+  // Ask for me's on-device model starts downloading once the map is open.
+  useEffect(() => { if (introPhase === "ready" && !tourOpen) autoStartAi(); }, [introPhase, tourOpen]);
   const [privacyPending, setPrivacyPending] = useState(() => { try { return !privacySeen(window.localStorage); } catch { return true; } });
   const privacyDone = (read = false) => { try { markPrivacySeen(window.localStorage); } catch { /* shown again next visit */ } setPrivacyPending(false); if (read) setDialog("privacy"); };
   const interests = useInterests(mode, tourOpen);
@@ -252,6 +255,8 @@ export default function App({
       // Ask for me first: it stops its requests while it can still sign them.
       window.dispatchEvent(new Event("equalpath-clear-enquiries"));
       await clearSurroundingsCache();
+      // An AI model downloaded for Ask for me (13 Oct 2026).
+      try { await Promise.all(["webllm/model", "webllm/config", "webllm/wasm"].map((name) => caches.delete(name))); } catch { /* no cache access */ }
       clearSearchRouteCache();
       Object.keys(window.localStorage)
         .filter(key => key.startsWith("equalpath:"))
@@ -562,8 +567,10 @@ export default function App({
   // "All N centres" (8 Oct 2026): one button, no Saved shortcut (Saved is in
   // the top navigation). Under the search bar on its own; with the one-child
   // panel it sits beside the panel's "Show …" tab, or beside the open panel.
-  const listButton = familyMode ? null : <div className="map-quick-actions">
-    <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>
+  // Before a search there is no list button (13 Oct 2026, user request):
+  // nearby centres show as map pins only.
+  const listButton = familyMode || !results ? null : <div className="map-quick-actions">
+    <button aria-label={`All ${results.total} centres`} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{`All ${results.total} centres`}</span><span className="map-results-short" aria-hidden="true">List</span></button>
   </div>;
   // Arrives armed only after the pointer has left the search bar since the
   // last search, so a pointer resting on Find childcare doesn't hide new results.
@@ -982,8 +989,9 @@ export default function App({
     // (`planOff` in VirtualEnquiry): once per reply and search, so Undo sticks.
     declined: (t, off) => {
       const stamp = familyMode ? family.state?.results : results;
-      if (!stamp || !t.centre?.id || !t.job?.id) return;
-      const seen = declinedApplied.current.get(stamp) ?? new Set(), mark = `${t.job.id}:${off.why}:${off.labels.join(",")}`;
+      const ref = t.id ?? t.job?.id;
+      if (!stamp || !t.centre?.id || !ref) return;
+      const seen = declinedApplied.current.get(stamp) ?? new Set(), mark = `${ref}:${off.why}:${off.labels.join(",")}`;
       if (seen.has(mark)) return;
       seen.add(mark); declinedApplied.current.set(stamp, seen);
       if (t.family && familyMode && family.state?.plan) {
@@ -1025,7 +1033,7 @@ export default function App({
     },
   };
   return (
-    <EnquiryProvider actions={enquiryActions} onChatChange={setChatOpen} syncKey={(familyMode ? family.state?.results : results) ?? null}>
+    <EnquiryProvider actions={enquiryActions} onChatChange={setChatOpen}>
     <main
       className={`equalpath map-first ${theme} mobile-${mobilePane}${navCollapsed ? " nav-collapsed" : ""}`}
       tabIndex={-1}
