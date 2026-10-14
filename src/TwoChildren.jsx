@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, ClipboardList, Copy, Download, Heart, LoaderCircle, MessageCircle, PanelLeftClose, PanelLeftOpen, Phone, Plus, TriangleAlert, Wallet } from "lucide-react";
+import { ArrowRight, Car, Check, ChevronDown, ChevronLeft, ChevronUp, Clock3, Copy, Download, Heart, LoaderCircle, PanelLeftClose, PanelLeftOpen, Phone, Plus, TriangleAlert, Wallet } from "lucide-react";
 import PlaceInput from "./PlaceInput.jsx";
-import VirtualEnquiry, { VirtualEnquiryGroup } from './VirtualEnquiry.jsx';
+import VirtualEnquiry from './VirtualEnquiry.jsx';
 import { DeclinedNote, PlanActions } from './OneChildPanel.jsx';
 import { displayName } from "../shared/display.mjs";
 import { timeLabel } from "../shared/request.mjs";
@@ -71,7 +71,7 @@ export function familyMapItems(family) {
   });
 }
 
-export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, onRetrySearch, onChecklist, onToast, compareIds = [], onCompare, onViewOption }) {
+export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, onRetrySearch, onChecklist, onToast, onContact, onDetails, compareIds = [], onCompare, onViewOption }) {
   const s = family.state;
   // Opening a plan (or going back to the options) starts at the top of the panel.
   const panel = useRef(null);
@@ -102,7 +102,7 @@ export default function FamilyPanel({ family, mode, top = 300, onFix, onWider, o
       {s.status === "searching" ? "Finding care for both children…" : s.waitUntil ? BUSY_TEXT : "Checking drive times…"}</p>}
     {s.status === "error" && <div className="family-status family-error" role="alert">We couldn’t load centres. <button className="text-link" onClick={onRetrySearch}>Try again</button></div>}
     {s.status === "ready" && (s.view === "plan" && family.option
-      ? <Plan family={family} mode={mode} onFix={onFix} onChecklist={onChecklist} onToast={onToast} />
+      ? <Plan family={family} mode={mode} onFix={onFix} onChecklist={onChecklist} onToast={onToast} onContact={onContact} onDetails={onDetails} />
       : <Options family={family} onWider={onWider} compareIds={compareIds} onCompare={onCompare} onViewOption={onViewOption} />)}
   </section>;
 }
@@ -157,14 +157,6 @@ function Option({ o, index, pins, lp, onSee, compareIds = [], onCompare }) {
   </article>;
 }
 
-// A quick Call / WhatsApp link beside the centre's name in the plan.
-function Contact({ p }) {
-  const wa = p.whatsapp?.find((c) => c.href);
-  if (p.phone?.display) return <a className="plan-centre-call" href={`tel:${p.phone.display.replace(/[^+0-9]/g, "")}`} aria-label={`Call ${name(p)}, ${p.phone.display}`}><Phone size={14} aria-hidden="true" />Call</a>;
-  if (wa) return <a className="plan-centre-call" href={wa.href} target="_blank" rel="noreferrer" aria-label={`WhatsApp ${name(p)}`}><MessageCircle size={14} aria-hidden="true" />WhatsApp</a>;
-  return null;
-}
-
 // The two-children plan as a Checklist entry (saved from the plan, or from
 // the chat once both places are confirmed).
 export function familyChecklistEntry(o, plan, lp) {
@@ -175,10 +167,9 @@ export function familyChecklistEntry(o, plan, lp) {
     steps: steps.map((st) => ({ time: timeLabel(st.time), label: st.label, kind: st.kind })) };
 }
 
-function Plan({ family, mode, onFix, onChecklist, onToast }) {
+function Plan({ family, mode, onFix, onChecklist, onToast, onContact, onDetails }) { // eslint-disable-line no-unused-vars
   const o = family.option, lp = family.lp, s = family.state, plan = s.plan;
   const [editingPickup, setEditingPickup] = useState(false);
-  const [copied, setCopied] = useState("");
   const steps = planSteps(o, plan, lp, name);
   const problems = [["dropoff", "drop off"], ["collection", "pick up"]].filter(([j]) => ["late", "short"].includes(lp[j].state));
   const unknown = [lp.dropoff, lp.collection].some((r) => r.state === "unknown");
@@ -186,7 +177,6 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
   // (or a fix) that may change a moment later.
   const checking = s.ensuring === o.id;
   const messages = o.kind === "same" ? [["ab", o.a, sameCentreMessage(o, plan)]] : KIDS.map((k) => [k, o[k], childMessage(o, plan, k)]);
-  const copy = async (key, text) => { try { await navigator.clipboard.writeText(text); setCopied(key); onToast?.("Message copied. Paste it into WhatsApp or a text message."); } catch { setCopied(`manual:${key}`); } };
   const planText = familyPlanText(o, plan, lp, name);
   const pins = new Map(familyMapItems(family).map((p, i) => [p.id, i + 1]));
   const span = (k) => `${plan.children[k].start}–${plan.children[k].end}`;
@@ -250,15 +240,18 @@ function Plan({ family, mode, onFix, onChecklist, onToast }) {
             onChange={(p) => { if (p) { family.setCollectPlace(p, o); setEditingPickup(false); } }} />
         : <p>Pickup starts from <strong>{s.plan.run.collectPlace?.label}</strong>. <button className="text-link" onClick={() => setEditingPickup(true)}>Change</button></p>}
     </div>
+    {/* The same plan card as one child (14 Oct 2026, user: "2children的这部分也得改，得符合1 child的same user journey"):
+        each centre gets About, Ask for me and Contact (the Contact panel). */}
     <PlanActions date={plan.date}
-      askAll={o.kind === "same" ? null : <VirtualEnquiryGroup items={KIDS.map((k) => ({ providerId: o[k].id, centre: o[k], requests: [{ ...childRequest(plan, k), label: childName(k) }] }))} />}
       onChecklist={() => onChecklist(familyChecklistEntry(o, plan, lp))} onDownload={download}
-      centres={messages.map(([key, p, text]) => ({ key, p, pin: pins.get(p.id), who: who(key), call: <Contact p={p} />,
-        requests: (key === "ab" ? KIDS : [key]).map(k => childRequest(plan, k)),
-        message: <button className="family-secondary" onClick={() => copy(key, text)}>{copied === key ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}{copied === key ? "Copied" : "Copy message"}</button>,
-        ask: o.kind === "same" ? <VirtualEnquiry providerId={p.id} centre={p} family requests={KIDS.map((k) => ({ ...childRequest(plan, k), label: childName(k) }))} /> : null,
-        after: copied === `manual:${key}` && <textarea readOnly value={text} aria-label="Message to copy" className="enquiry-manual-message" /> }))} />
-    <p className="family-note">Times allow 5 minutes per handover; drives don’t include traffic. Each centre still needs to confirm a place.</p>
+      centres={messages.map(([key, p]) => {
+        const kids = key === "ab" ? KIDS : [key], requests = kids.map((k) => childRequest(plan, k));
+        const contact = onContact ? () => onContact(p, key, { option: o, plan }, requests, familyChecklistEntry(o, plan, lp)) : null;
+        return { key, p, pin: pins.get(p.id), who: who(key), requests, onDetails: onDetails ? () => onDetails({ ...p, familyRole: key === "ab" ? "ab" : key, familyFor: who(key) }) : null,
+          message: <button className="family-secondary" onClick={() => contact?.()}><Phone size={16} aria-hidden="true" />Contact</button>,
+          ask: <VirtualEnquiry providerId={p.id} centre={p} family={key === "ab"} onContact={contact} requests={kids.map((k) => ({ ...childRequest(plan, k), label: childName(k) }))} /> };
+      })} />
+    <p className="family-note">Drive times don’t include traffic. {o.kind === "same" ? "The centre still needs" : "Each centre still needs"} to confirm a place.</p>
   </>;
 }
 

@@ -831,6 +831,28 @@ export default function App({
     setDialogError(null);
     setDialog("enquiry");
   };
+  // Two children (14 Oct 2026, user: "2children…得符合1 child的same user journey"): each
+  // plan centre has its own Contact panel, as for one child. A centre for both
+  // children gets one message about both; Get ready saves the family plan.
+  // Compare for two children: Contact leaves Compare and opens the same panel
+  // as the plan's centre for both children, with that option's Checklist.
+  const contactFromFamilyCompare = (p) => {
+    const plan = family.state?.plan;
+    if (!plan || !p?.children?.a || !p?.children?.b) return;
+    const option = (family.built?.all ?? []).find((o) => o.kind === "same" && o.a.id === p.id) ?? { id: `same:${p.id}`, kind: "same", a: p.children.a, b: p.children.b };
+    const lp = option === family.option && family.lp ? family.lp : family.plans?.get(option.id) ?? leavePlan(option, plan, family.legs);
+    contactFamily(option.a, "ab", { option, plan }, ["a", "b"].map((k) => childRequest(plan, k)), familyChecklistEntry(option, plan, lp));
+  };
+  // Ticked questions are kept per centre and visit; a centre for both children
+  // has its own list.
+  const enquiryKey = (e) => "contact-v2:" + e.p.id + scenario(e.request) + (e.family ? ":family:" + scenario(canonicalRequest(e.family.requests[1])) : "");
+  const contactFamily = (p, key, { option, plan } = {}, requests, entry) => {
+    if (!p || !requests?.length) return;
+    if (key !== "ab") { setEnquiry({ p: withReviewQuestions(p, questionSelection, 'contact-v2:' + p.id + scenario(canonicalRequest(requests[0]))), request: canonicalRequest(requests[0]), forChild: childName(key), chatRequests: [{ ...requests[0], label: childName(key) }], entry }); }
+    else setEnquiry({ p, request: canonicalRequest(requests[0]), family: { option, plan, requests: requests.map((r, i) => ({ ...r, label: childName(["a", "b"][i]) })) }, entry });
+    setDialogError(null);
+    setDialog("enquiry");
+  };
   // Saving the same plan again (same centre(s) and day) updates it and keeps the ticks.
   const saveChecklist = (entry) => setChecklists(cs => {
     const old = cs.find(e => e.id === entry.id), next = { ...entry, checked: old?.checked ?? entry.checked ?? [] };
@@ -1546,6 +1568,7 @@ export default function App({
             onChecklist={(entry) => { saveChecklist(entry); savedToast(entry.id); }}
             compareIds={compareIds} onCompare={toggleCompareMany}
             onViewOption={(option) => interests.update(h => recordFamilyOptionView(h, family.state?.results, option))}
+            onContact={contactFamily} onDetails={openFamilyCentre}
             onToast={notify} />
         )}
         {oneShown && (
@@ -1838,9 +1861,7 @@ export default function App({
                         items={comparison.items.filter(p => compareIds.includes(p.id))}
                         children={comparison.children}
                         onRemove={removeCompare}
-                        onPrepare={(p, key) => prepare(p, comparison.children[key].request, childName(key))}
-                        plan={family.state?.plan}
-                        onToast={notify}
+                        onContact={contactFromFamilyCompare}
                       /> : <Comparison
                         items={comparison.items.filter((p) =>
                           compareIds.includes(p.id),
@@ -2010,7 +2031,10 @@ export default function App({
       </DialogPresence>
       {dialog === "enquiry" && enquiry && (
         <Enquiry
-          key={enquiry.p.id + scenario(enquiry.request)}
+          key={enquiry.p.id + scenario(enquiry.request) + (enquiry.family ? ":family" : "")}
+          family={enquiry.family}
+          chatRequests={enquiry.chatRequests}
+          onReopen={enquiry.entry ? (() => { const again = enquiry; return () => { setEnquiry(again); setDialogError(null); setDialog("enquiry"); }; })() : undefined}
           p={enquiry.p}
           request={enquiry.request}
           tourBehind={tourOpen}
@@ -2021,9 +2045,9 @@ export default function App({
             )}
             {enquiry.forChild && <p className="notice">Questions for {enquiry.forChild}</p>}
           </>}
-          selection={questionSelection["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]}
-          onSelection={(ids) => setQuestionSelection((x) => ({ ...x, ["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]: ids }))}
-          onPreparation={() => startPreparation(enquiry.p, enquiry.request)}
+          selection={questionSelection[enquiryKey(enquiry)]}
+          onSelection={(ids) => setQuestionSelection((x) => ({ ...x, [enquiryKey(enquiry)]: ids }))}
+          onPreparation={() => { if (enquiry.entry) { saveChecklist(enquiry.entry); showChecklist(enquiry.entry.id); } else startPreparation(enquiry.p, enquiry.request); }}
         />
       )}
       {tourOpen && <GettingStarted onClose={finishTour} onStep={showTourStep} reduced={reduced || introReduced} />}

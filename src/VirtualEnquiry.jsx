@@ -40,10 +40,10 @@ export function unitsOf(threads) {
 }
 
 // One request per centre, from the plan's own requests (one or two children).
-function build({ providerId, centre, requests = [], family }) {
+function build({ providerId, centre, requests = [], family, onContact }) {
   const children = requests.map((r, i) => ({ label: r.label || `Child ${i + 1}`, age: String(r.age ?? ''), start: r.deadline, end: r.end }));
   const payload = { branchId: providerId, date: requests[0]?.date, children };
-  return { key: JSON.stringify(payload), payload, centre, request: requests[0], requests, family: children.length > 1 || !!family };
+  return { key: JSON.stringify(payload), payload, centre, request: requests[0], requests, family: children.length > 1 || !!family, onContact };
 }
 const usable = (x) => !!x.payload.date && x.payload.children.length > 0 && x.payload.children.every(c => c.start && c.end) && !!x.centre;
 
@@ -152,17 +152,6 @@ export default function VirtualEnquiry(props) {
   const thread = ctx.threads.findLast(t => t.key === item.key);
   return <button className="secondary virtual-enquiry-toggle" disabled={!usable(item)} onClick={() => thread ? ctx.show(thread.key) : ctx.ask(item)}>
     <MessageCircle size={17} aria-hidden="true" />{thread ? 'View chat' : 'Ask for me'}
-  </button>;
-}
-
-// Two centres in one plan: one chat about both.
-export function VirtualEnquiryGroup({ items }) {
-  const ctx = useContext(EnquiryContext);
-  if (!ctx) return null;
-  const built = items.map(build);
-  const group = groupOf(ctx.threads, built);
-  return <button className="secondary virtual-enquiry-toggle virtual-enquiry-group" disabled={!built.every(usable)} onClick={() => group ? ctx.show(group) : ctx.askGroup(built)}>
-    <MessageCircle size={17} aria-hidden="true" />{group ? 'View chat' : 'Ask about both centres'}
   </button>;
 }
 
@@ -280,7 +269,10 @@ function ChatWindow({ unit }) {
   useEffect(() => { if (matchMedia('(pointer: fine)').matches) input.current?.focus({ preventScroll: true }); }, [unit.key]);
   const submit = (q) => { if (!q.trim() || asking) return; send(unit.key, ts, q); setText(''); };
   const ideas = suggestedQuestions(ts[0].centre, ts[0].requests).filter(q => !messages.some(m => m.text === q));
-  const contacts = ts.length === 1 && !ts[0].family && ts[0].request;
+  // Contact from the chat: two children reopen their plan's Contact panel (so
+  // Get ready saves the family Checklist), one child the ordinary one.
+  const contact = ts.length !== 1 ? null : ts[0].onContact
+    ?? (!ts[0].family && ts[0].request ? () => actions.current?.contact?.(ts[0].centre, ts[0].request) : null);
   return <section className={`enquiry-chat ask-chat${unit.group ? ' enquiry-chat-group' : ''}`} role="dialog" aria-modal="false" aria-label={`Ask for me: ${unit.name}`} onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); minimise(); } }}>
     <header className="enquiry-chat-top">
       <div><p className="enquiry-chat-kicker">Ask for me{unit.group ? ` · ${ts.length} centres` : ''}</p><h2>{unit.name}</h2></div>
@@ -296,9 +288,11 @@ function ChatWindow({ unit }) {
       {ideas.length > 0 && messages.length < 6 && <div className="ask-chips" aria-label="Suggested questions">{ideas.slice(0, messages.length ? 3 : 6).map(q => <button key={q} disabled={asking} onClick={() => submit(q)}>{q}</button>)}</div>}
     </div>
     <form className="ask-input" onSubmit={e => { e.preventDefault(); submit(text); }}>
-      <input ref={input} value={text} onChange={e => setText(e.target.value)} placeholder="Ask about fees, hours, ages, pickup…" aria-label="Your question" maxLength={300} enterKeyHint="send" />
-      <button type="submit" className="primary" disabled={!text.trim() || asking} aria-label="Ask"><ArrowUp size={18} aria-hidden="true" /></button>
+      <div className="ask-field">
+        <input ref={input} value={text} onChange={e => setText(e.target.value)} placeholder="Ask about fees, hours, ages, pickup…" aria-label="Your question" maxLength={300} enterKeyHint="send" />
+        <button type="submit" disabled={!text.trim() || asking} aria-label="Ask" title="Ask"><ArrowUp size={17} aria-hidden="true" /></button>
+      </div>
     </form>
-    {contacts && <footer className="enquiry-chat-footer"><p>To book, contact the centre yourself.</p><button className="secondary" onClick={() => { minimise(); actions.current?.contact?.(ts[0].centre, ts[0].request); }}><Phone size={14} aria-hidden="true" />Contact</button></footer>}
+    {contact && <footer className="enquiry-chat-footer"><p>To book, contact the centre yourself.</p><button className="secondary" onClick={() => { minimise(); contact(); }}><Phone size={14} aria-hidden="true" />Contact</button></footer>}
   </section>;
 }

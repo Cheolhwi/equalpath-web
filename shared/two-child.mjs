@@ -427,33 +427,45 @@ export const changeLabel = (c) =>
       : `${childName(c.child)}’s care ${c.field === "start" ? "start" : "end"} ${c.value}`;
 export const ageText = (age) => (age ? childAge(age) : "age not chosen");
 
-function mergedQuestions(option, plan) {
+// The questions for one centre with both children, each with a stable id so
+// the Contact panel can tick them like one child's (14 Oct 2026, user: "both在
+// 一个childcare的话，question也没打勾选项…得和1孩的统一").
+export function sameCentreQuestions(option, plan) {
   const lists = KIDS.map((k) => contactQuestions(option[k], childRequest(plan, k)).map((q) => ({ ...q, k })));
   const texts = new Map();
   for (const list of lists) for (const q of list) texts.set(q.text, [...(texts.get(q.text) ?? []), q.k]);
-  const out = [], seen = new Set();
+  const out = [{ id: "places", text: "Do you have places for both children on this date, at these times?", checks: [], conflicts: [] }], seen = new Set();
   for (const list of lists) for (const q of list) {
     // Fees stay per child: a shared "estimated total" would read as one price for both.
     const both = texts.get(q.text).length > 1 && q.id !== "fees", key = both ? q.text : `${q.k}:${q.text}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push(both ? q.text.replace(/\bmy child\b/g, "my children") : `For ${childName(q.k)}: ${q.text}`);
+    const same = both ? lists.flatMap((l) => l.filter((x) => x.text === q.text)) : [q];
+    out.push({
+      id: both ? `both:${q.id}` : `${q.k}:${q.id}`,
+      text: both ? q.text.replace(/\bmy child\b/g, "my children") : `For ${childName(q.k)}: ${q.text}`,
+      checks: same.flatMap((x) => x.checks ?? []),
+      conflicts: same.flatMap((x) => (x.conflicts ?? []).map((c) => (both ? c : { ...c, why: `${childName(q.k)}: ${c.why}` }))),
+    });
   }
   return out;
 }
-
-// 8.6.1 one centre: one message for both children, asking about two places.
-export function sameCentreMessage(option, plan) {
+export const sameCentreIntro = (plan) => {
   const [a, b] = KIDS.map((k) => plan.children[k]);
-  const intro = [
+  return [
     "Hello, I’m looking for childcare for a few hours for my two children.",
     `Date: ${visitDate(plan.date)}`,
     `${childName("a")}: ${ageText(a.age)}, from ${a.start} to ${a.end}`,
     `${childName("b")}: ${ageText(b.age)}, from ${b.start} to ${b.end}`,
     "An adult will bring both children and collect them.",
   ].join("\n");
-  const questions = ["Do you have places for both children on this date, at these times?", ...mergedQuestions(option, plan)];
-  return [intro, ...questions.map((q, i) => `${i + 1}. ${q}`), "Thank you!"].join("\n\n");
+};
+
+// 8.6.1 one centre: one message for both children, asking about two places.
+// `ids` (optional) keeps only the ticked questions.
+export function sameCentreMessage(option, plan, ids = null) {
+  const questions = sameCentreQuestions(option, plan).filter((q) => !ids || ids.includes(q.id)).map((q) => q.text);
+  return [sameCentreIntro(plan), ...questions.map((q, i) => `${i + 1}. ${q}`), "Thank you!"].join("\n\n");
 }
 // 8.6.2 two centres: each centre hears only about its own child.
 export function childMessage(option, plan, k) {
