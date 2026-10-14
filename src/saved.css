@@ -1,0 +1,118 @@
+/* Saved for later (14 Oct 2026, user: "saved这个单独的页面可能也要调整ui改改").
+   A visit bar on top checks every saved centre for one day; each saved centre
+   is a compact card with its result chip, one main action and two quiet tools.
+   Loaded after spacing.css so it replaces the older saved-row rules. */
+.equalpath .saved-library .saved-tabs { margin-bottom: 16px; }
+
+/* --- Visit bar --------------------------------------------------------- */
+.equalpath .saved-library .saved-visit { margin: 0 0 16px; padding: 16px; border: 1px solid var(--rule); border-radius: 16px; background: var(--soft); }
+.equalpath .saved-visit-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; margin-bottom: 12px; }
+.equalpath .saved-visit-head h3 { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 16px; line-height: 1.3; }
+.equalpath .saved-visit-head h3 svg { color: var(--accent); }
+.equalpath .saved-visit-from { display: inline-flex; align-items: center; gap: 6px; min-width: 0; margin: 0; color: var(--muted); font-size: 13px; }
+.equalpath .saved-visit-from > svg { flex-shrink: 0; color: var(--accent); }
+.equalpath .saved-visit-from > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.equalpath .saved-visit-from strong { color: var(--ink); font-weight: 600; }
+.equalpath .saved-visit-from .text-link { min-height: 32px; padding: 0 0 0 4px; font-size: 13px; }
+.equalpath .saved-visit-form { display: grid; grid-template-columns: 1.15fr 1fr .8fr .8fr auto; gap: 10px; align-items: end; }
+.equalpath .saved-visit .saved-check-field { display: grid; gap: 5px; min-width: 0; font-size: 12px; font-weight: 600; }
+.equalpath .saved-visit .saved-check-field > span { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
+.equalpath .saved-visit .saved-check-field :is(.select-menu-trigger, .time-box) { height: 44px; min-height: 44px; padding: 0 12px; border: 1px solid var(--rule); border-radius: 10px; background: var(--paper); font-size: 15px; }
+.equalpath .saved-date-box { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 44px; padding: 0 12px; border: 1px solid var(--rule); border-radius: 10px; background: var(--paper); color: var(--ink); font-size: 15px; cursor: pointer; }
+.equalpath .saved-date-box:hover { background: var(--soft); }
+.equalpath .saved-date-box:focus-within { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.equalpath .saved-date-box > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.equalpath .saved-date-box > span.placeholder { color: var(--muted); }
+.equalpath .saved-date-box > svg { flex-shrink: 0; color: var(--muted); }
+.equalpath .saved-date-box > input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; }
+.equalpath .saved-visit-submit { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; min-height: 44px; padding: 0 18px; border-radius: 999px; font-size: 14px; white-space: nowrap; }
+.equalpath .saved-visit .saved-check-hint { display: flex; align-items: center; gap: 6px; margin: 10px 0 0; color: var(--muted); font-size: 12.5px; }
+.equalpath .saved-visit-empty p { margin: 0 0 10px; color: var(--muted); font-size: 14px; }
+.equalpath .saved-visit-empty button { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; border-radius: 999px; }
+.equalpath .saved-visit-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 13px; }
+.equalpath .saved-visit-summary strong { margin-right: 4px; color: var(--ink); }
+.equalpath .saved-visit-summary span { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+
+/* --- Result tones (shared by the summary and the chips) ---------------- */
+.equalpath :is(.saved-visit-summary, .saved-item-status).supported, .equalpath .saved-visit-summary .supported { color: var(--green, var(--accent)); }
+.equalpath :is(.saved-visit-summary, .saved-item-status).unknown, .equalpath .saved-visit-summary .unknown { color: var(--amber); }
+.equalpath :is(.saved-visit-summary, .saved-item-status).conflict, .equalpath .saved-visit-summary .conflict { color: var(--red, #9a3b2c); }
+
+/* --- Saved centres ----------------------------------------------------- */
+.equalpath .saved-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.equalpath .saved-library .saved-row.saved-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; align-items: start; margin: 0; padding: 16px 18px; border: 1px solid var(--rule); border-radius: 16px; background: var(--paper); }
+.equalpath .saved-item-main { min-width: 0; }
+.equalpath .saved-library .saved-item h3 { margin: 0; font-size: 17px; line-height: 1.3; }
+.equalpath .saved-item-meta { margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.equalpath .saved-item-note { display: flex; align-items: flex-start; gap: 6px; margin: 8px 0 0; padding: 6px 10px; border-radius: 8px; background: var(--soft); color: var(--ink); font-size: 13.5px; line-height: 1.45; width: fit-content; max-width: 100%; }
+.equalpath .saved-item-note > svg { flex-shrink: 0; margin-top: 3px; color: var(--accent); }
+.equalpath .saved-item-status { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border: 1px solid currentColor; border-radius: 999px; background: var(--paper); font-size: 12.5px; font-weight: 650; white-space: nowrap; }
+.equalpath .saved-item-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px solid var(--rule); }
+.equalpath .saved-item-open { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; margin: 0 auto 0 0; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 600; }
+.equalpath .saved-item-tool { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; margin: 0; padding: 0 10px; border: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 13.5px; }
+.equalpath .saved-item-tool:hover { background: var(--soft); color: var(--ink); }
+.equalpath .saved-item-tool:last-child:hover { color: var(--red, #9a3b2c); }
+
+/* --- Phones ------------------------------------------------------------ */
+@media (max-width: 760px) {
+  .equalpath .saved-visit-form { grid-template-columns: 1fr 1fr; }
+  .equalpath .saved-visit-submit { grid-column: 1 / -1; width: 100%; }
+  .equalpath .saved-library .saved-row.saved-item { grid-template-columns: 1fr; padding: 14px; }
+  .equalpath .saved-item-status { justify-self: start; }
+  .equalpath .saved-item-actions { flex-wrap: nowrap; }
+  .equalpath .saved-item-open { flex: 1 1 auto; justify-content: center; min-height: 44px; margin: 0; }
+  /* Phones: Note and Remove as icon buttons beside the main action (named by aria-label). */
+  .equalpath .saved-item-tool { flex: 0 0 44px; justify-content: center; width: 44px; min-height: 44px; padding: 0; border: 1px solid var(--rule); border-radius: 999px; }
+  .equalpath .saved-item-tool > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+/* --- For you (14 Oct 2026, user: "for you也改一下吧") -----------------------
+   Same shape as Childcare: a soft panel saying what the suggestions are for,
+   then one list of centre cards with one main action and quiet tools. */
+.equalpath .foryou .foryou-panel { margin: 0 0 16px; padding: 16px; border: 1px solid var(--rule); border-radius: 16px; background: var(--soft); }
+.equalpath .foryou .foryou-panel > h3 { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 16px; line-height: 1.3; }
+.equalpath .foryou .foryou-panel > h3 svg { color: var(--accent); }
+.equalpath .foryou .foryou-row,
+.equalpath .foryou .foryou-panel .preference-summary { display: flex; align-items: center; gap: 6px 8px; min-width: 0; margin: 0; padding: 6px 0; border: 0; border-radius: 0; background: transparent; color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+.equalpath .foryou .foryou-panel .preference-summary { border-top: 1px solid var(--rule); padding-top: 8px; margin-top: 4px; }
+.equalpath .foryou .foryou-row > svg { flex-shrink: 0; color: var(--accent); }
+.equalpath .foryou .foryou-row > span,
+.equalpath .foryou .foryou-panel .preference-summary > span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.equalpath .foryou .foryou-row strong { color: var(--ink); font-weight: 600; }
+.equalpath .foryou :is(.foryou-row, .preference-summary) .text-link { flex: 0 0 auto; min-height: 32px; padding: 0; font-size: 13px; }
+.equalpath .foryou .foryou-panel .preference-setup { margin: 10px 0 0; padding: 12px 0 0; border: 0; border-top: 1px solid var(--rule); border-radius: 0; background: transparent; box-shadow: none; }
+.equalpath .foryou .foryou-panel .preference-setup-heading h4 { margin: 0 0 2px; font-size: 15px; line-height: 1.35; }
+.equalpath .foryou .foryou-panel .preference-setup-heading p { margin: 0; font-size: 13px; }
+.equalpath .foryou .foryou-panel .preference-setup-heading > span { font-size: 12.5px; white-space: nowrap; }
+/* Already in Saved → For you, so the "change these later" line is left out here. */
+.equalpath .foryou .foryou-panel .preference-setup-note { display: none; }
+.equalpath .foryou .foryou-hint { margin: 0 0 12px; color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+
+.equalpath .foryou-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.equalpath .foryou .recommendation-card.foryou-card { display: block; padding: 16px 18px; border: 1px solid var(--rule); border-radius: 16px; background: var(--paper); }
+.equalpath .foryou-card .recommendation-reason { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 6px; color: var(--accent); font-size: 12.5px; font-weight: 650; }
+.equalpath .foryou-card h4 { margin: 0; font-size: 17px; line-height: 1.3; overflow-wrap: anywhere; }
+.equalpath .foryou-meta { margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.equalpath .foryou-card .recommendation-tags { display: inline-flex; width: fit-content; max-width: 100%; margin: 8px 0 0; padding: 4px 10px; border-radius: 999px; background: var(--soft); color: var(--accent); font-size: 12px; line-height: 1.35; }
+.equalpath .foryou-fit { display: flex; align-items: center; gap: 6px; margin: 8px 0 0; font-size: 13px; font-weight: 600; }
+.equalpath .foryou-fit.supported { color: var(--green, var(--accent)); }
+.equalpath .foryou-fit.unknown { color: var(--amber); }
+.equalpath .foryou-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--rule); }
+.equalpath .foryou-open { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; margin: 0 auto 0 0; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 600; }
+.equalpath .foryou .foryou-tool { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; margin: 0; padding: 0 10px; border: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 13.5px; }
+.equalpath .foryou .foryou-tool:hover:not(:disabled) { background: var(--soft); color: var(--ink); }
+.equalpath .foryou .foryou-tool[aria-pressed="true"] { color: var(--accent); opacity: 1; cursor: default; }
+.equalpath .foryou .recommendation-dismiss { align-self: auto; }
+.equalpath .foryou .recommendations-footnote { margin: 14px 0 0; font-size: 13px; }
+.equalpath .foryou .recommendation-controls { margin-top: 18px; padding-top: 14px; }
+
+@media (max-width: 760px) {
+  .equalpath .foryou .foryou-row { flex-wrap: wrap; }
+  .equalpath .foryou .foryou-panel .preference-summary { flex-direction: row; flex-wrap: wrap; align-items: baseline; text-align: left; }
+  .equalpath .foryou .foryou-panel .preference-summary > span { flex: 1 1 100%; }
+  .equalpath .foryou .recommendation-card.foryou-card { padding: 14px; }
+  .equalpath .foryou-actions { flex-wrap: nowrap; }
+  .equalpath .foryou-open { flex: 1 1 auto; justify-content: center; min-height: 44px; margin: 0; }
+  .equalpath .foryou .foryou-tool { flex: 0 0 44px; justify-content: center; width: 44px; min-height: 44px; padding: 0; border: 1px solid var(--rule); border-radius: 999px; }
+  .equalpath .foryou .foryou-tool > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}

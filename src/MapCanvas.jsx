@@ -134,9 +134,10 @@ export default function MapCanvas({
     displayOffsets.current = next;
   };
   latest.current.declutter = declutter;
-  const lastFitAt = useRef(0);
+  const lastFitAt = useRef(0), fittedTop = useRef(topInset);
   const fit = ({ immediate = false } = {}) => {
     lastFitAt.current = Date.now();
+    fittedTop.current = latest.current.topInset;
     setDismissedCards([]);
     const m = map.current;
     if (!m) return;
@@ -239,7 +240,16 @@ export default function MapCanvas({
     });
     m.on("zoomend", () => latest.current.declutter?.());
     m.on("moveend", () => {
-      if (alive) { clearTimeout(autoMoveTimer.current); setAutoMove(false); setPlacedInset(latest.current.leftInset); }
+      // After a move the map made by itself, wait until the layout has stayed
+      // still for a moment: a search is often followed by a second fit (the
+      // search bar folding, the panel opening), and cards that appear between
+      // the two fits only flash and vanish (14 Oct 2026, user report).
+      if (alive) {
+        clearTimeout(autoMoveTimer.current);
+        const settle = () => { setAutoMove(false); setPlacedInset(latest.current.leftInset); };
+        if (userMove.current || latest.current.cameraReduced) settle();
+        else autoMoveTimer.current = setTimeout(() => alive && settle(), 450);
+      }
       if (latest.current.introPhase !== "ready" || latest.current.choosing) { userMove.current = false; return; }
       const center = m.getCenter();
       lastView.current = { center: { lat: center.lat, lng: center.lng }, zoom: m.getZoom() };
@@ -363,9 +373,20 @@ export default function MapCanvas({
   }, [pinKey, pickup, retry, autoFit]);
   // On phones the search box shrinks to a summary right after a search. Refit
   // once to the space that frees up, unless the user has moved the map since.
+  // Only a real change refits: the phone toolbar folding into its summary.
+  // On computers the search bar only gets shorter after a search (its status
+  // line, then the "Updated" button about 1 s after an update); the pins
+  // already fit with the taller bar, so the map stays put and the cards
+  // don't flash out and back (14 Oct 2026, user: "map上的card好像还是有闪回").
+  // A bar that grows over the pins still refits.
   useEffect(() => {
-    if (!autoFit || choosing || !map.current || Date.now() - lastFitAt.current > 2500) return;
-    const id = setTimeout(() => fit(), 120);
+    if (!autoFit || choosing || !map.current || Date.now() - lastFitAt.current > 2500) { fittedTop.current = topInset; return; }
+    const phone = (host.current?.clientWidth ?? 0) < 760, change = topInset - fittedTop.current;
+    if (phone ? Math.abs(change) < 8 : change < 24) return;
+    setAutoMove(true);
+    clearTimeout(autoMoveTimer.current);
+    autoMoveTimer.current = setTimeout(() => setAutoMove(false), 2500);
+    const id = setTimeout(() => { fittedTop.current = topInset; fit(); }, 200);
     return () => clearTimeout(id);
   }, [topInset]);
   // Opening or hiding the two-children panel changes the free map area: refit.

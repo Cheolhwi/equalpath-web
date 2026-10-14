@@ -45,6 +45,9 @@ export default defineConfig({
       ignored: ["**/evidence/**", "**/docs/**", "**/tests/**", "**/.build/**"],
     },
   },
+  // Ask for me's WebLLM layer is imported only when a parent turns it on;
+  // pre-bundle it so the dev server doesn't reload the page the first time.
+  optimizeDeps: { include: ["@mlc-ai/web-llm"] },
   build: { outDir: "dist" },
   resolve: { preserveSymlinks: false },
 });

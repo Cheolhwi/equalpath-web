@@ -25,7 +25,7 @@ for (const width of [320, 1440]) test(`${width}px: saved childcare stays visible
   const centre = favourite(fixtureProviders[0]);
   await start(page, [centre]);
   const savedNav = page.getByRole('navigation').getByRole('button', { name: /^Saved/ });
-  await expect(page.locator('.map-quick-actions')).not.toContainText(centre.name);
+  await expect(page.locator('.map-quick-actions')).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Saved searches|Save this search/ })).toHaveCount(0);
   await expect(savedNav).toHaveText('Saved 1');
   await savedNav.click();
@@ -42,7 +42,6 @@ for (const width of [320, 1440]) test(`${width}px: saved childcare stays visible
   await expect(savedNav).toHaveText('Saved 1');
   expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).templates, savedKey)).toEqual([legacy]);
   await openNearby(page);
-  await expect(page.locator('.saved-centre-reminder')).toContainText(centre.name);
   await expect(page.locator('.saved-search-reminder')).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Saved searches|Save this search/ })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

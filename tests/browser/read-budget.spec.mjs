@@ -25,7 +25,7 @@ for (const width of [1440, 390]) test(`published catalogue works without TablesD
   });
   await page.goto("/#discover");
   await openNearby(page);
-  await expect(page.locator(".nearby-card")).toHaveCount(10);
+  await expect(page.locator(".provider-pin")).toHaveCount(10);
   const nearby = responses.filter(x => x.action === "nearby").at(-1).result;
   expect(nearby.items.every(p => p.distanceKm <= 5)).toBe(true);
   await openSearch(page);

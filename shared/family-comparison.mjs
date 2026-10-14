@@ -60,11 +60,10 @@ export const FAMILY_SORTS = [
   { value: 'distance', label: 'Nearest first', best: 'Nearest' },
   { value: 'price', label: 'Lowest total fee', best: 'Lowest total' },
   { value: 'closing', label: 'Open latest', best: 'Open latest' },
-  { value: 'fit', label: 'Fewest questions', best: 'Fewest questions' },
 ];
+// "Fewest questions" was removed on 14 Oct 2026 (user: "compare的fewest question选项应该去掉").
 export const FAMILY_SORT_REASONS = { distance: 'No drive times listed.', price: 'No total fee for both children.', closing: 'No closing times listed.' };
 const toMinutes = s => /^\d{2}:\d{2}$/.test(s ?? '') ? Number(s.slice(0, 2)) * 60 + Number(s.slice(3)) : null;
-const WEIGHT = { conflict: 3, unknown: 1, supported: 0 };
 export function familyTotal(children) {
   const fee = familyComparisonFee(children);
   if (fee === 'Ask the centre') return null;
@@ -74,16 +73,19 @@ const hasConflict = p => ['a', 'b'].some(k => childComparisonFit(p.children?.[k]
 function sortKey(p, sort) {
   if (sort === 'distance') return p.driving?.state === 'available' && Number.isFinite(p.driving.minutes) ? p.driving.minutes : null;
   if (sort === 'price') return familyTotal(p.children ?? {});
-  if (sort === 'closing') { const m = toMinutes(p.careEndTimeLabel ?? p.businessHoursLabel); return m === null ? null : -m; }
-  return ['a', 'b'].reduce((sum, k) => sum + childConditions(p.children?.[k]).reduce((s, c) => s + (WEIGHT[c?.state] ?? 1), 0), 0);
+  const m = toMinutes(p.careEndTimeLabel ?? p.businessHoursLabel); return m === null ? null : -m;
 }
 export function familyCompareOrder(items, sort) {
-  const available = Object.fromEntries(FAMILY_SORTS.map(s => [s.value, s.value === 'fit' || items.some(p => sortKey(p, s.value) !== null)]));
-  const effective = available[sort] ? sort : 'distance' in available && available.distance ? 'distance' : 'fit';
+  const available = Object.fromEntries(FAMILY_SORTS.map(s => [s.value, items.some(p => sortKey(p, s.value) !== null)]));
+  // Without any drive times the list keeps its order (centres that don't fit last).
+  const effective = available[sort] ? sort : 'distance';
   const keyed = items.map((p, i) => ({ p, i, k: sortKey(p, effective), off: hasConflict(p) }));
   const ordered = [...keyed].sort((a, b) => a.off - b.off || (a.k === null) - (b.k === null) || (a.k ?? 0) - (b.k ?? 0) || a.i - b.i);
   const eligible = keyed.filter(x => !x.off && x.k !== null);
   const min = eligible.length ? Math.min(...eligible.map(x => x.k)) : null;
-  const ids = eligible.length >= 2 && !eligible.every(x => x.k === min) ? eligible.filter(x => x.k === min).map(x => x.p.id) : [];
+  // Same rule as one child (`bestForPriority`): every centre that shares the
+  // best value is marked, even a tie or a single centre with that detail
+  // (14 Oct 2026, user: two centres both 13 min away got no "Nearest" tag).
+  const ids = eligible.filter(x => x.k === min).map(x => x.p.id);
   return { sort: effective, items: ordered.map(x => x.p), best: { ids, label: FAMILY_SORTS.find(s => s.value === effective).best }, available };
 }

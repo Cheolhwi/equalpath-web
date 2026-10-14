@@ -49,6 +49,7 @@ import { DEFAULT_MAP, readMapMemory, writeMapMemory } from "../shared/map-memory
 import Checklist from "./Checklist.jsx";
 import Enquiry from "./Enquiry.jsx";
 import { EnquiryProvider, EnquiryDock, RefreshGuard } from "./VirtualEnquiry.jsx";
+import { autoStartAi } from "./local-ai.js";
 import { enquiryVisitsMatch, enquiryChildDeclined } from "../shared/enquiry-session.mjs";
 import FamilyPanel, { familyMapItems, familyChecklistEntry, FAMILY_PANEL_RIGHT } from "./TwoChildren.jsx";
 import OneChildPanel, { initialOnePanel } from "./OneChildPanel.jsx";
@@ -57,6 +58,7 @@ import { childRequest, childName, leavePlan } from "../shared/two-child.mjs";
 import AgeRangeChoice from "./AgeRangeChoice.jsx";
 import GettingStarted from "./GettingStarted.jsx";
 import ShortCareAlternatives, { ShortCareMapAlternatives, WidenSearchPrompt, hasExplicitShortCareMatch } from "./ShortCareAlternatives.jsx";
+import { PrivacyCard, PrivacyNoticeBody, markPrivacySeen, privacySeen } from "./PrivacyNotice.jsx";
 import { saveTour, tourSeen } from "../shared/tour.mjs";
 import { feeSummary } from "../shared/result-summary.mjs";
 import { displayName, placeLine, shortDateLabel } from "../shared/display.mjs";
@@ -200,6 +202,11 @@ export default function App({
   const family = useFamily(mode);
   // First visit: offer the tour once, without starting it on its own.
   const [tourInvite, setTourInvite] = useState(() => { try { return !tourSeen(window.localStorage); } catch { return false; } });
+  // First time on the map: the privacy card comes before the tour offer.
+  // Ask for me's on-device model starts downloading once the map is open.
+  useEffect(() => { if (introPhase === "ready" && !tourOpen) autoStartAi(); }, [introPhase, tourOpen]);
+  const [privacyPending, setPrivacyPending] = useState(() => { try { return !privacySeen(window.localStorage); } catch { return true; } });
+  const privacyDone = (read = false) => { try { markPrivacySeen(window.localStorage); } catch { /* shown again next visit */ } setPrivacyPending(false); if (read) setDialog("privacy"); };
   const interests = useInterests(mode, tourOpen);
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)");
@@ -248,6 +255,8 @@ export default function App({
       // Ask for me first: it stops its requests while it can still sign them.
       window.dispatchEvent(new Event("equalpath-clear-enquiries"));
       await clearSurroundingsCache();
+      // An AI model downloaded for Ask for me (13 Oct 2026).
+      try { await Promise.all(["webllm/model", "webllm/config", "webllm/wasm"].map((name) => caches.delete(name))); } catch { /* no cache access */ }
       clearSearchRouteCache();
       Object.keys(window.localStorage)
         .filter(key => key.startsWith("equalpath:"))
@@ -267,6 +276,7 @@ export default function App({
       setTheme("light"); setLabels(true); setReduced(false);
       window.dispatchEvent(new CustomEvent("equalpath-motion-change", { detail: { reduced: false } }));
       setClearCacheConfirm(false);
+      setPrivacyPending(true);
       close();
       onHome?.({ fresh: true });
       notify("Data cleared. You can start again.");
@@ -557,8 +567,10 @@ export default function App({
   // "All N centres" (8 Oct 2026): one button, no Saved shortcut (Saved is in
   // the top navigation). Under the search bar on its own; with the one-child
   // panel it sits beside the panel's "Show …" tab, or beside the open panel.
-  const listButton = familyMode ? null : <div className="map-quick-actions">
-    <button aria-label={results ? `All ${results.total} centres` : "Nearby centres"} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{results ? `All ${results.total} centres` : "Nearby centres"}</span><span className="map-results-short" aria-hidden="true">List</span></button>
+  // Before a search there is no list button (13 Oct 2026, user request):
+  // nearby centres show as map pins only.
+  const listButton = familyMode || !results ? null : <div className="map-quick-actions">
+    <button aria-label={`All ${results.total} centres`} onClick={() => { setFormOpen(false); setMobilePane("list"); }}><List size={17} /><span className="map-results-label">{`All ${results.total} centres`}</span><span className="map-results-short" aria-hidden="true">List</span></button>
   </div>;
   // Arrives armed only after the pointer has left the search bar since the
   // last search, so a pointer resting on Find childcare doesn't hide new results.
@@ -819,6 +831,43 @@ export default function App({
     setDialogError(null);
     setDialog("enquiry");
   };
+  // Two children (14 Oct 2026, user: "2children…得符合1 child的same user journey"): each
+  // plan centre has its own Contact panel, as for one child. A centre for both
+  // children gets one message about both; Get ready saves the family plan.
+  // From Saved / For you back to the map and its search bar (14 Oct 2026, user:
+  // "for you里的find childcare会调用旧页面设计，现在应该直接回到main page"): never
+  // the old list panel. Without a starting point the address field gets focus.
+  const backToSearch = () => {
+    close(); setFormOpen(true); setSearchCollapsed(false); setMobilePane("map");
+    // Wait until the dialog has really closed (its exit animation keeps the page
+    // inert, and closing hands focus back to the button that opened it).
+    if (!draft.pickup) {
+      let tries = 0;
+      const focusWhenClosed = () => document.querySelector("dialog[open]") && tries++ < 40
+        ? setTimeout(focusWhenClosed, 50)
+        : requestAnimationFrame(() => setSearchFocus({ field: "pickup", at: Date.now() }));
+      setTimeout(focusWhenClosed, 0);
+    }
+  };
+  // Compare for two children: Contact leaves Compare and opens the same panel
+  // as the plan's centre for both children, with that option's Checklist.
+  const contactFromFamilyCompare = (p) => {
+    const plan = family.state?.plan;
+    if (!plan || !p?.children?.a || !p?.children?.b) return;
+    const option = (family.built?.all ?? []).find((o) => o.kind === "same" && o.a.id === p.id) ?? { id: `same:${p.id}`, kind: "same", a: p.children.a, b: p.children.b };
+    const lp = option === family.option && family.lp ? family.lp : family.plans?.get(option.id) ?? leavePlan(option, plan, family.legs);
+    contactFamily(option.a, "ab", { option, plan }, ["a", "b"].map((k) => childRequest(plan, k)), familyChecklistEntry(option, plan, lp));
+  };
+  // Ticked questions are kept per centre and visit; a centre for both children
+  // has its own list.
+  const enquiryKey = (e) => "contact-v2:" + e.p.id + scenario(e.request) + (e.family ? ":family:" + scenario(canonicalRequest(e.family.requests[1])) : "");
+  const contactFamily = (p, key, { option, plan } = {}, requests, entry) => {
+    if (!p || !requests?.length) return;
+    if (key !== "ab") { setEnquiry({ p: withReviewQuestions(p, questionSelection, 'contact-v2:' + p.id + scenario(canonicalRequest(requests[0]))), request: canonicalRequest(requests[0]), forChild: childName(key), chatRequests: [{ ...requests[0], label: childName(key) }], entry }); }
+    else setEnquiry({ p, request: canonicalRequest(requests[0]), family: { option, plan, requests: requests.map((r, i) => ({ ...r, label: childName(["a", "b"][i]) })) }, entry });
+    setDialogError(null);
+    setDialog("enquiry");
+  };
   // Saving the same plan again (same centre(s) and day) updates it and keeps the ticks.
   const saveChecklist = (entry) => setChecklists(cs => {
     const old = cs.find(e => e.id === entry.id), next = { ...entry, checked: old?.checked ?? entry.checked ?? [] };
@@ -977,8 +1026,9 @@ export default function App({
     // (`planOff` in VirtualEnquiry): once per reply and search, so Undo sticks.
     declined: (t, off) => {
       const stamp = familyMode ? family.state?.results : results;
-      if (!stamp || !t.centre?.id || !t.job?.id) return;
-      const seen = declinedApplied.current.get(stamp) ?? new Set(), mark = `${t.job.id}:${off.why}:${off.labels.join(",")}`;
+      const ref = t.id ?? t.job?.id;
+      if (!stamp || !t.centre?.id || !ref) return;
+      const seen = declinedApplied.current.get(stamp) ?? new Set(), mark = `${ref}:${off.why}:${off.labels.join(",")}`;
       if (seen.has(mark)) return;
       seen.add(mark); declinedApplied.current.set(stamp, seen);
       if (t.family && familyMode && family.state?.plan) {
@@ -1020,7 +1070,7 @@ export default function App({
     },
   };
   return (
-    <EnquiryProvider actions={enquiryActions} onChatChange={setChatOpen} syncKey={(familyMode ? family.state?.results : results) ?? null}>
+    <EnquiryProvider actions={enquiryActions} onChatChange={setChatOpen}>
     <main
       className={`equalpath map-first ${theme} mobile-${mobilePane}${navCollapsed ? " nav-collapsed" : ""}`}
       tabIndex={-1}
@@ -1533,6 +1583,7 @@ export default function App({
             onChecklist={(entry) => { saveChecklist(entry); savedToast(entry.id); }}
             compareIds={compareIds} onCompare={toggleCompareMany}
             onViewOption={(option) => interests.update(h => recordFamilyOptionView(h, family.state?.results, option))}
+            onContact={contactFamily} onDetails={openFamilyCentre}
             onToast={notify} />
         )}
         {oneShown && (
@@ -1600,7 +1651,10 @@ export default function App({
           introReduced={introReduced}
         /></Suspense>}
       </div>
-      {tourInvite && introPhase === "ready" && !tourOpen && !results && !draft.pickup && !dialog && !choosing && (
+      {privacyPending && introPhase === "ready" && !tourOpen && !dialog && (
+        <PrivacyCard onDone={() => privacyDone()} onRead={() => privacyDone(true)} />
+      )}
+      {tourInvite && !privacyPending && introPhase === "ready" && !tourOpen && !results && !draft.pickup && !dialog && !choosing && (
         <aside className="tour-invite" aria-label="Quick tour">
           <CircleHelp size={20} aria-hidden="true" />
           <p><strong>New here?</strong> A 1-minute tour shows how to search, compare and contact centres.</p>
@@ -1655,6 +1709,8 @@ export default function App({
                           ? "Contact the centre"
                           : dialog === "settings"
                             ? "Settings"
+                            : dialog === "privacy"
+                              ? "Privacy notice"
                             : dialog === "ordering"
                               ? "Why this order?"
                               : "About our information"
@@ -1671,7 +1727,7 @@ export default function App({
               failure={saveFailure}
               onRetry={reloadLibrary}
               onReopen={reopenFavourite}
-              onStartSearch={() => { close(); setFormOpen(true); setMobilePane("list"); }}
+              onStartSearch={backToSearch}
               currentRequest={activeRequest ?? draft}
               savedCheck={savedCheck}
               onCheckSaved={checkSavedCentres}
@@ -1686,7 +1742,7 @@ export default function App({
               onDiscover={close}
               suggestions={<Recommendations mode={mode} library={library} interests={interests}
                 request={!dirty ? activeRequest : null}
-                onDiscover={() => { close(); setFormOpen(true); setMobilePane('list'); }}
+                onDiscover={backToSearch}
                 onSave={item => { if (saveFavourite(item)) notify('Centre saved.'); }}
                 onOpen={(p, request) => { setProfile({ p, request }); setSelected(p.id); setDialogError(null); setDialog('details'); }} />}
             />
@@ -1820,9 +1876,7 @@ export default function App({
                         items={comparison.items.filter(p => compareIds.includes(p.id))}
                         children={comparison.children}
                         onRemove={removeCompare}
-                        onPrepare={(p, key) => prepare(p, comparison.children[key].request, childName(key))}
-                        plan={family.state?.plan}
-                        onToast={notify}
+                        onContact={contactFromFamilyCompare}
                       /> : <Comparison
                         items={comparison.items.filter((p) =>
                           compareIds.includes(p.id),
@@ -1842,6 +1896,7 @@ export default function App({
                 )}
               </>
             ))}
+          {dialog === "privacy" && <PrivacyNoticeBody />}
           {dialog === "ordering" && (
             <div className="prose">
               <OrderingNote ordering={results?.ordering} radius={results?.request.radius} />
@@ -1869,6 +1924,7 @@ export default function App({
             <>
               <RecommendationLearning interests={interests} mode={mode} />
               <div className="setting-line"><span>Getting started</span><button className="secondary" onClick={startTour}>Replay quick tour</button></div>
+              <div className="setting-line"><span>Privacy</span><button className="secondary" onClick={() => setDialog("privacy")}>Read privacy notice</button></div>
               <div className="setting-line">
                 <span>Appearance</span>
                 <div className="theme-buttons">
@@ -1990,7 +2046,10 @@ export default function App({
       </DialogPresence>
       {dialog === "enquiry" && enquiry && (
         <Enquiry
-          key={enquiry.p.id + scenario(enquiry.request)}
+          key={enquiry.p.id + scenario(enquiry.request) + (enquiry.family ? ":family" : "")}
+          family={enquiry.family}
+          chatRequests={enquiry.chatRequests}
+          onReopen={enquiry.entry ? (() => { const again = enquiry; return () => { setEnquiry(again); setDialogError(null); setDialog("enquiry"); }; })() : undefined}
           p={enquiry.p}
           request={enquiry.request}
           tourBehind={tourOpen}
@@ -2001,9 +2060,9 @@ export default function App({
             )}
             {enquiry.forChild && <p className="notice">Questions for {enquiry.forChild}</p>}
           </>}
-          selection={questionSelection["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]}
-          onSelection={(ids) => setQuestionSelection((x) => ({ ...x, ["contact-v2:" + enquiry.p.id + scenario(enquiry.request)]: ids }))}
-          onPreparation={() => startPreparation(enquiry.p, enquiry.request)}
+          selection={questionSelection[enquiryKey(enquiry)]}
+          onSelection={(ids) => setQuestionSelection((x) => ({ ...x, [enquiryKey(enquiry)]: ids }))}
+          onPreparation={() => { if (enquiry.entry) { saveChecklist(enquiry.entry); showChecklist(enquiry.entry.id); } else startPreparation(enquiry.p, enquiry.request); }}
         />
       )}
       {tourOpen && <GettingStarted onClose={finishTour} onStep={showTourStep} reduced={reduced || introReduced} />}

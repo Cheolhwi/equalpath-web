@@ -194,3 +194,36 @@
 .equalpath .compact-request:not(:has(.compact-request-change)) .compact-request-text p { grid-column: 1 / -1; }
 .equalpath .compact-request > .compact-request-change { grid-column: 2; grid-row: 1; }
 .equalpath .compact-request-text small { grid-column: 1 / -1; grid-row: 2; margin-top: 0; }
+
+/* First visit: the privacy card (12 Oct 2026), in the tour offer's place;
+   the tour offer waits until it is dismissed. */
+.privacy-card {
+  position: absolute; left: 50%; bottom: 44px; z-index: 7; transform: translateX(-50%);
+  display: flex; align-items: flex-start; gap: 12px; width: min(520px, calc(100% - 24px));
+  padding: 16px 18px; border: 1px solid var(--rule); border-radius: 20px;
+  background: color-mix(in srgb, var(--paper) 96%, transparent); color: var(--ink); box-shadow: 0 12px 32px #30382f1f;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  animation: privacy-card-in 360ms cubic-bezier(.2, .8, .2, 1) both;
+}
+.privacy-card-icon { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; background: var(--soft); color: var(--accent); }
+.privacy-card-body { display: grid; gap: 6px; min-width: 0; }
+.privacy-card-body strong { font-size: 15px; line-height: 1.3; }
+.privacy-card-body ul { display: grid; gap: 3px; margin: 0; padding-left: 18px; color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+.privacy-card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; margin-top: 6px; }
+.privacy-card-actions .primary { min-height: 40px; padding: 0 22px; border-radius: 999px; font-size: 14px; font-weight: 650; }
+.privacy-card-actions .text-link { min-height: 40px; padding: 0; font-size: 14px; font-weight: 600; }
+@keyframes privacy-card-in { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@media (prefers-reduced-motion: reduce) { .privacy-card { animation: none; } }
+@media (max-width: 760px) {
+  .privacy-card { left: 12px; right: 12px; bottom: 40px; width: auto; transform: none; padding: 14px; gap: 10px; animation-name: privacy-card-in-phone; }
+  .privacy-card-icon { flex-basis: 32px; width: 32px; height: 32px; }
+  .privacy-card-body ul { font-size: 13px; }
+}
+@keyframes privacy-card-in-phone { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.privacy-notice .privacy-updated { color: var(--muted); font-size: 13px; }
+.privacy-notice h3 { margin: 22px 0 8px; font-size: 16px; }
+.privacy-notice ul { display: grid; gap: 6px; padding-left: 20px; }
+.privacy-notice p, .privacy-notice li { font-size: 15px; line-height: 1.55; }
+.privacy-notice p.privacy-updated { font-size: 13px; }
+.privacy-notice h3 { font-weight: 650; }
+@media (max-width: 760px) { .privacy-notice p, .privacy-notice li { font-size: 14.5px; } }

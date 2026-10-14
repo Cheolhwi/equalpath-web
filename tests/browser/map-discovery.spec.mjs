@@ -25,7 +25,6 @@ test("first visit shows nearby childcare without a request; partial place search
   await expect(page.locator(".map-search-dock #deadline strong")).toHaveText("Set time");
   await expect(page.locator(".provider-pin").first()).toBeVisible();
   await openNearby(page);
-  await expect(page.locator(".nearby-card").first()).toBeVisible();
   expect(calls.some((c)=>c.action === "search")).toBe(false);
   await openSearch(page);
   await expect(page.locator(".map-region")).toHaveAttribute("data-map-lat",/^3\.139/);
@@ -40,7 +39,6 @@ test("first visit shows nearby childcare without a request; partial place search
   await openSearch(page);
   await expect(page.locator(".map-search-dock #deadline strong")).toHaveText("Set time");
   await openNearby(page);
-  await expect(page.locator(".nearby-card").first()).toBeVisible();
   await openSearch(page);
   await expect(page.locator(".pickup-pin")).toBeVisible();
   await expect.poll(async()=>Number(await page.locator(".map-region").getAttribute("data-map-lat"))).toBeCloseTo(3.1341,4);

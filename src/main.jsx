@@ -20,4 +20,5 @@ import "./mobile-chrome.css";
 import "./centre-profile.css";
 import "./spacing.css";
 import "./contact-panel.css";
+import "./saved.css";
 createRoot(document.getElementById("root")).render(<Experience />);

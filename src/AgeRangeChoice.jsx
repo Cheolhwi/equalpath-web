@@ -3,7 +3,7 @@ import { CHILD_AGES } from "../shared/request.mjs";
 import "./age-choice.css";
 
 // How old is the child, in whole years: one row of short segments
-// (Under 1 · 1 · 2 · 3 · 4 · 5 · 6). Used by the search form and the map dock,
+// (Under 1 · 1 · 2 · 3 · 4 · 5; 6 was removed on 14 Oct 2026). Used by the search form and the map dock,
 // for one child or for each of two children (`who` names the child).
 export const ageWords = (age) => age === "0" ? "Under 1 year" : `${String(age).replace("-", "–")} ${age === "1" ? "year" : "years"}`;
 

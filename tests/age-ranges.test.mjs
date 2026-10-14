@@ -33,8 +33,9 @@ test("younger-group preparation keeps the prompt about feeding and spare clothes
   assert.ok(!preparationFor(fixtureProviders[0], { ...request, age: "4-6" }).packing.some(x => x.id === "young"));
 });
 
-test("the age choice is one row of whole years, from under 1 to 6", () => {
-  assert.deepEqual(CHILD_AGES.map(([, label]) => label), ["Under 1", "1", "2", "3", "4", "5", "6"]);
+test("the age choice is one row of whole years, from under 1 to 5", () => {
+  assert.deepEqual(CHILD_AGES.map(([, label]) => label), ["Under 1", "1", "2", "3", "4", "5"]);
+  assert.ok(Object.keys(requestErrors({ ...request, age: "6" }, { requireAge: true })).includes("age"), "6 is not a valid age");
   assert.deepEqual(ageBounds("0"), [0, 12]);
   assert.deepEqual(ageBounds("4"), [48, 60]);
   assert.equal(ageShort("0"), "under 1");

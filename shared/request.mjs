@@ -26,8 +26,10 @@ export const ageBounds = (age) => age === "1-3" ? [12, 48] : age === "4-6" ? [48
 // 1–3 / 4–6 groups: centres publish limits like 18 months or under 6, and a
 // group that crosses them could only ever say "Ask". "1-3" and "4-6" stay
 // valid so saved searches and older links still work.
-export const CHILD_AGES = [["0", "Under 1"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"]];
-export const isChildAge = (age) => /^(?:[0-6]|1-3|4-6)$/.test(String(age ?? ""));
+// Under 1 to 5 (14 Oct 2026, user: "age里的6选项需要移除…6不是合法数字"); "1-3"/"4-6"
+// stay valid only for old saved searches and links.
+export const CHILD_AGES = [["0", "Under 1"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"]];
+export const isChildAge = (age) => /^(?:[0-5]|1-3|4-6)$/.test(String(age ?? ""));
 // Short text for chips and table headers: "under 1", "4", "1–3".
 export const ageShort = (age) => age === "0" ? "under 1" : age ? String(age).replace("-", "–") : "?";
 export function requestErrors(r, { requireAge = false } = {}) {

@@ -131,14 +131,6 @@
 .family-care-notes .family-ok { color: var(--green, var(--accent)); }
 .family-care-notes .family-ask { color: var(--amber); }
 .family-care-notes .family-off { color: var(--red, #9a3b2c); }
-.family-compare-contact { margin-top: 16px; padding: 16px; border: 1px solid var(--accent); border-radius: 16px; background: var(--paper); display: grid; gap: 10px; }
-.family-compare-contact-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.family-compare-contact h3 { margin: 0; font-size: 18px; }
-.family-compare-contact > p { margin: 0; color: var(--muted); font-size: 14px; }
-.family-compare-message { margin: 0; white-space: pre-wrap; font: inherit; font-size: 13.5px; line-height: 1.55; background: var(--soft); padding: 12px; border-radius: 12px; max-height: 260px; overflow: auto; }
-.family-compare-contact > .primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border-radius: 12px; }
-.family-compare-contact-more { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
-.family-compare-contact-more .text-link { min-height: 36px; padding: 0; font-size: 14px; }
 /* Option cards in the two-children panel: Compare beside See plan. */
 .family-option-actions { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; }
 .family-option-compare { width: auto; padding-inline: 14px; }

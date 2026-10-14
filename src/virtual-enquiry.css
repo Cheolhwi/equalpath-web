@@ -179,3 +179,32 @@
 .equalpath .virtual-group-head { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--muted); font-size: 12.5px; font-weight: 650; }
 .equalpath .virtual-group-head > span { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--soft); color: var(--ink); font-size: 11px; }
 .equalpath .virtual-group-result { margin-top: 6px; }
+
+/* Ask for me as questions about the listing (13 Oct 2026). */
+.enquiry-chat-note { display: flex; gap: 6px; align-items: flex-start; }
+.enquiry-chat-note svg { flex-shrink: 0; margin-top: 2px; }
+.ask-ai-line { display: flex; align-items: flex-start; gap: 6px; margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.ask-ai-line svg { flex-shrink: 0; margin-top: 2px; color: var(--accent); }
+.ask-ai-offer { display: grid; gap: 8px; padding: 12px; border: 1px dashed var(--rule); border-radius: 14px; background: var(--bg); }
+.ask-ai-offer p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+.ask-ai-offer button { justify-self: start; min-height: 38px; padding: 0 14px; border-radius: 999px; font-size: 13px; }
+.ask-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ask-chips button { min-height: 34px; padding: 6px 12px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 12.5px; font-weight: 600; line-height: 1.3; text-align: left; }
+.ask-chips button:hover:not(:disabled) { border-color: var(--accent); background: var(--soft); }
+.ask-answer .virtual-reply-text { white-space: pre-wrap; }
+/* The question box looks like the search bar's address field (14 Oct 2026,
+   user: "按钮有点丑…得符合我的网页ui设计"): one soft field with the send button
+   inside it; the button is the site's dark round control, and a quiet icon
+   while there is nothing to send. */
+.ask-input { padding: 10px 12px 12px; border-top: 1px solid var(--rule); flex-shrink: 0; }
+.ask-field { display: flex; align-items: center; gap: 6px; min-height: 46px; padding: 0 4px 0 14px; border: 1px solid transparent; border-radius: 12px; background: var(--bg); transition: border-color .16s, background .16s; }
+.ask-field:focus-within { border-color: var(--accent); background: var(--paper); }
+.equalpath .ask-field input { flex: 1; min-width: 0; height: 44px; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--ink); font: inherit; font-size: 14px; box-shadow: none; }
+.equalpath .ask-field input:focus { outline: none; box-shadow: none; }
+.ask-field input::placeholder { color: var(--muted); }
+.equalpath .ask-field button { display: grid; place-items: center; flex-shrink: 0; width: 36px; min-width: 36px; height: 36px; min-height: 36px; padding: 0; border: 0; border-radius: 10px; background: var(--nav-selected, var(--ink)); color: var(--nav-selected-text, var(--paper)); transition: background .16s, color .16s; }
+.equalpath .ask-field button:hover:not(:disabled) { background: var(--accent); }
+.equalpath .ask-field button:disabled { background: transparent; color: var(--muted); opacity: 1; cursor: default; }
+.equalpath .ask-field button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 760px) { .equalpath .ask-field input { font-size: 16px; } }
+.ask-answer .virtual-ai-note .text-link { min-height: 0; padding: 0; vertical-align: baseline; }

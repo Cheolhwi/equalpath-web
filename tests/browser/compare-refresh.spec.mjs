@@ -78,7 +78,8 @@ test('map picking and notices use contained rounded controls', async ({ page }) 
   await picker.getByRole('button', { name: 'Cancel', exact: true }).click();
   await page.locator('.compare-tray').getByRole('button', { name: 'Clear comparison' }).click();
   await page.reload(); await openNearby(page);
-  await page.locator('.nearby-card').first().click();
+  await page.locator('.provider-pin').first().click();
+  await page.locator('.map-card-details').first().click();
   const notice = page.locator('.toast'); await expect(notice).toBeVisible();
   await expect(notice).toContainText('Choose an address, age and times first.');
   const b = await notice.boundingBox(); expect(Math.abs(b.y + b.height / 2 - 422)).toBeLessThan(2);

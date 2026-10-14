@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Bell, Bookmark, Check, ChevronDown, Clock3, Heart, Hourglass, Leaf, MapPin, MessageCircle, Receipt, RotateCcw, Search, Shapes, ShieldCheck, Sparkles, WalletCards, X } from 'lucide-react';
+import { ArrowRight, Bell, Bookmark, Check, ChevronDown, CircleHelp, Clock3, Heart, Hourglass, Leaf, MapPin, MessageCircle, Receipt, RotateCcw, Search, Shapes, ShieldCheck, Sparkles, WalletCards, X } from 'lucide-react';
 import { DISCOVERY_PREFERENCES, interestSeeds, recommendCentres, hideRecommendation, normalisePreferenceTopics } from '../shared/recommendations.mjs';
 import { feeSummary } from '../shared/result-summary.mjs';
 import { isShortCare } from '../shared/request.mjs';
@@ -58,26 +58,6 @@ export function PreferenceSetup({ history, onSave, compact = false, exiting = fa
   </section>;
 }
 
-function RecommendationHero({ cards, onOpen, hasUsuals }) {
-  const preview = cards.slice(0, 3);
-  if (!preview.length) return null;
-  return <section className="recommendation-hero" aria-labelledby="recommendation-hero-title">
-    <div className="recommendation-hero-heading">
-      <div className="recommendation-hero-emblem"><Sparkles size={26} aria-hidden="true" /></div>
-      <div><h4 id="recommendation-hero-title">{hasUsuals ? 'Centres you’ve looked at' : 'Good matches for this search'}</h4><p>{hasUsuals ? 'These still fit your current search.' : 'Based on your search and your choices.'}</p></div>
-    </div>
-    <div className="recommendation-hero-cards" aria-label="Suggested centres">
-      {preview.map(({ p, reason }) => <button key={p.id} type="button" className="recommendation-hero-card" onClick={() => onOpen(p)} aria-label={`View ${p.name}`}>
-        <span className="recommendation-hero-card-icon"><Heart size={18} aria-hidden="true" /></span>
-        <strong>{displayName(p.name)}</strong>
-        <small>{reason}</small>
-        <span className="recommendation-hero-card-fee">{feeSummary(p).label}</span>
-      </button>)}
-    </div>
-    <a className="recommendation-hero-action" href="#recommendation-list">See all suggestions <ArrowRight size={17} aria-hidden="true" /></a>
-  </section>;
-}
-
 export default function Recommendations({ mode, library, interests, request, onDiscover, onOpen, onSave }) {
   const { history, update, reset, error: storageError } = interests;
   const seedIds = [...new Set([...interestSeeds(library, history, request?.careType).map(s => s.id), ...(history.enabled ? history.hidden.filter(s=>s.careType===request?.careType).map(s=>s.id) : [])])].slice(0,100).sort();
@@ -105,34 +85,42 @@ export default function Recommendations({ mode, library, interests, request, onD
     } catch (e) { if (alive.current) setFailure(errorMessage(e)); }
     finally { if (alive.current) setOpening(null); }
   };
-  return <section className="recommendations" aria-labelledby="recommendations-title">
-    <header className="recommendations-heading">
-      <div className="recommendations-emblem"><Heart size={23} aria-hidden="true" /></div>
-      <div><h3 id="recommendations-title">You may also like</h3><p>{history.preferences?.length ? 'Based on your choices, your search and the centres you’ve saved.' : 'Tell us what matters to you, and we’ll suggest centres for your search.'}</p></div>
-    </header>
-    <PreferenceSetup history={history} onSave={(topics, status) => update(h => ({ ...h, preferences: topics, preferenceSetup: status }))} />
-    {request && <div className="recommendations-context"><MapPin size={17} aria-hidden="true" /><span>{request.pickup.label}
-      {isShortCare(request) && <small>{new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${request.date}T12:00:00Z`))} · {request.deadline}–{request.end}</small>}</span>
-      <button className="text-link" onClick={onDiscover}>Change search <ArrowRight size={15} /></button></div>}
+  const savedIds = new Set(library.favourites.map((f) => f.id));
+  const dateText = request && isShortCare(request) ? `${new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${request.date}T12:00:00Z`))} · ${request.deadline}–${request.end}` : '';
+  /* For you (14 Oct 2026, user: "for you也改一下吧"): the same shape as the
+     Childcare tab — one soft panel that says what the suggestions are for
+     (the search and your choices), then one list of centres. The top-three
+     preview that repeated the list is gone. */
+  return <section className="recommendations foryou" aria-labelledby="recommendations-title">
+    <div className="foryou-panel">
+      <h3 id="recommendations-title"><Heart size={17} aria-hidden="true" />You may also like</h3>
+      {request && <p className="foryou-row"><MapPin size={15} aria-hidden="true" /><span>For <strong>{request.pickup.label}</strong>{dateText && <> · {dateText}</>}</span><button className="text-link" onClick={onDiscover}>Change search</button></p>}
+      <PreferenceSetup history={history} onSave={(topics, status) => update(h => ({ ...h, preferences: topics, preferenceSetup: status }))} />
+    </div>
     {storageError && <p className="notice" role="status">{storageError}</p>}
     {failure && <div className="error-box" role="alert"><p>{failure}</p><button onClick={() => setRetry(n => n + 1)}>Try again</button></div>}
     {!request ? <div className="recommendations-empty"><Search size={26} /><h4>What care do you need this time?</h4><p>Search first, so we can check the place, age and times.</p><button className="primary" onClick={onDiscover}>Find childcare <ArrowRight size={16} /></button></div>
       : !ready && !failure ? <p className="recommendations-loading" role="status">Checking centre details…</p>
       : ready && <>
-        {!seedIds.length && !history.preferences?.length && <p className="notice">These are nearby centres. Save or compare a few, and the suggestions will get better.</p>}
-        <RecommendationHero cards={cards} onOpen={open} hasUsuals={seedIds.length > 0} />
-        <div id="recommendation-list" className="recommendation-grid">{cards.map(({ p, reason, basedOn, preferenceMatches }) => <article className="recommendation-card" key={p.id}>
-          <div className="recommendation-reason"><Heart size={15} aria-hidden="true" /><span>{reason}</span></div>
-          <h4>{displayName(p.name)}</h4>
-          <p className="recommendation-area">{placeLabel(p)}</p>
-          <p className="recommendation-fee"><span>Fee</span><strong>{feeSummary(p).label}</strong></p>
-          {basedOn && <p className="recommendation-anchor">Similar to {displayName(basedOn)}</p>}
-          {preferenceMatches?.filter(match => match.state === 'supported').length > 1 && <p className="recommendation-tags">Parents also mention: {preferenceMatches.filter(match => match.state === 'supported').slice(1).map(match => DISCOVERY_PREFERENCES.find(option => option.id === match.id)?.label).filter(Boolean).join(', ')}</p>}
-          <p className="recommendation-check">{p.fit.conditions.some(c => ['admission', 'care', 'age'].includes(c.id) && c.state === 'unknown') ? 'Some details need checking with the centre.' : 'The listed details fit your search.'}</p>
-          <div className="recommendation-actions"><button className="secondary" onClick={() => onSave(favourite(p))}><Bookmark size={16} />Save</button>
-            <button className="primary" disabled={!!opening} onClick={() => open(p)}>{opening === p.id ? 'Checking…' : 'View centre'}<ArrowRight size={16} /></button></div>
-          <button className="recommendation-dismiss text-link" onClick={() => update(h => hideRecommendation(h, p))} aria-label={`Not interested in ${p.name}`}><X size={14} />Not interested</button>
-        </article>)}</div>
+        {!seedIds.length && !history.preferences?.length && <p className="foryou-hint">These are nearby centres. Save or compare a few, and the suggestions will get better.</p>}
+        {cards.length > 0 && <ul id="recommendation-list" className="foryou-list" aria-label="Suggested centres">{cards.map(({ p, reason, basedOn, preferenceMatches }) => {
+          const asks = p.fit.conditions.some(c => ['admission', 'care', 'age'].includes(c.id) && c.state === 'unknown');
+          const also = preferenceMatches?.filter(match => match.state === 'supported').slice(1).map(match => DISCOVERY_PREFERENCES.find(option => option.id === match.id)?.label).filter(Boolean) ?? [];
+          const saved = savedIds.has(p.id);
+          return <li key={p.id}><article className="recommendation-card foryou-card">
+            <p className="recommendation-reason"><Heart size={14} aria-hidden="true" /><span>{reason}</span></p>
+            <h4>{displayName(p.name)}</h4>
+            <p className="foryou-meta">{[placeLabel(p), feeSummary(p).label].filter(Boolean).join(' · ')}</p>
+            {basedOn && <p className="foryou-meta">Similar to {displayName(basedOn)}</p>}
+            {also.length > 0 && <p className="recommendation-tags">Parents also mention: {also.join(', ')}</p>}
+            <p className={`foryou-fit ${asks ? 'unknown' : 'supported'}`}>{asks ? <CircleHelp size={14} aria-hidden="true" /> : <Check size={14} aria-hidden="true" />}{asks ? 'Some details need checking with the centre.' : 'The listed details fit your search.'}</p>
+            <div className="foryou-actions">
+              <button className="secondary foryou-open" disabled={!!opening} onClick={() => open(p)}>{opening === p.id ? 'Checking…' : 'View centre'}<ArrowRight size={15} aria-hidden="true" /></button>
+              <button className="foryou-tool" aria-pressed={saved} disabled={saved} onClick={() => onSave(favourite(p))}><Bookmark size={15} fill={saved ? 'currentColor' : 'none'} aria-hidden="true" /><span>{saved ? 'Saved' : 'Save'}</span></button>
+              <button className="foryou-tool recommendation-dismiss" onClick={() => update(h => hideRecommendation(h, p))} aria-label={`Not interested in ${p.name}`} title="Not interested"><X size={15} aria-hidden="true" /><span>Not interested</span></button>
+            </div>
+          </article></li>;
+        })}</ul>}
         {!cards.length && <div className="recommendations-empty"><Check size={26} /><h4>No new suggestions for this search</h4><p>Try another location or time. Your saved centres are still in Childcare.</p><button className="secondary" onClick={onDiscover}>Change search <ArrowRight size={16} /></button></div>}
         {!!cards.length && <p className="recommendations-footnote">Based on your search and what parents say in reviews. Ask the centre if they have a place for your child.</p>}
       </>}

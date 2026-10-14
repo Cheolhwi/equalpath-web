@@ -135,13 +135,12 @@ export async function openResults(page) {
   }).toPass({ timeout: 15000 });
 }
 
-// Before a search the map's list button reads "Nearby centres".
+// Before a search nearby centres show only as map pins: the "Nearby centres"
+// list button was removed (13 Oct 2026, user request).
 export async function openNearby(page) {
   await skipOnboarding(page);
-  const list = page.locator('.map-quick-actions button').first();
-  await expect(list).toContainText(/^Nearby centres/);
-  await list.click();
-  await expect(page.locator('.discovery-panel .nearby-results')).toBeVisible();
+  await expect(page.locator('.map-quick-actions')).toHaveCount(0);
+  await expect(page.locator('.provider-pin').first()).toBeVisible();
 }
 
 // After a one-child search the "Suggested for your child" panel (a bottom sheet
