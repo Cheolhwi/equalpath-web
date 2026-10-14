@@ -834,6 +834,21 @@ export default function App({
   // Two children (14 Oct 2026, user: "2children…得符合1 child的same user journey"): each
   // plan centre has its own Contact panel, as for one child. A centre for both
   // children gets one message about both; Get ready saves the family plan.
+  // From Saved / For you back to the map and its search bar (14 Oct 2026, user:
+  // "for you里的find childcare会调用旧页面设计，现在应该直接回到main page"): never
+  // the old list panel. Without a starting point the address field gets focus.
+  const backToSearch = () => {
+    close(); setFormOpen(true); setSearchCollapsed(false); setMobilePane("map");
+    // Wait until the dialog has really closed (its exit animation keeps the page
+    // inert, and closing hands focus back to the button that opened it).
+    if (!draft.pickup) {
+      let tries = 0;
+      const focusWhenClosed = () => document.querySelector("dialog[open]") && tries++ < 40
+        ? setTimeout(focusWhenClosed, 50)
+        : requestAnimationFrame(() => setSearchFocus({ field: "pickup", at: Date.now() }));
+      setTimeout(focusWhenClosed, 0);
+    }
+  };
   // Compare for two children: Contact leaves Compare and opens the same panel
   // as the plan's centre for both children, with that option's Checklist.
   const contactFromFamilyCompare = (p) => {
@@ -1712,7 +1727,7 @@ export default function App({
               failure={saveFailure}
               onRetry={reloadLibrary}
               onReopen={reopenFavourite}
-              onStartSearch={() => { close(); setFormOpen(true); setMobilePane("list"); }}
+              onStartSearch={backToSearch}
               currentRequest={activeRequest ?? draft}
               savedCheck={savedCheck}
               onCheckSaved={checkSavedCentres}
@@ -1727,7 +1742,7 @@ export default function App({
               onDiscover={close}
               suggestions={<Recommendations mode={mode} library={library} interests={interests}
                 request={!dirty ? activeRequest : null}
-                onDiscover={() => { close(); setFormOpen(true); setMobilePane('list'); }}
+                onDiscover={backToSearch}
                 onSave={item => { if (saveFavourite(item)) notify('Centre saved.'); }}
                 onOpen={(p, request) => { setProfile({ p, request }); setSelected(p.id); setDialogError(null); setDialog('details'); }} />}
             />

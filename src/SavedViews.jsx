@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { displayName, placeLabel, categoryLabel, dateLabel } from "../shared/display.mjs";
-import { Bookmark, ArrowRight, Trash2, Pencil, Save, CalendarDays, Clock3, Users, RefreshCw, Check, CircleHelp } from "lucide-react";
+import { Bookmark, ArrowRight, Trash2, Pencil, Save, CalendarDays, Clock3, Users, RefreshCw, Check, CircleHelp, MapPin, Search, StickyNote, AlertTriangle } from "lucide-react";
 import {
   favourite,
   compareFacts,
@@ -64,7 +64,25 @@ const checkStatus = (p) => p.fit?.counts?.conflict
     ? { label: "Ask the centre", tone: "unknown" }
     : { label: "Matches your search", tone: "supported" };
 
-export function SavedCheckPanel({ entries, currentRequest, checking, result, onStartSearch, onCheck, onOpen }) {
+// A date in words for the visit box ("Mon, 12 Oct"); the picker stays native.
+const dateWords = (iso) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso ?? "")) return "";
+  try { return new Date(`${iso}T12:00:00+08:00`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "Asia/Kuala_Lumpur" }); } catch { return iso; }
+};
+function DateBox({ value, onChange, label }) {
+  return <label className="saved-date-box">
+    <span className={value ? "" : "placeholder"}>{dateWords(value) || "Choose date"}</span>
+    <CalendarDays size={17} aria-hidden="true" />
+    <input type="date" aria-label={label} value={value} onChange={(event) => onChange(event.target.value)}
+      onClick={(event) => { try { event.currentTarget.showPicker?.(); } catch { /* older browsers open it on their own */ } }} />
+  </label>;
+}
+const StatusIcon = ({ tone }) => tone === "supported" ? <Check size={13} aria-hidden="true" /> : tone === "conflict" ? <AlertTriangle size={13} aria-hidden="true" /> : <CircleHelp size={13} aria-hidden="true" />;
+
+/* Saved (14 Oct 2026, user: "saved这个单独的页面可能也要调整ui改改"): one visit
+   bar at the top checks every saved centre for the same day, and each saved
+   centre shows its own result — no second list of the same names below. */
+export function SavedCheckPanel({ entries, currentRequest, checking, result, onStartSearch, onCheck }) {
   const requestKey = checkRequestKey(currentRequest);
   const [form, setForm] = useState(() => ({
     careType: currentRequest?.careType ?? "short_term",
@@ -93,46 +111,41 @@ export function SavedCheckPanel({ entries, currentRequest, checking, result, onS
     }));
   }, [requestKey]);
   const update = (field, value) => setForm((previous) => ({ ...previous, [field]: value }));
-  return <section className="saved-check-panel" aria-labelledby="saved-check-title">
-    <div className="saved-check-heading">
-      <span className="saved-check-icon"><RefreshCw size={19} aria-hidden="true" /></span>
-      <div>
-        <h3 id="saved-check-title">Check all saved centres</h3>
-        <p>Use one date and time for all {entries.length} saved {entries.length === 1 ? "centre" : "centres"}.</p>
-      </div>
+  const counts = result?.status === "ready" && resultMatches ? result.items.reduce((c, item) => { c[checkStatus(item).tone]++; return c; }, { supported: 0, unknown: 0, conflict: 0 }) : null;
+  return <section className="saved-visit" aria-labelledby="saved-check-title">
+    <div className="saved-visit-head">
+      <h3 id="saved-check-title"><RefreshCw size={17} aria-hidden="true" />Check them for one visit</h3>
+      {form.pickup && <p className="saved-visit-from"><MapPin size={15} aria-hidden="true" /><span>From <strong>{form.pickup.label}</strong></span><button type="button" className="text-link" onClick={onStartSearch}>Change</button></p>}
     </div>
-    {!form.pickup ? <div className="saved-check-empty">
-      <p>Search with your starting point first. Then we can check all your saved centres at once.</p>
-      <button className="secondary" type="button" onClick={onStartSearch}><SearchIcon />Set up a search <ArrowRight size={15} /></button>
-    </div> : <>
-      <div className="saved-check-location"><Bookmark size={16} aria-hidden="true" /><span>{form.pickup.label}</span><button type="button" className="text-link" onClick={onStartSearch}>Change</button></div>
-      <form className="saved-check-form" onSubmit={(event) => { event.preventDefault(); if (canCheck) onCheck(formRequest); }}>
-        {short && <label className="saved-check-field"><span><CalendarDays size={16} aria-hidden="true" />Date</span><input aria-label="Date for all saved centres" type="date" value={form.date} onChange={(event) => update("date", event.target.value)} /></label>}
-        <div className="saved-check-field"><span><Users size={16} aria-hidden="true" />Child’s age</span><SelectMenu label="Child’s age for all saved centres" value={form.age} options={[{ value: "", label: "Choose age" }, ...(["1-3", "4-6"].includes(form.age) ? [{ value: form.age, label: ageWords(form.age) }] : []), ...CHILD_AGES.map(([age]) => ({ value: age, label: ageWords(age) }))]} onChange={(value) => update("age", value)} /></div>
-        {short && <>
-          <div className="saved-check-field"><span><Clock3 size={16} aria-hidden="true" />Start time</span><TimeInput variant="box" id="saved-check-start" label="Start time for all saved centres" pickerLabel="Start" value={form.deadline} suggest="09:00" onChange={(value) => update("deadline", value)} /></div>
-          <div className="saved-check-field"><span><Clock3 size={16} aria-hidden="true" />End time</span><TimeInput variant="box" id="saved-check-end" label="End time for all saved centres" pickerLabel="End" value={form.end} suggest="12:00" onChange={(value) => update("end", value)} /></div>
-        </>}
-        <button className="primary saved-check-submit" type="submit" disabled={!canCheck || checking}>{checking ? <><RefreshCw size={16} className="spin" />Checking saved centres…</> : <><Check size={16} />Check all saved centres</>}</button>
-      </form>
-      {!canCheck && <p className="saved-check-hint"><CircleHelp size={15} aria-hidden="true" />Choose an age{short ? ", date, start time and end time" : ""} to check every saved centre.</p>}
-    </>}
+    {!form.pickup ? <div className="saved-visit-empty">
+      <p>Search with your starting point first. Then all {entries.length} saved centres can be checked at once.</p>
+      <button className="secondary" type="button" onClick={onStartSearch}><Search size={16} aria-hidden="true" />Set up a search<ArrowRight size={15} aria-hidden="true" /></button>
+    </div> : <form className="saved-visit-form" onSubmit={(event) => { event.preventDefault(); if (canCheck) onCheck(formRequest); }}>
+      {short && <div className="saved-check-field"><span><CalendarDays size={15} aria-hidden="true" />Date</span><DateBox label="Date for all saved centres" value={form.date} onChange={(value) => update("date", value)} /></div>}
+      <div className="saved-check-field"><span><Users size={15} aria-hidden="true" />Child’s age</span><SelectMenu label="Child’s age for all saved centres" value={form.age} options={[{ value: "", label: "Choose age" }, ...(["1-3", "4-6"].includes(form.age) ? [{ value: form.age, label: ageWords(form.age) }] : []), ...CHILD_AGES.map(([age]) => ({ value: age, label: ageWords(age) }))]} onChange={(value) => update("age", value)} /></div>
+      {short && <>
+        <div className="saved-check-field"><span><Clock3 size={15} aria-hidden="true" />Start</span><TimeInput variant="box" id="saved-check-start" label="Start time for all saved centres" pickerLabel="Start" value={form.deadline} suggest="09:00" onChange={(value) => update("deadline", value)} /></div>
+        <div className="saved-check-field"><span><Clock3 size={15} aria-hidden="true" />End</span><TimeInput variant="box" id="saved-check-end" label="End time for all saved centres" pickerLabel="End" value={form.end} suggest="12:00" onChange={(value) => update("end", value)} /></div>
+      </>}
+      <button className="primary saved-visit-submit" type="submit" disabled={!canCheck || checking}>{checking ? <><RefreshCw size={16} className="spin" aria-hidden="true" />Checking…</> : <>Check all {entries.length}</>}</button>
+    </form>}
+    {form.pickup && !canCheck && <p className="saved-check-hint"><CircleHelp size={15} aria-hidden="true" />Choose an age{short ? ", date, start and end" : ""} to check every saved centre.</p>}
     {result?.status === "error" && <p className="error-box" role="alert">{result.error}</p>}
-    {result?.status === "ready" && !resultMatches && <p className="saved-check-hint" role="status"><CircleHelp size={15} aria-hidden="true" />You changed the plan. Check again to update every saved centre.</p>}
-    {result?.status === "ready" && resultMatches && <div className="saved-check-results" aria-live="polite">
-      <div className="saved-check-result-heading"><strong>Checked {result.items.length} of {entries.length} saved {entries.length === 1 ? "centre" : "centres"}</strong><small>{result.checkedAt ? `Just checked${result.request?.date ? ` · for ${dateLabel(result.request.date)}` : ""}` : ""}</small></div>
-      {result.failed > 0 && <p className="notice">We couldn’t check {result.failed} centre{result.failed === 1 ? "" : "s"}. {result.failed === 1 ? "It is" : "They are"} still saved.</p>}
-      <div className="saved-check-result-list">{result.items.map((item) => { const status = checkStatus(item); return <div className="saved-check-result" key={item.id}>
-        <div><strong>{displayName(item.name)}</strong><span className={`saved-check-status ${status.tone}`}><span aria-hidden="true">{status.tone === "supported" ? "✓" : status.tone === "unknown" ? "?" : "!"}</span>{status.label}</span></div>
-        <button className="text-link" type="button" onClick={() => onOpen(item, result.request)}>View details <ArrowRight size={14} /></button>
-      </div>; })}</div>
-    </div>}
+    {result?.status === "ready" && !resultMatches && <p className="saved-check-hint" role="status"><CircleHelp size={15} aria-hidden="true" />You changed the visit. Check again to update every saved centre.</p>}
+    {counts && <p className="saved-visit-summary" role="status" aria-live="polite">
+      <strong>Checked {result.items.length} of {entries.length}{result.request?.date ? ` for ${dateWords(result.request.date)}` : ""}</strong>
+      {counts.supported > 0 && <span className="supported"><Check size={13} aria-hidden="true" />{counts.supported} match</span>}
+      {counts.unknown > 0 && <span className="unknown"><CircleHelp size={13} aria-hidden="true" />{counts.unknown} to ask</span>}
+      {counts.conflict > 0 && <span className="conflict"><AlertTriangle size={13} aria-hidden="true" />{counts.conflict} don’t match</span>}
+    </p>}
+    {counts && result.failed > 0 && <p className="notice">We couldn’t check {result.failed} centre{result.failed === 1 ? "" : "s"}. {result.failed === 1 ? "It is" : "They are"} still saved.</p>}
   </section>;
 }
-function SearchIcon() { return <Search size={16} aria-hidden="true" />; }
 
 export function SavedLibrary({ library, failure, onRetry, onReopen, onEditFavourite, onDelete, onDiscover, onStartSearch = onDiscover, tab, setTab, suggestions, currentRequest, savedCheck, onCheckSaved, onOpenSaved }) {
   const entries = [...library.favourites].reverse().sort((a, b) => (b.savedAt ?? "").localeCompare(a.savedAt ?? ""));
+  // Results of "Check all" for the visit currently in the bar, shown on each centre.
+  const checked = savedCheck?.status === "ready" ? new Map(savedCheck.items.map((item) => [item.id, item])) : new Map();
   return <div className="saved-library">
     {failure && <div className="error-box" role="alert"><p>{failure}</p><button onClick={onRetry}>Try again</button></div>}
     <div className="saved-tabs" role="group" aria-label="Saved item type">
@@ -143,16 +156,24 @@ export function SavedLibrary({ library, failure, onRetry, onReopen, onEditFavour
       {!entries.length && <div className="empty-state"><Bookmark size={30} /><h3>Save childcare you like</h3>
         <p>Select Save on any centre to keep it here.</p>
         <button className="primary" onClick={onDiscover}>Find childcare <ArrowRight size={16} /></button></div>}
-      {entries.map(item => <article className="saved-row" key={item.id}>
-        <div className="section-kicker">{[categoryLabel(item), placeLabel(item)].filter(Boolean).join(" · ")}</div><h3>{displayName(item.name)}</h3>
-        {item.reason && <p>{item.reason}</p>}<small className="saved-dates">Saved {dateLabel(item.savedAt?.slice(0, 10)) ?? ""} · details {factDates(item.snapshot?.facts).replace(/^Checked/, "checked")}</small>
-        <div className="saved-actions">
-          <button className="secondary" onClick={() => onReopen(item)}>Check this centre <ArrowRight size={15} /></button>
-          <button aria-label={`Edit ${item.name}`} onClick={() => onEditFavourite(item)}><Pencil size={15} />Edit</button>
-          <button aria-label={`Remove ${item.name}`} onClick={() => onDelete("favourites", item.id)}><Trash2 size={15} />Remove</button>
-        </div>
-      </article>)}
-      {entries.length > 1 && <SavedCheckPanel entries={entries} currentRequest={currentRequest} checking={savedCheck?.status === "checking"} result={savedCheck} onStartSearch={onStartSearch} onCheck={onCheckSaved} onOpen={onOpenSaved} />}
+      {entries.length > 1 && <SavedCheckPanel entries={entries} currentRequest={currentRequest} checking={savedCheck?.status === "checking"} result={savedCheck} onStartSearch={onStartSearch} onCheck={onCheckSaved} />}
+      {entries.length > 0 && <ul className="saved-list" aria-label="Saved centres">{entries.map((item) => {
+        const hit = checked.get(item.id), status = hit ? checkStatus(hit) : null;
+        const listed = factDates(item.snapshot?.facts);
+        return <li key={item.id}><article className="saved-row saved-item">
+          <div className="saved-item-main">
+            <h3>{displayName(item.name)}</h3>
+            <p className="saved-item-meta">{[categoryLabel(item), placeLabel(item)].filter(Boolean).join(" · ")}<span aria-hidden="true"> · </span><span title={listed}>Saved {dateLabel(item.savedAt?.slice(0, 10)) ?? ""}</span></p>
+            {item.reason && <p className="saved-item-note"><StickyNote size={14} aria-hidden="true" /><span>{item.reason}</span></p>}
+          </div>
+          {status && <span className={`saved-item-status ${status.tone}`}><StatusIcon tone={status.tone} />{status.label}</span>}
+          <div className="saved-item-actions">
+            <button className="secondary saved-item-open" onClick={() => hit ? onOpenSaved(hit, savedCheck.request) : onReopen(item)}>{hit ? "View details" : "Check this centre"}<ArrowRight size={15} aria-hidden="true" /></button>
+            <button className="saved-item-tool" aria-label={`Edit ${item.name}`} title={item.reason ? "Edit note" : "Add a note"} onClick={() => onEditFavourite(item)}><Pencil size={15} aria-hidden="true" /><span>{item.reason ? "Note" : "Add note"}</span></button>
+            <button className="saved-item-tool" aria-label={`Remove ${item.name}`} title="Remove" onClick={() => onDelete("favourites", item.id)}><Trash2 size={15} aria-hidden="true" /><span>Remove</span></button>
+          </div>
+        </article></li>;
+      })}</ul>}
     </>}
     <SaveExplanation />
   </div>;
