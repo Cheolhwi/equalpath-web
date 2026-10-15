@@ -1,3 +1,5 @@
+> **Local PostgreSQL edition:** Run the complete website on your computer with local data and images. See [database/postgres/README.md](database/postgres/README.md) for the English setup guide, database diagram and SQL examples. Quick start: `npm ci`, `npm run local:setup`, `npm run local:start`; open http://127.0.0.1:4180. Maps/geocoding/routing still need internet; Appwrite and Telegram are not used by this local mode.
+
 # EqualPath Web
 
 Find childcare that fits your day.

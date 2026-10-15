@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {createPostgresStore} from '../store.mjs';
+import {createSearchStore} from '../../../server/search-catalog.mjs';
+import {createAPI} from '../../../server/api.mjs';
+const sql=createPostgresStore(), disk=createSearchStore();
+for(const care of ['short_term','regular']) assert.deepEqual(await sql.catalog(care),await disk.catalog(care));
+const catalog=await sql.catalog('short_term');
+const id=catalog.items.find(p=>p.reviewProfile)?.id ?? catalog.items[0].id;
+assert.deepEqual(await sql.extras(id),await disk.extras(id));
+const api=createAPI({store:sql});
+const health=await api({action:'health'});assert.equal(health.ok,true);assert.equal(health.available,catalog.items.length);
+const review=await api({action:'reviews',id});assert.equal(review.id,id);assert.ok(review.reviewProfile);
+await assert.rejects(()=>api({action:'reviews',id:'missing-provider'}));
+console.log(JSON.stringify({postgresRuntimeParity:true,shortCare:health.available,reviewProvider:id,unknownProviderRejected:true}));

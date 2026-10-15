@@ -1,0 +1,38 @@
+{
+  "exported_at": "2026-10-11T14:23:15.479256+00:00",
+  "source": "anonymous Appwrite public Web tables; active base and component releases only",
+  "database": "equalpath",
+  "current_release": "web_79f1397603c1e28325955f64",
+  "tables": {
+    "web_provider_catalog": {
+      "rows": 3539,
+      "reported_total": 3539,
+      "sha256": "55fdd884572eee428700a7c142a995c4c47308469779906684ad9d7b452e31cd",
+      "uncompressed_sha256": "9b777927274996d7ef659b8be5a8ac20a4990edad39da59e91df3089ea1a1976"
+    },
+    "web_provider_reviews": {
+      "rows": 11501,
+      "reported_total": 5000,
+      "sha256": "949ae29e4b973616103ccb2fe6ffb7406c17ee7fdaca55e46f67e666d12f0529",
+      "uncompressed_sha256": "83d74836308ea69c54446cb94976252106ffdb93a29d5d59f0d0fe8a6c9e9b07"
+    },
+    "web_provider_evidence": {
+      "rows": 8121,
+      "reported_total": 5000,
+      "sha256": "fc3ccea93c4bf7811c1fb952c7604a042f6be77e74e367bad9eb0ebcf16559bf",
+      "uncompressed_sha256": "e1264800706880e25fefd4023b8f63638c930ac11fd44ed14f81cc5b382f07cb"
+    },
+    "web_provider_photos": {
+      "rows": 98,
+      "reported_total": 98,
+      "sha256": "308b5978f9f082321d61e3f3d6db703e598a415591b2de239b08382a34682970",
+      "uncompressed_sha256": "c05ba73fc369910877dbeedbc059c9e1a02aa0c3cc2b500ced00aa0c7025e567"
+    },
+    "web_data_releases": {
+      "rows": 1,
+      "reported_total": 1,
+      "sha256": "a2527513dcff70f35f3e17ed1919d2bcb97f10414346ffd0941e7ff249406f43",
+      "uncompressed_sha256": "a1a4850402352f02fac1d1c0b1a7fb29fdbc25db6188ce3ee9a622cf350fb54c"
+    }
+  }
+}
