@@ -4,9 +4,35 @@ Run the complete existing React website with a local API, PostgreSQL database an
 
 ## Quick start
 
-Requirements: Node.js 22+, Python 3.10+, PostgreSQL 16+ (`initdb`, `pg_ctl`, `psql`, `createdb` on PATH). Native startup supports macOS and Linux; use WSL on Windows. Run from the repository root:
+Requirements: Git, Node.js 22+, Python 3.10+, PostgreSQL 16+ (`initdb`, `pg_ctl`, `psql`, `createdb` on PATH). Native startup supports macOS and Linux; use WSL on Windows.
+
+### Install the prerequisites on a new device
+
+On macOS with Homebrew:
 
 ```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install git node@22 python postgresql@18
+brew link --overwrite --force node@22
+brew services start postgresql@18
+```
+
+On Ubuntu or Ubuntu in WSL:
+
+```sh
+sudo apt update
+sudo apt install -y git curl python3 python3-venv postgresql postgresql-client
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+```
+
+On Windows, install WSL first from PowerShell (`wsl --install`), restart, then run the Ubuntu commands inside the WSL terminal. Run the project from the Linux filesystem, such as `~/equalpath-web`, rather than `/mnt/c`, for better file watching performance.
+
+Clone this branch and run from the repository root:
+
+```sh
+git clone --branch feat/local-postgres --single-branch https://github.com/Cheolhwi/equalpath-web.git
+cd equalpath-web
 npm ci
 npm run local:setup
 npm run local:verify
