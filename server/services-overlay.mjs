@@ -35,7 +35,7 @@ export function applyServicesEvidence(raw, records, baseRelease, expectedHash) {
     }
     const h=p.operating_hours??{};
     // Existing sourced hours retain precedence. New contradictory observations are held by the preparer.
-    if(r.hours?.weekly_windows.length&&!(h.weekly_windows??[]).some(w=>!(h.excluded_estimated_weekdays??[]).includes(w.weekday))&&!parsePublishedHours(h.notes).windows.length){
+    if(r.hours?.weekly_windows.length&&!(h.weekly_windows??[]).some(w=>!(h.excluded_estimated_weekdays??[]).includes(w.weekday))&&!(h.closed_weekdays??[]).length&&!parsePublishedHours(h.notes).windows.length){
       updated.operating_hours={...h,...r.hours,excluded_estimated_weekdays:[],source_status:'observed',status:'observed',source_kind:r.source_kind,source_url:r.source_url,new_observation_source:r.source_url,observed_on:r.observed_on,source_retrieved_at:r.observed_on,not_a_care_availability_guarantee:true};
     } else if(r.hours?.weekly_windows.length) {
       updated.additional_operating_hours={...r.hours,...evidence};

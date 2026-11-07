@@ -77,3 +77,18 @@ test('newly sourced weekdays fill unknown days with their own source; explicit c
  const website=normalizeProvider(applyServicesEvidence([known],[websiteRecord],'test-release',hash([websiteRecord]))[0],'test-release').provider;
  assert.equal(website.businessHours.alternative.source.label,'Provider website opening hours');
 });
+
+test('closed weekdays retain the sourced fact while contradictory service hours stay as an alternative',()=>{
+ const known={...raw,operating_hours:{weekly_windows:[],closed_weekdays:['MON'],source_url:'https://example.com/original',source_kind:'provider_website'}};
+ const updated=applyServicesEvidence([known],[record],'test-release',hash([record]))[0];
+ assert.deepEqual(updated.operating_hours,known.operating_hours);
+ assert.deepEqual(updated.additional_operating_hours.weekly_windows,[{weekday:'MON',start_minute:450,end_minute:1140}]);
+ assert.equal(updated.additional_operating_hours.source_url,record.source_url);
+ assert.equal(updated.additional_operating_hours.retrieved_at,record.observed_on);
+ const p=normalizeProvider(updated,'test-release').provider;
+ assert.ok(p.businessHours.closedDays.includes('MON'));
+ assert.equal(p.businessHours.windows.some(w=>w.days.includes('MON')),false);
+ assert.equal(p.businessHours.alternative.windows[0].end,1140);
+ assert.equal(businessHoursFor(p,'2026-09-14'),'Sources differ · check details');
+ assert.equal(assess(p,{pickup:demoPickup,date:'2026-09-14',deadline:'16:00',end:'18:30',age:'4',transport:'self'}).conditions.find(c=>c.id==='care').state,'unknown');
+});
